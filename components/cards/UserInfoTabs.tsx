@@ -4,9 +4,9 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { User } from "@/types/user"
 import CompanyInfoCard from "./CompanyInfoCard"
 import PersonalInfoCard from "./PersonalInfoCard"
+import { User } from "@/types"
 
 
 const UserInfoTabs = ({user}: {
