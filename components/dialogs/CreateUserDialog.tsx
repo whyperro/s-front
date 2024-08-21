@@ -12,7 +12,6 @@ import { CreateUserForm } from "../forms/CreateUserForm"
 import { useState } from "react"
 
 export function CreateUserDialog() {
-  const [open, setOpen] = useState();
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -25,7 +24,7 @@ export function CreateUserDialog() {
             Cree un usuario rellenando los campos necesarios.
           </DialogDescription>
         </DialogHeader>
-        <CreateUserForm onClose={() => setOpen(false)} />
+        <CreateUserForm />
       </DialogContent>
     </Dialog>
   )

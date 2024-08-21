@@ -65,11 +65,9 @@ const FormSchema = z.object({
 
 type FormSchemaType = z.infer<typeof FormSchema>
 
-interface FormProps {
-  onClose: () => void,
-}
 
-export function CreateUserForm({ onClose }: FormProps) {
+
+export function CreateUserForm() {
 
   const { data: users, error, isLoading } = useGetUsers();
 
