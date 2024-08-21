@@ -1,7 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import axios from '@/lib/axios';
 import axiosInstance from '@/lib/axios';
-import { User } from '@/types/user';
+import { User } from '@/types';
+import { useQuery } from '@tanstack/react-query';
 
 
 
