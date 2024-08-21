@@ -30,11 +30,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { selectedCompany, setSelectedCompany, selectedStation, setSelectedStation, reset } = useCompanyStore();
+  const { reset } = useCompanyStore();
 
   const fetchUser = async (): Promise<User> => {
     setLoading(true)
-    const { data } = await axiosInstance.get('/user');
+    const { data } = await axiosInstance.get('/user');  
     if (data) {
       setUser(data)
       setLoading(false)
