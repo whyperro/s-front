@@ -177,9 +177,6 @@ export function CreateUserForm() {
 
         // Enviar los datos formateados a la acción de crear usuario
         createUser.mutate(formattedData);
-        if (createUser.isSuccess) {
-          onClose();
-        }
       }
     } catch (error) {
       console.error("Error al crear usuario:", error);
