@@ -34,7 +34,7 @@ export default function Home() {
       <div className="w-full h-full flex flex-col items-center justify-center gap-4">
         <div className="flex flex-col justify-center items-center gap-4">
           <Logo />
-          <Button onClick={onClick}>Iniciar Sesión - <span className="text-indigo-800">v2.0</span> </Button>
+          <Button onClick={onClick}>Iniciar Sesión - v2.0</Button>
         </div>
         <Footer />
       </div>
