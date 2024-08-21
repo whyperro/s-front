@@ -4,14 +4,14 @@ import UserInfoCard from '@/components/cards/UserInfoCard'
 import UserInfoTabs from '@/components/cards/UserInfoTabs'
 import { ContentLayout } from '@/components/layout/ContentLayout'
 import LoadingPage from '@/components/misc/LoadingPage'
-import { useGetUserById } from '@/hooks/use-user-by-id'
+import { useGetUserById } from '@/hooks/useGetUserById'
 
 const UserByIdPage = ({ params }: { params: { id: string } }) => {
 
-  const {data: user, error, isLoading} = useGetUserById(params.id); 
-  
+  const { data: user, error, isLoading } = useGetUserById(params.id);
 
-  if(isLoading) {
+
+  if (isLoading) {
     return <LoadingPage />
   }
 
@@ -20,7 +20,7 @@ const UserByIdPage = ({ params }: { params: { id: string } }) => {
     <ContentLayout title='USER PAGE'>
       <div className='flex flex-col gap-2 md:flex-row items-center justify-evenly'>
         <UserInfoCard user={user!} />
-        <UserInfoTabs user={user!} /> 
+        <UserInfoTabs user={user!} />
       </div>
     </ContentLayout>
   )
