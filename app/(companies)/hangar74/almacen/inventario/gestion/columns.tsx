@@ -21,7 +21,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Batch } from "@/types"
-import { useRouter } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 
 
 // This type is used to define the shape of our data.
@@ -59,9 +59,8 @@ export const columns: ColumnDef<BatchesWithCountProp>[] = [
       <DataTableColumnHeader filter column={column} title="N° de Parte" />
     ),
     cell: ({ row }) => {
-      const router = useRouter()
       return (
-        <p onClick={() => router.push(`/hangar74/almacen/inventario/gestion/${row.original.part_number}`)} className="font-medium flex justify-center hover:scale-105 hover:text-blue-600 transition-all ease-in cursor-pointer duration-150">{row.original.part_number}</p>
+        <p onClick={() => redirect(`/hangar74/almacen/inventario/gestion/${row.original.part_number}`)} className="font-medium flex justify-center hover:scale-105 hover:text-blue-600 transition-all ease-in cursor-pointer duration-150">{row.original.part_number}</p>
       )
     }
   },

@@ -57,7 +57,7 @@ const RolesDialog = ({ roles, names }: RolesDialogProps) => {
                     <div className="flex gap-2">
                       {
                         role.permissions.map((permission) => (
-                          <Badge>{permission.label}</Badge>
+                          <Badge key={permission.id}>{permission.label}</Badge>
                         ))
                       }
                     </div>

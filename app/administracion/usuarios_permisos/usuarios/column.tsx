@@ -16,7 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import Image from "next/image"
 import { User } from "@/types"
 import RolesDialog from "@/components/dialogs/RolesDialog"
-import { useRouter } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 
 
 export const columns: ColumnDef<User>[] = [
@@ -47,13 +47,13 @@ export const columns: ColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Nombre" />
     ),
-    cell: ({row}) =>
+    cell: ({ row }) =>
       <>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger><span className='number'>{row.original.first_name} {row.original.last_name}</span></TooltipTrigger>
             <TooltipContent>
-              <Image src={'/kanye.png'} width={100} height={100} alt="Imagen referencial"/>
+              <Image src={'/kanye.png'} width={100} height={100} alt="Imagen referencial" />
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -76,7 +76,7 @@ export const columns: ColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
     ),
-    cell: ({row}) => {
+    cell: ({ row }) => {
       const item = row.original
 
       return (
@@ -93,21 +93,20 @@ export const columns: ColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Roles" />
     ),
-    cell: ({row}) => {
+    cell: ({ row }) => {
       const item = row.original
-      const router = useRouter()
       return (
         <div className="flex flex-col gap-2 justify-center">
           {
             item && item.roles && item?.roles?.length < 3 ? item.roles.map((rol) => (
-              <div onClick={() => router.push('/administracion/usuarios_permisos/roles')} className="flex items-center justify-center cursor-pointer" key={rol.id}>
+              <div onClick={() => redirect('/administracion/usuarios_permisos/roles')} className="flex items-center justify-center cursor-pointer" key={rol.id}>
                 <Badge>{rol.name}</Badge>
               </div>
             ))
-            :
-            (
-              item && item.roles && <RolesDialog names={`${item.first_name} ${item.last_name}`} roles={item.roles} />
-            )
+              :
+              (
+                item && item.roles && <RolesDialog names={`${item.first_name} ${item.last_name}`} roles={item.roles} />
+              )
           }
           {
             item && item.roles && item?.roles?.length <= 0 && <>No tiene permisos</>

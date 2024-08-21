@@ -99,8 +99,8 @@ export default function CreateRoleForm({ onClose }: FormProps) {
   }
 
   const handleModuleChange = (moduleName: string) => {
-    const module = modules?.find(m => m.name === moduleName) || null;
-    setSelectedModule(module);
+    const moduleSelected = modules?.find(m => m.name === moduleName) || null;
+    setSelectedModule(moduleSelected);
   }
 
 

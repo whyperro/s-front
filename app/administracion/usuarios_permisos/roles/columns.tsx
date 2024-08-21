@@ -40,9 +40,9 @@ export const columns: ColumnDef<Role>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Nombre" />
     ),
-    cell: ({row}) =>
+    cell: ({ row }) =>
       <>
-          <Badge>{row.original.name}</Badge>
+        <Badge>{row.original.name}</Badge>
       </>
   },
   {
@@ -50,7 +50,7 @@ export const columns: ColumnDef<Role>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Permisos" />
     ),
-    cell: ({row}) =>
+    cell: ({ row }) =>
       <>
         <PermissionsDialog roleName={row.original.name} permissions={row.original.permissions} />
       </>
@@ -60,8 +60,8 @@ export const columns: ColumnDef<Role>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Compañia" />
     ),
-    cell: ({row}) =>
-      <p>{row.original.company.map((c) => <div className="flex gap-2 items-center"><p className="text-muted-foreground">{c.description}</p> <Image src={c.name === 'TMD' ? "/LOGO_TRD.png" : "/logo.png"} width={100} height={100} alt="logo" className="w-[40px] h-[40px]" /></div>)}</p>
+    cell: ({ row }) =>
+      <p>{row.original.company.map((c) => <div key={c.id} className="flex gap-2 items-center"><p className="text-muted-foreground">{c.description}</p> <Image src={c.name === 'TMD' ? "/LOGO_TRD.png" : "/logo.png"} width={100} height={100} alt="logo" className="w-[40px] h-[40px]" /></div>)}</p>
   },
   {
     id: "actions",

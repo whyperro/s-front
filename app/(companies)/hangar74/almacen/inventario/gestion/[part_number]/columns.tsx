@@ -21,7 +21,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Article } from "@/types"
-import { useRouter } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 
 export const columns: ColumnDef<Article>[] = [
   {
@@ -52,9 +52,8 @@ export const columns: ColumnDef<Article>[] = [
       <DataTableColumnHeader filter column={column} title="Serial" />
     ),
     cell: ({ row }) => {
-      const router = useRouter()
       return (
-        <p onClick={() => router.push(`/hangar74/almacen/inventario/gestion/${row.original.serial}`)} className="font-medium flex justify-center hover:scale-105 hover:text-blue-600 transition-all ease-in cursor-pointer duration-150">{row.original.serial}</p>
+        <p onClick={() => redirect(`/hangar74/almacen/inventario/gestion/${row.original.serial}`)} className="font-medium flex justify-center hover:scale-105 hover:text-blue-600 transition-all ease-in cursor-pointer duration-150">{row.original.serial}</p>
       )
     }
   },
@@ -113,7 +112,7 @@ export const columns: ColumnDef<Article>[] = [
                 onClick={() => navigator.clipboard.writeText(item.serial!)}
               >
                 <Tooltip>
-                  <TooltipTrigger>  
+                  <TooltipTrigger>
                     <ClipboardCheck className="size-5" />
                   </TooltipTrigger>
                   <TooltipContent>

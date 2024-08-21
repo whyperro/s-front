@@ -86,7 +86,7 @@ export function CreateBatchForm({ onClose }: FormProps) {
                 <SelectContent>
                   {
                     batches_categories.map((category) => (
-                      <SelectItem value={category.value}>{category.label}</SelectItem>
+                      <SelectItem key={category.value} value={category.value}>{category.label}</SelectItem>
                     ))
                   }
                 </SelectContent>
@@ -202,7 +202,7 @@ export function CreateBatchForm({ onClose }: FormProps) {
                       }
                       {
                         warehouses && warehouses.map((warehouse) => (
-                          <SelectItem value={warehouse.id}>{warehouse.name} - {warehouse.address}</SelectItem>
+                          <SelectItem key={warehouse.id} value={warehouse.id}>{warehouse.name} - {warehouse.address}</SelectItem>
                         ))
                       }
                       {
