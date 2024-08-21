@@ -15,11 +15,9 @@ export default function Home() {
   }
 
   return (
-    <div className="w-full h-screen flex bg-sky-100">
-      <div style={{
-        borderRadius: '0 99% 99% 0',
-      }} className="w-full h-full bg-clouds bg-cover relative animate-moveBackground">
-        <motion.div key="plane"
+    <div className="w-full h-screen flex flex-col lg:flex-row bg-sky-100">
+      <div className="w-full flex justify-center h-full bg-clouds bg-cover relative animate-moveBackground rounded-b-full lg:rounded-r-full lg:rounded-b-none">
+        <motion.div className="mt-24" key="plane"
           initial={{ x: -650, y: 750 }}
           transition={{
             duration: 1.5,
@@ -30,7 +28,7 @@ export default function Home() {
           animate={{ x: 0, y: 0 }}
           whileHover={{ scale: 1.1 }}
           exit={{ opacity: 0 }}>
-          <Image className="absolute top-56 -right-40 " src={'/plane3.webp'} width={850} height={850} alt="avion" />
+          <Image className="lg:absolute lg:top-56 lg:-right-3 w-[600px] lg:w-auto" src={'/plane3.webp'} width={850} height={850} alt="avion" />
         </motion.div>
       </div>
       <div className="w-full h-full flex flex-col items-center justify-center gap-4">
