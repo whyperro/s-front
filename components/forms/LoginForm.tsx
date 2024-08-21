@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
-import {useAuth2} from '@/actions/auth/actions'
 import loadingGif from '@/public/loading2.gif';
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
@@ -24,7 +23,7 @@ type FormSchemaType = z.infer<typeof FormSchema>
 
 export function LoginForm() {
 
-  const {loginMutation} = useAuth();
+  const { loginMutation } = useAuth();
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
