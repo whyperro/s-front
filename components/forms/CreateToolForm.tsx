@@ -65,10 +65,6 @@ const formSchema = z.object({
 
 const CreateToolForm = () => {
 
-  const [fabricationDate, setFabricationDate] = useState<Date>()
-
-  const [caducateDate, setCaducateDate] = useState<Date>()
-
   const { createArticle } = useCreateArticle();
 
   const { selectedStation } = useCompanyStore();
