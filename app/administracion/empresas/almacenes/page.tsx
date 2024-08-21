@@ -1,17 +1,14 @@
 'use client'
 
-import { ContentLayout } from '@/components/layout/ContentLayout'
-import React from 'react'
-import { DataTable } from './data-table';
-import { columns } from './columns';
-import { Warehouse } from '@/types';
-import { Loader2 } from 'lucide-react';
-import axiosInstance from '@/lib/axios';
+import { ContentLayout } from '@/components/layout/ContentLayout';
 import { useGetWarehouses } from '@/hooks/useGetWarehouses';
+import { Loader2 } from 'lucide-react';
+import { columns } from './columns';
+import { DataTable } from './data-table';
 
 const AlmacenesPage = () => {
 
-  const {data: warehouses, isLoading, error} = useGetWarehouses();
+  const { data: warehouses, isLoading, error } = useGetWarehouses();
   return (
     <ContentLayout title={'Almacenes'}>
       <h1 className='text-4xl font-bold'>Control de Almácenes</h1>
@@ -34,7 +31,7 @@ const AlmacenesPage = () => {
       } */}
       {
         warehouses && (
-          <DataTable columns={columns} data={warehouses}/>
+          <DataTable columns={columns} data={warehouses} />
         )
       }
     </ContentLayout>

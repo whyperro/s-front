@@ -12,11 +12,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 
-import { CreatePermissionDialog } from "@/components/dialogs/CreatePermissionDialog"
+import CreateWarehouseDialog from "@/components/dialogs/CreateWarehouseDialog"
 import { DataTablePagination } from "@/components/tables/DataTablePagination"
 import { DataTableViewOptions } from "@/components/tables/DataTableViewOptions"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -27,8 +26,6 @@ import {
 } from "@/components/ui/table"
 import { ListRestart } from "lucide-react"
 import { useState } from "react"
-import { CreateCompanyDialog } from "@/components/dialogs/CreateCompanyDialog"
-import CreateWarehouseDialog from "@/components/dialogs/CreateWarehouseDialog"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -54,7 +51,7 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    state:{
+    state: {
       sorting,
       columnFilters
     }
@@ -67,16 +64,16 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center py-4">
         <div className="flex gap-x-2 items-center">
           {isFiltered && (
-          <Button
-            variant="ghost"
-            onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
-          >
-            Reiniciar
-            <ListRestart className="ml-2 h-4 w-4" />
-          </Button>
-        )}
-        <CreateWarehouseDialog />
+            <Button
+              variant="ghost"
+              onClick={() => table.resetColumnFilters()}
+              className="h-8 px-2 lg:px-3"
+            >
+              Reiniciar
+              <ListRestart className="ml-2 h-4 w-4" />
+            </Button>
+          )}
+          <CreateWarehouseDialog />
         </div>
         <DataTableViewOptions table={table} />
       </div>
@@ -91,9 +88,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}
