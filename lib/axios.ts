@@ -15,4 +15,3 @@ axiosInstance.interceptors.request.use((config) => {
 });
 
 export default axiosInstance;
-https://6798-190-207-118-231.ngrok-free.app/
