@@ -18,7 +18,7 @@ interface AuthContextType {
   loginMutation: UseMutationResult<any, any, {
     login: string;
     password: string;
-}, unknown>
+  }, unknown>
   logout: () => void;
 }
 
@@ -30,12 +30,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const {selectedCompany, setSelectedCompany, selectedStation, setSelectedStation, reset} = useCompanyStore();
+  const { selectedCompany, setSelectedCompany, selectedStation, setSelectedStation, reset } = useCompanyStore();
 
   const fetchUser = async (): Promise<User> => {
     setLoading(true)
     const { data } = await axiosInstance.get('/user');
-    if(data){
+    if (data) {
       setUser(data)
       setLoading(false)
     } else {
