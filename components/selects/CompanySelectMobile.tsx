@@ -52,7 +52,7 @@ const CompanySelect = () => {
     }
   }, [selectedStation, locations]);
 
-  const handleCompanySelect = (value: string) => {
+  const handleCompanySelect = (value: 'transmandu' | 'hangar 74') => {
     setSelectedCompany(value);
     setStationAddress(null);  // Resetea la dirección al seleccionar una nueva compañía
     if (selectedStation) {
@@ -60,7 +60,7 @@ const CompanySelect = () => {
     }
   };
 
-  const handleStationSelect = (value: string) => {
+  const handleStationSelect = (value: 'transmandu' | 'hangar 74') => {
     setSelectedStation(value);
     const selectedLocation = locations?.find(location => location.cod_iata === value);
     if (selectedLocation) {
