@@ -1,13 +1,13 @@
 import { create } from "zustand";
 
 interface CompanyState {
-    selectedCompany: string | null;
-    selectedStation: string | null;
+    selectedCompany: 'transmandu' | 'hangar 74' | null;
+    selectedStation: 'transmandu' | 'hangar 74' | null;
 }
 
 interface CompanyActions {
-    setSelectedCompany: (company: string) => void;
-    setSelectedStation: (station: string) => void;
+    setSelectedCompany: (company: 'transmandu' | 'hangar 74' ) => void;
+    setSelectedStation: (station: 'transmandu' | 'hangar 74') => void;
     initFromLocalStorage: () => void;
     reset: () => void;
 }
@@ -29,12 +29,12 @@ export const useCompanyStore = create<CompanyState & CompanyActions>((set) => ({
         localStorage.setItem('selectedStation', station);
     },
     initFromLocalStorage: () => {
-        const savedSelectedCompany = localStorage.getItem('selectedCompany');
+        const savedSelectedCompany = localStorage.getItem('selectedCompany') as 'transmandu' | 'hangar 74';
         if (savedSelectedCompany) {
             set({ selectedCompany: savedSelectedCompany });
         }
 
-        const savedSelectedStation = localStorage.getItem('selectedStation');
+        const savedSelectedStation = localStorage.getItem('selectedStation') as 'transmandu' | 'hangar 74';
         if (savedSelectedStation) {
             set({ selectedStation: savedSelectedStation });
         }

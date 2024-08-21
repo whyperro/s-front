@@ -17,7 +17,7 @@ import CompanySelectMobile from "../selects/CompanySelectMobile";
 
 export function SheetMenu() {
 
-  const {selectedCompany, selectedStation} = useCompanyStore()
+  const { selectedCompany, selectedStation } = useCompanyStore()
 
   return (
     <Sheet>
@@ -34,15 +34,15 @@ export function SheetMenu() {
             asChild
           >
             <Link href="/dashboard" className="flex items-center gap-2">
-                <Image src={'/logo.png'} width={150} height={150} alt="Logo" />
+              <Image src={'/logo.png'} width={150} height={150} alt="Logo" />
             </Link>
           </Button>
         </SheetHeader>
         <CompanySelectMobile />
         {
-          selectedCompany && selectedStation ? <Menu isOpen company={selectedCompany}/> :
+          selectedCompany && selectedStation ? <Menu isOpen company={selectedCompany} /> :
 
-          <p className="text-sm text-muted-foreground text-center mt-10">Por favor, seleccione una <strong>Empresa</strong> y una <strong>Estacion</strong>.</p>
+            <p className="text-sm text-muted-foreground text-center mt-10">Por favor, seleccione una <strong>Empresa</strong> y una <strong>Estacion</strong>.</p>
         }
       </SheetContent>
     </Sheet>
