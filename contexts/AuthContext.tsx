@@ -7,7 +7,7 @@ import { useCompanyStore } from '@/stores/CompanyStore';
 import { User } from '@/types';
 import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DoorOpen } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -26,6 +26,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient();
+  const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,8 +54,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
 
   useEffect(() => {
-    userQuery.refetch();
-    router.refresh();
+    if (pathname !== "/" && pathname !== "/login") {
+      userQuery.refetch().then(() => {
+        router.refresh();
+      }).catch(error => {
+        // Manejo de errores
+        console.error("Error al volver a buscar los datos del usuario:", error);
+      });
+    }
   }, []);
 
   const loginMutation = useMutation({

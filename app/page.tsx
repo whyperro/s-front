@@ -17,15 +17,9 @@ export default function Home() {
   return (
     <div className="w-full h-screen flex flex-col lg:flex-row bg-sky-100">
       <div className="w-full flex justify-center h-full bg-clouds bg-cover relative animate-moveBackground rounded-b-full lg:rounded-r-full lg:rounded-b-none">
-        <motion.div initial={{ x: -650, y: 750 }}
-          transition={{
-            duration: 1.5,
-            bounce: 0.40,
-            type: "spring"
-          }}
-
-          animate={{ x: 0, y: 0 }}ll
-           className="mt-24 lg:mt-0" key="plane">
+        <motion.div initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="mt-24 lg:mt-0" key="plane">
           <Image className="lg:absolute lg:top-56 lg:-right-3 w-[600px] lg:w-auto" src={'/plane3.webp'} width={850} height={850} alt="avion" />
         </motion.div>
       </div>
