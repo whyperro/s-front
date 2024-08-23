@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchUser = async (): Promise<User> => {
     setLoading(true)
-    const { data } = await axiosInstance.get('/user');  
+    const { data } = await axiosInstance.get('/user');
     if (data) {
       setUser(data)
       setLoading(false)
@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     onError: (err: any) => {
       setError(err.message);
       toast.error('Oops!', {
-        description: '¡Ha ocurrido un error al iniciar sesion!',
+        description: '¡Estamos en construcción!',
         position: 'bottom-center'
       })
     },
