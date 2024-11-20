@@ -4,7 +4,6 @@ import { ColumnDef } from "@tanstack/react-table"
  
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
 
-import DropdownActions from "@/components/misc/DropdownActions"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Company } from "@/types"
 
@@ -80,14 +79,5 @@ export const columns: ColumnDef<Company>[] = [
       <>
         <span>{row.original.fiscal_address}</span>
       </>
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const id = row.original.id
-      return (
-        <DropdownActions id={id} />
-      )
-    },
   },
 ]

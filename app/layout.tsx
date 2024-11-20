@@ -1,12 +1,12 @@
+import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/contexts/AuthContext";
+import QueryClientProvider from "@/providers/query-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
-import QueryClientProvider from "@/providers/query-provider";
-import { AuthProvider } from "@/contexts/AuthContext";
 
-const inter = Roboto({ subsets: ["latin"], weight: ["100", "300", "400", "500", "700", "900"] });
+const inter = Poppins({ subsets: ["latin"], weight: ["100", "300", "400", "500", "700", "900"] });
 
 export const metadata: Metadata = {
   title: "SIGEAC",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children, 
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
@@ -24,15 +24,15 @@ export default function RootLayout({
         <link rel="icon" href="/logo.png" sizes="any" />
         <QueryClientProvider>
           <AuthProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-              >
-                {children}
-                <Toaster />
-              </ThemeProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <Toaster />
+            </ThemeProvider>
           </AuthProvider>
         </QueryClientProvider>
       </body>

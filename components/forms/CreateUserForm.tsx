@@ -1,6 +1,6 @@
 "use client"
 
-import { useCreateUser } from "@/actions/usuarios/actions";
+import { useCreateUser } from "@/actions/administracion/usuarios/actions";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -10,24 +10,24 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useGetRoles } from "@/hooks/useGetRoles";
-import { useGetUsers } from "@/hooks/useGetUsers";
-import { useGetCompanies } from "@/hooks/useGetCompanies";
-import { useGetLocationsByCompanies } from "@/hooks/useGetLocationsByCompanies";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGetCompanies } from "@/hooks/administracion/useGetCompanies";
+import { useGetLocationsByCompanies } from "@/hooks/administracion/useGetLocationsByCompanies";
+import { useGetRoles } from "@/hooks/user/useGetRoles";
+import { useGetUsers } from "@/hooks/user/useGetUsers";
 import { cn } from "@/lib/utils";
 import loadingGif from '@/public/loading2.gif';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
 import Image from "next/image";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { Badge } from "../ui/badge";
@@ -100,15 +100,6 @@ export function CreateUserForm() {
   const lastName = useWatch({ control, name: 'last_name' });
   const [debouncedUsername, setDebouncedUsername] = useState("");
 
-  // useEffect(() => {
-  //   if (selectedCompany) {
-  //     const companyId = user?.companies.find(c => c.name.toLowerCase() === selectedCompany.toLowerCase())?.id;
-  //     if (companyId) {
-  //       mutate(companyId);  // Invoca la mutación con el ID de la compañía
-  //     }
-  //   }
-  // }, [companies, mutate]);
-
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -131,7 +122,7 @@ export function CreateUserForm() {
     return () => {
       clearTimeout(handler);
     };
-  }, [firstName, lastName]);
+  }, [firstName, lastName, clearErrors, setError,users]);
 
   useEffect(() => {
     if (debouncedUsername) {
@@ -334,6 +325,9 @@ export function CreateUserForm() {
                                 {role.name}
                               </CommandItem>
                             ))}
+                            {
+                              rolesError && <p className="text-center text-muted-foreground text-sm">Ha ocurrido un error al cargar los roles...</p>
+                            }
                           </CommandGroup>
                         </CommandList>
                       </Command>
@@ -352,12 +346,25 @@ export function CreateUserForm() {
                   <div className="flex gap-2 items-center justify-center">
                     <Tabs defaultValue="account">
                       <TabsList className="grid w-full grid-cols-2">
+                        {
+                          isCompaniesLoading && <Loader2 className="size-4 animate-spin" />
+                        }
                         {companies?.map((company) => (
                           <TabsTrigger value={company.id.toString()} key={company.id}>
                             {company.name}
                           </TabsTrigger>
                         ))}
+                        {
+                          companiesError && <p>Ha ocurrido un error al cargar las compañías...</p>
+                        }
                       </TabsList>
+                      {
+                        companies_locationsLoading && (
+                          <div className="w-full flex justify-center">
+                            <Loader2 className="size-4 animate-spin" />
+                          </div>
+                        )
+                      }
                       {companies_locations?.map((company, index) => (
                         <TabsContent className="flex gap-2 justify-center flex-wrap" value={company.company_id.toString()} key={company.company_id}>
                           {company.locations.map((location) => (
@@ -405,6 +412,9 @@ export function CreateUserForm() {
                           ))}
                         </TabsContent>
                       ))}
+                      {
+                        companies_locationsError && <p className="text-muted-foreground text-center text-sm">Ha ocurrido un error al cargar las ubicaciones...</p>
+                      }
                     </Tabs>
                   </div>
                 </FormItem>

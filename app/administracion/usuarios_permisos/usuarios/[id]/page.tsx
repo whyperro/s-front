@@ -4,7 +4,7 @@ import UserInfoCard from '@/components/cards/UserInfoCard'
 import UserInfoTabs from '@/components/cards/UserInfoTabs'
 import { ContentLayout } from '@/components/layout/ContentLayout'
 import LoadingPage from '@/components/misc/LoadingPage'
-import { useGetUserById } from '@/hooks/useGetUserById'
+import { useGetUserById } from '@/hooks/user/useGetUserById'
 
 const UserByIdPage = ({ params }: { params: { id: string } }) => {
 

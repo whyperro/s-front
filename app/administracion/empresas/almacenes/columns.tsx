@@ -1,10 +1,8 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
-
-import DropdownActions from "@/components/misc/DropdownActions"
+import WarehouseDropdownActions from "@/components/misc/WarehouseDropdownActions"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Warehouse } from "@/types"
 
@@ -34,31 +32,41 @@ export const columns: ColumnDef<Warehouse>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Identificador" />
+      <DataTableColumnHeader filter column={column} title="Abrev." />
     ),
-    cell: ({row}) =>
+    cell: ({ row }) =>
       <>
-          <span className='flex justify-center font-bold'>{row.original.name ?? "N/A"}</span>
+        <span className='font-bold flex justify-center'>{row.original.name ?? "N/A"}</span>
       </>
   },
   {
-    accessorKey: "location",
+    accessorKey: "type",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Locación" />
+      <DataTableColumnHeader filter column={column} title="Nombre" />
     ),
-    cell: ({row}) =>
+    cell: ({ row }) =>
       <>
-          <span className="flex justify-center">{row.original.address} - {row.original.type}</span>
+        <span className='text-muted-foreground flex justify-center italic'>{row.original.type}</span>
       </>
   },
   {
-    accessorKey: "company_name",
+    accessorKey: "address",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Compañia" />
+      <DataTableColumnHeader filter column={column} title="RIF" />
     ),
-    cell: ({row}) =>
+    cell: ({ row }) =>
       <>
-          <span  className="flex justify-center font-medium">{row.original.company}</span>
+        <span className="flex justify-center">{row.original.address}</span>
+      </>
+  },
+  {
+    accessorKey: "company",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Cod. INAC" />
+    ),
+    cell: ({ row }) =>
+      <>
+        <span className="flex justify-center font-medium">{row.original.company}</span>
       </>
   },
   {
@@ -66,7 +74,7 @@ export const columns: ColumnDef<Warehouse>[] = [
     cell: ({ row }) => {
       const id = row.original.id
       return (
-        <DropdownActions id={id} />
+        <WarehouseDropdownActions id={id} />
       )
     },
   },

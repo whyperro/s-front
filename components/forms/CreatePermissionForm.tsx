@@ -1,5 +1,5 @@
 'use client';
-import { useCreatePermission } from "@/actions/permisos/actions";
+import { useCreatePermission } from "@/actions/administracion/permisos/actions";
 import {
   Form,
   FormControl,
@@ -17,12 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetCompanies } from "@/hooks/useGetCompanies";
-import { useGetModulesByCompanyId } from "@/hooks/useGetModulesByCompanyId";
+import { useGetCompanies } from "@/hooks/administracion/useGetCompanies";
+import { useGetModulesByCompanyId } from "@/hooks/administracion/useGetModulesByCompanyId";
 import { Company } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -35,8 +35,12 @@ const formSchema = z.object({
   label: z.string().min(3, {
     message: "La etiqueta debe tener al menos 3 carácters.",
   }),
-  module: z.string(),
-  company: z.string(),
+  module: z.string({
+    message: "Debe seleccionar un módulo."
+  }),
+  company: z.string({
+    message: "Debe seleccionar una compañía."
+  }),
 })
 
 
@@ -150,6 +154,9 @@ export default function CreatePermisssionForm({ onClose }: FormProps) {
                         {company.description}
                       </SelectItem>
                     ))
+                  }
+                  {
+                    companiesError && <p className="text-center text-sm text-muted-foreground">Ha ocurrido un error al cargar las compañías...</p>
                   }
                 </SelectContent>
               </Select>

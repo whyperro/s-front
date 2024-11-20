@@ -1,23 +1,21 @@
 'use client';
 
 import Link from "next/link";
-import { PanelsTopLeft } from "lucide-react";
-
-import { cn } from "@/lib/utils";
-import { useStore } from "@/hooks/use-store";
-import { Button } from "@/components/ui/button";
 import { Menu } from "@/components/sidebar/Menu";
-import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 import { SidebarToggle } from "@/components/sidebar/SidebarToggle";
-import Image from "next/image";
-import { useCompanyStore } from "@/stores/CompanyStore";
+import { Button } from "@/components/ui/button";
+import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
+import { useStore } from "@/hooks/use-store";
 import { CompanyMenu } from "@/lib/menu-list";
+import { cn } from "@/lib/utils";
+import { useCompanyStore } from "@/stores/CompanyStore";
+import Image from "next/image";
 
 export function Sidebar() {
   const sidebar = useStore(useSidebarToggle, (state) => state);
-  const {selectedCompany, selectedStation} = useCompanyStore()
+  const { selectedCompany, selectedStation } = useCompanyStore()
 
-  if(!sidebar) return null;
+  if (!sidebar) return null;
 
   return (
     <aside
@@ -36,14 +34,14 @@ export function Sidebar() {
           variant="link"
           asChild
         >
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link href={`/${selectedCompany?.split(" ").join("")}/dashboard`} className="flex items-center gap-2">
             <Image src={'/logo.png'} width={150} height={150} alt="Logo" />
           </Link>
         </Button>
         {
           selectedCompany && selectedStation ? <Menu isOpen={sidebar?.isOpen} company={selectedCompany as CompanyMenu} /> :
 
-          <p className="text-sm text-muted-foreground text-center mt-10">Por favor, seleccione una <strong>Empresa</strong> y una <strong>Estacion</strong>.</p>
+            <p className="text-sm text-muted-foreground text-center mt-10">Por favor, seleccione una <strong>Empresa</strong> y una <strong>Estacion</strong>.</p>
 
         }
       </div>

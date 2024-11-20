@@ -32,7 +32,7 @@ export function DataTableViewOptions<TData>({
           Ver
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[150px]">
+      <DropdownMenuContent align="start" className="w-[150px]">
         <DropdownMenuLabel>Mostrar/Ocultar </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table

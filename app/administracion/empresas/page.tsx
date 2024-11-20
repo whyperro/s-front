@@ -1,13 +1,13 @@
 'use client'
 
 import { ContentLayout } from '@/components/layout/ContentLayout'
-import { useGetCompanies } from '@/hooks/useGetCompanies'
+import { useGetCompanies } from '@/hooks/administracion/useGetCompanies'
 import { Loader2 } from 'lucide-react'
 import { columns } from './columns'
 import { DataTable } from './data-table'
 
 const CompanyPage = () => {
-  const {data: companies, isLoading, error} = useGetCompanies();
+  const { data: companies, isLoading, error } = useGetCompanies();
   return (
     <ContentLayout title='Permisos'>
       {
@@ -26,10 +26,10 @@ const CompanyPage = () => {
       }
       {
         companies && (
-          <DataTable columns={columns} data={companies}/>
+          <DataTable columns={columns} data={companies} />
         )
       }
-      </ContentLayout>
+    </ContentLayout>
   )
 }
 

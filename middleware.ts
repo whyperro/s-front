@@ -1,8 +1,8 @@
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { decryptJWT } from "./lib/session";
 
 export default async function middleware(req: NextRequest) {
+  // Rutas protegidas
   const protectedRoutes = [
     '/inicio',
     '/transmandu',
@@ -11,26 +11,28 @@ export default async function middleware(req: NextRequest) {
   ];
 
   const currentPath = req.nextUrl.pathname;
-
   const isProtectedRoute = protectedRoutes.some(route => currentPath.startsWith(route));
 
   if (isProtectedRoute) {
-    const cookie = cookies().get('session')?.value;
-    const session = await decryptJWT(cookie);
-    if (!session?.userId) {
+    // Obtén la cookie 'session' del objeto req
+    const cookie = req.cookies.get('auth_token')?.value;
+
+    if (!cookie) {
+      // Si no hay cookie, redirige al login
       return NextResponse.redirect(new URL('/login', req.nextUrl));
     }
+    
   }
 
   return NextResponse.next();
 }
 
+// Configuración del matcher
 export const config = {
   matcher: [
+    '/inicio/:path*',
     '/transmandu/:path*',
     '/hangar74/:path*',
-    '/dashboard/:path*',
-    '/almacen/:path*',
     '/planificacion/:path*',
     '/administracion/:path*',
     '/((?!api|_next/static|_next/image|favicon.ico).*)',

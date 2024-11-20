@@ -2,8 +2,8 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 
-import DropdownActions from "@/components/misc/DropdownActions"
 import PermissionsDialog from "@/components/dialogs/PermissionsDialog"
+import RolesDropdownActions from "@/components/misc/RolesDropdownActions"
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -68,7 +68,7 @@ export const columns: ColumnDef<Role>[] = [
     cell: ({ row }) => {
       const id = row.original.id
       return (
-        <DropdownActions id={id} />
+        <RolesDropdownActions id={id} />
       )
     },
   },

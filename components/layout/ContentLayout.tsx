@@ -1,3 +1,4 @@
+
 import { Navbar } from "./Navbar";
 
 interface ContentLayoutProps {

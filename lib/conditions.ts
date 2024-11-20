@@ -1,30 +1,30 @@
 export const conditions = [
   {
-    value: 'new',
+    value: 'Nuevo',
     label: "Nuevo"
   },
   {
-    value: 'overhauled',
+    value: 'Overhauled',
     label: "Overhauled"
   },
   {
-    value: 'inspected',
+    value: 'Inspeccioando',
     label: "Inspeccioando"
   },
   {
-    value: 'repairable',
+    value: 'Reparable',
     label: "Reparable"
   },
   {
-    value: 'used',
+    value: 'Usado',
     label: "Usado"
   },
   {
-    value: 'repaired',
+    value: 'Reparado',
     label: "Reparado"
   },
   {
-    value: 'serviceable',
+    value: 'Serviciable',
     label: "Serviciable"
   },
 ]

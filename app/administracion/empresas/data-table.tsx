@@ -53,7 +53,7 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    state:{
+    state: {
       sorting,
       columnFilters
     }
@@ -66,16 +66,16 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center py-4">
         <div className="flex gap-x-2 items-center">
           {isFiltered && (
-          <Button
-            variant="ghost"
-            onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
-          >
-            Reiniciar
-            <ListRestart className="ml-2 h-4 w-4" />
-          </Button>
-        )}
-        <CreateCompanyDialog />
+            <Button
+              variant="ghost"
+              onClick={() => table.resetColumnFilters()}
+              className="h-8 px-2 lg:px-3"
+            >
+              Reiniciar
+              <ListRestart className="ml-2 h-4 w-4" />
+            </Button>
+          )}
+          <CreateCompanyDialog />
         </div>
         <DataTableViewOptions table={table} />
       </div>
@@ -90,9 +90,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}

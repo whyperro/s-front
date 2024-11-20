@@ -1,14 +1,13 @@
 import { LoginForm } from '@/components/forms/LoginForm'
-import Logo from '@/components/misc/Logo'
 import { ThemeToggler } from '@/components/layout/ThemeToggler'
-import React from 'react'
+import Logo from '@/components/misc/Logo'
 
 const Login = () => {
   return (
     <div className="h-dvh w-dvw">
       <div className="flex flex-col lg:flex-row mx-auto h-full items-center justify-between">
         <div className="w-full flex justify-end p-4 lg:hidden">
-              <ThemeToggler />
+          <ThemeToggler />
         </div>
         <div className="flex h-[350px] w-[250px] lg:w-full justify-center items-center">
           <Logo />

@@ -1,27 +1,14 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ClipboardCheck, MoreHorizontal, SquarePen, Trash2 } from "lucide-react"
 
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
 
+import BatchDropdownActions from "@/components/misc/BatchDropdownActions"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { cn } from "@/lib/utils"
 import { Batch } from "@/types"
-import { redirect, useRouter } from "next/navigation"
+import Link from "next/link"
 
 
 // This type is used to define the shape of our data.
@@ -54,13 +41,13 @@ export const columns: ColumnDef<BatchesWithCountProp>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "part_number",
+    accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="N° de Parte" />
+      <DataTableColumnHeader filter column={column} title="Nombre" />
     ),
     cell: ({ row }) => {
       return (
-        <p onClick={() => redirect(`/hangar74/almacen/inventario/gestion/${row.original.part_number}`)} className="font-medium flex justify-center hover:scale-105 hover:text-blue-600 transition-all ease-in cursor-pointer duration-150">{row.original.part_number}</p>
+        <Link href={`/hangar74/almacen/inventario/gestion/${row.original.name.toLowerCase()}`} className="font-medium flex justify-center hover:scale-105 hover:text-blue-600 transition-all ease-in cursor-pointer duration-150">{row.original.name}</Link>
       )
     }
   },
@@ -97,7 +84,7 @@ export const columns: ColumnDef<BatchesWithCountProp>[] = [
       <DataTableColumnHeader column={column} title="Cantidad de Stock" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center">{row.original.article_count}</p>
+      <p className={cn("flex justify-center rounded-lg", Number(row.original.min_quantity) > Number(row.original.article_count) ? "bg-red-300 text-white" : "bg-green-200")}>{row.original.article_count}</p>
     )
   },
   {
@@ -112,54 +99,8 @@ export const columns: ColumnDef<BatchesWithCountProp>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const item = row.original
-
       return (
-        <TooltipProvider>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Abrir menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" className="flex gap-2 justify-center">
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(item.alternative_part_number)}
-              >
-                <Tooltip>
-                  <TooltipTrigger>
-                    <ClipboardCheck className="size-5" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Copiar</p>
-                  </TooltipContent>
-                </Tooltip>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Trash2 className='size-5 text-red-500' />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Eliminar</p>
-                  </TooltipContent>
-                </Tooltip>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <SquarePen className="size-5" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    Editar
-                  </TooltipContent>
-                </Tooltip>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </TooltipProvider>
+        <BatchDropdownActions id={row.original.id} name={row.original.name} />
       )
     },
   },

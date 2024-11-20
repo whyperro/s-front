@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export type Role = {
     id: number,
     name: string,
@@ -60,6 +62,14 @@ export type Module = {
   company_id: string,
 }
 
+export type Condition = {
+  id: number,
+  name: string,
+  description: string,
+  registered_by: string,
+  updated_by: string,
+}
+
 export type Company = {
   id: number,
   name: string,
@@ -90,10 +100,9 @@ export type Warehouse = {
 
 export type Batch = {
   id: number,
-  part_number: string,
+  name: string,
   description: string,
   category: string,
-  alternative_part_number: string,
   ata_code: string,
   brand:string,
   is_hazarous: boolean,
@@ -105,7 +114,10 @@ export type Batch = {
 }
 
 export type Article = {
-  article_type: string,
+  id?: number,
+  article_type?: string,
+  part_number: string,
+  alternative_part_number?: string,
   status?: string,
   serial?: string,
   description?: string,
@@ -114,7 +126,8 @@ export type Article = {
   condition?: string,
   weight?: number,
   cost?: number,
-  batches_id?: number,
+  batch?: Batch,
+  batch_id?: number,
   vendor_id?: string,
   certifcate_8130?: File,
   certifcate_vendor?: File,
@@ -131,4 +144,91 @@ export interface ConsumableArticle extends Article {
   fabrication_date?: string,
   component_id?: string,
   consumable_id?: string,
+}
+
+export interface ComponentArticle extends Article {
+  caducate_date?: string,
+  fabrication_date?: string,
+  hour_date?: number,
+  cycle_date?: number,
+  calendar_date?: string,
+  component_id?: number,
+}
+
+export interface ToolArticle extends Article {
+  is_special: boolean,
+}
+
+export type Request = {
+  id: number,
+  justification: string,
+  submission_date: string,
+  work_order?: WorkOrder,
+  requisition_order?: string,
+  article?: Article,
+  requested_by: string,
+  created_by: string,
+}
+
+export type Department = {
+  id: number
+  name: string,
+  email: string,
+}
+
+export type Client = {
+  id: number
+  name: string,
+  email: string,
+}
+
+export type JobTitle = {
+  id: number,
+  name: string,
+  description: string,
+  department: Department,
+}
+
+export type Aircraft = {
+  id: number,
+  client: Client,
+  fabricant: string,
+  brand: string,
+  serial: string,
+  acronym: string,
+  flight_hours: number,
+  cycles: number,
+  fabricant_date: string,
+  owner: string,
+  aircraft_operator: string,
+  type_engine: string,
+  number_engine: string,
+  comments: string,
+}
+
+export type Employee = {
+  id: number,
+  first_name: string,
+  last_name: string,
+  company: string,
+  dni: string,
+  job_title: JobTitle,
+  department: Department,
+  user?: User,
+  location: Location,
+}
+export interface WorkOrder extends Request {
+  order_number: string
+  service: string,
+  aircraft: Aircraft,
+  status: boolean,
+  description: string,
+  employee: Employee,
+}
+
+export interface DispatchRequest extends Request {
+  part_number: string,
+  articles: Article[],
+  destination_place: string,
+  category: string,
 }

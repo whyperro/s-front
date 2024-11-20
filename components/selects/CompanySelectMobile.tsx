@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
-import { useGetUserLocationsByCompanyId } from "@/hooks/useGetUserLocationsByCompanyId";
+import { useGetUserLocationsByCompanyId } from "@/hooks/user/useGetUserLocationsByCompanyId";
 import { useCompanyStore } from "@/stores/CompanyStore";
 import { Company } from "@/types";
 import { Loader2 } from "lucide-react";
@@ -29,7 +29,7 @@ const CompanySelect = () => {
 
   useEffect(() => {
     initFromLocalStorage();
-  }, []);
+  }, [initFromLocalStorage]);
 
 
   useEffect(() => {

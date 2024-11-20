@@ -1,14 +1,14 @@
 'use client'
 
 import { ContentLayout } from '@/components/layout/ContentLayout'
-import { useGetRoles } from '@/hooks/useGetRoles'
+import { useGetRoles } from '@/hooks/user/useGetRoles'
 import React from 'react'
 import { columns } from './columns'
 import { Loader2 } from 'lucide-react'
 import { DataTable } from './data-table'
 
 const RolesPage = () => {
-  const {data: roles, error, isLoading} = useGetRoles();
+  const { data: roles, error, isLoading } = useGetRoles();
   return (
     <ContentLayout title='Roles'>
       <h1 className='text-2xl font-bold'>Listado de Roles</h1>
@@ -28,7 +28,7 @@ const RolesPage = () => {
       }
       {
         roles && (
-          <DataTable columns={columns} data={roles}/>
+          <DataTable columns={columns} data={roles} />
         )
       }
     </ContentLayout>

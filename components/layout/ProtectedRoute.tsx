@@ -18,12 +18,12 @@ const ProtectedRoute = ({ children, roles, permissions, directPermissions }: Pro
   if (loading) return <LoadingPage />;
 
   if (!user) {
-    router.push('/login1');
+    router.push('/login');
     return null;
   }
 
   const userRoles = user.roles?.map(role => role.name) || [];
-  
+
   const userPermissions = user.roles?.flatMap(role => role.permissions.map(permission => permission.name)) || [];
 
   const userDirectPermissions = user.permissions?.map(directPermissions => directPermissions.name) || [];

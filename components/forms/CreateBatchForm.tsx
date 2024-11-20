@@ -1,6 +1,6 @@
 "use client"
 
-import { useCreateBatch } from "@/actions/inventario/lotes/actions"
+import { useCreateBatch } from "@/actions/almacen/inventario/lotes/actions"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -11,18 +11,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useGetWarehousesByUser } from "@/hooks/useGetWarehousesByUser"
+import { useGetWarehousesByUser } from "@/hooks/administracion/useGetWarehousesByUser"
+import { useGetBatchesWithArticlesCount } from "@/hooks/almacen/useGetBatchesWithArticleCount"
+import { batches_categories } from "@/lib/batches_categories"
+import { useCompanyStore } from "@/stores/CompanyStore"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { useForm } from "react-hook-form"
+import { useEffect } from "react"
+import { useForm, useWatch } from "react-hook-form"
 import { z } from "zod"
 import { Checkbox } from "../ui/checkbox"
 import { Textarea } from "../ui/textarea"
-import { batches_categories } from "@/lib/batches_categories"
 
 const FormSchema = z.object({
-  part_number: z.string().min(3, {
-    message: "Debe introducir un número de parte válido."
+  name: z.string().min(3, {
+    message: "Debe introducir un nombre válido."
   }),
   description: z.string({
     message: "Debe introducir una descripcion válida."
@@ -46,16 +49,38 @@ interface FormProps {
 
 export function CreateBatchForm({ onClose }: FormProps) {
 
+
   const { data: warehouses, error, isLoading } = useGetWarehousesByUser();
 
-  const { createBatch } = useCreateBatch()
+  const { createBatch } = useCreateBatch();
+
+  const { selectedStation } = useCompanyStore();
+
+  const { data: batches } = useGetBatchesWithArticlesCount(selectedStation ?? undefined);
+
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       is_hazarous: false,
     },
-  })
+  });
+
+  const { control, setError, clearErrors } = form;
+
+  const name = useWatch({ control, name: 'name' });
+
+  useEffect(() => {
+    const existingBatch = batches?.some(batch => batch.name === name);
+    if (existingBatch) {
+      setError("name", {
+        type: "manual",
+        message: "El numero de parte ya está en existe."
+      });
+    } else {
+      clearErrors("name");
+    }
+  }, [name, batches, clearErrors, setError])
 
 
   const onSubmit = async (data: FormSchemaType) => {
@@ -71,56 +96,40 @@ export function CreateBatchForm({ onClose }: FormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-3 w-full">
-        <FormField
-          control={form.control}
-          name="category"
-          render={({ field }) => (
-            <FormItem className="w-[240px]">
-              <FormLabel>Categoria del Lote</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder={"Seleccione..."} />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {
-                    batches_categories.map((category) => (
-                      <SelectItem key={category.value} value={category.value}>{category.label}</SelectItem>
-                    ))
-                  }
-                </SelectContent>
-              </Select>
-              <FormDescription>Categoria de los articulos del lote.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <div className="flex gap-2">
           <FormField
             control={form.control}
-            name="part_number"
+            name="category"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Número de Parte</FormLabel>
-                <FormControl>
-                  <Input placeholder="EJ: #### - ### - ###" {...field} />
-                </FormControl>
-                <FormDescription>Número identificador.</FormDescription>
+              <FormItem className="w-[240px]">
+                <FormLabel>Categoria del Renglón</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder={"Seleccione..."} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {
+                      batches_categories.map((category) => (
+                        <SelectItem key={category.value} value={category.value}>{category.label}</SelectItem>
+                      ))
+                    }
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name="alternative_part_number"
+            name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Número de Parte Alt.</FormLabel>
+                <FormLabel>Nombre</FormLabel>
                 <FormControl>
-                  <Input placeholder="EJ: #### - ### - ###" {...field} />
+                  <Input placeholder="EJ: Martillos " {...field} />
                 </FormControl>
-                <FormDescription>Número alt. identificador.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -134,7 +143,6 @@ export function CreateBatchForm({ onClose }: FormProps) {
                 <FormControl>
                   <Input placeholder="EJ: ABC123" {...field} />
                 </FormControl>
-                <FormDescription>Código ATA identificador.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -149,7 +157,7 @@ export function CreateBatchForm({ onClose }: FormProps) {
                 <FormItem>
                   <FormLabel>Unidad de medición</FormLabel>
                   <FormControl>
-                    <Input placeholder="EJ: #### - ### - ###" {...field} />
+                    <Input placeholder="EJ: Unidades" {...field} />
                   </FormControl>
                   <FormDescription>Unidad para medir el lote.</FormDescription>
                   <FormMessage />
@@ -163,7 +171,7 @@ export function CreateBatchForm({ onClose }: FormProps) {
                 <FormItem>
                   <FormLabel>Cantidad Mínima</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="EJ: #### - ### - ###" {...field} />
+                    <Input type="number" placeholder="EJ: 5" {...field} />
                   </FormControl>
                   <FormDescription>Cantidad mínima del lote.</FormDescription>
                   <FormMessage />
@@ -206,7 +214,10 @@ export function CreateBatchForm({ onClose }: FormProps) {
                         ))
                       }
                       {
-                        error && <p className="text-sm text-muted-foreground">Ha ocurrido un error al cargar los almacenes...</p>
+                        warehouses && warehouses.length < 1 && <p className="text-xs p-2 text-muted-foreground">No se han encontrado almacenes...</p>
+                      }
+                      {
+                        error && <p className="text-xs p-2 text-muted-foreground">Ha ocurrido un error al cargar los almacenes...</p>
                       }
                     </SelectContent>
                   </Select>
@@ -229,7 +240,7 @@ export function CreateBatchForm({ onClose }: FormProps) {
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel>
-                  ¿El lote contiene articulos peligrosos?
+                  ¿El renglón contiene articulos peligrosos?
                 </FormLabel>
               </div>
             </FormItem>

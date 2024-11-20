@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
-import { useGetUserLocationsByCompanyId } from "@/hooks/useGetUserLocationsByCompanyId";
+import { useGetUserLocationsByCompanyId } from "@/hooks/user/useGetUserLocationsByCompanyId";
 import { useCompanyStore } from "@/stores/CompanyStore";
 import { Company } from "@/types";
 import { Loader2 } from "lucide-react";
@@ -21,7 +21,7 @@ const CompanySelect = () => {
 
   const [stationAddress, setStationAddress] = useState<string | null>(null);
 
-  const { mutate, data: locations, isPending: locationsLoading } = useGetUserLocationsByCompanyId();
+  const { mutate, data: locations, isPending: locationsLoading, isError } = useGetUserLocationsByCompanyId();
 
   const { selectedCompany, selectedStation, setSelectedCompany, setSelectedStation, initFromLocalStorage } = useCompanyStore();
 
@@ -29,7 +29,7 @@ const CompanySelect = () => {
 
   useEffect(() => {
     initFromLocalStorage();
-  }, []);
+  }, [initFromLocalStorage]);
 
 
   useEffect(() => {
@@ -89,11 +89,15 @@ const CompanySelect = () => {
         </SelectTrigger>
         <SelectContent>
           {
-            locationsLoading
-              ? <Loader2 className="size-4 animate-spin" />
-              : locations?.map((location) => (
-                <SelectItem value={location.id.toString()} key={location.cod_iata}>{location.cod_iata}</SelectItem>
-              ))
+            locationsLoading && <Loader2 className="size-4 animate-spin" />
+          }
+          {
+            locations && locations?.map((location) => (
+              <SelectItem value={location.id.toString()} key={location.cod_iata}>{location.cod_iata}</SelectItem>
+            ))
+          }
+          {
+            isError && <p className="p-2 text-xs text-muted-foreground italic">Ha ocurrido un error al cargar las estaciones...</p>
           }
         </SelectContent>
       </Select>

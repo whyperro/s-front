@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/table"
 import { ListRestart } from "lucide-react"
 import { useState } from "react"
-import { useGetRoles } from "@/hooks/useGetRoles"
+import { useGetRoles } from "@/hooks/user/useGetRoles"
 import { Value } from "@radix-ui/react-select"
 import { Role } from "@/types"
 

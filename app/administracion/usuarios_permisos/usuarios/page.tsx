@@ -1,7 +1,7 @@
 'use client'
 
 import { ContentLayout } from '@/components/layout/ContentLayout'
-import { useGetUsers } from '@/hooks/useGetUsers'
+import { useGetUsers } from '@/hooks/user/useGetUsers'
 import { Loader2 } from 'lucide-react';
 import React from 'react'
 import { DataTable } from './data-table';
@@ -9,7 +9,7 @@ import { columns } from './column';
 
 const UsersPage = () => {
 
-  const {data: users, error, isLoading} = useGetUsers();
+  const { data: users, error, isLoading } = useGetUsers();
 
   return (
     <ContentLayout title='Usuarios'>
@@ -29,7 +29,7 @@ const UsersPage = () => {
       }
       {
         users && (
-          <DataTable columns={columns} data={users}/>
+          <DataTable columns={columns} data={users} />
         )
       }
     </ContentLayout>

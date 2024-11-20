@@ -1,13 +1,11 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
-
-import DropdownActions from "@/components/misc/DropdownActions"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Permission } from "@/types"
 import Image from "next/image"
+import PermissionsDropdownActions from "@/components/misc/PermissionsDropdownActions"
 
 export const columns: ColumnDef<Permission>[] = [
   {
@@ -37,19 +35,19 @@ export const columns: ColumnDef<Permission>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Etiqueta" />
     ),
-    cell: ({row}) =>
+    cell: ({ row }) =>
       <>
-          <span className='font-bold'>{row.original.label ?? "N/A"}</span>
+        <span className='font-bold'>{row.original.label ?? "N/A"}</span>
       </>
   },
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Nombre" />
+      <DataTableColumnHeader column={column} title="Nombre" />
     ),
-    cell: ({row}) =>
+    cell: ({ row }) =>
       <>
-          <span className='text-muted-foreground'>{row.original.name.toUpperCase()}</span>
+        <span className='text-muted-foreground flex justify-center'>{row.original.name.toUpperCase()}</span>
       </>
   },
   {
@@ -57,14 +55,13 @@ export const columns: ColumnDef<Permission>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Compañia" />
     ),
-    cell: ({row}) =>
+    cell: ({ row }) =>
       <>
-          {row.original.modules.map((module) => (
-            <div key={module.company.id} className="flex gap-2 items-center">
-              {module.company.description}
-              <Image src={module.company.name === 'TMD' ? "/LOGO_TRD.png" : "/logo.png"} width={100} height={100} alt="logo" className="w-[40px] h-[40px]" />
-            </div>
-          ))}
+        {row.original.modules.map((m) => (
+          <div key={m.company.id} className="flex gap-2 items-center font-medium">
+            {m.company.description}
+          </div>
+        ))}
       </>
   },
   {
@@ -72,11 +69,11 @@ export const columns: ColumnDef<Permission>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Módulo" />
     ),
-    cell: ({row}) =>
+    cell: ({ row }) =>
       <>
-          <span>{row.original.modules.map((module) => (
-            <div key={module.id}>{module.name}</div>
-          ))}</span>
+        <span>{row.original.modules.map((module) => (
+          <div key={module.id}>{module.name}</div>
+        ))}</span>
       </>
   },
   {
@@ -84,7 +81,7 @@ export const columns: ColumnDef<Permission>[] = [
     cell: ({ row }) => {
       const id = row.original.id
       return (
-        <DropdownActions id={id} />
+        <PermissionsDropdownActions id={id} />
       )
     },
   },

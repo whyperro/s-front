@@ -1,14 +1,16 @@
 import {
-  Bookmark,
   Building,
   ClipboardCopy,
+  History,
   LayoutGrid,
   LucideIcon,
   NotebookPen,
   PackageOpen,
+  PackagePlus,
+  PackageSearch,
+  Plane,
   Settings,
   SquarePen,
-  Tag,
   User2
 } from "lucide-react";
 
@@ -109,18 +111,59 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
           ]
         },
         {
+          groupLabel: "General",
+          menus: [
+            {
+              href: "/hangar74/general/inventario",
+              label: "Inventario",
+              active: pathname.includes("/hangar74/general/inventario"),
+              icon: PackageSearch,
+              submenus: []
+            }
+          ]
+        },
+        {
+          groupLabel: "Carga Administrativa",
+          menus: [
+            {
+              href: "",
+              label: "Control de Ingreso",
+              active: pathname.includes("/hangar74/almacen/inventario/ingreso"),
+              icon: PackagePlus,
+              submenus: [
+                {
+                  href: "/hangar74/almacen/ingreso/registrar_ingreso",
+                  label: "Ingreso de Articulo",
+                  active: pathname === "/hangar74/almacen/ingreso/registrar_ingreso"
+                },
+                {
+                  href: "/hangar74/almacen/ingreso/en_transito",
+                  label: "Articulos en Tránsito",
+                  active: pathname === "/hangar74/almacen/ingreso/en_transito"
+                },
+                {
+                  href: "/hangar74/almacen/ingreso/en_recepcion",
+                  label: "Articulos en Recepción",
+                  active: pathname === "/hangar74/almacen/ingreso/en_recepcion"
+                },
+              ]
+            },
+
+          ]
+        },
+        {
           groupLabel: "Almacen",
           menus: [
             {
               href: "",
               label: "Solicitudes",
-              active: pathname.includes("/hangar74/solicitudes"),
+              active: pathname.includes("/hangar74/almacen/solicitudes"),
               icon: ClipboardCopy,
               submenus: [
                 {
-                  href: "/hangar74/almacen/solicitudes/entrada",
-                  label: "Entrada",
-                  active: pathname === "/hangar74/almacen/solicitudes/entrada"
+                  href: "/hangar74/almacen/solicitudes/pendiente",
+                  label: "Pendiente",
+                  active: pathname === "/hangar74/almacen/solicitudes/pendiente"
                 },
                 {
                   href: "/hangar74/almacen/solicitudes/salida",
@@ -139,16 +182,6 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
                   href: "/hangar74/almacen/inventario/gestion",
                   label: "Gestión",
                   active: pathname === "/hangar74/almacen/inventario/gestion" || pathname === "/hangar74/almacen/inventario/gestion/crear",
-                },
-                {
-                  href: "/hangar74/almacen/inventario/en_espera",
-                  label: "En Espera",
-                  active: pathname === "/hangar74/almacen/inventario/en_espera"
-                },
-                {
-                  href: "/hangar74/almacen/inventario/apartado",
-                  label: "Apartado",
-                  active: pathname === "/hangar74/almacen/inventario/apartado"
                 },
                 {
                   href: "/hangar74/almacen/inventario/entregado",
@@ -174,8 +207,20 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
                   active: pathname === "/hangar74/almacen/reportes/inac"
                 },
               ]
-            }
+            },
           ]
+        },
+        {
+          groupLabel: "Compras",
+          menus: [
+            {
+              href: "/hangar74/compras/estatus",
+              label: "Estatus de Compras",
+              active: pathname.includes("/hangar74/estatus"),
+              icon: History,
+              submenus: []
+            },
+          ],
         },
         {
           groupLabel: "Planificación y Mantenimiento",
@@ -183,34 +228,28 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
             {
               href: "/hangar74/planificacion/ordenes_trabajo",
               label: "Ordenes de Trabajo",
-              active: pathname.includes("/hangar74/ordenes_trabajo"),
+              active: pathname.includes("/hangar74/planificacion/ordenes_trabajo"),
               icon: SquarePen,
               submenus: [
                 {
-                  href: "/hangar74/planificacion/ordenes_trabajo/nueva_orden_trabajo",
-                  label: "Registrar Orden",
-                  active: pathname === "/hangar74/planificacion/ordenes_trabajo/nueva_orden_trabajo"
+                  href: "/hangar74/planificacion/ordenes_trabajo/",
+                  label: "Gestionar Ordenes",
+                  active: pathname === "/hangar74/planificacion/ordenes_trabajo"
                 },
-                {
-                  href: "/hangar74/planificacion/ordenes_trabajo/historial",
-                  label: "Historial de Ordenes",
-                  active: pathname === "/hangar74/planificacion/ordenes_trabajo/historial"
-                }
               ]
             },
             {
-              href: "/hangar74/planificacion/trabajadores",
-              label: "Trabajadores",
-              active: pathname.includes("/hangar74/planificacion/trabajadores"),
-              icon: Bookmark,
-              submenus: []
-            },
-            {
-              href: "/hangar74/planificacion/reportes",
-              label: "Reportes",
+              href: "/hangar74/planificacion/aeronaves",
+              label: "Aeronaves",
               active: pathname.includes("/hangar74/planificacion/reportes"),
-              icon: Tag,
-              submenus: []
+              icon: Plane,
+              submenus: [
+                {
+                  href: "/hangar74/planificacion/aeronaves",
+                  label: "Gestión de Aeronaves",
+                  active: pathname === "/hangar74/planificacion/aeronaves"
+                },
+              ]
             }
           ]
         },
@@ -259,14 +298,19 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               icon: Building,
               submenus: [
                 {
-                  href: "/administracion/empresas",
-                  label: "Administrar Empresas",
-                  active: pathname === ("/administracion/empresas")
-                },
-                {
                   href: "/administracion/empresas/almacenes",
                   label: "Administrar Almacenes",
-                  active: pathname === ("/administracion/empresas/almacenes")
+                  active: pathname === ("/administracion/empresas/almacenes"),
+                },
+                {
+                  href: "/administracion/empresas/almacenes/condiciones_articulos",
+                  label: "Administrar Condiciones",
+                  active: pathname === ("/administracion/empresas/almacenes/condiciones_articulos"),
+                },
+                {
+                  href: "/administracion/empresas/empleados",
+                  label: "Administrar Empleados",
+                  active: pathname === ("/administracion/empresas/empleados")
                 },
               ]
             },

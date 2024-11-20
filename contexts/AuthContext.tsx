@@ -1,13 +1,12 @@
 'use client';
 
-import { default as axios, default as axiosInstance } from '@/lib/axios';
+import { default as axiosInstance } from '@/lib/axios';
 import { createCookie } from '@/lib/cookie';
 import { createSession, deleteSession } from '@/lib/session';
 import { useCompanyStore } from '@/stores/CompanyStore';
 import { User } from '@/types';
 import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
-import { DoorOpen } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -26,7 +25,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient();
-  const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -54,14 +52,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
 
   useEffect(() => {
-    if (pathname !== "/" && pathname !== "/login") {
-      userQuery.refetch().then(() => {
-        router.refresh();
-      }).catch(error => {
-        // Manejo de errores
-        console.error("Error al volver a buscar los datos del usuario:", error);
-      });
-    }
+    userQuery.refetch();
+    router.refresh();
   }, []);
 
   const loginMutation = useMutation({
@@ -85,7 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     onError: (err: any) => {
       setError(err.message);
       toast.error('Oops!', {
-        description: '¡Estamos en construcción!',
+        description: '¡Ha ocurrido un error al iniciar sesion!',
         position: 'bottom-center'
       })
     },
@@ -93,14 +85,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     try {
-      await deleteSession();
       await localStorage.clear();
-      await reset();
+      await deleteSession();
       await setUser(null);
       toast.success('¡Sesión cerrada!', {
         position: "bottom-center"
       })
       router.push('/');
+      await reset();
       queryClient.clear();
     } catch (error) {
       console.error('Error during logout:', error);

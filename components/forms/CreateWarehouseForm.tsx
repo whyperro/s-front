@@ -17,15 +17,15 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import { useCreateWarehouse } from "@/actions/almacen/almacenes/actions"
 import { Input } from "@/components/ui/input"
-import { useGetCompaniesWithWarehouses } from "@/hooks/useGetCompaniesWithWarehouses"
-import { useGetLocationsByCompanyId } from "@/hooks/useGetLocationsByCompanyId"
+import { useGetCompaniesWithWarehouses } from "@/hooks/administracion/useGetCompaniesWithWarehouses"
+import { useGetLocationsByCompanyId } from "@/hooks/administracion/useGetLocationsByCompanyId"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { useCreateWarehouse } from "@/actions/almacenes/actions"
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -40,11 +40,11 @@ const formSchema = z.object({
 
 const CreateWarehouseForm = () => {
 
-  const {data: companies, isLoading, error} = useGetCompaniesWithWarehouses();
+  const { data: companies, isLoading, error } = useGetCompaniesWithWarehouses();
 
   const { mutate: fetchLocations, data: locations, isPending } = useGetLocationsByCompanyId();
 
-  const {createWarehouse} = useCreateWarehouse()
+  const { createWarehouse } = useCreateWarehouse()
 
   const [companyId, setCompanyId] = useState<number>();
 
@@ -139,9 +139,9 @@ const CreateWarehouseForm = () => {
                   {
                     isPending ? <Loader2 className="size-4 animate-spin" />
                       :
-                    locations && locations.map((location) => (
-                      <SelectItem key={location.cod_iata} value={location.id.toString()}>{location.cod_iata} - {location.type}</SelectItem>
-                    ))
+                      locations && locations.map((location) => (
+                        <SelectItem key={location.cod_iata} value={location.id.toString()}>{location.cod_iata} - {location.type}</SelectItem>
+                      ))
                   }
                 </SelectContent>
               </Select>
@@ -153,8 +153,8 @@ const CreateWarehouseForm = () => {
           )}
         />
         <Button className="bg-primary mt-2 text-white hover:bg-blue-900 disabled:bg-primary/70" disabled={createWarehouse?.isPending} type="submit">
-        {createWarehouse?.isPending ? <Loader2 className="size-4 animate-spin" />: <p>Crear Almácen</p>}
-      </Button>
+          {createWarehouse?.isPending ? <Loader2 className="size-4 animate-spin" /> : <p>Crear Almácen</p>}
+        </Button>
       </form>
     </Form>
   )

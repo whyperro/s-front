@@ -1,5 +1,5 @@
 'use client';
-import { useCreateRole } from "@/actions/roles/actions";
+import { useCreateRole } from "@/actions/administracion/roles/actions";
 import {
   Form,
   FormControl,
@@ -23,8 +23,9 @@ import {
   TabsList,
   TabsTrigger
 } from "@/components/ui/tabs";
-import { useGetCompanies } from "@/hooks/useGetCompanies";
-import { useGetModulesByCompanyId } from "@/hooks/useGetModulesByCompanyId";
+import { useGetCompanies } from "@/hooks/administracion/useGetCompanies";
+import { useGetModulesByCompanyId } from "@/hooks/administracion/useGetModulesByCompanyId";
+import { useGetPermissions } from "@/hooks/user/useGetPermissions";
 import { Company, Module } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader, Loader2 } from "lucide-react";
@@ -32,7 +33,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
-import { useGetPermissions } from "@/hooks/useGetPermissions";
 import { Checkbox } from "../ui/checkbox";
 
 const formSchema = z.object({
@@ -57,9 +57,9 @@ export default function CreateRoleForm({ onClose }: FormProps) {
 
   const { createRole } = useCreateRole();
 
-  const { data: companies, isLoading } = useGetCompanies();
+  const { data: companies, isLoading, isError: isCompaniesError } = useGetCompanies();
 
-  const { data: permissions, isLoading: isPermissionLoading } = useGetPermissions();
+  const { data: permissions, isLoading: isPermissionLoading, isError: isPermissionError } = useGetPermissions();
 
   const { mutate: fetchModules, data: modules, isPending } = useGetModulesByCompanyId();
 
@@ -150,6 +150,9 @@ export default function CreateRoleForm({ onClose }: FormProps) {
                       </SelectItem>
                     ))
                   }
+                  {
+                    isCompaniesError && <p className="text-muted-foreground text-center text-sm">Ha ocurrido un error al cargar las compañías...</p>
+                  }
                 </SelectContent>
               </Select>
               <FormDescription>
@@ -179,6 +182,9 @@ export default function CreateRoleForm({ onClose }: FormProps) {
                         {selectedModule && (
                           <TabsContent value={selectedModule.name}>
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+                              {
+                                isPermissionLoading && <Loader2 className="size-4 animate-spin" />
+                              }
                               {permissions?.filter(permission =>
                                 permission.modules.some(mod => mod.id === selectedModule.id)
                               ).map(permission => (
@@ -199,6 +205,9 @@ export default function CreateRoleForm({ onClose }: FormProps) {
                                   <label className='text-sm text-center' htmlFor={permission.name}>{permission.label}</label>
                                 </div>
                               ))}
+                              {
+                                isPermissionError && <p className="text-sm text-muted-foreground text-center">Ha ocurrido un error al cargar los permisos...</p>
+                              }
                             </div>
                           </TabsContent>
                         )}

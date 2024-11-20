@@ -77,7 +77,6 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center py-4">
         <div className="flex gap-x-2 items-center">
           <CreateBatchDialog />
-          <Button onClick={() => router.push('/hangar74/almacen/inventario/gestion/crear')} variant={'outline'} className="flex items-center justify-center gap-2 h-8 border-dashed">Crear Articulo</Button>
         </div>
         <DataTableViewOptions table={table} />
       </div>

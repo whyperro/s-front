@@ -6,10 +6,13 @@ import { redirect } from 'next/navigation'
 
 const key = new TextEncoder().encode(process.env.SECRET_KEY_JWT)
 
+if (!process.env.SECRET_KEY_JWT) {
+    throw new Error('SECRET_KEY_JWT no está configurado en las variables de entorno')
+}
+
 const cookieConfig = {
     name: "session",
     options: {
-        secure: true,
         httpOnly: true,
         sameSite: 'lax',
         path: "/",
@@ -40,7 +43,7 @@ export async function decryptJWT(session: string | undefined = '') {
       })
       return payload
     } catch (error) {
-      console.log('Failed to verify session')
+      console.log('Failed to verify session: ', error)
     }
   }
 
@@ -59,15 +62,11 @@ export async function createSession(userId: string) {
 
 // Función para verificar la sesión
 export async function verifySession() {
-
     const cookie = cookies().get(cookieConfig.name)?.value
-
     const session = await decryptJWT(cookie)
-
     if(!session?.userId) {
         redirect('/login')
     }
-
     return { userId: session.userId }
 }
 
