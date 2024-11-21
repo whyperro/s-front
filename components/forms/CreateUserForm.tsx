@@ -380,25 +380,35 @@ export function CreateUserForm() {
                                     <FormControl>
                                       <Checkbox
                                         checked={currentValue.includes(Number(location.id))}
-                                        onCheckedChange={(checked) => {
+                                        onCheckedChange={(checked: boolean) => {
                                           const newValue = checked
                                             ? [...currentValue, Number(location.id)]
                                             : currentValue.filter((id) => id !== Number(location.id));
 
                                           locationField.onChange(newValue);
 
-                                          // Asegúrate de que el companyID esté en el objeto correspondiente
+                                          // Obtener valores actuales del formulario
                                           const formValues = form.getValues("companies_locations");
+
+                                          // Asegúrate de que el índice existe antes de manipularlo
+                                          if (!formValues[index]) {
+                                            formValues[index] = { companyID: company.company_id, locationID: [] };
+                                          }
+
+                                          // Actualizar o eliminar según sea necesario
                                           if (newValue.length === 0) {
-                                            formValues!.splice(index, 1);
+                                            formValues.splice(index, 1);
                                           } else {
-                                            formValues![index] = {
+                                            formValues[index] = {
                                               companyID: company.company_id,
                                               locationID: newValue,
                                             };
                                           }
+
+                                          // Actualiza el estado del formulario
                                           form.setValue("companies_locations", formValues);
 
+                                          // Debug
                                           console.log(form.getValues("companies_locations"));
                                         }}
                                       />
