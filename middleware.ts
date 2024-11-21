@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { decryptJWT } from "./lib/session";
 
 export default async function middleware(req: NextRequest) {
   // Rutas protegidas
@@ -21,7 +20,7 @@ export default async function middleware(req: NextRequest) {
       // Si no hay cookie, redirige al login
       return NextResponse.redirect(new URL('/login', req.nextUrl));
     }
-    
+
   }
 
   return NextResponse.next();
