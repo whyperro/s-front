@@ -28,7 +28,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { Control, useForm, UseFormReturn, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { Badge } from "../ui/badge";
 import { Checkbox } from "../ui/checkbox";
@@ -65,6 +65,18 @@ const FormSchema = z.object({
 
 type FormSchemaType = z.infer<typeof FormSchema>
 
+interface Location {
+  id: number;
+  cod_iata: string;
+  type: string;
+}
+interface LocationCheckboxProps {
+  location: Location;
+  companyIndex: number;
+  companyId: number;
+  field: { value: any; onChange: (value: any) => void };
+  form: UseFormReturn<any>;
+}
 
 
 export function CreateUserForm() {
@@ -122,7 +134,7 @@ export function CreateUserForm() {
     return () => {
       clearTimeout(handler);
     };
-  }, [firstName, lastName, clearErrors, setError,users]);
+  }, [firstName, lastName, clearErrors, setError, users]);
 
   useEffect(() => {
     if (debouncedUsername) {
@@ -175,6 +187,59 @@ export function CreateUserForm() {
   };
 
   const isRoleSelected = (value: string) => selectedRoles.includes(value);
+
+
+  const LocationCheckbox: React.FC<LocationCheckboxProps> = ({
+    location,
+    companyIndex,
+    companyId,
+    field,
+    form,
+  }) => {
+    const handleCheckboxChange = (checked: boolean) => {
+      const currentValue: number[] = field.value || [];
+      const updatedLocations = checked
+        ? [...currentValue, location.id]
+        : currentValue.filter((id) => id !== location.id);
+
+      // Update the specific company_locations entry
+      const updatedCompaniesLocations = [...(form.getValues("companies_locations") || [])];
+      if (updatedLocations.length === 0) {
+        updatedCompaniesLocations.splice(companyIndex, 1);
+      } else {
+        updatedCompaniesLocations[companyIndex] = {
+          companyID: companyId,
+          locationID: updatedLocations,
+        };
+      }
+
+      // Update the form state
+      form.setValue("companies_locations", updatedCompaniesLocations);
+
+      console.log("Updated companies_locations:", updatedCompaniesLocations);
+    };
+
+    return (
+      <FormField
+        key={location.id}
+        control={form.control as Control<any>}
+        name={`companies_locations.${companyIndex}.locationID`}
+        render={({ field: locationField }) => (
+          <FormItem className="flex flex-row items-start justify-center gap-1 space-y-0">
+            <FormControl>
+              <Checkbox
+                checked={field.value?.includes(location.id) || false}
+                onCheckedChange={handleCheckboxChange}
+              />
+            </FormControl>
+            <FormLabel className="font-normal">
+              {location.cod_iata} - {location.type}
+            </FormLabel>
+          </FormItem>
+        )}
+      />
+    );
+  };
 
   return (
     <Form {...form}>
@@ -346,80 +411,53 @@ export function CreateUserForm() {
                   <div className="flex gap-2 items-center justify-center">
                     <Tabs defaultValue="account">
                       <TabsList className="grid w-full grid-cols-2">
-                        {
-                          isCompaniesLoading && <Loader2 className="size-4 animate-spin" />
-                        }
+                        {isCompaniesLoading && <Loader2 className="size-4 animate-spin" />}
                         {companies?.map((company) => (
                           <TabsTrigger value={company.id.toString()} key={company.id}>
                             {company.name}
                           </TabsTrigger>
                         ))}
-                        {
-                          companiesError && <p>Ha ocurrido un error al cargar las compañías...</p>
-                        }
+                        {companiesError && (
+                          <p>Ha ocurrido un error al cargar las compañías...</p>
+                        )}
                       </TabsList>
-                      {
-                        companies_locationsLoading && (
-                          <div className="w-full flex justify-center">
-                            <Loader2 className="size-4 animate-spin" />
-                          </div>
-                        )
-                      }
+
+                      {companies_locationsLoading && (
+                        <div className="w-full flex justify-center">
+                          <Loader2 className="size-4 animate-spin" />
+                        </div>
+                      )}
+
                       {companies_locations?.map((company, index) => (
-                        <TabsContent className="flex gap-2 justify-center flex-wrap" value={company.company_id.toString()} key={company.company_id}>
+                        <TabsContent
+                          className="flex gap-2 justify-center flex-wrap"
+                          value={company.company_id.toString()}
+                          key={company.company_id}
+                        >
                           {company.locations.map((location) => (
-                            <FormField
+                            <LocationCheckbox
                               key={location.id}
-                              control={form.control}
-                              name={`companies_locations.${index}.locationID`}
-                              render={({ field: locationField }) => {
-                                const currentValue = locationField.value || [];
-                                return (
-                                  <FormItem className="flex flex-row items-start justify-center gap-1 space-y-0">
-                                    <FormControl>
-                                      <Checkbox
-                                        checked={currentValue.includes(Number(location.id))}
-                                        onCheckedChange={(checked) => {
-                                          const newValue = checked
-                                            ? [...currentValue, Number(location.id)]
-                                            : currentValue.filter((id) => id !== Number(location.id));
-
-                                          locationField.onChange(newValue);
-
-                                          // Asegúrate de que el companyID esté en el objeto correspondiente
-                                          const formValues = form.getValues("companies_locations");
-                                          if (newValue.length === 0) {
-                                            formValues!.splice(index, 1);
-                                          } else {
-                                            formValues![index] = {
-                                              companyID: company.company_id,
-                                              locationID: newValue,
-                                            };
-                                          }
-                                          form.setValue("companies_locations", formValues);
-
-                                          console.log(form.getValues("companies_locations"));
-                                        }}
-                                      />
-                                    </FormControl>
-                                    <FormLabel className="font-normal">
-                                      {location.cod_iata} - {location.type}
-                                    </FormLabel>
-                                  </FormItem>
-                                );
-                              }}
+                              location={location}
+                              companyIndex={index}
+                              companyId={company.company_id}
+                              field={field}
+                              form={form}
                             />
                           ))}
                         </TabsContent>
                       ))}
-                      {
-                        companies_locationsError && <p className="text-muted-foreground text-center text-sm">Ha ocurrido un error al cargar las ubicaciones...</p>
-                      }
+
+                      {companies_locationsError && (
+                        <p className="text-muted-foreground text-center text-sm">
+                          Ha ocurrido un error al cargar las ubicaciones...
+                        </p>
+                      )}
                     </Tabs>
                   </div>
                 </FormItem>
               )}
             />
+
           </div>
         </div>
         <FormField
