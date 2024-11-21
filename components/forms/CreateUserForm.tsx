@@ -391,15 +391,15 @@ export function CreateUserForm() {
                                           const formValues = form.getValues("companies_locations");
 
                                           // Asegúrate de que el índice existe antes de manipularlo
-                                          if (!formValues[index]) {
-                                            formValues[index] = { companyID: company.company_id, locationID: [] };
+                                          if (!formValues![index]) {
+                                            formValues![index] = { companyID: company.company_id, locationID: [] };
                                           }
 
                                           // Actualizar o eliminar según sea necesario
                                           if (newValue.length === 0) {
-                                            formValues.splice(index, 1);
+                                            formValues!.splice(index, 1);
                                           } else {
-                                            formValues[index] = {
+                                            formValues![index] = {
                                               companyID: company.company_id,
                                               locationID: newValue,
                                             };
