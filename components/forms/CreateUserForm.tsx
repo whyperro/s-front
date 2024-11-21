@@ -161,14 +161,9 @@ export function CreateUserForm() {
         // Convertir roles de string a number
         const rolesAsNumbers = data.roles.map(role => Number(role));
 
-        const companies_locations = data.companies_locations!.filter(
-          (item) => item.locationID.length > 0
-        );
-
         // Crear una copia de los datos con los roles convertidos
         const formattedData = {
           ...data,
-          companies_locations: companies_locations,
           roles: rolesAsNumbers
         };
 

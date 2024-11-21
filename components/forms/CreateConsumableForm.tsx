@@ -152,7 +152,7 @@ const CreateConsumableForm = () => {
             name="part_number"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Serial</FormLabel>
+                <FormLabel>Numero de Parte</FormLabel>
                 <FormControl>
                   <Input placeholder="EJ: 234ABAC" {...field} />
                 </FormControl>
