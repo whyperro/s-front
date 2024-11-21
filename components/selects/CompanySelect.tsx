@@ -17,8 +17,6 @@ const CompanySelect = () => {
 
   const { user, loading: userLoading } = useAuth();
 
-  const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
-
   const [stationAddress, setStationAddress] = useState<string | null>(null);
 
   const { mutate, data: locations, isPending: locationsLoading, isError } = useGetUserLocationsByCompanyId();
@@ -71,7 +69,7 @@ const CompanySelect = () => {
   };
 
   return (
-    <div className="hidden items-center space-x-2 justify-center md:flex md:flex-1">
+    <div className="items-center space-x-2 justify-center md:flex-row md:flex-1 flex flex-col">
       <Select onValueChange={handleCompanySelect}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder={selectedCompany ? `${selectedCompany[0].toUpperCase() + selectedCompany.slice(1)}` : 'Empresa'} />
