@@ -381,35 +381,44 @@ export function CreateUserForm() {
                                       <Checkbox
                                         checked={currentValue.includes(Number(location.id))}
                                         onCheckedChange={(checked: boolean) => {
-                                          const newValue = checked
-                                            ? [...currentValue, Number(location.id)]
-                                            : currentValue.filter((id) => id !== Number(location.id));
+                                          // Obtiene los valores actuales del formulario
+                                          const formValues = form.getValues("companies_locations") || [];
 
-                                          locationField.onChange(newValue);
+                                          // Busca si ya existe la compañía en el array
+                                          const existingCompanyIndex = formValues.findIndex(
+                                            (item) => item.companyID === company.company_id
+                                          );
 
-                                          // Obtener valores actuales del formulario
-                                          const formValues = form.getValues("companies_locations");
-
-                                          // Asegúrate de que el índice existe antes de manipularlo
-                                          if (!formValues![index]) {
-                                            formValues![index] = { companyID: company.company_id, locationID: [] };
+                                          // Si no existe, inicializa un nuevo objeto para esta compañía
+                                          if (existingCompanyIndex === -1) {
+                                            formValues.push({
+                                              companyID: company.company_id,
+                                              locationID: [],
+                                            });
                                           }
 
-                                          // Actualizar o eliminar según sea necesario
-                                          if (newValue.length === 0) {
-                                            formValues!.splice(index, 1);
-                                          } else {
-                                            formValues![index] = {
-                                              companyID: company.company_id,
-                                              locationID: newValue,
-                                            };
+                                          // Actualiza la compañía existente o recién creada
+                                          const updatedCompany = formValues.find(
+                                            (item) => item.companyID === company.company_id
+                                          );
+
+                                          if (updatedCompany) {
+                                            // Actualiza las ubicaciones (agregar o quitar)
+                                            updatedCompany.locationID = checked
+                                              ? [...(updatedCompany.locationID || []), Number(location.id)]
+                                              : updatedCompany.locationID.filter((id) => id !== Number(location.id));
+
+                                            // Si no quedan ubicaciones seleccionadas, elimina la compañía del array
+                                            if (updatedCompany.locationID.length === 0) {
+                                              formValues.splice(existingCompanyIndex, 1);
+                                            }
                                           }
 
                                           // Actualiza el estado del formulario
                                           form.setValue("companies_locations", formValues);
 
-                                          // Debug
-                                          console.log(form.getValues("companies_locations"));
+                                          // Debug para verificar el resultado
+                                          console.log("companies_locations:", form.getValues("companies_locations"));
                                         }}
                                       />
                                     </FormControl>
