@@ -33,7 +33,7 @@ export function SheetMenu() {
             variant="link"
             asChild
           >
-            <Link href="/dashboard" className="flex items-center gap-2">
+            <Link href={selectedCompany === "hangar 74" ? "/hangar74/dashboard" : "/transmandu/dashboard"} className="flex items-center gap-2">
               <Image src={'/logo.png'} width={150} height={150} alt="Logo" />
             </Link>
           </Button>
