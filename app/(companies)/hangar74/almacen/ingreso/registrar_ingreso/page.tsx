@@ -4,7 +4,7 @@ import { ContentLayout } from "@/components/layout/ContentLayout"
 const AgregarPage = () => {
 
   return (
-    <ContentLayout title='TEST DE AGREGADO'>
+    <ContentLayout title='Registro de Articulo'>
       <RegisterArticleForm isEditing={false} />
     </ContentLayout>
   )

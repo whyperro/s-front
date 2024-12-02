@@ -15,7 +15,7 @@ interface IArticleInTransit {
   description?: string,
   brand?: string,
   condition?: string,
-  image?: File,
+  image?: File | string,
 }
 
 
@@ -85,7 +85,7 @@ export const columns: ColumnDef<IArticleInTransit>[] = [
       <DataTableColumnHeader filter column={column} title="Serial" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground italic">{row.original.serial}</p>
+      <p className="flex justify-center text-muted-foreground italic">{row.original.serial ?? "N/A"}</p>
     )
   },
   {

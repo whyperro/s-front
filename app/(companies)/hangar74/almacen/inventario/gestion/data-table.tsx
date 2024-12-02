@@ -12,11 +12,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 
-import { DataTableFacetedFilter } from "@/components/tables/DataTableFacetedFilter"
+import { CreateBatchDialog } from "@/components/dialogs/CreateBatchDialog"
 import { DataTablePagination } from "@/components/tables/DataTablePagination"
 import { DataTableViewOptions } from "@/components/tables/DataTableViewOptions"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -25,11 +23,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ListRestart, PlusCircle } from "lucide-react"
-import Link from "next/link"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { CreateBatchDialog } from "@/components/dialogs/CreateBatchDialog"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]

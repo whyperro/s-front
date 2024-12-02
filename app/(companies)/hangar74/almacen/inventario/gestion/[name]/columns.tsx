@@ -52,12 +52,12 @@ export const columns: ColumnDef<IArticleByBatch>[] = [
           <Tooltip>
             <TooltipTrigger className="w-full flex justify-center">
               <p className="font-medium italic text-center">
-                {row.original.serial}
+                {row.original.serial ?? "N/A"}
               </p>
             </TooltipTrigger>
             <TooltipContent>
               {imageUrl ? (
-                <Image src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/${imageUrl}`} alt={`Imagen del artículo ${row.original.serial}`} className="max-w-xs max-h-48" width={75} height={75} />
+                <Image src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${imageUrl}`} alt={`Imagen del artículo ${row.original.serial}`} className="max-w-xs max-h-48" width={75} height={75} />
               ) : (
                 <p>No hay imagen disponible</p>
               )}
@@ -102,6 +102,24 @@ export const columns: ColumnDef<IArticleByBatch>[] = [
     cell: ({ row }) => (
       <p className="flex justify-center text-muted-foreground italic">{row.original.brand}</p>
     )
+  },
+  {
+    accessorKey: "quantity",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Cantidad" />
+    ),
+    cell: ({ row }) => {
+      const { article_type, quantity, consumable } = row.original;
+
+      return (
+        <div className="flex justify-center">
+          <Badge className={quantity <= 0 ? "bg-yellow-400" : "bg-green-500"}>
+            {quantity} {`${consumable?.convertions[0]?.unit?.label ?? "N/A"}`}
+          </Badge>
+        </div>
+      );
+    },
+    enableHiding: true, // Permite ocultar esta columna si no aplica.
   },
   {
     accessorKey: "status",

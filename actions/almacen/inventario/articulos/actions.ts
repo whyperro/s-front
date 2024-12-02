@@ -115,13 +115,18 @@ export const useConfirmIncomingArticle = () => {
         batches_id: string,
         is_special?: boolean,
         status: string,
-        certificate_8130?: File,
-        certificate_fabricant?: File,
-        certificate_vendor?: File,
-        image?: File,
+        certificate_8130?: File | string,
+        certificate_fabricant?: File | string,
+        certificate_vendor?: File | string,
+        image?: File | string,
       }) => {
-          await axiosInstance.put(`/hangar74/update-article-warehouse/${values.id}`, {
+          await axiosInstance.post(`/hangar74/update-article-warehouse/${values.id}`, {
             ...values
+          },
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            }
           })
         },
       onSuccess: () => {
@@ -142,6 +147,6 @@ export const useConfirmIncomingArticle = () => {
       }
   )
   return {
-    confirmIncoming: confirmIncomingArticleMutation,
+  confirmIncoming: confirmIncomingArticleMutation,
   }
 }

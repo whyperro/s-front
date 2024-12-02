@@ -26,7 +26,7 @@ const handleDownload = async (url: string) => {
   const fileUrl = url;
   try {
     const response = await axiosInstance.get(`/hangar74/articles/certificates/${fileUrl}`, {
-      responseType: 'blob', // Necesario para manejar la descarga de archivos
+      responseType: 'blob', // Necesario para manejar la descarga de archivos 
     });
     // Crear una URL para el blob y hacer que el navegador lo descargue
     const url = window.URL.createObjectURL(new Blob([response.data]));

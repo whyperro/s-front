@@ -126,24 +126,21 @@ export type Article = {
   condition?: string,
   weight?: number,
   cost?: number,
-  batch?: Batch,
+  quantity?: number,
+  batches?: Batch,
   batch_id?: number,
   vendor_id?: string,
-  certifcate_8130?: File,
-  certifcate_vendor?: File,
-  certifcate_fabricant?: File,
-  image?: File,
+  certifcate_8130?: File|string,
+  certifcate_vendor?: File|string,
+  certifcate_fabricant?: File|string,
+  image?:File| string,
 }
 
 export interface ConsumableArticle extends Article {
   is_managed?: boolean,
   quantity?: number,
-  magnitude?: number,
-  unit_mesassure?: number,
   caducate_date?: string,
   fabrication_date?: string,
-  component_id?: string,
-  consumable_id?: string,
 }
 
 export interface ComponentArticle extends Article {
@@ -231,4 +228,40 @@ export interface DispatchRequest extends Request {
   articles: Article[],
   destination_place: string,
   category: string,
+}
+
+export type Unit = {
+  id: number,
+  value: string,
+  label: string,
+  updated_by: string,
+  registered_by: string,
+
+  created_at: Date,
+  updated_at: Date,
+}
+
+export type Convertion = {
+  id: number,
+  secondary_unit: string,
+  convertion_rate: number,
+  unit: Unit,
+  quantity_unit: number,
+  updated_by: string,
+  registered_by: string,
+
+  created_at: Date,
+  updated_at: Date,
+}
+
+export type ToolBox = {
+  id: number,
+  name: string,
+  created_by: string,
+  delivered_by: string,
+  employee: Employee,
+  tool: {
+    serial: string,
+    article: ToolArticle,
+  }[],
 }

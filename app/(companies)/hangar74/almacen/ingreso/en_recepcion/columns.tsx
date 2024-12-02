@@ -60,7 +60,7 @@ export const columns: ColumnDef<Article>[] = [
       <DataTableColumnHeader filter column={column} title="Serial" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground italic">{row.original.serial}</p>
+      <p className="flex justify-center text-muted-foreground italic">{row.original.serial ?? "N/A"}</p>
     )
   },
   {

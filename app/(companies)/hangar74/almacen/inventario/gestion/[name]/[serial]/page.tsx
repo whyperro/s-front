@@ -3,7 +3,6 @@
 import ChildrenInfoCard from '@/components/cards/ChildrenInfoCard';
 import CertificatesDialog from '@/components/dialogs/CertificatesDialog';
 import { ContentLayout } from '@/components/layout/ContentLayout';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from '@/components/ui/checkbox';

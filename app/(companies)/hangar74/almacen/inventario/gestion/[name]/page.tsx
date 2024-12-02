@@ -23,7 +23,6 @@ const BatchDetailPage = () => {
     }
   }, [selectedStation, mutate])
 
-
   return (
     <ContentLayout title='Inventario'>
       <div className='flex flex-col gap-y-2'>

@@ -27,6 +27,26 @@ interface EditingArticle extends Article {
       fabrication_date: string,
     }
   },
+  consumable?: {
+    article_id: number,
+    is_managed: boolean,
+    quantity: number,
+    convertions: {
+      id: number,
+      secondary_unit: string,
+      convertion_rate: number,
+      quantity_unit: number,
+      unit: {
+        label: string,
+        value: string,
+      },
+    }[],
+    shell_time: {
+      caducate_date: Date,
+      fabrication_date: Date,
+      consumable_id: string,
+    }
+  }
 }
 
 interface IRegisterArticleProps {
@@ -58,7 +78,7 @@ const RegisterArticleForm = ({ isEditing = false, initialData }: IRegisterArticl
         </SelectContent>
       </Select>
       {
-        type === 'consumible' && <CreateConsumableForm />
+        type === 'consumible' && <CreateConsumableForm isEditing={isEditing} initialData={initialData} />
       }
       {
         type === 'herramienta' && <CreateToolForm isEditing={isEditing} initialData={initialData} />

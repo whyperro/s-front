@@ -13,7 +13,7 @@ interface IDispatchRequestAction{
   category: string,
   articles: {
     article_id: number,
-    quantity: number,
+    quantity?: number,
     serial?: string | null,
   }[],
   user_id: number,

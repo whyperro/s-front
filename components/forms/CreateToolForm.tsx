@@ -124,6 +124,7 @@ const CreateToolForm = ({ initialData, isEditing }: {
       description: initialData?.description || "",
       is_special: initialData?.tool?.isSpecial || false,
       zone: initialData?.zone || "",
+      cost: initialData && initialData?.cost?.toString() || "",
     }
   })
   form.setValue("article_type", "herramienta");
@@ -148,6 +149,7 @@ const CreateToolForm = ({ initialData, isEditing }: {
     }
   }
 
+  console.log(form.watch("image"))
   return (
     <Form {...form}>
       <form encType="multipart/form-data" className="flex flex-col gap-4 max-w-6xl mx-auto" onSubmit={form.handleSubmit(onSubmit)}>
@@ -380,6 +382,9 @@ const CreateToolForm = ({ initialData, isEditing }: {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Imágen del Articulo</FormLabel>
+                  {
+                    initialData && <Image src={`data:image/png;base64,${initialData.image!.toString()}`} width={100} height={100} alt="Imagen defecto" />
+                  }
                   <FormControl>
                     <div className="relative h-10 w-full ">
                       <FileUpIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 z-10" />
