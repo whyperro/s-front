@@ -42,7 +42,7 @@ const formSchema = z.object({
   company: z.string(),
   permissions: z.array(z.number()).refine((value) => value.some((item) => item), {
     message: "Debe seleccionar al menos un permiso.",
-  }),
+  }).optional(),
 })
 
 interface FormProps {
@@ -194,7 +194,7 @@ export default function CreateRoleForm({ onClose }: FormProps) {
                                     value={permission.id}
                                     onCheckedChange={(checked) => {
                                       return checked
-                                        ? field.onChange([...field.value, permission.id])
+                                        ? field.onChange([...field.value!, permission.id])
                                         : field.onChange(
                                           field.value?.filter(
                                             (value) => value !== permission.id
