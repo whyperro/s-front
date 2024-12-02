@@ -40,9 +40,7 @@ const formSchema = z.object({
     message: "El nombre debe tener al menos 3 carácters.",
   }),
   company: z.string(),
-  permissions: z.array(z.number()).refine((value) => value.some((item) => item), {
-    message: "Debe seleccionar al menos un permiso.",
-  }).optional(),
+  permissions: z.array(z.number()).optional(),
 })
 
 interface FormProps {
