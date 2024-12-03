@@ -26,7 +26,7 @@ const handleDownload = async (url: string) => {
   const fileUrl = url;
   try {
     const response = await axiosInstance.get(`/hangar74/articles/certificates/${fileUrl}`, {
-      responseType: 'blob', // Necesario para manejar la descarga de archivos 
+      responseType: 'blob', // Necesario para manejar la descarga de archivos
     });
     // Crear una URL para el blob y hacer que el navegador lo descargue
     const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -61,7 +61,7 @@ const CertificatesDialog = ({ certificates, serial }: DialogProps) => {
               {
                 certificates && certificates.map(certificate => (
                   <div onClick={() => handleDownload(certificate)} className="w-[200px] group cursor-pointer" key={certificate}>
-                    <Badge className="flex gap-2 items-center group-hover:bg-white group-hover:border-black group-hover:text-black"><FileDown className="group-hover:animate-pulse" /> {certificate?.includes("8130") ? "Certificado - 8139" : certificate?.includes("vendor") ? "Certificado - Vendedor" : "Certificado - Fabricante"}</Badge>
+                    <Badge className="flex gap-2 items-center group-hover:bg-white group-hover:border-black group-hover:text-black"><FileDown className="group-hover:animate-pulse" /> {certificate?.includes("8130") ? "Certificado - 8130" : certificate?.includes("vendor") ? "Certificado - Vendedor" : "Certificado - Fabricante"}</Badge>
                   </div>
                 ))
               }

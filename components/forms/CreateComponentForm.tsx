@@ -191,9 +191,9 @@ const CreateComponentForm = ({ initialData, isEditing }: {
       confirmIncoming.mutate({
         ...values,
         id: initialData?.id,
-        certificate_8130: initialData?.certifcate_8130,
-        certificate_fabricant: initialData?.certifcate_fabricant,
-        certificate_vendor: initialData?.certifcate_vendor,
+        certificate_8130: values.certificate_8130 || initialData?.certifcate_8130,
+        certificate_fabricant: values.certificate_fabricant || initialData?.certifcate_fabricant,
+        certificate_vendor: values.certificate_vendor || initialData?.certifcate_vendor,
         status: "Stored"
       })
     } else {
