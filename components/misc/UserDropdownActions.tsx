@@ -31,7 +31,7 @@ import { useDeleteUser } from "@/actions/administracion/usuarios/actions"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { useState } from "react"
 
-const UserDropdownActions = ({ id, companies }: { id: number, companies: { id: number, name: string }[] }) => {
+const UserDropdownActions = ({ id, companies }: { id: number | string, companies: { id: number, name: string }[] }) => {
 
   const [open, setOpen] = useState<boolean>(false)
 
@@ -39,7 +39,7 @@ const UserDropdownActions = ({ id, companies }: { id: number, companies: { id: n
 
   const { deleteUser } = useDeleteUser()
 
-  const handleDelete = async (id: number, companies: { id: number, name: string }[]) => {
+  const handleDelete = async (id: number | string, companies: { id: number, name: string }[]) => {
     await deleteUser.mutateAsync({ id, companies });
     setOpen(false);
   }
