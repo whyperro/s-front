@@ -3,11 +3,11 @@
 import { ContentLayout } from '@/components/layout/ContentLayout'
 import LoadingPage from '@/components/misc/LoadingPage'
 import { useGetUnits } from '@/hooks/ajustes/globales/unidades/useGetPrimaryUnits'
+import { useGetSecondaryUnits } from '@/hooks/ajustes/globales/unidades/useGetSecondaryUnits'
 import { columns } from './columns'
 import { PrimaryDataTable } from './primary-data-table'
-import { SecondaryDataTable } from './secondary-data-table'
-import { useGetSecondaryUnits } from '@/hooks/ajustes/globales/unidades/useGetSecondaryUnits'
 import { secondary_columns } from './secondary-columns'
+import { SecondaryDataTable } from './secondary-data-table'
 
 const UnitsPage = () => {
   const { data: primaryUnits, isLoading: primaryLoading, isError: primaryError } = useGetUnits()

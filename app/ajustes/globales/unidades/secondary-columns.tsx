@@ -1,12 +1,8 @@
 "use client"
-
 import { ColumnDef } from "@tanstack/react-table"
-
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
-
-import { Convertion } from "@/types"
-import SecondaryUnitsPage from "../unidades_secundarias/page"
 import SecondaryUnitDropdownActions from "@/components/misc/SecondaryUnitDropdownActions"
+import { Convertion } from "@/types"
 
 export const secondary_columns: ColumnDef<Convertion>[] = [
   // {
