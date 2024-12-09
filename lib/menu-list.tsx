@@ -259,9 +259,9 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
                   active: pathname === ("/ajustes/globales/unidades"),
                 },
                 {
-                  href: "/ajustes/globales/unidades_secundarias",
-                  label: "Unidades Secundarias",
-                  active: pathname === ("/administracion/globales/unidades_secundarias"),
+                  href: "/ajustes/globales/fabricantes",
+                  label: "Fabricantes",
+                  active: pathname === ("/administracion/globales/fabricantes"),
                 },
               ]
             },

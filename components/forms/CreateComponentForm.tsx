@@ -35,6 +35,7 @@ import { z } from "zod"
 import { Textarea } from "../ui/textarea"
 import { AmountInput } from "../misc/AmountInput"
 import { useGetArticlesByCategory } from "@/hooks/almacen/useGetArticlesByCategory"
+import { useGetManufacturers } from "@/hooks/ajustes/globales/fabricantes/useGetManufacturers"
 
 interface EditingArticle extends Article {
   batches: Batch,
@@ -72,6 +73,8 @@ const CreateComponentForm = ({ initialData, isEditing }: {
   const { confirmIncoming } = useConfirmIncomingArticle();
 
   const { mutate, data: batches, isPending: isBatchesLoading, isError } = useGetBatchesByLocationId();
+
+  const { data: manufacturers, isLoading: isManufacturerLoading, isError: isManufacturerError } = useGetManufacturers()
 
   const { mutate: verifyMutation, data: components } = useGetArticlesByCategory(Number(selectedStation), "componente")
 
@@ -118,7 +121,7 @@ const CreateComponentForm = ({ initialData, isEditing }: {
     cycle_date: z.coerce.number({
       required_error: "Ingrese los ciclos máximos.",
     }).optional(),
-    brand: z.string({
+    manufacturer_id: z.coerce.number({
       message: "Debe ingresar una marca.",
     }),
     condition: z.string({
@@ -168,7 +171,7 @@ const CreateComponentForm = ({ initialData, isEditing }: {
       serial: initialData?.component && initialData?.component.serial || "",
       alternative_part_number: initialData?.alternative_part_number || "",
       batches_id: initialData?.batches.id?.toString() || "",
-      brand: initialData?.brand || "",
+      manufacturer_id: initialData?.manufacturer && initialData?.manufacturer?.id || undefined,
       condition: initialData?.condition || "",
       description: initialData?.description || "",
       zone: initialData?.zone || "",
@@ -495,20 +498,22 @@ const CreateComponentForm = ({ initialData, isEditing }: {
             />
             <FormField
               control={form.control}
-              name="brand"
+              name="manufacturer_id"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Marca del Articulo</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormLabel>Fabricante</FormLabel>
+                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecccione..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Marca 1">Marca 1</SelectItem>
-                      <SelectItem value="Marca 2">Marca 2</SelectItem>
-                      <SelectItem value="Marca 3">Marca 3</SelectItem>
+                      {
+                        manufacturers && manufacturers.map((manufacturer) => (
+                          <SelectItem key={manufacturer.id} value={manufacturer.id.toString()}>{manufacturer.name}</SelectItem>
+                        ))
+                      }
                     </SelectContent>
                   </Select>
                   <FormDescription>

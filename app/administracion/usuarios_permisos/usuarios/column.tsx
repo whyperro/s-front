@@ -119,8 +119,9 @@ export const columns: ColumnDef<User>[] = [
     id: "actions",
     cell: ({ row }) => {
       const id = row.original.id
+      const companies = row.original.companies
       return (
-        <UserDropdownActions id={id.toString()} />
+        <UserDropdownActions id={id.toString()} companies={companies} />
       )
     },
   },

@@ -1,19 +1,19 @@
 'use client'
 
 import { ContentLayout } from '@/components/layout/ContentLayout'
-import { useGetCompanies } from '@/hooks/administracion/useGetCompanies'
+import { useGetManufacturers } from '@/hooks/ajustes/globales/fabricantes/useGetManufacturers'
 import { Loader2 } from 'lucide-react'
 import { columns } from './columns'
 import { DataTable } from './data-table'
 
-const CompanyPage = () => {
-  const { data: companies, isLoading, error } = useGetCompanies();
+const ManufacturersPage = () => {
+  const { data: manufacturers, isLoading, error } = useGetManufacturers();
   return (
-    <ContentLayout title='Fabricantes'>
+    <ContentLayout title='Permisos'>
       <h1 className='text-5xl font-bold text-center mt-2'>
         Control de Fabricantes
       </h1>
-      <p className='text-sm text-muted-foreground text-center italic mt-2'>Aquí se lleva el control de los diferentes fabricantes de los diferentes articulos.</p>
+      <p className='text-sm text-muted-foreground text-center italic mt-2'>Aquí puede llevar el control de los fabricantes registrados para las diferentes articulos.</p>
       {
         isLoading && (
           <div className='grid mt-72 place-content-center'>
@@ -29,12 +29,12 @@ const CompanyPage = () => {
         )
       }
       {
-        companies && (
-          <DataTable columns={columns} data={companies} />
+        manufacturers && (
+          <DataTable columns={columns} data={manufacturers} />
         )
       }
     </ContentLayout>
   )
 }
 
-export default CompanyPage
+export default ManufacturersPage

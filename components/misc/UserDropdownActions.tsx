@@ -31,7 +31,7 @@ import { useDeleteUser } from "@/actions/administracion/usuarios/actions"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { useState } from "react"
 
-const UserDropdownActions = ({ id }: { id: string | number }) => {
+const UserDropdownActions = ({ id, companies }: { id: number, companies: { id: number, name: string }[] }) => {
 
   const [open, setOpen] = useState<boolean>(false)
 
@@ -39,8 +39,8 @@ const UserDropdownActions = ({ id }: { id: string | number }) => {
 
   const { deleteUser } = useDeleteUser()
 
-  const handleDelete = async (id: number | string) => {
-    await deleteUser.mutateAsync(id);
+  const handleDelete = async (id: number, companies: { id: number, name: string }[]) => {
+    await deleteUser.mutateAsync({ id, companies });
     setOpen(false);
   }
   return (
@@ -74,7 +74,7 @@ const UserDropdownActions = ({ id }: { id: string | number }) => {
         </DialogHeader>
         <DialogFooter className="flex flex-col gap-2 md:gap-0">
           <Button className="bg-rose-400 hover:bg-white hover:text-black hover:border hover:border-black" onClick={() => setOpen(false)} type="submit">Cancelar</Button>
-          <Button disabled={deleteUser.isPending} className="hover:bg-white hover:text-black hover:border hover:border-black transition-all" onClick={() => handleDelete(id)}>{deleteUser.isPending ? <Loader2 className="size-4 animate-spin" /> : <p>Confirmar</p>}</Button>
+          <Button disabled={deleteUser.isPending} className="hover:bg-white hover:text-black hover:border hover:border-black transition-all" onClick={() => handleDelete(id, companies)}>{deleteUser.isPending ? <Loader2 className="size-4 animate-spin" /> : <p>Confirmar</p>}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

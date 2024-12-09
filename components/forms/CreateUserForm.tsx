@@ -168,7 +168,8 @@ export function CreateUserForm() {
         };
 
         // Enviar los datos formateados a la acción de crear usuario
-        createUser.mutate(formattedData);
+        console.log(formattedData)
+        // createUser.mutate(formattedData);
       }
     } catch (error) {
       console.error("Error al crear usuario:", error);

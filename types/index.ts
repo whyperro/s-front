@@ -122,7 +122,7 @@ export type Article = {
   serial?: string,
   description?: string,
   zone?: string,
-  brand?: string,
+  manufacturer?: Manufacturer,
   condition?: string,
   weight?: number,
   cost?: number,
@@ -264,4 +264,10 @@ export type ToolBox = {
     serial: string,
     article: ToolArticle,
   }[],
+}
+
+export type Manufacturer = {
+  id: number,
+  name: string,
+  description: string,
 }

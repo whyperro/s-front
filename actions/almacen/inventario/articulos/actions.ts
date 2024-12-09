@@ -110,7 +110,7 @@ export const useConfirmIncomingArticle = () => {
         alternative_part_number?: string,
         description: string,
         zone: string,
-        brand: string,
+        manufacturer_id: number | string,
         condition: string,
         batches_id: string,
         is_special?: boolean,

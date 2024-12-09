@@ -42,8 +42,8 @@ export const useDeleteUser = () => {
   const queryClient = useQueryClient()
 
   const deleteMutation = useMutation({
-      mutationFn: async (id: number | string) => {
-          await axiosInstance.delete(`/users/${id}`)
+      mutationFn: async ({id, companies}: {id: number | string, companies: {id: number, name: string}[]}) => {
+          await axiosInstance.post(`/delete-user/${id}`, {companies})
         },
       onSuccess: () => {
           queryClient.invalidateQueries({queryKey: ['users']})
