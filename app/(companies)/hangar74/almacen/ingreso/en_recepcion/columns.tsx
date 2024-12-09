@@ -64,12 +64,12 @@ export const columns: ColumnDef<Article>[] = [
     )
   },
   {
-    accessorKey: "brand",
+    accessorKey: "manufacturer",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Marca" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center">{row.original.brand}</p>
+      <p className="flex justify-center">{row.original.manufacturer?.name ?? "N/A"}</p>
     )
   },
   {
