@@ -1,15 +1,7 @@
 'use client'
 
-import { Button } from "@/components/ui/button"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import loadingGif from '@/public/loading2.gif'
 import { useConfirmIncomingArticle, useCreateArticle } from "@/actions/almacen/inventario/articulos/actions"
+import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -18,6 +10,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { useGetManufacturers } from "@/hooks/ajustes/globales/fabricantes/useGetManufacturers"
 import { useGetSecondaryUnits } from "@/hooks/ajustes/globales/unidades/useGetSecondaryUnits"
 import { useGetBatchesByLocationId } from "@/hooks/almacen/useGetBatchesByLocationId"
 import { conditions } from "@/lib/conditions"
@@ -56,7 +56,7 @@ const formSchema = z.object({
   fabrication_date: z.string({
     required_error: "A date of birth is required.",
   }).optional(),
-  brand: z.string({
+  manufacturer_id: z.string({
     message: "Debe ingresar una marca.",
   }),
   condition: z.string({
@@ -136,6 +136,7 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
 
   const { data: secondaryUnits, isLoading: secondaryLoading, isError: secondaryError } = useGetSecondaryUnits()
 
+  const { data: manufacturers, isLoading: isManufacturerLoading, isError: isManufacturerError } = useGetManufacturers()
 
   const { mutate, data: batches, isPending: isBatchesLoading, isError } = useGetBatchesByLocationId();
 
@@ -158,7 +159,7 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
     defaultValues: {
       part_number: initialData?.part_number || "",
       batches_id: initialData?.batches.id?.toString() || "",
-      brand: initialData?.brand || "",
+      manufacturer_id: initialData?.manufacturer?.id.toString() || "",
       condition: initialData?.condition || "",
       description: initialData?.description || "",
       zone: initialData?.zone || "",
@@ -420,20 +421,22 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
             </div>
             <FormField
               control={form.control}
-              name="brand"
+              name="manufacturer_id"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Marca del Articulo</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormLabel>Fabricante</FormLabel>
+                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecccione..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Marca 1">Marca 1</SelectItem>
-                      <SelectItem value="Marca 2">Marca 2</SelectItem>
-                      <SelectItem value="Marca 3">Marca 3</SelectItem>
+                      {
+                        manufacturers && manufacturers.map((manufacturer) => (
+                          <SelectItem key={manufacturer.id} value={manufacturer.id.toString()}>{manufacturer.name}</SelectItem>
+                        ))
+                      }
                     </SelectContent>
                   </Select>
                   <FormDescription>

@@ -18,24 +18,24 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { useGetManufacturers } from "@/hooks/ajustes/globales/fabricantes/useGetManufacturers"
+import { useGetArticlesByCategory } from "@/hooks/almacen/useGetArticlesByCategory"
 import { useGetBatchesByLocationId } from "@/hooks/almacen/useGetBatchesByLocationId"
 import { conditions } from "@/lib/conditions"
 import { cn } from "@/lib/utils"
 import loadingGif from '@/public/loading2.gif'
 import { useCompanyStore } from "@/stores/CompanyStore"
-import { Article, Batch, ComponentArticle } from "@/types"
+import { Article, Batch } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { addYears, format, parse, subYears } from "date-fns"
+import { addYears, format, subYears } from "date-fns"
 import { es } from 'date-fns/locale'
 import { CalendarIcon, FileUpIcon, Loader2 } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { Textarea } from "../ui/textarea"
 import { AmountInput } from "../misc/AmountInput"
-import { useGetArticlesByCategory } from "@/hooks/almacen/useGetArticlesByCategory"
-import { useGetManufacturers } from "@/hooks/ajustes/globales/fabricantes/useGetManufacturers"
+import { Textarea } from "../ui/textarea"
 
 interface EditingArticle extends Article {
   batches: Batch,

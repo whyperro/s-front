@@ -25,6 +25,7 @@ import { z } from "zod"
 import { Checkbox } from "../ui/checkbox"
 import { Textarea } from "../ui/textarea"
 import { AmountInput } from "../misc/AmountInput"
+import { useGetManufacturers } from "@/hooks/ajustes/globales/fabricantes/useGetManufacturers"
 
 const formSchema = z.object({
   article_type: z.string(),
@@ -45,8 +46,8 @@ const formSchema = z.object({
   zone: z.string({
     message: "Debe ingresar la ubicación del articulo.",
   }),
-  brand: z.string({
-    message: "Debe ingresar una marca.",
+  manufacturer_id: z.string({
+    message: "Debe ingresar un fabricante.",
   }),
   cost: z.string(),
   condition: z.string({
@@ -98,6 +99,8 @@ const CreateToolForm = ({ initialData, isEditing }: {
 
   const { mutate, data: batches, isPending: isBatchesLoading, isError } = useGetBatchesByLocationId();
 
+  const { data: manufacturers, isLoading: isManufacturerLoading, isError: isManufacturerError } = useGetManufacturers()
+
   useEffect(() => {
     if (selectedStation) {
       mutate(Number(selectedStation))
@@ -119,7 +122,7 @@ const CreateToolForm = ({ initialData, isEditing }: {
       part_number: initialData?.part_number || "",
       alternative_part_number: initialData?.alternative_part_number || "",
       batches_id: initialData?.batches.id?.toString() || "",
-      brand: initialData?.brand || "",
+      manufacturer_id: initialData?.manufacturer?.id.toString() || "",
       condition: initialData?.condition || "",
       description: initialData?.description || "",
       is_special: initialData?.tool?.isSpecial || false,
@@ -207,26 +210,26 @@ const CreateToolForm = ({ initialData, isEditing }: {
           <div className="flex gap-2 items-center flex-wrap">
             <FormField
               control={form.control}
-              name="brand"
+              name="manufacturer_id"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Marca del Articulo</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormLabel>Fabricante</FormLabel>
+                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecccione..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Marca 1">Marca 1</SelectItem>
-                      <SelectItem value="Marca 2">Marca 2</SelectItem>
-                      <SelectItem value="Marca 3">Marca 3</SelectItem>
+                      {
+                        manufacturers && manufacturers.map((manufacturer) => (
+                          <SelectItem key={manufacturer.id} value={manufacturer.id.toString()}>{manufacturer.name}</SelectItem>
+                        ))
+                      }
                     </SelectContent>
                   </Select>
                   <FormDescription>
                     Marca específica del articulo.
-                    <FormDescription>
-                    </FormDescription>
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
