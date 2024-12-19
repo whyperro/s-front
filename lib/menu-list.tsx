@@ -5,11 +5,11 @@ import {
   History,
   LayoutGrid,
   LucideIcon,
-  NotebookPen,
   PackageOpen,
   PackagePlus,
   PackageSearch,
   Plane,
+  ScrollText,
   Settings,
   SquarePen,
   User2,
@@ -120,6 +120,13 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Inventario",
               active: pathname.includes("/hangar74/general/inventario"),
               icon: PackageSearch,
+              submenus: []
+            },
+            {
+              href: "/hangar74/general/requisiciones",
+              label: "Requisiciones",
+              active: pathname.includes("/hangar74/general/requisiciones"),
+              icon: ScrollText,
               submenus: []
             }
           ]
@@ -263,6 +270,11 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
                   label: "Fabricantes",
                   active: pathname === ("/administracion/globales/fabricantes"),
                 },
+                {
+                  href: "/ajustes/globales/condiciones",
+                  label: "Condiciones",
+                  active: pathname === ("/ajustes/globales/condiciones"),
+                },
               ]
             },
             {
@@ -310,11 +322,6 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
                   href: "/administracion/empresas/almacenes",
                   label: "Administrar Almacenes",
                   active: pathname === ("/administracion/empresas/almacenes"),
-                },
-                {
-                  href: "/administracion/empresas/almacenes/condiciones_articulos",
-                  label: "Administrar Condiciones",
-                  active: pathname === ("/administracion/empresas/almacenes/condiciones_articulos"),
                 },
                 {
                   href: "/administracion/empresas/empleados",

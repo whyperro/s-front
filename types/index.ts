@@ -271,3 +271,18 @@ export type Manufacturer = {
   name: string,
   description: string,
 }
+
+export type Requisition = {
+  id: number,
+  order_number: string,
+  status: string,
+  created_by: string,
+  approved_by: string,
+  requested_by: string,
+  received_by: string,
+  justification: string,
+  arrival_date: Date,
+  submission_date: Date,
+  work_order: WorkOrder,
+  aircraft: Aircraft,
+}

@@ -21,7 +21,6 @@ import {
 import { useGetManufacturers } from "@/hooks/ajustes/globales/fabricantes/useGetManufacturers"
 import { useGetArticlesByCategory } from "@/hooks/almacen/useGetArticlesByCategory"
 import { useGetBatchesByLocationId } from "@/hooks/almacen/useGetBatchesByLocationId"
-import { conditions } from "@/lib/conditions"
 import { cn } from "@/lib/utils"
 import loadingGif from '@/public/loading2.gif'
 import { useCompanyStore } from "@/stores/CompanyStore"
@@ -36,6 +35,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { AmountInput } from "../misc/AmountInput"
 import { Textarea } from "../ui/textarea"
+import { useGetConditions } from "@/hooks/administracion/useGetConditions"
 
 interface EditingArticle extends Article {
   batches: Batch,
@@ -75,6 +75,8 @@ const CreateComponentForm = ({ initialData, isEditing }: {
   const { mutate, data: batches, isPending: isBatchesLoading, isError } = useGetBatchesByLocationId();
 
   const { data: manufacturers, isLoading: isManufacturerLoading, isError: isManufacturerError } = useGetManufacturers()
+
+  const { data: conditions, isLoading: isConditionsLoading, error: isConditionsError } = useGetConditions();
 
   const { mutate: verifyMutation, data: components } = useGetArticlesByCategory(Number(selectedStation), "componente")
 
@@ -123,7 +125,7 @@ const CreateComponentForm = ({ initialData, isEditing }: {
     }).optional(),
     manufacturer_id: z.coerce.number({
       message: "Debe ingresar una marca.",
-    }),
+    }).optional(),
     condition: z.string({
       message: "Debe ingresar la condición del articulo.",
     }),
@@ -264,14 +266,14 @@ const CreateComponentForm = ({ initialData, isEditing }: {
                 <FormLabel>Condición</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger disabled={isConditionsLoading}>
                       <SelectValue placeholder="Seleccione..." />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     {
-                      conditions.map((condition) => (
-                        <SelectItem key={condition.value} value={condition.label}>{condition.label}</SelectItem>
+                      conditions && conditions.map((condition) => (
+                        <SelectItem key={condition.id} value={condition.id.toString()}>{condition.name}</SelectItem>
                       ))
                     }
                   </SelectContent>

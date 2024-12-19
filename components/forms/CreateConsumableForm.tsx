@@ -35,6 +35,7 @@ import { Checkbox } from "../ui/checkbox"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
 import { Label } from "../ui/label"
 import { Textarea } from "../ui/textarea"
+import { useGetConditions } from "@/hooks/administracion/useGetConditions"
 
 
 const formSchema = z.object({
@@ -138,6 +139,8 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
 
   const { data: manufacturers, isLoading: isManufacturerLoading, isError: isManufacturerError } = useGetManufacturers()
 
+  const { data: conditions, isLoading: isConditionsLoading, error: isConditionsError } = useGetConditions();
+
   const { mutate, data: batches, isPending: isBatchesLoading, isError } = useGetBatchesByLocationId();
 
   useEffect(() => {
@@ -224,14 +227,14 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
                 <FormLabel>Condición</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger disabled={isConditionsLoading}>
                       <SelectValue placeholder="Seleccione..." />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     {
-                      conditions.map((condition) => (
-                        <SelectItem key={condition.value} value={condition.value}>{condition.label}</SelectItem>
+                      conditions && conditions.map((condition) => (
+                        <SelectItem key={condition.id} value={condition.id.toString()}>{condition.name}</SelectItem>
                       ))
                     }
                   </SelectContent>

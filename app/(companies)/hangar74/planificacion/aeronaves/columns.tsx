@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ClipboardCheck, MoreHorizontal, SquarePen, Trash2 } from "lucide-react"
+import { MoreHorizontal, SquarePen, Trash2 } from "lucide-react"
 
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
 import { Button } from "@/components/ui/button"
@@ -20,18 +20,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { Batch } from "@/types"
-import { redirect, useRouter } from "next/navigation"
 import Link from "next/link"
+import { Aircraft } from "@/types"
 
-
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-interface BatchesWithCountProp extends Batch {
-  article_count: number,
-}
-
-export const columns: ColumnDef<BatchesWithCountProp>[] = [
+export const columns: ColumnDef<Aircraft>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -55,66 +47,56 @@ export const columns: ColumnDef<BatchesWithCountProp>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "part_number",
+    accessorKey: "serial",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="N° de Parte" />
+      <DataTableColumnHeader filter column={column} title="SERIAL" />
     ),
     cell: ({ row }) => {
       return (
-        <Link href={`/hangar74/almacen/inventario/gestion/${row.original.name}`} className="font-medium flex justify-center hover:scale-105 hover:text-blue-600 transition-all ease-in cursor-pointer duration-150">{row.original.name}</Link>
+        <p className="font-bold flex justify-center hover:scale-105 hover:text-blue-600 transition-all ease-in cursor-pointer duration-150">{row.original.serial}</p>
       )
     }
   },
   {
-    accessorKey: "description",
+    accessorKey: "brand",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Descripción" />
+      <DataTableColumnHeader filter column={column} title="FABRICANTE" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground">{row.original.description}</p>
+      <p className="flex justify-center font-medium">{row.original.brand}</p>
     )
   },
   {
-    accessorKey: "ata_code",
+    accessorKey: "acronym",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Código ATA" />
+      <DataTableColumnHeader filter column={column} title="ACRONYM" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center">{row.original.ata_code}</p>
+      <p className="flex justify-center text-muted-foreground italic">{row.original.acronym}</p>
     )
   },
   {
-    accessorKey: "min_quantity",
+    accessorKey: "aircraft_operator",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cantidad Mínima" />
+      <DataTableColumnHeader filter column={column} title="OPERADOR" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center">{row.original.min_quantity}<span className="font-bold">{row.original.medition_unit}</span></p>
+      <p className="flex justify-center font-bold">{row.original.aircraft_operator}</p>
     )
   },
   {
-    accessorKey: "article_count",
+    accessorKey: "owner",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cantidad de Stock" />
+      <DataTableColumnHeader filter column={column} title="DUEÑO" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center">{row.original.article_count}</p>
-    )
-  },
-  {
-    accessorKey: "warehouse_name",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Ubicacion" />
-    ),
-    cell: ({ row }) => (
-      <p className="flex justify-center font-medium">{row.original.warehouse_name}</p>
+      <p className="flex justify-center font-bold">{row.original.owner}</p>
     )
   },
   {
     id: "actions",
     cell: ({ row }) => {
       const item = row.original
-
       return (
         <TooltipProvider>
           <DropdownMenu>

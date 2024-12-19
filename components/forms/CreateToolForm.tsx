@@ -26,6 +26,7 @@ import { Checkbox } from "../ui/checkbox"
 import { Textarea } from "../ui/textarea"
 import { AmountInput } from "../misc/AmountInput"
 import { useGetManufacturers } from "@/hooks/ajustes/globales/fabricantes/useGetManufacturers"
+import { useGetConditions } from "@/hooks/administracion/useGetConditions"
 
 const formSchema = z.object({
   article_type: z.string(),
@@ -98,6 +99,8 @@ const CreateToolForm = ({ initialData, isEditing }: {
   const { selectedStation } = useCompanyStore();
 
   const { mutate, data: batches, isPending: isBatchesLoading, isError } = useGetBatchesByLocationId();
+
+  const { data: conditions, isLoading: isConditionsLoading, error: isConditionsError } = useGetConditions();
 
   const { data: manufacturers, isLoading: isManufacturerLoading, isError: isManufacturerError } = useGetManufacturers()
 
@@ -279,16 +282,16 @@ const CreateToolForm = ({ initialData, isEditing }: {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Condición</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={initialData?.condition ?? ""}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger disabled={isConditionsLoading}>
                         <SelectValue placeholder="Seleccione..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {
-                        conditions.map((condition) => (
-                          <SelectItem key={condition.value} value={condition.label}>{condition.label}</SelectItem>
+                        conditions && conditions.map((condition) => (
+                          <SelectItem key={condition.id} value={condition.id.toString()}>{condition.name}</SelectItem>
                         ))
                       }
                     </SelectContent>

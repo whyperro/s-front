@@ -6,6 +6,7 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
 
 import InTransitArticleDropdownActions from "@/components/misc/InTransitArticleDropdownActions"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Manufacturer } from "@/types"
 
 interface IArticleInTransit {
   id?: number,
@@ -13,7 +14,7 @@ interface IArticleInTransit {
   serial?: string,
   name: string,
   description?: string,
-  brand?: string,
+  name_manufacturer?: string,
   condition?: string,
   image?: File | string,
 }
@@ -89,12 +90,12 @@ export const columns: ColumnDef<IArticleInTransit>[] = [
     )
   },
   {
-    accessorKey: "brand",
+    accessorKey: "name_manufacturer",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Marca" />
+      <DataTableColumnHeader column={column} title="Fabricante" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center">{row.original.brand}</p>
+      <p className="flex justify-center font-bold">{row.original.name_manufacturer ?? "N/A"}</p>
     )
   },
   {
@@ -104,6 +105,15 @@ export const columns: ColumnDef<IArticleInTransit>[] = [
     ),
     cell: ({ row }) => (
       <p className="text-center font-medium italic">{row.original.condition}</p>
+    )
+  },
+  {
+    accessorKey: "category",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) => (
+      <p className="text-center font-medium italic">En USA - TEST</p>
     )
   },
   {
