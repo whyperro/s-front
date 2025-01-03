@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/table"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { WarehouseReportDialog } from "@/components/dialogs/WarehouseReportDialog"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -72,6 +73,7 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center py-4">
         <div className="flex gap-x-2 items-center">
           <CreateBatchDialog />
+          <WarehouseReportDialog />
         </div>
         <DataTableViewOptions table={table} />
       </div>

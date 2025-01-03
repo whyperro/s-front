@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/axios"
-import { ComponentArticle, ConsumableArticle } from "@/types"
+import { ComponentArticle, ConsumableArticle, ToolArticle } from "@/types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
@@ -10,7 +10,7 @@ export const useCreateArticle = () => {
 
     const createMutation = useMutation({
         mutationKey: ["articles"],
-        mutationFn: async (data: ConsumableArticle | ComponentArticle) => {
+        mutationFn: async (data: ConsumableArticle | ComponentArticle | ToolArticle) => {
             await axiosInstance.post('/hangar74/article', data,
               {
               headers: {
@@ -111,7 +111,7 @@ export const useConfirmIncomingArticle = () => {
         description: string,
         zone: string,
         manufacturer_id?: number | string,
-        condition: string,
+        condition_id?: number | string,
         batches_id: string,
         is_special?: boolean,
         status: string,

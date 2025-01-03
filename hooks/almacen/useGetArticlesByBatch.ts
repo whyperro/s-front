@@ -1,5 +1,5 @@
 import axios from '@/lib/axios';
-import { Article } from '@/types';
+import { Article, Condition, Manufacturer } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 
 export interface IArticleByBatch {
@@ -11,6 +11,7 @@ export interface IArticleByBatch {
   zone: string,
   brand: string,
   condition: string,
+  manufacturer: string,
   weight: number,
   cost: number,
   batches_id: number,

@@ -68,6 +68,15 @@ export const columns: ColumnDef<IArticleByBatch>[] = [
     },
   },
   {
+    accessorKey: "part_number",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Nro. de Parte" />
+    ),
+    cell: ({ row }) => (
+      <p className="flex justify-center text-muted-foreground">{row.original.part_number}</p>
+    )
+  },
+  {
     accessorKey: "description",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Descripción" />
@@ -100,7 +109,8 @@ export const columns: ColumnDef<IArticleByBatch>[] = [
       <DataTableColumnHeader column={column} title="Marca" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground italic">{row.original.brand}</p>
+      <p className="flex justify-center text-muted-foreground italic">{row.original.manufacturer}</p>
+
     )
   },
   {
@@ -109,11 +119,11 @@ export const columns: ColumnDef<IArticleByBatch>[] = [
       <DataTableColumnHeader column={column} title="Cantidad" />
     ),
     cell: ({ row }) => {
-      const { article_type, quantity, consumable } = row.original;
+      const { quantity, consumable } = row.original;
 
       return (
         <div className="flex justify-center">
-          <Badge className={quantity <= 0 ? "bg-yellow-400" : "bg-green-500"}>
+          <Badge className={quantity <= 0 ? "bg-yellow-500" : "bg-green-500"}>
             {quantity} {`${consumable?.convertions[0]?.unit?.label ?? "N/A"}`}
           </Badge>
         </div>
@@ -127,7 +137,7 @@ export const columns: ColumnDef<IArticleByBatch>[] = [
       <DataTableColumnHeader column={column} title="Estado" />
     ),
     cell: ({ row }) => (
-      <Badge className={row.original.status === 'InUse' ? "bg-yellow-400" : "bg-green-500"}>{row.original.status === 'InUse' ? "En Uso" : "En Almc."}</Badge>
+      <Badge className={row.original.status === 'InUse' ? "bg-yellow-500" : "bg-green-500"}>{row.original.status === 'InUse' ? "En Uso" : "En Almc."}</Badge>
     )
   },
   {

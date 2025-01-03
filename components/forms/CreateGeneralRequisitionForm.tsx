@@ -6,9 +6,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useCreateRequisition } from "@/actions/compras/requisiciones/actions"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "@/contexts/AuthContext"
-import { useGetAircrafts } from "@/hooks/planificacion/useGetAircrafts"
-import { useGetWorkOrderEmployees } from "@/hooks/planificacion/useGetWorkOrderEmployees"
-import { useGetWorkOrders } from "@/hooks/planificacion/useGetWorkOrders"
+import { useGetDepartamentEmployees } from "@/hooks/administracion/useGetDepartamentEmployees"
 import { useGetBatchesByLocationId } from "@/hooks/useGetBatchesByLocationId"
 import { cn } from "@/lib/utils"
 import { useCompanyStore } from "@/stores/CompanyStore"
@@ -20,10 +18,8 @@ import { z } from "zod"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { ScrollArea } from "../ui/scroll-area"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Separator } from "../ui/separator"
 import { Textarea } from "../ui/textarea"
-import { useGetDepartamentEmployees } from "@/hooks/administracion/useGetDepartamentEmployees"
 
 const FormSchema = z.object({
   order_number: z.string().min(3, {
@@ -49,6 +45,8 @@ type FormSchemaType = z.infer<typeof FormSchema>
 
 interface FormProps {
   onClose: () => void,
+  initialData?: FormSchemaType,
+  isEditing?: boolean,
 }
 
 // Tipos para batches y artículos
@@ -63,7 +61,7 @@ interface Batch {
   batch_articles: Article[];
 }
 
-export function CreateGeneralRequisitionForm({ onClose }: FormProps) {
+export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing }: FormProps) {
 
   const { user } = useAuth()
 
@@ -89,10 +87,13 @@ export function CreateGeneralRequisitionForm({ onClose }: FormProps) {
 
   useEffect(() => {
     if (user && selectedCompany) {
-      form.setValue("created_by", `${user.first_name} ${user.last_name}`)
+      form.setValue("created_by", user.id.toString())
       form.setValue("company", selectedCompany.split(" ").join(""))
     }
-  }, [user])
+    if (initialData) {
+      form.reset(initialData); // Set initial form values
+    }
+  }, [user, initialData, form, selectedCompany])
 
   useEffect(() => {
     if (selectedStation) {
@@ -171,8 +172,6 @@ export function CreateGeneralRequisitionForm({ onClose }: FormProps) {
     await createRequisition.mutateAsync(formattedData)
     onClose()
   }
-
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-3">
@@ -225,9 +224,9 @@ export function CreateGeneralRequisitionForm({ onClose }: FormProps) {
                   </PopoverTrigger>
                   <PopoverContent className="p-0">
                     <Command>
-                      <CommandInput placeholder="Busque un cliente..." />
+                      <CommandInput placeholder="Busque un empleado..." />
                       <CommandList>
-                        <CommandEmpty>No se ha encontrado un cliente.</CommandEmpty>
+                        <CommandEmpty className="text-sm p-2 text-center">No se ha encontrado ningún empleado.</CommandEmpty>
                         <CommandGroup>
                           {employees?.map((employee) => (
                             <CommandItem
@@ -278,8 +277,8 @@ export function CreateGeneralRequisitionForm({ onClose }: FormProps) {
                       )}
                     >
                       {selectedBatches.length > 0
-                        ? `${selectedBatches.length} lotes seleccionados`
-                        : "Seleccione un lote..."}
+                        ? `${selectedBatches.length} reng. seleccionados`
+                        : "Selec. un renglón..."}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
@@ -391,7 +390,7 @@ export function CreateGeneralRequisitionForm({ onClose }: FormProps) {
           <p className="text-muted-foreground">SIGEAC</p>
           <Separator className="flex-1" />
         </div>
-        <Button disabled={createRequisition.isPending}>Generar Requisición</Button>
+        <Button disabled={createRequisition.isPending}>{isEditing ? "Generar Requisición" : "Editar Requisición"}</Button>
       </form>
     </Form>
   )

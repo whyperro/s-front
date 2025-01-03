@@ -1,11 +1,11 @@
 import axios from '@/lib/axios';
-import { Batch } from '@/types';
+import { User } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 
 interface Requisition {
   id: number,
   status: string,
-  created_by: string,
+  created_by: User,
   approved_by: string,
   requested_by: string,
   received_by: string,

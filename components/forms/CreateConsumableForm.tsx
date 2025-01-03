@@ -17,10 +17,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useGetConditions } from "@/hooks/administracion/useGetConditions"
 import { useGetManufacturers } from "@/hooks/ajustes/globales/fabricantes/useGetManufacturers"
 import { useGetSecondaryUnits } from "@/hooks/ajustes/globales/unidades/useGetSecondaryUnits"
 import { useGetBatchesByLocationId } from "@/hooks/almacen/useGetBatchesByLocationId"
-import { conditions } from "@/lib/conditions"
 import { cn } from "@/lib/utils"
 import { useCompanyStore } from "@/stores/CompanyStore"
 import { Article, Batch, Convertion } from "@/types"
@@ -35,7 +35,6 @@ import { Checkbox } from "../ui/checkbox"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
 import { Label } from "../ui/label"
 import { Textarea } from "../ui/textarea"
-import { useGetConditions } from "@/hooks/administracion/useGetConditions"
 
 
 const formSchema = z.object({
@@ -60,9 +59,9 @@ const formSchema = z.object({
   manufacturer_id: z.string({
     message: "Debe ingresar una marca.",
   }),
-  condition: z.string({
+  condition_id: z.string({
     message: "Debe ingresar la condición del articulo.",
-  }),
+  }).optional(),
   quantity: z.coerce.number({
     message: "Debe ingresar una cantidad de articulos.",
   }).nonnegative({
@@ -163,7 +162,7 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
       part_number: initialData?.part_number || "",
       batches_id: initialData?.batches.id?.toString() || "",
       manufacturer_id: initialData?.manufacturer?.id.toString() || "",
-      condition: initialData?.condition || "",
+      condition_id: initialData?.condition?.id.toString() || "",
       description: initialData?.description || "",
       zone: initialData?.zone || "",
       is_managed: initialData?.consumable?.is_managed || false,
@@ -221,7 +220,7 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
           />
           <FormField
             control={form.control}
-            name="condition"
+            name="condition_id"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Condición</FormLabel>

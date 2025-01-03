@@ -2,15 +2,12 @@ import { useEffect, useState } from 'react'
 import axiosInstance from '@/lib/axios'
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
-
 const useEcho = (): Echo | null => {
     const [echoInstance, setEchoInstance] = useState<Echo | null>(null)
-
     useEffect(() => {
         // Check if window is available to avoid SSR issues
         if (typeof window !== 'undefined') {
             window.Pusher = Pusher
-
             const echo = new Echo({
                 broadcaster: 'reverb',
                 key: process.env.NEXT_PUBLIC_REVERB_APP_KEY as string,
@@ -35,18 +32,15 @@ const useEcho = (): Echo | null => {
                     }
                 },
                 wsHost: process.env.NEXT_PUBLIC_REVERB_HOST as string,
-                wsPort: Number(process.env.NEXT_PUBLIC_REVERB_PORT),
-                wssPort: Number(process.env.NEXT_PUBLIC_REVERB_PORT),
+                wsPort: 8080,
+                wssPort: 8080,
                 forceTLS:
-                    (process.env.NEXT_PUBLIC_REVERB_SCHEME ?? 'https') ===
-                    'https',
-                enabledTransports: ['ws', 'wss'],
+                (process.env.NEXT_PUBLIC_REVERB_SCHEME ?? 'https') === 'https',
+            enabledTransports: ['ws', 'wss'],
             })
             setEchoInstance(echo)
         }
     }, [])
-
     return echoInstance
 }
-
 export default useEcho

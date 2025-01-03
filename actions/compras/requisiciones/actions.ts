@@ -74,3 +74,34 @@ export const useDeleteRequisition = () => {
     deleteRequisition: deleteMutation,
   }
 }
+
+export const useUpdateRequisitionStatus = () => {
+
+  const queryClient = useQueryClient()
+
+  const updateStatusMutation = useMutation({
+      mutationFn: async ({id, data}: {id: number, data: {
+        status: string,
+        updated_by: string,
+        company: string,
+      }}) => {
+          await axiosInstance.put(`/requisition-order-update-status/${id}`, data)
+        },
+      onSuccess: () => {
+          queryClient.invalidateQueries({queryKey: ['requisitions-orders']})
+          toast.success("¡Confirmada!", {
+              description: `¡La requisición ha sido confirmada correctamente!`
+          })
+        },
+      onError: (e) => {
+          toast.error("Oops!", {
+            description: "¡Hubo un error al confirmar la requisición!"
+        })
+        },
+      }
+  )
+
+  return {
+    updateStatusRequisition: updateStatusMutation,
+  }
+}

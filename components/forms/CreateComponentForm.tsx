@@ -126,9 +126,9 @@ const CreateComponentForm = ({ initialData, isEditing }: {
     manufacturer_id: z.coerce.number({
       message: "Debe ingresar una marca.",
     }).optional(),
-    condition: z.string({
+    condition_id: z.string({
       message: "Debe ingresar la condición del articulo.",
-    }),
+    }).optional(),
     batches_id: z.string({
       message: "Debe ingresar un lote.",
     }),
@@ -174,7 +174,7 @@ const CreateComponentForm = ({ initialData, isEditing }: {
       alternative_part_number: initialData?.alternative_part_number || "",
       batches_id: initialData?.batches.id?.toString() || "",
       manufacturer_id: initialData?.manufacturer && initialData?.manufacturer?.id || undefined,
-      condition: initialData?.condition || "",
+      condition_id: initialData?.condition?.id.toString() || "",
       description: initialData?.description || "",
       zone: initialData?.zone || "",
       hour_date: initialData?.component && Number(initialData.component.hard_time.hour_date) || 0,
@@ -260,7 +260,7 @@ const CreateComponentForm = ({ initialData, isEditing }: {
           />
           <FormField
             control={form.control}
-            name="condition"
+            name="condition_id"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Condición</FormLabel>

@@ -15,6 +15,7 @@ import {
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Separator } from '@/components/ui/separator';
 import { useGetRequisitionByOrderNumber } from '@/hooks/compras/useGetRequisitionByOrderNumber';
+import { cn } from '@/lib/utils';
 import { useCompanyStore } from '@/stores/CompanyStore';
 import { Loader2, Trash2, User } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
@@ -55,13 +56,13 @@ const InventarioPage = () => {
       <Card className='max-w-5xl mx-auto'>
         <CardHeader className='flex flex-col items-center'>
           <CardTitle className='flex justify-center text-5xl mb-2'>#{order_number}</CardTitle>
-          <Badge>PROCESO</Badge>
+          <Badge className={cn("text-lg", data?.status === 'aprobado' ? "bg-green-500" : "bg-yellow-600")}>{data?.status.toUpperCase()}</Badge>
         </CardHeader>
         <CardContent className='flex flex-col gap-8' >
           <div className='flex w-full justify-center gap-24 text-xl'>
             <div className='flex flex-col gap-2 items-center'>
               <h1>Creado Por:</h1>
-              <p className='font-bold flex gap-2 items-center'><User /> {data?.created_by}</p>
+              <p className='font-bold flex gap-2 items-center'><User /> {`${data?.created_by.first_name}`} {`${data?.created_by.last_name}`}</p>
             </div>
             <div className='flex flex-col gap-2 items-center'>
               <h1>Solicitado Por:</h1>
@@ -72,7 +73,7 @@ const InventarioPage = () => {
           <div className='flex justify-center gap-2'>
             {
               data && data.batch.map((batch) => (
-                <Card className='w-[250px] text-center' key={batch.id}>
+                <Card className='w-[280px] text-center' key={batch.id}>
                   <CardTitle className='p-6'>{batch.name}</CardTitle>
                   <CardContent>
                     {
@@ -105,7 +106,7 @@ const InventarioPage = () => {
           </DialogHeader>
           <DialogFooter>
             <Button type="button" variant={"destructive"} onClick={() => setOpenDelete(false)}>Cancelar</Button>
-            <Button onClick={() => handleDelete(data!.id, selectedCompany!.split(" ").join(""))} disabled={deleteRequisition.isPending} className="bg-primary text-white">{deleteRequisition.isPending ? <Loader2 className="animate-spin size-4" /> : "Confirmar"}</Button>
+            <Button className={cn("", data?.status === 'aprobado' ? "hidden" : "flex")} onClick={() => handleDelete(data!.id, selectedCompany!.split(" ").join(""))} disabled={deleteRequisition.isPending}>{deleteRequisition.isPending ? <Loader2 className="animate-spin size-4" /> : "Confirmar"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

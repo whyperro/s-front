@@ -75,10 +75,10 @@ export const columns: ColumnDef<Article>[] = [
   {
     accessorKey: "category",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Categoría" />
+      <DataTableColumnHeader column={column} title="Condición" />
     ),
     cell: ({ row }) => (
-      <p className="text-center font-medium italic">{row.original.condition}</p>
+      <p className="text-center font-medium italic">{row.original.condition?.name}</p>
     )
   },
   {

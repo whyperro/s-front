@@ -94,7 +94,7 @@ export function CreateRequisitionForm({ onClose }: FormProps) {
 
   useEffect(() => {
     if (user && selectedCompany) {
-      form.setValue("created_by", `${user.first_name} ${user.last_name}`)
+      form.setValue("created_by", user.id.toString())
       form.setValue("company", selectedCompany.split(" ").join(""))
     }
   }, [user])
@@ -178,7 +178,6 @@ export function CreateRequisitionForm({ onClose }: FormProps) {
     await createRequisition.mutateAsync(formattedData)
     onClose()
   }
-  console.log(form.getValues())
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-3">

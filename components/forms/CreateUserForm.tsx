@@ -25,7 +25,7 @@ import { useGetUsers } from "@/hooks/user/useGetUsers";
 import { cn } from "@/lib/utils";
 import loadingGif from '@/public/loading2.gif';
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
+import { Check, ChevronsUpDown, Eye, EyeOff, EyeOffIcon, Loader2 } from 'lucide-react';
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -33,6 +33,8 @@ import { z } from "zod";
 import { Badge } from "../ui/badge";
 import { Checkbox } from "../ui/checkbox";
 import { Separator } from "../ui/separator";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
+import { Label } from "../ui/label";
 
 const FormSchema = z.object({
   first_name: z.string().min(3, {
@@ -80,6 +82,8 @@ export function CreateUserForm() {
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
 
   const [openRoles, setOpenRoles] = useState(false);
+
+  const [showPwd, setShowPwd] = useState(false);
 
   const { createUser } = useCreateUser();
 
@@ -168,8 +172,8 @@ export function CreateUserForm() {
         };
 
         // Enviar los datos formateados a la acción de crear usuario
-        console.log(formattedData)
-        // createUser.mutate(formattedData);
+        // console.log(formattedData)
+        createUser.mutate(formattedData);
       }
     } catch (error) {
       console.error("Error al crear usuario:", error);
@@ -185,7 +189,7 @@ export function CreateUserForm() {
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-3">
         <div className="grid grid-cols-2">
-          <div>
+          <div className="space-y-3">
             <div className='flex gap-2 items-center'>
               <FormField
                 control={form.control}
@@ -245,9 +249,9 @@ export function CreateUserForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Contraseña</FormLabel>
+                  <FormLabel className="flex gap-2 items-center">Contraseña {showPwd ? <EyeOff onClick={() => setShowPwd(!showPwd)} className="size-5 cursor-pointer hover:scale-110 transition-all" /> : <Eye onClick={() => setShowPwd(!showPwd)} className="size-5 cursor-pointer hover:scale-110 transition-all" />}</FormLabel>
                   <FormControl>
-                    <Input type="password"{...field} />
+                    <Input type={showPwd ? "text" : "password"} {...field} />
                   </FormControl>
                   <FormMessage className="text-xs" />
                 </FormItem>
@@ -344,95 +348,96 @@ export function CreateUserForm() {
             <FormField
               control={form.control}
               name="companies_locations"
-              render={({ field }) => (
-                <FormItem className="flex flex-col items-start rounded-md space-y-2 py-2 px-6">
-                  <FormLabel>Ubicaciones</FormLabel>
-                  <div className="flex gap-2 items-center justify-center">
-                    <Tabs defaultValue="account">
-                      <TabsList className="grid w-full grid-cols-2">
-                        {
-                          isCompaniesLoading && <Loader2 className="size-4 animate-spin" />
-                        }
-                        {companies?.map((company) => (
-                          <TabsTrigger value={company.id.toString()} key={company.id}>
-                            {company.name}
-                          </TabsTrigger>
+              render={({ field }) => {
+                const handleLocationChange = (companyID: number, locationID: number, isSelected: boolean | string) => {
+                  // Parse the current value or initialize it
+                  const currentValue = field.value || [];
+
+                  // Find the company entry in the array
+                  const companyIndex = currentValue.findIndex(
+                    (item) => item.companyID === companyID
+                  );
+
+                  if (companyIndex === -1 && isSelected) {
+                    // Add a new company with the location if it doesn't exist
+                    currentValue.push({
+                      companyID,
+                      locationID: [locationID],
+                    });
+                  } else if (companyIndex !== -1) {
+                    const company = currentValue[companyIndex];
+                    if (isSelected) {
+                      // Add the locationID if it's not already included
+                      if (!company.locationID.includes(locationID)) {
+                        company.locationID.push(locationID);
+                      }
+                    } else {
+                      // Remove the locationID if deselected
+                      company.locationID = company.locationID.filter(
+                        (id) => id !== locationID
+                      );
+
+                      // Remove the company entry if no locations are left
+                      if (company.locationID.length === 0) {
+                        currentValue.splice(companyIndex, 1);
+                      }
+                    }
+                  }
+
+                  // Update the form state
+                  field.onChange([...currentValue]);
+                };
+
+                return (
+                  <FormItem className="flex flex-col items-start rounded-md space-y-2 py-2 px-6">
+                    <FormLabel>Ubicaciones</FormLabel>
+                    <Accordion className="w-full" type="single" collapsible>
+                      {companies &&
+                        companies.map((company) => (
+                          <AccordionItem key={company.id} value={company.name}>
+                            <AccordionTrigger>{company.name}</AccordionTrigger>
+                            <AccordionContent>
+                              {companies_locations &&
+                                companies_locations
+                                  .filter((location) => location.company_id === company.id)
+                                  .map((location) => (
+                                    <div
+                                      className="flex flex-col gap-2"
+                                      key={location.company_id}
+                                    >
+                                      {location.locations.map((loc) => (
+                                        <div
+                                          className="flex items-center space-x-2"
+                                          key={loc.id}
+                                        >
+                                          <Checkbox
+                                            checked={Boolean(
+                                              field.value?.find(
+                                                (item) =>
+                                                  item.companyID === company.id &&
+                                                  item.locationID.includes(loc.id)
+                                              )
+                                            )}
+                                            onCheckedChange={(isSelected) =>
+                                              handleLocationChange(
+                                                company.id,
+                                                loc.id,
+                                                isSelected
+                                              )
+                                            }
+                                          />
+                                          <Label>{loc.address}</Label>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ))}
+                            </AccordionContent>
+                          </AccordionItem>
                         ))}
-                        {
-                          companiesError && <p>Ha ocurrido un error al cargar las compañías...</p>
-                        }
-                      </TabsList>
-                      {
-                        companies_locationsLoading && (
-                          <div className="w-full flex justify-center">
-                            <Loader2 className="size-4 animate-spin" />
-                          </div>
-                        )
-                      }
-                      {companies_locations?.map((company, index) => (
-                        <TabsContent className="flex gap-2 justify-center flex-wrap" value={company.company_id.toString()} key={company.company_id}>
-                          {company.locations.map((location) => (
-                            <FormField
-                              key={location.id}
-                              control={form.control}
-                              name={`companies_locations.${index}.locationID`}
-                              render={({ field: locationField }) => {
-                                const currentValue = locationField.value || [];
-                                return (
-                                  <FormItem className="flex flex-row items-start justify-center gap-1 space-y-0">
-                                    <FormControl>
-                                      <Checkbox
-                                        checked={currentValue.includes(Number(location.id))}
-                                        onCheckedChange={(checked: boolean) => {
-                                          const newValue = checked
-                                            ? [...currentValue, Number(location.id)]
-                                            : currentValue.filter((id) => id !== Number(location.id));
-
-                                          locationField.onChange(newValue);
-
-                                          // Obtener valores actuales del formulario
-                                          const formValues = form.getValues("companies_locations");
-
-                                          // Asegúrate de que el índice existe antes de manipularlo
-                                          if (!formValues![index]) {
-                                            formValues![index] = { companyID: company.company_id, locationID: [] };
-                                          }
-
-                                          // Actualizar o eliminar según sea necesario
-                                          if (newValue.length === 0) {
-                                            formValues!.splice(index, 1);
-                                          } else {
-                                            formValues![index] = {
-                                              companyID: company.company_id,
-                                              locationID: newValue,
-                                            };
-                                          }
-
-                                          // Actualiza el estado del formulario
-                                          form.setValue("companies_locations", formValues);
-
-                                          // Debug
-                                          console.log(form.getValues("companies_locations"));
-                                        }}
-                                      />
-                                    </FormControl>
-                                    <FormLabel className="font-normal">
-                                      {location.cod_iata} - {location.type}
-                                    </FormLabel>
-                                  </FormItem>
-                                );
-                              }}
-                            />
-                          ))}
-                        </TabsContent>
-                      ))}
-                      {
-                        companies_locationsError && <p className="text-muted-foreground text-center text-sm">Ha ocurrido un error al cargar las ubicaciones...</p>
-                      }
-                    </Tabs>
-                  </div>
-                </FormItem>
-              )}
+                    </Accordion>
+                  </FormItem>
+                );
+              }}
             />
           </div>
         </div>

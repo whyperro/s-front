@@ -82,9 +82,9 @@ export const columns: ColumnDef<Requisition>[] = [
     ),
     cell: ({ row }) => {
       const process = row.original.status === 'proceso'
-      const aproved = row.original.status === 'aprobada'
+      const aproved = row.original.status === 'aprobado'
       return (
-        <Badge className={cn("flex justify-center", process ? "bg-yellow-500" : aproved ? "bg-green-500" : "bg-red-500")}>{row.original.status.toUpperCase()}</Badge>
+        <Badge className={cn("flex justify-center", process ? "bg-yellow-500" : aproved ? "bg-green-500" : "bg-red-500")} > {row.original.status.toUpperCase()}</Badge >
       )
     }
   },
@@ -104,7 +104,7 @@ export const columns: ColumnDef<Requisition>[] = [
     ),
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <RequisitionsDropdownActions id={row.original.id} />
+        <RequisitionsDropdownActions req={row.original} />
       </div>
     )
   },

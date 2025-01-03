@@ -50,10 +50,8 @@ const formSchema = z.object({
   manufacturer_id: z.string({
     message: "Debe ingresar un fabricante.",
   }),
+  condition_id: z.string(),
   cost: z.string(),
-  condition: z.string({
-    message: "Debe ingresar la condición del articulo.",
-  }),
   batches_id: z.string({
     message: "Debe ingresar un lote.",
   }),
@@ -126,7 +124,7 @@ const CreateToolForm = ({ initialData, isEditing }: {
       alternative_part_number: initialData?.alternative_part_number || "",
       batches_id: initialData?.batches.id?.toString() || "",
       manufacturer_id: initialData?.manufacturer?.id.toString() || "",
-      condition: initialData?.condition || "",
+      condition_id: initialData?.condition?.id.toString() || "",
       description: initialData?.description || "",
       is_special: initialData?.tool?.isSpecial || false,
       zone: initialData?.zone || "",
@@ -278,7 +276,7 @@ const CreateToolForm = ({ initialData, isEditing }: {
             />
             <FormField
               control={form.control}
-              name="condition"
+              name="condition_id"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Condición</FormLabel>

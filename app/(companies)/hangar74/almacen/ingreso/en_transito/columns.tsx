@@ -8,7 +8,7 @@ import InTransitArticleDropdownActions from "@/components/misc/InTransitArticleD
 import { Checkbox } from "@/components/ui/checkbox"
 import { Manufacturer } from "@/types"
 
-interface IArticleInTransit {
+interface IArticlesInTransit {
   id?: number,
   part_number: string,
   serial?: string,
@@ -20,7 +20,7 @@ interface IArticleInTransit {
 }
 
 
-export const columns: ColumnDef<IArticleInTransit>[] = [
+export const columns: ColumnDef<IArticlesInTransit>[] = [
   {
     id: "select",
     header: ({ table }) => (

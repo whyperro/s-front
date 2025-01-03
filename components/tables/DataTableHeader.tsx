@@ -72,12 +72,12 @@ export function DataTableColumnHeader<TData, TValue>({
       {
         filter && (
           <Input
-            placeholder={`Busqueda por ${title.toLowerCase()}...`}
+            placeholder={`Busqueda - ${title.toLowerCase()}...`}
             value={(column?.getFilterValue() as string) ?? (column?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               column?.setFilterValue(event.target.value)
             }
-            className="h-7 mb-2 text-xs text-muted-foreground w-[200px]"
+            className="h-7 mb-2 text-xs text-muted-foreground w-[150px]"
           />
         )
       }
