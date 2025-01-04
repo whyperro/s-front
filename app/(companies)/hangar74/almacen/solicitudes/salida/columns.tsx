@@ -58,13 +58,13 @@ export const columns: ColumnDef<DispatchRequest>[] = [
     )
   },
   {
-    accessorKey: "requested_by",
+    accessorKey: "created_by",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Empleado Responsable" />
     ),
     cell: ({ row }) => {
       return (
-        <p className="font-medium text-center">{row.original.requested_by}</p>
+        <p className="font-medium text-center">{row.original.created_by}</p>
       )
     }
   },

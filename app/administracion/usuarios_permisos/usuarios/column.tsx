@@ -53,7 +53,7 @@ export const columns: ColumnDef<User>[] = [
           <Tooltip>
             <TooltipTrigger><span className='number'>{row.original.first_name} {row.original.last_name}</span></TooltipTrigger>
             <TooltipContent>
-              <Image src={'/kanye.png'} width={100} height={100} alt="Imagen referencial" />
+              <p>TODO: Agregar imagen</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -119,8 +119,9 @@ export const columns: ColumnDef<User>[] = [
     id: "actions",
     cell: ({ row }) => {
       const id = row.original.id
+      const companies = row.original.companies
       return (
-        <UserDropdownActions id={id.toString()} />
+        <UserDropdownActions id={id.toString()} companies={companies} />
       )
     },
   },

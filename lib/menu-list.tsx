@@ -1,17 +1,19 @@
 import {
   Building,
   ClipboardCopy,
+  Globe,
   History,
   LayoutGrid,
   LucideIcon,
-  NotebookPen,
   PackageOpen,
   PackagePlus,
   PackageSearch,
   Plane,
+  ScrollText,
   Settings,
   SquarePen,
-  User2
+  User2,
+  Wrench
 } from "lucide-react";
 
 type Submenu = {
@@ -119,6 +121,13 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               active: pathname.includes("/hangar74/general/inventario"),
               icon: PackageSearch,
               submenus: []
+            },
+            {
+              href: "/hangar74/general/requisiciones",
+              label: "Requisiciones",
+              active: pathname.includes("/hangar74/general/requisiciones"),
+              icon: ScrollText,
+              submenus: []
             }
           ]
         },
@@ -191,22 +200,11 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               ]
             },
             {
-              href: "/hangar74/almacen/reportes",
-              label: "Reportes",
-              active: pathname.includes("/hangar74/almacen/reportes"),
-              icon: NotebookPen,
-              submenus: [
-                {
-                  href: "/hangar74/almacen/reportes/interno",
-                  label: "Interno",
-                  active: pathname === "/hangar74/almacen/reportes/interno"
-                },
-                {
-                  href: "/hangar74/almacen/reportes/inac",
-                  label: "INAC",
-                  active: pathname === "/hangar74/almacen/reportes/inac"
-                },
-              ]
+              href: "/hangar74/almacen/caja_herramientas",
+              label: "Cajas de Herramientas",
+              active: pathname.includes("/hangar74/almacen/caja_herramientas"),
+              icon: Wrench,
+              submenus: []
             },
           ]
         },
@@ -254,15 +252,38 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
           ]
         },
         {
-          groupLabel: "Settings",
+          groupLabel: "Ajustes",
           menus: [
+            {
+              href: "/ajustes/empresas",
+              label: "Globales",
+              active: pathname.includes("/ajustes/globales"),
+              icon: Globe,
+              submenus: [
+                {
+                  href: "/ajustes/globales/unidades",
+                  label: "Unidades",
+                  active: pathname === ("/ajustes/globales/unidades"),
+                },
+                {
+                  href: "/ajustes/globales/fabricantes",
+                  label: "Fabricantes",
+                  active: pathname === ("/administracion/globales/fabricantes"),
+                },
+                {
+                  href: "/ajustes/globales/condiciones",
+                  label: "Condiciones",
+                  active: pathname === ("/ajustes/globales/condiciones"),
+                },
+              ]
+            },
             {
               href: "/hangar74/cuenta",
               label: "Cuenta",
               active: pathname.includes("/cuenta"),
               icon: Settings,
               submenus: []
-            }
+            },
           ]
         },
         {
@@ -301,11 +322,6 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
                   href: "/administracion/empresas/almacenes",
                   label: "Administrar Almacenes",
                   active: pathname === ("/administracion/empresas/almacenes"),
-                },
-                {
-                  href: "/administracion/empresas/almacenes/condiciones_articulos",
-                  label: "Administrar Condiciones",
-                  active: pathname === ("/administracion/empresas/almacenes/condiciones_articulos"),
                 },
                 {
                   href: "/administracion/empresas/empleados",

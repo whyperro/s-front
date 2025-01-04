@@ -57,7 +57,7 @@ export const columns: ColumnDef<BatchesWithCountProp>[] = [
       <DataTableColumnHeader filter column={column} title="Descripción" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground">{row.original.description}</p>
+      <p className="flex justify-center text-muted-foreground text-center">{row.original.description}</p>
     )
   },
   {
@@ -75,7 +75,7 @@ export const columns: ColumnDef<BatchesWithCountProp>[] = [
       <DataTableColumnHeader column={column} title="Cantidad Mínima" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center">{row.original.min_quantity}<span className="font-bold">{row.original.medition_unit}</span></p>
+      <p className="flex justify-center">{row.original.min_quantity}/<span className="font-bold">{row.original.medition_unit}</span></p>
     )
   },
   {

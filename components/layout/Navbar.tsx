@@ -34,7 +34,7 @@ export function Navbar({ title }: NavbarProps) {
           }
         }
       );
-
+      console.log(channel)
       // Cleanup listener when the component unmounts or dependencies change
       return () => {
         channel.stopListening('NotificationHangar74Event');

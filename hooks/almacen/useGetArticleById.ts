@@ -1,5 +1,5 @@
 import axios from '@/lib/axios';
-import { Article, Batch, ComponentArticle, ConsumableArticle } from '@/types';
+import { Article, Batch } from '@/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
 interface EditingArticle extends Article {
   batches: Batch,
@@ -21,15 +21,36 @@ interface EditingArticle extends Article {
       fabrication_date: string,
     }
   },
+  consumable?: {
+    article_id: number,
+    is_managed: boolean,
+    quantity: number,
+    convertions: {
+      id: number,
+      secondary_unit: string,
+      convertion_rate: number,
+      quantity_unit: number,
+      unit: {
+        label: string,
+        value: string,
+      },
+    }[],
+    shell_time: {
+      caducate_date: Date,
+      fabrication_date: Date,
+      consumable_id: string,
+    }
+  }
 }
-const fetchArticleById = async (id: string): Promise<EditingArticle> => {
-  const {data} = await axios.get(`/hangar74/article/${id}`);
+const fetchArticleById = async (id: string, location_id: string | null): Promise<EditingArticle> => {
+  const {data} = await axios.get(`/hangar74/show-article-by-location/${location_id}/${id}`);
   return data;
 };
 
-export const useGetArticleById = (id: string) => {
+export const useGetArticleById = (id: string, location_id: string | null) => {
   return useQuery<EditingArticle>({
     queryKey: ["article"],
-    queryFn: () => fetchArticleById(id),
+    queryFn: () => fetchArticleById(id, location_id),
+    enabled: !!location_id
   });
 };

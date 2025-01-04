@@ -25,6 +25,8 @@ import { z } from "zod"
 import { Checkbox } from "../ui/checkbox"
 import { Textarea } from "../ui/textarea"
 import { AmountInput } from "../misc/AmountInput"
+import { useGetManufacturers } from "@/hooks/ajustes/globales/fabricantes/useGetManufacturers"
+import { useGetConditions } from "@/hooks/administracion/useGetConditions"
 
 const formSchema = z.object({
   article_type: z.string(),
@@ -45,13 +47,11 @@ const formSchema = z.object({
   zone: z.string({
     message: "Debe ingresar la ubicación del articulo.",
   }),
-  brand: z.string({
-    message: "Debe ingresar una marca.",
+  manufacturer_id: z.string({
+    message: "Debe ingresar un fabricante.",
   }),
+  condition_id: z.string(),
   cost: z.string(),
-  condition: z.string({
-    message: "Debe ingresar la condición del articulo.",
-  }),
   batches_id: z.string({
     message: "Debe ingresar un lote.",
   }),
@@ -98,6 +98,10 @@ const CreateToolForm = ({ initialData, isEditing }: {
 
   const { mutate, data: batches, isPending: isBatchesLoading, isError } = useGetBatchesByLocationId();
 
+  const { data: conditions, isLoading: isConditionsLoading, error: isConditionsError } = useGetConditions();
+
+  const { data: manufacturers, isLoading: isManufacturerLoading, isError: isManufacturerError } = useGetManufacturers()
+
   useEffect(() => {
     if (selectedStation) {
       mutate(Number(selectedStation))
@@ -119,11 +123,12 @@ const CreateToolForm = ({ initialData, isEditing }: {
       part_number: initialData?.part_number || "",
       alternative_part_number: initialData?.alternative_part_number || "",
       batches_id: initialData?.batches.id?.toString() || "",
-      brand: initialData?.brand || "",
-      condition: initialData?.condition || "",
+      manufacturer_id: initialData?.manufacturer?.id.toString() || "",
+      condition_id: initialData?.condition?.id.toString() || "",
       description: initialData?.description || "",
       is_special: initialData?.tool?.isSpecial || false,
       zone: initialData?.zone || "",
+      cost: initialData && initialData?.cost?.toString() || "",
     }
   })
   form.setValue("article_type", "herramienta");
@@ -138,9 +143,9 @@ const CreateToolForm = ({ initialData, isEditing }: {
       confirmIncoming.mutate({
         ...values,
         id: initialData?.id,
-        certificate_8130: initialData?.certifcate_8130,
-        certificate_fabricant: initialData?.certifcate_fabricant,
-        certificate_vendor: initialData?.certifcate_vendor,
+        certificate_8130: values.certificate_8130 || initialData?.certifcate_8130,
+        certificate_fabricant: values.certificate_fabricant || initialData?.certifcate_fabricant,
+        certificate_vendor: values.certificate_vendor || initialData?.certifcate_vendor,
         status: "Stored"
       })
     } else {
@@ -148,6 +153,7 @@ const CreateToolForm = ({ initialData, isEditing }: {
     }
   }
 
+  console.log(form.watch("image"))
   return (
     <Form {...form}>
       <form encType="multipart/form-data" className="flex flex-col gap-4 max-w-6xl mx-auto" onSubmit={form.handleSubmit(onSubmit)}>
@@ -205,26 +211,26 @@ const CreateToolForm = ({ initialData, isEditing }: {
           <div className="flex gap-2 items-center flex-wrap">
             <FormField
               control={form.control}
-              name="brand"
+              name="manufacturer_id"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Marca del Articulo</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormLabel>Fabricante</FormLabel>
+                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecccione..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Marca 1">Marca 1</SelectItem>
-                      <SelectItem value="Marca 2">Marca 2</SelectItem>
-                      <SelectItem value="Marca 3">Marca 3</SelectItem>
+                      {
+                        manufacturers && manufacturers.map((manufacturer) => (
+                          <SelectItem key={manufacturer.id} value={manufacturer.id.toString()}>{manufacturer.name}</SelectItem>
+                        ))
+                      }
                     </SelectContent>
                   </Select>
                   <FormDescription>
                     Marca específica del articulo.
-                    <FormDescription>
-                    </FormDescription>
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -270,20 +276,20 @@ const CreateToolForm = ({ initialData, isEditing }: {
             />
             <FormField
               control={form.control}
-              name="condition"
+              name="condition_id"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Condición</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={initialData?.condition ?? ""}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger disabled={isConditionsLoading}>
                         <SelectValue placeholder="Seleccione..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {
-                        conditions.map((condition) => (
-                          <SelectItem key={condition.value} value={condition.label}>{condition.label}</SelectItem>
+                        conditions && conditions.map((condition) => (
+                          <SelectItem key={condition.id} value={condition.id.toString()}>{condition.name}</SelectItem>
                         ))
                       }
                     </SelectContent>
@@ -380,6 +386,9 @@ const CreateToolForm = ({ initialData, isEditing }: {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Imágen del Articulo</FormLabel>
+                  {
+                    initialData && <Image src={`data:image/png;base64,${initialData.image!.toString()}`} width={100} height={100} alt="Imagen defecto" />
+                  }
                   <FormControl>
                     <div className="relative h-10 w-full ">
                       <FileUpIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 z-10" />

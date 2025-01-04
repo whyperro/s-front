@@ -17,7 +17,6 @@ import { DataTableFacetedFilter } from "@/components/tables/DataTableFacetedFilt
 import { DataTablePagination } from "@/components/tables/DataTablePagination"
 import { DataTableViewOptions } from "@/components/tables/DataTableViewOptions"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -26,11 +25,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useGetRoles } from "@/hooks/user/useGetRoles"
+import { Role } from "@/types"
 import { ListRestart } from "lucide-react"
 import { useState } from "react"
-import { useGetRoles } from "@/hooks/user/useGetRoles"
-import { Value } from "@radix-ui/react-select"
-import { Role } from "@/types"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]

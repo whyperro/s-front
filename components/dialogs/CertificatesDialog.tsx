@@ -61,7 +61,7 @@ const CertificatesDialog = ({ certificates, serial }: DialogProps) => {
               {
                 certificates && certificates.map(certificate => (
                   <div onClick={() => handleDownload(certificate)} className="w-[200px] group cursor-pointer" key={certificate}>
-                    <Badge className="flex gap-2 items-center group-hover:bg-white group-hover:border-black group-hover:text-black"><FileDown className="group-hover:animate-pulse" /> {certificate?.includes("8130") ? "Certificado - 8139" : certificate?.includes("vendor") ? "Certificado - Vendedor" : "Certificado - Fabricante"}</Badge>
+                    <Badge className="flex gap-2 items-center group-hover:bg-white group-hover:border-black group-hover:text-black"><FileDown className="group-hover:animate-pulse" /> {certificate?.includes("8130") ? "Certificado - 8130" : certificate?.includes("vendor") ? "Certificado - Vendedor" : "Certificado - Fabricante"}</Badge>
                   </div>
                 ))
               }

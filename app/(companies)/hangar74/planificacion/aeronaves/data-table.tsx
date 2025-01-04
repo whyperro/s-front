@@ -12,11 +12,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 
-import { DataTableFacetedFilter } from "@/components/tables/DataTableFacetedFilter"
+import { CreateBatchDialog } from "@/components/dialogs/CreateBatchDialog"
 import { DataTablePagination } from "@/components/tables/DataTablePagination"
 import { DataTableViewOptions } from "@/components/tables/DataTableViewOptions"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -25,11 +24,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ListRestart, PlusCircle } from "lucide-react"
-import Link from "next/link"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { CreateBatchDialog } from "@/components/dialogs/CreateBatchDialog"
+import { CreateAircraftDialog } from "@/components/dialogs/CreateAircraftDialog"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -45,13 +42,6 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     []
   )
-
-  const locations = [
-    {
-      label: 'Puerto Ordaz',
-      value: 'pzo'
-    }
-  ]
 
   const table = useReactTable({
     data,
@@ -75,10 +65,7 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <div className="flex gap-x-2 items-center">
-          <CreateBatchDialog />
-          <Button onClick={() => router.push('/hangar74/almacen/inventario/gestion/crear')} variant={'outline'} className="flex items-center justify-center gap-2 h-8 border-dashed">Ingresar Articulo</Button>
-        </div>
+        <CreateAircraftDialog />
         <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-md border mb-4">

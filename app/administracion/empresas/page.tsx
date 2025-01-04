@@ -9,7 +9,11 @@ import { DataTable } from './data-table'
 const CompanyPage = () => {
   const { data: companies, isLoading, error } = useGetCompanies();
   return (
-    <ContentLayout title='Permisos'>
+    <ContentLayout title='Fabricantes'>
+      <h1 className='text-5xl font-bold text-center mt-2'>
+        Control de Fabricantes
+      </h1>
+      <p className='text-sm text-muted-foreground text-center italic mt-2'>Aquí se lleva el control de los diferentes fabricantes de los diferentes articulos.</p>
       {
         isLoading && (
           <div className='grid mt-72 place-content-center'>

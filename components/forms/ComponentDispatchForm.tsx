@@ -148,7 +148,7 @@ export function ComponentDispatchForm({ onClose }: FormProps) {
                     }
                     {
                       employees && employees.map((employee) => (
-                        <SelectItem key={employee.id} value={employee.id.toString()}>{employee.first_name} {employee.last_name} - {employee.job_title.name}</SelectItem>
+                        <SelectItem key={employee.id} value={`${employee.first_name} ${employee.last_name}`}>{employee.first_name} {employee.last_name} - {employee.job_title.name}</SelectItem>
                       ))
                     }
                   </SelectContent>

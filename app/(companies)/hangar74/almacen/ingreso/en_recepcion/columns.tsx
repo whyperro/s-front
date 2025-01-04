@@ -60,25 +60,25 @@ export const columns: ColumnDef<Article>[] = [
       <DataTableColumnHeader filter column={column} title="Serial" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground italic">{row.original.serial}</p>
+      <p className="flex justify-center text-muted-foreground italic">{row.original.serial ?? "N/A"}</p>
     )
   },
   {
-    accessorKey: "brand",
+    accessorKey: "manufacturer",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Marca" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center">{row.original.brand}</p>
+      <p className="flex justify-center">{row.original.manufacturer?.name ?? "N/A"}</p>
     )
   },
   {
     accessorKey: "category",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Categoría" />
+      <DataTableColumnHeader column={column} title="Condición" />
     ),
     cell: ({ row }) => (
-      <p className="text-center font-medium italic">{row.original.condition}</p>
+      <p className="text-center font-medium italic">{row.original.condition?.name}</p>
     )
   },
   {

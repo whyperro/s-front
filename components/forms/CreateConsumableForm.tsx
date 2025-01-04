@@ -1,15 +1,7 @@
 'use client'
 
+import { useConfirmIncomingArticle, useCreateArticle } from "@/actions/almacen/inventario/articulos/actions"
 import { Button } from "@/components/ui/button"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
-import { useCreateArticle } from "@/actions/almacen/inventario/articulos/actions"
 import { Calendar } from "@/components/ui/calendar"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -18,27 +10,35 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { useGetConditions } from "@/hooks/administracion/useGetConditions"
+import { useGetManufacturers } from "@/hooks/ajustes/globales/fabricantes/useGetManufacturers"
+import { useGetSecondaryUnits } from "@/hooks/ajustes/globales/unidades/useGetSecondaryUnits"
 import { useGetBatchesByLocationId } from "@/hooks/almacen/useGetBatchesByLocationId"
-import { conditions } from "@/lib/conditions"
 import { cn } from "@/lib/utils"
 import { useCompanyStore } from "@/stores/CompanyStore"
-import { Batch } from "@/types"
+import { Article, Batch, Convertion } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { addYears, format, subYears } from "date-fns"
 import { es } from 'date-fns/locale'
-import { CalendarIcon, FileUpIcon, Loader2 } from "lucide-react"
+import { CalendarIcon, Check, ChevronsUpDown, FileUpIcon, Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Checkbox } from "../ui/checkbox"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
+import { Label } from "../ui/label"
 import { Textarea } from "../ui/textarea"
 
 
 const formSchema = z.object({
   article_type: z.string().optional(),
-  serial: z.string().min(2, {
-    message: "El serial debe contener al menos 2 carácteres.",
-  }).optional(),
   part_number: z.string().min(2, {
     message: "El serial debe contener al menos 2 carácteres.",
   }),
@@ -46,56 +46,81 @@ const formSchema = z.object({
     message: "Debe ingresar la descripción del articulo."
   }).min(2, {
     message: "La descripción debe contener al menos 2 carácteres.",
-  }).optional(),
+  }),
   zone: z.string({
     message: "Debe ingresar la ubicación del articulo.",
-  }).optional(),
-  caducate_date: z.date({
+  }),
+  caducate_date: z.string({
     required_error: "A date of birth is required.",
   }).optional(),
-  fabrication_date: z.date({
+  fabrication_date: z.string({
     required_error: "A date of birth is required.",
   }).optional(),
-  brand: z.string({
+  manufacturer_id: z.string({
     message: "Debe ingresar una marca.",
-  }).optional(),
-  condition: z.string({
+  }),
+  condition_id: z.string({
     message: "Debe ingresar la condición del articulo.",
-  }).optional(),
-  unit_meassure: z.string({
-    message: "Debe ingresar una unidad de medida.",
-  }).optional(),
-  magnitude: z.coerce.number({
-    message: "Debe ingresar la magnitud del articulo.",
-  }).nonnegative({
-    message: "No puede ingresar valores negativos.",
   }).optional(),
   quantity: z.coerce.number({
     message: "Debe ingresar una cantidad de articulos.",
   }).nonnegative({
     message: "No puede ingresar valores negativos.",
-  }).optional(),
+  }),
   batches_id: z.string({
     message: "Debe ingresar un lote.",
-  }).optional(),
+  }),
   is_managed: z.boolean().optional(),
   certificate_8130: z
     .instanceof(File, { message: 'Please upload a file.' })
-    .refine((f) => f.size < 10000_000, 'Max 100Kb upload size.'),
+    .refine((f) => f.size < 10000_000, 'Max 100Kb upload size.').optional(),
 
   certificate_fabricant: z
     .instanceof(File, { message: 'Please upload a file.' })
-    .refine((f) => f.size < 100_000, 'Max 100Kb upload size.'),
+    .refine((f) => f.size < 100_000, 'Max 100Kb upload size.').optional(),
 
   certificate_vendor: z
     .instanceof(File, { message: 'Please upload a file.' })
-    .refine((f) => f.size < 10000_000, 'Max 100Kb upload size.'),
+    .refine((f) => f.size < 10000_000, 'Max 100Kb upload size.').optional(),
   image: z
     .instanceof(File).optional()
   ,
 })
 
-const CreateConsumableForm = () => {
+interface EditingArticle extends Article {
+  batches: Batch,
+  consumable?: {
+    article_id: number,
+    is_managed: boolean,
+    convertions: {
+      id: number,
+      secondary_unit: string,
+      convertion_rate: number,
+      quantity_unit: number,
+      unit: {
+        label: string,
+        value: string,
+      },
+    }[],
+    shell_time: {
+      caducate_date: Date,
+      fabrication_date: Date,
+      consumable_id: string,
+    }
+  }
+}
+
+
+const CreateConsumableForm = ({ initialData, isEditing }: {
+  initialData?: EditingArticle,
+  isEditing?: boolean,
+}) => {
+
+  const [open, setOpen] = useState(false);
+
+  const [secondaryQuantity, setSecondaryQuantity] = useState<number>();
+
+  const [secondarySelected, setSecondarySelected] = useState<Convertion | null>(null);
 
   const [filteredBatches, setFilteredBatches] = useState<Batch[]>()
 
@@ -105,7 +130,15 @@ const CreateConsumableForm = () => {
 
   const { createArticle } = useCreateArticle();
 
+  const { confirmIncoming } = useConfirmIncomingArticle();
+
   const { selectedStation } = useCompanyStore();
+
+  const { data: secondaryUnits, isLoading: secondaryLoading, isError: secondaryError } = useGetSecondaryUnits()
+
+  const { data: manufacturers, isLoading: isManufacturerLoading, isError: isManufacturerError } = useGetManufacturers()
+
+  const { data: conditions, isLoading: isConditionsLoading, error: isConditionsError } = useGetConditions();
 
   const { mutate, data: batches, isPending: isBatchesLoading, isError } = useGetBatchesByLocationId();
 
@@ -126,11 +159,23 @@ const CreateConsumableForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      serial: "",
-      is_managed: false,
+      part_number: initialData?.part_number || "",
+      batches_id: initialData?.batches.id?.toString() || "",
+      manufacturer_id: initialData?.manufacturer?.id.toString() || "",
+      condition_id: initialData?.condition?.id.toString() || "",
+      description: initialData?.description || "",
+      zone: initialData?.zone || "",
+      is_managed: initialData?.consumable?.is_managed || false,
     }
   })
   form.setValue("article_type", "consumible");
+
+  useEffect(() => {
+    if (secondarySelected && secondaryQuantity) {
+      const quantity = (secondarySelected.convertion_rate * secondarySelected.quantity_unit) * secondaryQuantity
+      form.setValue("quantity", quantity)
+    }
+  }, [form, secondarySelected, secondaryQuantity])
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const formattedValues = {
@@ -138,11 +183,21 @@ const CreateConsumableForm = () => {
       caducate_date: caducateDate && format(caducateDate, "yyyy-MM-dd"),
       fabrication_date: fabricationDate && format(fabricationDate, "yyyy-MM-dd"),
       batches_id: Number(values.batches_id),
+      convertion_id: secondarySelected?.id,
     }
-    createArticle.mutate(formattedValues);
-    // console.log(formattedValues)
+    if (isEditing) {
+      confirmIncoming.mutate({
+        ...values,
+        id: initialData?.id,
+        certificate_8130: values.certificate_8130 || initialData?.certifcate_8130,
+        certificate_fabricant: values.certificate_fabricant || initialData?.certifcate_fabricant,
+        certificate_vendor: values.certificate_vendor || initialData?.certifcate_vendor,
+        status: "Stored"
+      })
+    } else {
+      createArticle.mutate(formattedValues);
+    }
   }
-
   return (
     <Form {...form}>
       <form className="flex flex-col gap-4 max-w-6xl mx-auto" onSubmit={form.handleSubmit(onSubmit)}>
@@ -152,7 +207,7 @@ const CreateConsumableForm = () => {
             name="part_number"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Serial</FormLabel>
+                <FormLabel>Nro. de Parte</FormLabel>
                 <FormControl>
                   <Input placeholder="EJ: 234ABAC" {...field} />
                 </FormControl>
@@ -165,36 +220,20 @@ const CreateConsumableForm = () => {
           />
           <FormField
             control={form.control}
-            name="serial"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Serial</FormLabel>
-                <FormControl>
-                  <Input placeholder="EJ: 234ABAC" {...field} />
-                </FormControl>
-                <FormDescription>
-                  Identificador único del articulo.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="condition"
+            name="condition_id"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Condición</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger disabled={isConditionsLoading}>
                       <SelectValue placeholder="Seleccione..." />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     {
-                      conditions.map((condition) => (
-                        <SelectItem key={condition.value} value={condition.value}>{condition.label}</SelectItem>
+                      conditions && conditions.map((condition) => (
+                        <SelectItem key={condition.id} value={condition.id.toString()}>{condition.name}</SelectItem>
                       ))
                     }
                   </SelectContent>
@@ -328,38 +367,78 @@ const CreateConsumableForm = () => {
 
         <div className="flex flex-row gap-12 justify-center max-w-6xl">
           <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col space-x-0 space-y-2 mt-2.5">
+              <Label>Metodo de Ingreso</Label>
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    disabled={secondaryLoading}
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="justify-between"
+                  >
+                    {secondaryUnits && (secondarySelected
+                      ? secondaryUnits.find((secondaryUnits) => secondaryUnits.id.toString() === secondarySelected.id.toString())?.secondary_unit
+                      : "Seleccione...")}
+                    <ChevronsUpDown className="opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search framework..." />
+                    <CommandList>
+                      <CommandEmpty>No existen unidades secundarias.</CommandEmpty>
+                      <CommandGroup>
+                        {secondaryUnits && secondaryUnits.map((secondaryUnit) => (
+                          <CommandItem
+                            key={secondaryUnit.id}
+                            value={secondaryUnit.id.toString()}
+                            onSelect={(currentValue) => {
+                              setSecondarySelected(secondaryUnits.find((secondaryUnit) => secondaryUnit.id.toString() === currentValue) || null)
+                              setOpen(false)
+                            }}
+                          >
+                            {secondaryUnit.secondary_unit}
+                            <Check
+                              className={cn(
+                                "ml-auto",
+                                secondarySelected?.id.toString() === secondaryUnit.id.toString() ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              <p className="text-sm text-muted-foreground">Indique como será ingresado el articulo.</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Cantidad</Label>
+              <Input type="number" onChange={(e) => setSecondaryQuantity(parseFloat(e.target.value))} placeholder="EJ: 2, 4, 6..." />
+              <p className="text-sm text-muted-foreground">Indique la cantidad a ingresar.</p>
+
+            </div>
             <FormField
               control={form.control}
-              name="quantity"
+              name="manufacturer_id"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Cantidad de Unidades</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="EJ: 5" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Cantidad de unidades a agregar
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="brand"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Marca del Articulo</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormLabel>Fabricante</FormLabel>
+                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecccione..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Marca 1">Marca 1</SelectItem>
-                      <SelectItem value="Marca 2">Marca 2</SelectItem>
-                      <SelectItem value="Marca 3">Marca 3</SelectItem>
+                      {
+                        manufacturers && manufacturers.map((manufacturer) => (
+                          <SelectItem key={manufacturer.id} value={manufacturer.id.toString()}>{manufacturer.name}</SelectItem>
+                        ))
+                      }
                     </SelectContent>
                   </Select>
                   <FormDescription>
@@ -369,55 +448,26 @@ const CreateConsumableForm = () => {
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="magnitude"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Magnitud</FormLabel>
-                  <FormControl>
-                    <Input type="" placeholder="EJ: 35" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Magnitud según unidad de medida.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="unit_meassure"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Unidad de Medida</FormLabel>
-                  <FormControl>
-                    <Input placeholder="EJ: kg/ml/L" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Unidad de medición del articulo.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="zone"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Ubicación del Articulo</FormLabel>
-                  <FormControl>
-                    <Input placeholder="EJ: Pasillo 4, repisa 3..." {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Ubicación exacta del articulo.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {
+              isEditing && (
+                <FormField
+                  control={form.control}
+                  name="zone"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Ubicación del Articulo</FormLabel>
+                      <FormControl>
+                        <Input placeholder="EJ: Pasillo 4, repisa 3..." {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Ubicación exacta del articulo.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )
+            }
             <FormField
               control={form.control}
               name="batches_id"
@@ -460,7 +510,7 @@ const CreateConsumableForm = () => {
               control={form.control}
               name="is_managed"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormItem className={cn("flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4", isEditing ? "" : "col-span-2")}>
                   <FormControl>
                     <Checkbox
                       checked={field.value}
@@ -594,8 +644,8 @@ const CreateConsumableForm = () => {
           </div>
         </div>
         <div>
-          <Button className="bg-primary text-white hover:bg-blue-900 disabled:bg-slate-50 disabled:border-dashed disabled:border-black" disabled={createArticle?.isPending} type="submit">
-            {createArticle?.isPending ? <p className="text-black italic">Creando...</p> : <p>Crear Consumible</p>}
+          <Button className="bg-primary text-white hover:bg-blue-900 disabled:bg-slate-50 disabled:border-dashed disabled:border-black" disabled={createArticle?.isPending || confirmIncoming.isPending} type="submit">
+            {createArticle?.isPending || confirmIncoming.isPending ? "Cargando..." : <p>{isEditing ? "Confirmar Ingreso" : "Crear Articulo"}</p>}
           </Button>
         </div>
       </form>

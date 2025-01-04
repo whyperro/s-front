@@ -6,20 +6,21 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
 
 import InTransitArticleDropdownActions from "@/components/misc/InTransitArticleDropdownActions"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Manufacturer } from "@/types"
 
-interface IArticleInTransit {
+interface IArticlesInTransit {
   id?: number,
   part_number: string,
   serial?: string,
   name: string,
   description?: string,
-  brand?: string,
+  name_manufacturer?: string,
   condition?: string,
-  image?: File,
+  image?: File | string,
 }
 
 
-export const columns: ColumnDef<IArticleInTransit>[] = [
+export const columns: ColumnDef<IArticlesInTransit>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -85,16 +86,16 @@ export const columns: ColumnDef<IArticleInTransit>[] = [
       <DataTableColumnHeader filter column={column} title="Serial" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground italic">{row.original.serial}</p>
+      <p className="flex justify-center text-muted-foreground italic">{row.original.serial ?? "N/A"}</p>
     )
   },
   {
-    accessorKey: "brand",
+    accessorKey: "name_manufacturer",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Marca" />
+      <DataTableColumnHeader column={column} title="Fabricante" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center">{row.original.brand}</p>
+      <p className="flex justify-center font-bold">{row.original.name_manufacturer ?? "N/A"}</p>
     )
   },
   {
@@ -104,6 +105,15 @@ export const columns: ColumnDef<IArticleInTransit>[] = [
     ),
     cell: ({ row }) => (
       <p className="text-center font-medium italic">{row.original.condition}</p>
+    )
+  },
+  {
+    accessorKey: "category",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) => (
+      <p className="text-center font-medium italic">En USA - TEST</p>
     )
   },
   {

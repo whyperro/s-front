@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/axios"
-import { ComponentArticle, ConsumableArticle } from "@/types"
+import { ComponentArticle, ConsumableArticle, ToolArticle } from "@/types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
@@ -10,7 +10,7 @@ export const useCreateArticle = () => {
 
     const createMutation = useMutation({
         mutationKey: ["articles"],
-        mutationFn: async (data: ConsumableArticle | ComponentArticle) => {
+        mutationFn: async (data: ConsumableArticle | ComponentArticle | ToolArticle) => {
             await axiosInstance.post('/hangar74/article', data,
               {
               headers: {
@@ -110,18 +110,23 @@ export const useConfirmIncomingArticle = () => {
         alternative_part_number?: string,
         description: string,
         zone: string,
-        brand: string,
-        condition: string,
+        manufacturer_id?: number | string,
+        condition_id?: number | string,
         batches_id: string,
         is_special?: boolean,
         status: string,
-        certificate_8130?: File,
-        certificate_fabricant?: File,
-        certificate_vendor?: File,
-        image?: File,
+        certificate_8130?: File | string,
+        certificate_fabricant?: File | string,
+        certificate_vendor?: File | string,
+        image?: File | string,
       }) => {
-          await axiosInstance.put(`/hangar74/update-article-warehouse/${values.id}`, {
+          await axiosInstance.post(`/hangar74/update-article-warehouse/${values.id}`, {
             ...values
+          },
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            }
           })
         },
       onSuccess: () => {
@@ -142,6 +147,6 @@ export const useConfirmIncomingArticle = () => {
       }
   )
   return {
-    confirmIncoming: confirmIncomingArticleMutation,
+  confirmIncoming: confirmIncomingArticleMutation,
   }
 }

@@ -18,23 +18,24 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { useGetManufacturers } from "@/hooks/ajustes/globales/fabricantes/useGetManufacturers"
+import { useGetArticlesByCategory } from "@/hooks/almacen/useGetArticlesByCategory"
 import { useGetBatchesByLocationId } from "@/hooks/almacen/useGetBatchesByLocationId"
-import { conditions } from "@/lib/conditions"
 import { cn } from "@/lib/utils"
 import loadingGif from '@/public/loading2.gif'
 import { useCompanyStore } from "@/stores/CompanyStore"
-import { Article, Batch, ComponentArticle } from "@/types"
+import { Article, Batch } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { addYears, format, parse, subYears } from "date-fns"
+import { addYears, format, subYears } from "date-fns"
 import { es } from 'date-fns/locale'
 import { CalendarIcon, FileUpIcon, Loader2 } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { Textarea } from "../ui/textarea"
 import { AmountInput } from "../misc/AmountInput"
-import { useGetArticlesByCategory } from "@/hooks/almacen/useGetArticlesByCategory"
+import { Textarea } from "../ui/textarea"
+import { useGetConditions } from "@/hooks/administracion/useGetConditions"
 
 interface EditingArticle extends Article {
   batches: Batch,
@@ -72,6 +73,10 @@ const CreateComponentForm = ({ initialData, isEditing }: {
   const { confirmIncoming } = useConfirmIncomingArticle();
 
   const { mutate, data: batches, isPending: isBatchesLoading, isError } = useGetBatchesByLocationId();
+
+  const { data: manufacturers, isLoading: isManufacturerLoading, isError: isManufacturerError } = useGetManufacturers()
+
+  const { data: conditions, isLoading: isConditionsLoading, error: isConditionsError } = useGetConditions();
 
   const { mutate: verifyMutation, data: components } = useGetArticlesByCategory(Number(selectedStation), "componente")
 
@@ -118,12 +123,12 @@ const CreateComponentForm = ({ initialData, isEditing }: {
     cycle_date: z.coerce.number({
       required_error: "Ingrese los ciclos máximos.",
     }).optional(),
-    brand: z.string({
+    manufacturer_id: z.coerce.number({
       message: "Debe ingresar una marca.",
-    }),
-    condition: z.string({
+    }).optional(),
+    condition_id: z.string({
       message: "Debe ingresar la condición del articulo.",
-    }),
+    }).optional(),
     batches_id: z.string({
       message: "Debe ingresar un lote.",
     }),
@@ -168,8 +173,8 @@ const CreateComponentForm = ({ initialData, isEditing }: {
       serial: initialData?.component && initialData?.component.serial || "",
       alternative_part_number: initialData?.alternative_part_number || "",
       batches_id: initialData?.batches.id?.toString() || "",
-      brand: initialData?.brand || "",
-      condition: initialData?.condition || "",
+      manufacturer_id: initialData?.manufacturer && initialData?.manufacturer?.id || undefined,
+      condition_id: initialData?.condition?.id.toString() || "",
       description: initialData?.description || "",
       zone: initialData?.zone || "",
       hour_date: initialData?.component && Number(initialData.component.hard_time.hour_date) || 0,
@@ -191,9 +196,9 @@ const CreateComponentForm = ({ initialData, isEditing }: {
       confirmIncoming.mutate({
         ...values,
         id: initialData?.id,
-        certificate_8130: initialData?.certifcate_8130,
-        certificate_fabricant: initialData?.certifcate_fabricant,
-        certificate_vendor: initialData?.certifcate_vendor,
+        certificate_8130: values.certificate_8130 || initialData?.certifcate_8130,
+        certificate_fabricant: values.certificate_fabricant || initialData?.certifcate_fabricant,
+        certificate_vendor: values.certificate_vendor || initialData?.certifcate_vendor,
         status: "Stored"
       })
     } else {
@@ -255,20 +260,20 @@ const CreateComponentForm = ({ initialData, isEditing }: {
           />
           <FormField
             control={form.control}
-            name="condition"
+            name="condition_id"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Condición</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger disabled={isConditionsLoading}>
                       <SelectValue placeholder="Seleccione..." />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     {
-                      conditions.map((condition) => (
-                        <SelectItem key={condition.value} value={condition.label}>{condition.label}</SelectItem>
+                      conditions && conditions.map((condition) => (
+                        <SelectItem key={condition.id} value={condition.id.toString()}>{condition.name}</SelectItem>
                       ))
                     }
                   </SelectContent>
@@ -495,20 +500,22 @@ const CreateComponentForm = ({ initialData, isEditing }: {
             />
             <FormField
               control={form.control}
-              name="brand"
+              name="manufacturer_id"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Marca del Articulo</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormLabel>Fabricante</FormLabel>
+                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecccione..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Marca 1">Marca 1</SelectItem>
-                      <SelectItem value="Marca 2">Marca 2</SelectItem>
-                      <SelectItem value="Marca 3">Marca 3</SelectItem>
+                      {
+                        manufacturers && manufacturers.map((manufacturer) => (
+                          <SelectItem key={manufacturer.id} value={manufacturer.id.toString()}>{manufacturer.name}</SelectItem>
+                        ))
+                      }
                     </SelectContent>
                   </Select>
                   <FormDescription>

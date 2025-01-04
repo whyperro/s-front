@@ -153,13 +153,13 @@ export function ToolDispatchForm({ onClose }: FormProps) {
                     >
                       {articleSelected
                         ? `${articleSelected.serial}`
-                        : "Selec. el componente"}
+                        : "Selec. la herramienta"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-[200px] p-0">
                     <Command>
-                      <CommandInput placeholder="Selec. el componente..." />
+                      <CommandInput placeholder="Buscar una herramienta" />
                       <CommandList>
                         <CommandEmpty className="flex justify-center">{
                           isBatchesLoading ? <Loader2 className="size-4 animate-spin" />
