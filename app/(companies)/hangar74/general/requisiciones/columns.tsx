@@ -4,15 +4,14 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
 
+import RequisitionsDropdownActions from "@/components/misc/RequisitionDropdownActions"
+import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { Batch, Requisition } from "@/types"
-import Link from "next/link"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { Badge } from "@/components/ui/badge"
-import InTransitArticleDropdownActions from "@/components/misc/InTransitArticleDropdownActions"
-import RequisitionsDropdownActions from "@/components/misc/RequisitionDropdownActions"
+import Link from "next/link"
 
 
 // This type is used to define the shape of our data.
@@ -47,7 +46,7 @@ export const columns: ColumnDef<Requisition>[] = [
   {
     accessorKey: "order_number",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Nro. Orden" />
+      <DataTableColumnHeader filter column={column} title="Nro. Req." />
     ),
     cell: ({ row }) => {
       return (

@@ -23,20 +23,21 @@ const useEcho = (): Echo | null => {
                                     channel_name: channel.name,
                                 })
                                 .then((response) => {
-                                    callback(false, response.data);
+                                    callback(false, response.data)
                                 })
                                 .catch((error) => {
-                                    callback(true, error);
-                                });
+                                    callback(true, error)
+                                })
                         },
-                    };
+                    }
                 },
                 wsHost: process.env.NEXT_PUBLIC_REVERB_HOST as string,
-                wsPort: process.env.NEXT_PUBLIC_REVERB_SCHEME === 'https' ? 443 : 80,
-                wssPort: 443,
-                forceTLS: process.env.NEXT_PUBLIC_REVERB_SCHEME === 'https',
-                enabledTransports: ['ws', 'wss'],
-            });
+                wsPort: 8080,
+                wssPort: 8080,
+                forceTLS:
+                (process.env.NEXT_PUBLIC_REVERB_SCHEME ?? 'https') === 'https',
+            enabledTransports: ['ws', 'wss'],
+            })
             setEchoInstance(echo)
         }
     }, [])
