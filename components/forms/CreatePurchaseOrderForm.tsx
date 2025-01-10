@@ -25,7 +25,7 @@ const FormSchema = z.object({
 
 type FormSchemaType = z.infer<typeof FormSchema>
 
-export function CreatePurchaseOrderForm() {
+export function CreatePurchaseOrderForm({ initialData, onClose }: { initialData?: FormSchemaType, onClose: () => void }) {
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
