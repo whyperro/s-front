@@ -48,6 +48,33 @@ export const useCreateRequisition = () => {
   }
 }
 
+export const useUpdateRequisition = () => {
+
+  const queryClient = useQueryClient()
+
+  const updateMutation = useMutation({
+      mutationFn: async ({data, id}: {id: string | number, data: CreateRequisitionData}) => {
+          await axiosInstance.put(`/requisition-order/${id}`, data)
+        },
+      onSuccess: () => {
+          queryClient.invalidateQueries({queryKey: ['requisitions-orders']})
+          toast.success("¡Actualizada!", {
+              description: `La requisicion ha sido actualizada correctamente.`
+          })
+        },
+      onError: (error) => {
+          toast.error('Oops!', {
+            description: 'No se pudo actualizar la requisicion...'
+          })
+          console.log(error)
+        },
+      }
+  )
+  return {
+    updateRequisition: updateMutation,
+  }
+}
+
 export const useDeleteRequisition = () => {
 
   const queryClient = useQueryClient()

@@ -287,3 +287,13 @@ export type Requisition = {
   work_order: WorkOrder,
   aircraft: Aircraft,
 }
+
+export type Vendor = {
+id: string | number,
+  name: string,
+  email: string,
+  phone: string,
+  address: string,
+  created_at: Date,
+  updated_at: Date,
+}

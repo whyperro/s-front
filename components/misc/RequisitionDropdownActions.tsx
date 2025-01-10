@@ -16,6 +16,7 @@ import { CreateGeneralRequisitionForm } from "../forms/CreateGeneralRequisitionF
 import { Button } from "../ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog"
 import LoadingPage from "./LoadingPage"
+import { CreatePurchaseOrderForm } from "../forms/CreatePurchaseOrderForm"
 
 function transformApiData(apiData: any) {
   return {
@@ -144,17 +145,14 @@ const RequisitionsDropdownActions = ({ req }: { req: Requisition }) => {
       </Dialog>
 
       <Dialog open={openConfirm} onOpenChange={setOpenConfirm}>
-        <DialogContent>
+        <DialogContent className="max-w-xl">  
           <DialogHeader>
             <DialogTitle className="text-center text-3xl">Confirmar Requisición</DialogTitle>
             <DialogDescription className="text-center">
               ¿Estás seguro de confirmar esta requisición?
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
-            <Button onClick={() => handleConfirm(req.id, `${user?.first_name} ${user?.last_name}`, "aprobado", selectedCompany.split(" ").join(""))} disabled={updateStatusRequisition.isPending} className="bg-primary text-white">{updateStatusRequisition.isPending ? <Loader2 className="animate-spin size-4" /> : "Confirmar"}</Button>
-            <Button type="button" variant={"destructive"} onClick={() => setOpenConfirm(false)}>Cancelar</Button>
-          </DialogFooter>
+          <CreatePurchaseOrderForm initialData={initialData} onClose={() => setOpenConfirm(false)} />
         </DialogContent>
       </Dialog>
 
@@ -179,7 +177,7 @@ const RequisitionsDropdownActions = ({ req }: { req: Requisition }) => {
             <DialogTitle>Editar Requisición</DialogTitle>
             <DialogDescription>Edite los articulos ingresados en la requisición.</DialogDescription>
           </DialogHeader>
-          <CreateGeneralRequisitionForm initialData={initialData} onClose={() => setOpenEdit(false)} />
+          <CreateGeneralRequisitionForm id={req.id} isEditing initialData={initialData} onClose={() => setOpenEdit(false)} />
         </DialogContent>
       </Dialog>
 

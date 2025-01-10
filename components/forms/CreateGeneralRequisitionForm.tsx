@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 
-import { useCreateRequisition } from "@/actions/compras/requisiciones/actions"
+import { useCreateRequisition, useUpdateRequisition } from "@/actions/compras/requisiciones/actions"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "@/contexts/AuthContext"
 import { useGetDepartamentEmployees } from "@/hooks/administracion/useGetDepartamentEmployees"
@@ -46,6 +46,7 @@ type FormSchemaType = z.infer<typeof FormSchema>
 interface FormProps {
   onClose: () => void,
   initialData?: FormSchemaType,
+  id?: number | string,
   isEditing?: boolean,
 }
 
@@ -61,7 +62,7 @@ interface Batch {
   batch_articles: Article[];
 }
 
-export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing }: FormProps) {
+export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, id }: FormProps) {
 
   const { user } = useAuth()
 
@@ -72,6 +73,8 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing }
   const { selectedCompany } = useCompanyStore()
 
   const { createRequisition } = useCreateRequisition()
+
+  const { updateRequisition } = useUpdateRequisition()
 
   const [selectedBatches, setSelectedBatches] = useState<Batch[]>([])
 
@@ -90,8 +93,9 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing }
       form.setValue("created_by", user.id.toString())
       form.setValue("company", selectedCompany.split(" ").join(""))
     }
-    if (initialData) {
+    if (initialData && selectedCompany) {
       form.reset(initialData); // Set initial form values
+      form.setValue("company", selectedCompany.split(" ").join(""))
     }
   }, [user, initialData, form, selectedCompany])
 
@@ -169,10 +173,15 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing }
     const formattedData = {
       ...data,
     }
-    await createRequisition.mutateAsync(formattedData)
+    if (isEditing && id) {
+      await updateRequisition.mutateAsync({ data: formattedData, id: id })
+    } else {
+      await createRequisition.mutateAsync(formattedData)
+    }
     onClose()
   }
-  return (
+  console.log(isEditing)
+  return ( 
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-3">
         <div className='flex gap-2 items-center'>
