@@ -11,12 +11,14 @@ interface CreateRequisitionData {
   aircraft_id?: number,
   work_order_id?: number,
   company: string,
+  image?: File,
   articles: {
     batch: string,
     batch_name: string,
     batch_articles: {
       quantity: number,
       part_number: string,
+      image?: File,
     }[]
   }[]
 }
@@ -27,7 +29,12 @@ export const useCreateRequisition = () => {
 
   const createMutation = useMutation({
       mutationFn: async (data: CreateRequisitionData) => {
-          await axiosInstance.post('/requisition-order', data)
+          await axiosInstance.post('/requisition-order', data,
+            {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            }
+          })
         },
       onSuccess: () => {
           queryClient.invalidateQueries({queryKey: ['requisitions-orders']})

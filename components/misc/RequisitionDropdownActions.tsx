@@ -16,7 +16,7 @@ import { CreateGeneralRequisitionForm } from "../forms/CreateGeneralRequisitionF
 import { Button } from "../ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog"
 import LoadingPage from "./LoadingPage"
-import { CreatePurchaseOrderForm } from "../forms/CreatePurchaseOrderForm"
+import { CreateQuoteForm } from "../forms/CreateQuoteForm"
 
 function transformApiData(apiData: any) {
   return {
@@ -24,6 +24,7 @@ function transformApiData(apiData: any) {
     justification: apiData.justification,
     company: "", // Add appropriate value
     created_by: apiData.created_by.id.toString(),
+    tax: "0",
     requested_by: apiData.requested_by,
     articles: apiData.batch.map((batch: any) => ({
       batch: batch.id.toString(),
@@ -31,6 +32,7 @@ function transformApiData(apiData: any) {
       batch_articles: batch.batch_articles.map((article: any) => ({
         part_number: article.article_part_number,
         quantity: parseFloat(article.quantity),
+        image: article.image || null,
       })),
     })),
   };
@@ -48,7 +50,6 @@ const RequisitionsDropdownActions = ({ req }: { req: Requisition }) => {
 
   const [openReject, setOpenReject] = useState<boolean>(false)
 
-  const [openEdit, setOpenEdit] = useState<boolean>(false)
 
   const { deleteRequisition } = useDeleteRequisition()
 
@@ -72,18 +73,6 @@ const RequisitionsDropdownActions = ({ req }: { req: Requisition }) => {
     setOpenDelete(false)
   }
 
-  const handleConfirm = async (id: number, updated_by: string, status: string, company: string) => {
-    const data = {
-      status,
-      updated_by,
-      company,
-    };
-    await updateStatusRequisition.mutateAsync({
-      id,
-      data
-    });
-    setOpenConfirm(false)
-  }
 
   const handleReject = async (id: number, updated_by: string, status: string, company: string) => {
     const data = {
@@ -111,9 +100,13 @@ const RequisitionsDropdownActions = ({ req }: { req: Requisition }) => {
           {
             ((user!.roles!.map(role => role.name).includes("ANALISTA_COMPRAS")) || (user!.roles!.map(role => role.name).includes("SUPERUSER"))) && (
               <>
-                <DropdownMenuItem disabled={req.status === 'aprobado'} className="cursor-pointer">
-                  <ClipboardCheck onClick={() => setOpenConfirm(true)} className='size-5' />
-                </DropdownMenuItem>
+                {
+                  (req.status !== 'aprobada' && req.status !== 'cotizado') && (
+                    <DropdownMenuItem disabled={req.status === 'aprobado' || req.status === 'rechazado'} className="cursor-pointer">
+                      <ClipboardCheck onClick={() => setOpenConfirm(true)} className='size-5' />
+                    </DropdownMenuItem>
+                  )
+                }
                 <DropdownMenuItem disabled={req.status === 'rechazado'} onClick={() => setOpenReject(true)} className="cursor-pointer">
                   <ClipboardX className="size-5" />
                 </DropdownMenuItem>
@@ -122,9 +115,6 @@ const RequisitionsDropdownActions = ({ req }: { req: Requisition }) => {
           }
           <DropdownMenuItem disabled={!(userRoles.includes("JEFE_ALMACEN") || userRoles.includes("ADMIN_INGENIERIA")) || (user!.roles!.map(role => role.name).includes("SUPERUSER"))} onClick={() => setOpenDelete(true)} className="cursor-pointer">
             <Trash2 className="size-5 text-red-500" />
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpenEdit(true)} className="cursor-pointer">
-            <Pencil className="size-5" />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -145,14 +135,14 @@ const RequisitionsDropdownActions = ({ req }: { req: Requisition }) => {
       </Dialog>
 
       <Dialog open={openConfirm} onOpenChange={setOpenConfirm}>
-        <DialogContent className="max-w-xl">  
+        <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle className="text-center text-3xl">Confirmar Requisición</DialogTitle>
+            <DialogTitle className="text-center text-3xl">Generar Cotización</DialogTitle>
             <DialogDescription className="text-center">
-              ¿Estás seguro de confirmar esta requisición?
+              Ingrese la información necesaria para generar la cotización.
             </DialogDescription>
           </DialogHeader>
-          <CreatePurchaseOrderForm initialData={initialData} onClose={() => setOpenConfirm(false)} />
+          <CreateQuoteForm req={req} initialData={initialData} onClose={() => setOpenConfirm(false)} />
         </DialogContent>
       </Dialog>
 
@@ -170,17 +160,6 @@ const RequisitionsDropdownActions = ({ req }: { req: Requisition }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <Dialog open={openEdit} onOpenChange={setOpenEdit}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Editar Requisición</DialogTitle>
-            <DialogDescription>Edite los articulos ingresados en la requisición.</DialogDescription>
-          </DialogHeader>
-          <CreateGeneralRequisitionForm id={req.id} isEditing initialData={initialData} onClose={() => setOpenEdit(false)} />
-        </DialogContent>
-      </Dialog>
-
     </>
   )
 }

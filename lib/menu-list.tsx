@@ -1,7 +1,9 @@
 import {
+  BookOpen,
   Building,
   ClipboardCopy,
   Globe,
+  HandCoins,
   History,
   LayoutGrid,
   LucideIcon,
@@ -216,6 +218,13 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Estatus de Compras",
               active: pathname.includes("/hangar74/estatus"),
               icon: History,
+              submenus: []
+            },
+            {
+              href: "/hangar74/compras/cotizaciones",
+              label: "Cotizaciones",
+              active: pathname.includes("/hangar74/compras/cotizaciones"),
+              icon: HandCoins,
               submenus: []
             },
           ],

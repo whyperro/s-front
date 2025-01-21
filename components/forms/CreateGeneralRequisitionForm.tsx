@@ -22,24 +22,27 @@ import { Separator } from "../ui/separator"
 import { Textarea } from "../ui/textarea"
 
 const FormSchema = z.object({
-  order_number: z.string().min(3, {
-    message: "Debe ingresar un nro. de orden.",
-  }),
-  justification: z.string().min(2, {
-    message: "La justificacion debe tener al menos 5 caracteres.",
-  }),
+  order_number: z.string().min(3, { message: "Debe ingresar un nro. de orden." }),
+  justification: z.string().min(2, { message: "La justificación debe tener al menos 5 caracteres." }),
   company: z.string(),
+  location_id: z.string(),
   created_by: z.string(),
   requested_by: z.string(),
-  articles: z.array(z.object({
-    batch: z.string(),
-    batch_name: z.string(),
-    batch_articles: z.array(z.object({
-      part_number: z.string(),
-      quantity: z.number(),
-    }))
-  })),
-})
+  image: z.instanceof(File).optional(), // Nueva imagen general
+  articles: z.array(
+    z.object({
+      batch: z.string(),
+      batch_name: z.string(),
+      batch_articles: z.array(
+        z.object({
+          part_number: z.string(),
+          quantity: z.number(),
+          image: z.instanceof(File).optional(), // Imagen por artículo
+        })
+      ),
+    })
+  ),
+});
 
 type FormSchemaType = z.infer<typeof FormSchema>
 
@@ -66,19 +69,17 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
 
   const { user } = useAuth()
 
-  const { mutate, data, isPending } = useGetBatchesByLocationId();
+  const { mutate, data } = useGetBatchesByLocationId();
 
-  const { mutate: employeesMutation, data: employees, isPending: employeesLoading, isError: employeesError } = useGetDepartamentEmployees();
+  const { mutate: employeesMutation, data: employees, isPending: employeesLoading } = useGetDepartamentEmployees();
 
-  const { selectedCompany } = useCompanyStore()
+  const { selectedCompany, selectedStation } = useCompanyStore()
 
   const { createRequisition } = useCreateRequisition()
 
   const { updateRequisition } = useUpdateRequisition()
 
   const [selectedBatches, setSelectedBatches] = useState<Batch[]>([])
-
-  const { selectedStation } = useCompanyStore()
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
@@ -89,9 +90,10 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
   })
 
   useEffect(() => {
-    if (user && selectedCompany) {
+    if (user && selectedCompany && selectedStation) {
       form.setValue("created_by", user.id.toString())
       form.setValue("company", selectedCompany.split(" ").join(""))
+      form.setValue("location_id", selectedStation)
     }
     if (initialData && selectedCompany) {
       form.reset(initialData); // Set initial form values
@@ -122,7 +124,12 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
   };
 
   // Maneja el cambio en un artículo.
-  const handleArticleChange = (batchName: string, index: number, field: keyof Article, value: string | number) => {
+  const handleArticleChange = (
+    batchName: string,
+    index: number,
+    field: string,
+    value: string | number | File | undefined
+  ) => {
     setSelectedBatches((prev) =>
       prev.map((batch) =>
         batch.batch === batchName
@@ -178,10 +185,12 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
     } else {
       await createRequisition.mutateAsync(formattedData)
     }
+    console.log(formattedData)
     onClose()
   }
-  console.log(isEditing)
-  return ( 
+
+
+  return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-3">
         <div className='flex gap-2 items-center'>
@@ -353,6 +362,14 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
                                 handleArticleChange(batch.batch, index, "quantity", Number(e.target.value))
                               }
                             />
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              className="cursor-pointer"
+                              onChange={(e) =>
+                                handleArticleChange(batch.batch, index, "image", e.target.files?.[0])
+                              }
+                            />
                             <Button
                               variant="ghost"
                               type="button"
@@ -394,12 +411,34 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="image"
+          render={({ field: { onChange, value, ...fieldProps } }) => (
+            <FormItem>
+              <FormLabel>Imagen General</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  className="cursor-pointer"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] ?? undefined;
+                    onChange(file);
+                  }}
+                  {...fieldProps}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="flex justify-between items-center gap-x-4">
           <Separator className="flex-1" />
           <p className="text-muted-foreground">SIGEAC</p>
           <Separator className="flex-1" />
         </div>
-        <Button disabled={createRequisition.isPending}>{isEditing ? "Generar Requisición" : "Editar Requisición"}</Button>
+        <Button disabled={createRequisition.isPending}>{isEditing ? "Editar Requisición" : "Generar Requisición"}</Button>
       </form>
     </Form>
   )

@@ -297,3 +297,23 @@ id: string | number,
   created_at: Date,
   updated_at: Date,
 }
+
+export type Quote = {
+  id: number,
+  quote_number: string,
+  justification: string,
+  article_quote_order: {
+    article_part_number: string,
+    quantity: number,
+    unit_price: string,
+    image: string,
+  }[],
+  tax: number,
+  sub_total: number,
+  total: number,
+  vendor: Vendor,
+  requisition_order: Requisition,
+  quote_date: Date,
+  created_by: string,
+  status: string,
+}

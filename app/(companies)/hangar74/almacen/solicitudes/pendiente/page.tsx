@@ -4,9 +4,8 @@ import { ContentLayout } from '@/components/layout/ContentLayout'
 import { useGetPendingDispatches } from '@/hooks/almacen/useGetPendingDispatchRequests'
 import { useCompanyStore } from '@/stores/CompanyStore'
 import { Loader2 } from 'lucide-react'
-import { useEffect } from 'react'
-import { DataTable } from './data-table'
 import { columns } from './columns'
+import { DataTable } from './data-table'
 
 const DispatchRequestPage = () => {
   const { selectedStation } = useCompanyStore();

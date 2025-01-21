@@ -104,7 +104,7 @@ export function CreateRequisitionForm({ onClose }: FormProps) {
       mutate(Number(selectedStation))
       woMutate(Number(selectedStation))
     }
-  }, [selectedStation, mutate, woMutate])
+  }, [selectedStation])
 
   useEffect(() => {
     form.setValue("articles", selectedBatches)

@@ -11,7 +11,7 @@ interface locationsByCompanyId {
 }[]
 
 const fetchLocationsByCompanyId = async (company_id: number): Promise<locationsByCompanyId[]> => {
-  const {data} = await axios.post('/locationsByCompanyId', { company_id });
+  const {data} = await axios.post('/locations-by-company-id', { company_id });
   return data.companies_location;
 };
 

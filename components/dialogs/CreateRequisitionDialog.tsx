@@ -33,7 +33,7 @@ export function CreateRequisitionDialog() {
           </DialogDescription>
         </DialogHeader>
         {
-          userRoles.includes("INGENIERO") ? <CreateRequisitionForm onClose={() => setOpen(false)} /> : <CreateGeneralRequisitionForm onClose={() => setOpen(false)} />
+          userRoles.includes("INGENIERO") ? <CreateRequisitionForm onClose={() => setOpen(false)} /> : <CreateGeneralRequisitionForm isEditing={false} onClose={() => setOpen(false)} />
         }
       </DialogContent>
     </Dialog>
