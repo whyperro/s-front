@@ -36,7 +36,6 @@ const FormSchema = z.object({
       part_number: z.string(),
       quantity: z.number().min(1, { message: "Debe ingresar al menos 1." }),
       unit_price: z.string().min(0, { message: "El precio no puede ser negativo." }),
-      image: z.string().optional(),
     })
   ),
   tax: z.string(),
@@ -112,9 +111,9 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
     }
   }, [selectedCompany, mutate])
 
-
+  console.log(form.getValues())
   const onSubmit = async (data: FormSchemaType) => {
-
+    console.log('click')
     const formattedData = {
       ...data,
       created_by: `${user?.first_name} ${user?.last_name}`,
@@ -130,6 +129,8 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
         amount: Number(article.unit_price) * Number(article.quantity), // Calcula el total
       })),
     }
+
+
     await createQuote.mutateAsync(formattedData)
 
     await updateStatusRequisition.mutateAsync({
@@ -322,12 +323,6 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
           <h3 className="text-lg font-bold">Artículos</h3>
           {fields.map((field, index) => (
             <div key={field.id} className="flex items-center gap-4">
-              {/* Número de parte */}
-              {
-                articles[index]?.image && (
-                  <Image src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}articles_requisition/${articles[index].image}`} width={100} height={100} alt="imagen de articulo" />
-                )
-              }
               <FormField
                 control={control}
                 name={`articles.${index}.part_number`}
