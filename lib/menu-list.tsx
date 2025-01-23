@@ -67,6 +67,11 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               icon: ClipboardPen,
               submenus: [
                 {
+                  href: "/transmandu/sms/nuevo_reporte",
+                  label: "Nuevo reporte",
+                  active: pathname === "/transmandu/sms/reportes_obligatorios",
+                },
+                {
                   href: "/transmandu/sms/reportes_obligatorios",
                   label: "Reportes Obligatorios",
                   active: pathname === "/transmandu/sms/reportes_obligatorios",
