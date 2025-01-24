@@ -11,6 +11,7 @@ import {
   PackagePlus,
   PackageSearch,
   Plane,
+  Receipt,
   ScrollText,
   Settings,
   SquarePen,
@@ -225,6 +226,13 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Cotizaciones",
               active: pathname.includes("/hangar74/compras/cotizaciones"),
               icon: HandCoins,
+              submenus: []
+            },
+            {
+              href: "/hangar74/compras/ordenes_compra",
+              label: "Ordenes de Compra",
+              active: pathname.includes("/hangar74/compras/ordenes_compra"),
+              icon: Receipt,
               submenus: []
             },
           ],

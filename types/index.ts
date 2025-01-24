@@ -303,12 +303,14 @@ export type Quote = {
   quote_number: string,
   justification: string,
   article_quote_order: {
+    batch: {
+      name: string,
+    },
     article_part_number: string,
     quantity: number,
     unit_price: string,
     image: string,
   }[],
-  tax: number,
   sub_total: number,
   total: number,
   vendor: Vendor,
@@ -316,4 +318,36 @@ export type Quote = {
   quote_date: Date,
   created_by: string,
   status: string,
+}
+
+export type PurchaseOrder = {
+  id: number,
+  order_number: string,
+  justification: string,
+  article_purchase_order: {
+    batch?: {
+      name: string,
+    }
+    id: number,
+    article_part_number: string,
+    quantity: number,
+    unit_price: string,
+    article_tax: number,
+    usa_tracking: string,
+    ock_tracking: string,
+    article_location: string,
+  }[],
+  status: string,
+  purchase_date: Date,
+  tax: number,
+  handling_fee: number,
+  shipping_fee: number,
+  sub_total: number,
+  total: number,
+  vendor: Vendor,
+  requisition_order: Requisition,
+  quote_order: Quote,
+  location: Location,
+  created_by: string,
+  company: string,
 }

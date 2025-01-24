@@ -13,6 +13,7 @@ import { ClipboardCheck, ClipboardX, EyeIcon, Loader2, MoreHorizontal } from "lu
 import { useState } from "react"
 import { Button } from "../ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog"
+import { useCreatePurchaseOrder } from "@/actions/compras/ordenes_compras/actions"
 
 const QuoteDropdownActions = ({ quote }: { quote: Quote }) => {
 
@@ -27,6 +28,8 @@ const QuoteDropdownActions = ({ quote }: { quote: Quote }) => {
   const { updateStatusQuote } = useUpdateQuoteStatus()
 
   const { updateStatusRequisition } = useUpdateRequisitionStatus()
+
+  const { createPurchaseOrder } = useCreatePurchaseOrder()
 
   const handleReject = async (id: number) => {
     const data = {
@@ -47,6 +50,19 @@ const QuoteDropdownActions = ({ quote }: { quote: Quote }) => {
   }
   const handleApprove = async (id: number) => {
 
+    const poData = {
+      status: "proceso",
+      justification: quote.justification,
+      purchase_date: new Date(),
+      sub_total: Number(quote.total),
+      total: Number(quote.total),
+      vendor_id: Number(quote.vendor.id),
+      created_by: `${user?.first_name} ${user?.last_name}`,
+      articles_purchase_orders: quote.article_quote_order,
+      company: selectedCompany!.split(" ").join("").toLowerCase(),
+      quote_order_id: Number(quote.id),
+    }
+
     const data = {
       status: "aprobada",
       updated_by: `${user?.first_name} ${user?.last_name}`,
@@ -54,7 +70,7 @@ const QuoteDropdownActions = ({ quote }: { quote: Quote }) => {
     };
 
     await updateStatusQuote.mutateAsync({ id, data });
-
+    await createPurchaseOrder.mutateAsync(poData);
     await updateStatusRequisition.mutateAsync({
       id: quote.requisition_order.id, data: {
         status: "aprobada",
@@ -119,7 +135,7 @@ const QuoteDropdownActions = ({ quote }: { quote: Quote }) => {
           </DialogHeader>
           <DialogFooter className="flex gap-2">
             <Button className="bg-rose-400 hover:bg-white hover:text-black hover:border hover:border-black" onClick={() => setOpenReject(false)} type="submit">Cancelar</Button>
-            <Button disabled={updateStatusQuote.isPending} className="hover:bg-white hover:text-black hover:border hover:border-black transition-all" onClick={() => handleApprove(Number(quote.id))}>{updateStatusQuote.isPending ? <Loader2 className="size-4 animate-spin" /> : <p>Confirmar</p>}</Button>
+            <Button disabled={updateStatusQuote.isPending || createPurchaseOrder.isPending} className="hover:bg-white hover:text-black hover:border hover:border-black transition-all" onClick={() => handleApprove(Number(quote.id))}>{(updateStatusQuote.isPending || createPurchaseOrder.isPending) ? <Loader2 className="size-4 animate-spin" /> : <p>Confirmar</p>}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

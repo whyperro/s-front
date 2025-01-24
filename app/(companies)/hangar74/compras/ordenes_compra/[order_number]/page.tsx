@@ -13,7 +13,8 @@ import {
   CardTitle
 } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useGetQuoteByQuoteNumber } from '@/hooks/compras/useGetQuoteByQuoteNumber';
+import { useGetPurchaseOrder } from '@/hooks/compras/useGetPurchaseOrder';
+import { useGetTrackingInfo } from '@/hooks/compras/useGetTrackingInfo';
 import { cn } from '@/lib/utils';
 import { useCompanyStore } from '@/stores/CompanyStore';
 import { Loader2, Trash2, User } from 'lucide-react';
@@ -26,36 +27,24 @@ const CotizacionPage = () => {
 
   const { selectedCompany } = useCompanyStore();
 
-  const router = useRouter();
+  const { order_number } = useParams<{ order_number: string }>();
 
-  const { quote_number } = useParams<{ quote_number: string }>();
-
-  const { data, isLoading } = useGetQuoteByQuoteNumber(selectedCompany?.split(" ").join("") ?? null, quote_number);
-
-  const { deleteQuote } = useDeleteQuote();
+  const { data, isLoading } = useGetPurchaseOrder(selectedCompany?.split(" ").join("") ?? null, order_number);
 
   if (isLoading) return <LoadingPage />;
-
-  const handleDelete = async (id: number, company: string) => {
-    await deleteQuote.mutateAsync({
-      id,
-      company
-    });
-    router.push(`/${company}/general/cotizaciones`);
-  };
 
   return (
     <ContentLayout title='Cotización'>
       <div className='flex flex-col gap-y-2 mb-12'>
-        <h1 className='text-4xl font-bold text-center'>Cotización Nro: <span className='text-blue-600'>#{quote_number}</span></h1>
+        <h1 className='text-4xl font-bold text-center'>Cotización Nro: <span className='text-blue-600'>#{order_number}</span></h1>
         <p className='text-sm text-muted-foreground text-center italic'>
-          Detalles de la cotización #{quote_number}
+          Detalles de la Orden de Compra #{order_number}
         </p>
       </div>
       <Card className='max-w-5xl mx-auto'>
         <CardHeader className='flex flex-col items-center'>
-          <CardTitle className='flex justify-center text-5xl mb-2'>#{quote_number}</CardTitle>
-          <Badge className={cn("text-lg", data?.status === 'aprobada' ? "bg-green-500" : "bg-yellow-600")}>{data?.status.toUpperCase()}</Badge>
+          <CardTitle className='flex justify-center text-5xl mb-2'>#{order_number}</CardTitle>
+          <Badge className={cn("text-lg", data?.status === 'pagado' ? "bg-green-500" : "bg-yellow-600")}>{data?.status.toUpperCase()}</Badge>
         </CardHeader>
         <CardContent className='flex flex-col gap-8' >
           <div className='flex w-full justify-center gap-24 text-xl'>
@@ -71,14 +60,14 @@ const CotizacionPage = () => {
           <p className='text-center font-medium italic'>{data?.justification}</p>
           <div className='flex justify-center gap-2'>
             {
-              data?.article_quote_order.map((article) => (
+              data?.article_purchase_order.map((article) => (
                 <Card className='w-[280px] text-center' key={article.article_part_number}>
-                  <CardTitle className='p-6'>{article.batch.name}</CardTitle>
+                  <CardTitle className='p-6'>{article.batch?.name} - {article.article_part_number}</CardTitle>
                   <CardContent>
-                    <p className='font-medium'>Nro. de Parte: <span className='font-bold italic'>{article.article_part_number}</span></p>
                     <p className='font-medium'>Cantidad: <span className='font-bold italic'>{article.quantity}</span></p>
-                    <p className='font-medium'>Precio Unitario: <span className='font-bold italic'>${Number(article.unit_price).toFixed(2)}</span></p>
-                    <p className='font-medium'>Total: <span className='font-bold italic'>${(article.quantity * Number(article.unit_price)).toFixed(2)}</span></p>
+                    <p className='font-medium'>Tracking - USA: <span className='font-bold italic'>{article.usa_tracking}</span></p>
+                    <p className='font-medium'>Tracking - OCK21: <span className='font-bold italic'>{article.ock_tracking}</span></p>
+                    <p className='font-medium'>Ubicación: <span className='font-bold italic'>{article.article_location}</span></p>
                   </CardContent>
                 </Card>
               ))
@@ -101,7 +90,7 @@ const CotizacionPage = () => {
           </DialogHeader>
           <DialogFooter>
             <Button type="button" variant={"destructive"} onClick={() => setOpenDelete(false)}>Cancelar</Button>
-            <Button onClick={() => handleDelete(data!.id, selectedCompany!.split(" ").join(""))} disabled={deleteQuote.isPending}>{deleteQuote.isPending ? <Loader2 className="animate-spin size-4" /> : "Confirmar"}</Button>
+            <Button>Borrar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
