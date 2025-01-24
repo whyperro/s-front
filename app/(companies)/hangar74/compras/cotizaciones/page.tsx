@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react'
 import { columns } from './columns'
 import { DataTable } from './data-table'
 
-const PurchaseOrdersPage = () => {
+const QuotesOrdersPage = () => {
   const { selectedStation, selectedCompany } = useCompanyStore();
   const { data: quotes, isLoading, isError } = useGetQuotes(selectedCompany && selectedCompany.split(' ').join('') || null,
     selectedStation || null);
@@ -35,4 +35,4 @@ const PurchaseOrdersPage = () => {
   )
 }
 
-export default PurchaseOrdersPage
+export default QuotesOrdersPage
