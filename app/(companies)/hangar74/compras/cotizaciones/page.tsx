@@ -6,21 +6,20 @@ import { useCompanyStore } from '@/stores/CompanyStore'
 import { Loader2 } from 'lucide-react'
 import { columns } from './columns'
 import { DataTable } from './data-table'
+import LoadingPage from '@/components/misc/LoadingPage'
 
 const QuotesOrdersPage = () => {
   const { selectedStation, selectedCompany } = useCompanyStore();
   const { data: quotes, isLoading, isError } = useGetQuotes(selectedCompany && selectedCompany.split(' ').join('') || null,
     selectedStation || null);
+
+  if (isLoading) {
+    <LoadingPage />
+  }
+
   return (
     <ContentLayout title='Cotizaciones'>
       <div className='flex flex-col gap-y-2'>
-        {
-          isLoading && (
-            <div className='flex w-full h-full justify-center items-center'>
-              <Loader2 className='size-24 animate-spin mt-48' />
-            </div>
-          )
-        }
         {
           quotes && (
             <DataTable columns={columns} data={quotes} />

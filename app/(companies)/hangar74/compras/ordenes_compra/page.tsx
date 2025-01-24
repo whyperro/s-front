@@ -20,13 +20,6 @@ const PurchaseOrdersPage = () => {
     <ContentLayout title='Cotizaciones'>
       <div className='flex flex-col gap-y-2'>
         {
-          isLoading && (
-            <div className='flex w-full h-full justify-center items-center'>
-              <Loader2 className='size-24 animate-spin mt-48' />
-            </div>
-          )
-        }
-        {
           po && (
             <DataTable columns={columns} data={po} />
 

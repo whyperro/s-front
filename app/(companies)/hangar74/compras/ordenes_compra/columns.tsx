@@ -57,7 +57,7 @@ export const columns: ColumnDef<PurchaseOrder>[] = [
     ),
     cell: ({ row }) => {
       return (
-        <p className="font-medium text-center">{row.original.quote_order.quote_number}</p>
+        <p className="font-medium text-center">{row.original.quote_order.quote_number ?? "N/A"}</p>
       )
     }
   },
