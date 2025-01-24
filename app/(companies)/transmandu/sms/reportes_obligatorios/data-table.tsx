@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "react-day-picker";
+import AddVoluntaryReport from "../AddVoluntaryReport";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -65,9 +67,11 @@ export function DataTable<TData, TValue>({
           el momento.
         </p>
       </div>
+
       <div className="flex items-center py-4">
         <DataTableViewOptions table={table} />
       </div>
+
       <div className="rounded-md border mb-4">
         <Table>
           <TableHeader>

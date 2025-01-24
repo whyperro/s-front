@@ -81,6 +81,11 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
                   label: "Reportes Voluntarios",
                   active: pathname === "/transmandu/sms/reportes_voluntarios",
                 },
+                {
+                  href: "/transmandu/sms/reportes_en_evaluacion",
+                  label: "Reportes en espera",
+                  active: pathname === "/transmandu/sms/reportes_en_evaluacion",
+                },
               ],
             },
           ],

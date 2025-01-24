@@ -19,6 +19,7 @@ const ObligatoryReportsPage = () => {
   );
   return (
     <ContentLayout title="Reportes Voluntarios">
+      <div className="flex items-center py-4"></div>
       <div className="flex flex-col gap-y-2">
         {isLoading && (
           <div className="flex w-full h-full justify-center items-center">

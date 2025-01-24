@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import AddVoluntaryReport from "../AddVoluntaryReport";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -63,7 +65,9 @@ export function DataTable<TData, TValue>({
           realizados hasta el momento.
         </p>
       </div>
+
       <div className="flex items-center py-4">
+        <AddVoluntaryReport />
         <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-md border mb-4">

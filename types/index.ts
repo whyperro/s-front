@@ -358,7 +358,7 @@ export type VoluntaryReport = {
   report_date: Date;
   identification_date: Date;
   hazard_location: string;
-  affected_area: string;
+  identification_area: string;
   hazard_description: string;
   possible_consequences: string;
   first_name?: string;

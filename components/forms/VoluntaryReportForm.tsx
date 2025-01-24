@@ -40,7 +40,7 @@ const FormSchema = z.object({
     .date()
     .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
 
-  selectedArea: z.enum([
+  identification_area: z.enum([
     "Operacional",
     "Mantenimiento",
     "Administracion y RRHH",
@@ -79,7 +79,6 @@ export function VoluntaryReportForm() {
     defaultValues: {
       report_date: new Date(),
       identification_date: new Date(),
-
       danger_place: "",
       description: "",
       consequences: "",
@@ -192,7 +191,7 @@ export function VoluntaryReportForm() {
 
         <FormField
           control={form.control}
-          name="selectedArea"
+          name="identification_area"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Seleccionar el area </FormLabel>
@@ -238,6 +237,22 @@ export function VoluntaryReportForm() {
               <FormControl>
                 <Textarea
                   placeholder="Breve descripcion del peligro identificado"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="consequences"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Consecuencias</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Separar por una 'coma' las consecuencias (,) Ej: Consecuencia 1, Consecuencia 2, Consecuencia n"
                   {...field}
                 />
               </FormControl>

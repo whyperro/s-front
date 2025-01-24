@@ -84,13 +84,15 @@ export const columns: ColumnDef<VoluntaryReport>[] = [
     },
   },
   {
-    accessorKey: "affected_area",
+    accessorKey: "identification_area",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Aeronave" />
+      <DataTableColumnHeader column={column} title="Area de identificacion" />
     ),
     cell: ({ row }) => {
       return (
-        <p className="font-medium text-center">{row.original.affected_area}</p>
+        <p className="font-medium text-center">
+          {row.original.identification_area}
+        </p>
       );
     },
   },
