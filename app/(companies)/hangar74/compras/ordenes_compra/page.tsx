@@ -5,11 +5,16 @@ import { useCompanyStore } from '@/stores/CompanyStore'
 import { Loader2 } from 'lucide-react'
 import { columns } from './columns'
 import { DataTable } from './data-table'
+import LoadingPage from '@/components/misc/LoadingPage'
 
 const PurchaseOrdersPage = () => {
   const { selectedStation, selectedCompany } = useCompanyStore();
   const { data: po, isLoading, isError } = useGetPurchaseOrders(selectedCompany && selectedCompany.split(' ').join('') || null,
     selectedStation || null);
+
+  if (isLoading) {
+    <LoadingPage />
+  }
 
   return (
     <ContentLayout title='Cotizaciones'>
