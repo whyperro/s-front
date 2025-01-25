@@ -26,7 +26,7 @@ const InventarioPage = () => {
 
   useEffect(() => {
     if (requisitions && user) {
-      const shouldFilterByUser = !(userRoles.includes('ANALISTA_COMPRA') || userRoles.includes('JEFE_COMPRA'));
+      const shouldFilterByUser = (userRoles.includes('ANALISTA_COMPRAS'));
       const filtered = shouldFilterByUser
         ? requisitions.filter(
           requisition => requisition.requested_by === `${user.first_name} ${user.last_name}`

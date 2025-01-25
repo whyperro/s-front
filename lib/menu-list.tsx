@@ -372,7 +372,6 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
           ]
         }
       ])
-      // Filtrar menús según roles del usuario
       .map(group => ({
         ...group,
         menus: group.menus

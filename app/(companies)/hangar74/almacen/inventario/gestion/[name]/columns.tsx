@@ -70,11 +70,30 @@ export const columns: ColumnDef<IArticleByBatch>[] = [
   {
     accessorKey: "part_number",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nro. de Parte" />
+      <DataTableColumnHeader filter column={column} title="Nro. de Parte" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground">{row.original.part_number}</p>
-    )
+      <p className="flex justify-center text-muted-foreground">
+        {row.original.part_number}
+      </p>
+    ),
+    filterFn: (row, columnId, filterValue) => {
+      const partNumber = row.original.part_number?.toLowerCase() ?? "";
+      const altPartNumber = row.original.alternate_part_number?.toLowerCase() ?? "";
+      const filter = filterValue.toLowerCase();
+      return partNumber.includes(filter) || altPartNumber.includes(filter);
+    },
+  },
+  {
+    accessorKey: "alternate_part_number",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Nro. de Parte Alterno" />
+    ),
+    cell: ({ row }) => (
+      <p className="flex justify-center text-muted-foreground">
+        {row.original.alternate_part_number ?? "N/A"}
+      </p>
+    ),
   },
   {
     accessorKey: "description",
