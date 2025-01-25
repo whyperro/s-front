@@ -1,6 +1,5 @@
 "use client";
 
-import { VoluntaryReportForm } from "@/components/forms/VoluntaryReportForm";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -11,8 +10,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ObligatoryReportForm } from "../forms/ObligatoryReporForm";
 
-export default function AddVoluntaryReport() {
+export function CreateObligatoryDialog() {
   return (
     <>
       <Card className="flex">
@@ -27,7 +27,7 @@ export default function AddVoluntaryReport() {
               <DialogTitle></DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
-            <VoluntaryReportForm />
+            <ObligatoryReportForm />
           </DialogContent>
         </Dialog>
       </Card>

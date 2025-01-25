@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
-const ObligatoryReportsPage = () => {
+const VoluntaryReportsPage = () => {
   const { selectedStation, selectedCompany } = useCompanyStore();
   const {
     data: reportes,
@@ -37,4 +37,4 @@ const ObligatoryReportsPage = () => {
   );
 };
 
-export default ObligatoryReportsPage;
+export default VoluntaryReportsPage;

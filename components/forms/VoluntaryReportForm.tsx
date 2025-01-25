@@ -52,7 +52,12 @@ const FormSchema = z.object({
   consequences: z.string(),
   name: z.string().optional(),
   last_name: z.string().optional(),
-  phone: z.string().optional(),
+  phone: z
+    .string()
+    .regex(/^\d{11}$/, {
+      message: "El número telefónico debe tener exactamente 11 dígitos",
+    })
+    .optional(),
   email: z.string().email().optional(),
 });
 
@@ -85,7 +90,6 @@ export function VoluntaryReportForm() {
       name: "",
       last_name: "",
       phone: "",
-      email: "",
     },
   });
 
@@ -99,6 +103,9 @@ export function VoluntaryReportForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col space-y-3"
       >
+        <FormLabel className="text-lg text-center m-2">
+          Reporte voluntario de peligro
+        </FormLabel>
         <FormField
           control={form.control}
           name="identification_date"
