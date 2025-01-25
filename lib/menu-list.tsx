@@ -30,6 +30,7 @@ type Menu = {
   label: string;
   active: boolean;
   icon: LucideIcon
+  roles: string[];
   submenus: Submenu[];
 };
 
@@ -43,10 +44,14 @@ export type CompanyMenu = 'transmandu' | 'hangar 74';
 
 //TODO: Crear menus para cada empresa. Mismo array o diferente, ir probando.
 
-export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
-  switch (company) {
-    case 'transmandu':
-      return [
+export function getMenuList(pathname: string, company: CompanyMenu, userRoles: string[]): Group[] {
+  function hasAccess(menu: Menu): boolean {
+    return menu.roles.length === 0 || menu.roles.some(role => userRoles.includes(role));
+  }
+
+  return (
+    (company === 'transmandu'
+      ? [
         {
           groupLabel: "",
           menus: [
@@ -55,6 +60,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Dashboard",
               active: pathname.includes("/transmandu/dashboard"),
               icon: LayoutGrid,
+              roles: [],
               submenus: []
             }
           ]
@@ -67,21 +73,22 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Usuarios Y Permisos",
               active: pathname.includes("/administracion/usuarios_permisos"),
               icon: User2,
+              roles: ["ADMIN", "SUPERUSER"],
               submenus: [
                 {
                   href: "/administracion/usuarios_permisos/usuarios",
                   label: "Administrar Usuarios",
-                  active: pathname === ("/administracion/usuarios_permisos/usuarios"),
+                  active: pathname === "/administracion/usuarios_permisos/usuarios",
                 },
                 {
                   href: "/administracion/usuarios_permisos/roles",
-                  label: "Administrar  Roles",
-                  active: pathname === ("/administracion/usuarios_permisos/roles")
+                  label: "Administrar Roles",
+                  active: pathname === "/administracion/usuarios_permisos/roles"
                 },
                 {
                   href: "/administracion/usuarios_permisos/permisos",
                   label: "Administrar Permisos",
-                  active: pathname === ("/administracion/usuarios_permisos/permisos")
+                  active: pathname === "/administracion/usuarios_permisos/permisos"
                 }
               ]
             }
@@ -95,14 +102,13 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Cuenta",
               active: pathname.includes("/cuenta"),
               icon: Settings,
+              roles: [],
               submenus: []
             }
           ]
-        },
-      ];
-
-    case 'hangar 74':
-      return [
+        }
+      ]
+      : [
         {
           groupLabel: "",
           menus: [
@@ -111,6 +117,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Dashboard / Hangar74",
               active: pathname.includes("/hangar74/dashboard"),
               icon: LayoutGrid,
+              roles: [],
               submenus: []
             }
           ]
@@ -123,6 +130,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Inventario",
               active: pathname.includes("/hangar74/general/inventario"),
               icon: PackageSearch,
+              roles: [],
               submenus: []
             },
             {
@@ -130,6 +138,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Requisiciones",
               active: pathname.includes("/hangar74/general/requisiciones"),
               icon: ScrollText,
+              roles: [],
               submenus: []
             }
           ]
@@ -142,6 +151,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Control de Ingreso",
               active: pathname.includes("/hangar74/almacen/inventario/ingreso"),
               icon: PackagePlus,
+              roles: ["ANALISTA_ALMACEN", "ANALISTA_COMPRA", "SUPERUSER"],
               submenus: [
                 {
                   href: "/hangar74/almacen/ingreso/registrar_ingreso",
@@ -171,6 +181,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Solicitudes",
               active: pathname.includes("/hangar74/almacen/solicitudes"),
               icon: ClipboardCopy,
+              roles: ["ANALISTA_ALMACEN", "JEFE_ALMACEN", "SUPERUSER"],
               submenus: [
                 {
                   href: "/hangar74/almacen/solicitudes/pendiente",
@@ -189,6 +200,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Inventario",
               active: pathname.includes("/hangar74/almacen/inventario"),
               icon: PackageOpen,
+              roles: ["ANALISTA_ALMACEN", "JEFE_ALMACEN", "SUPERUSER"],
               submenus: [
                 {
                   href: "/hangar74/almacen/inventario/gestion",
@@ -205,6 +217,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
             {
               href: "/hangar74/almacen/caja_herramientas",
               label: "Cajas de Herramientas",
+              roles: ["ANALISTA_ALMACEN", "JEFE_ALMACEN", "SUPERUSER"],
               active: pathname.includes("/hangar74/almacen/caja_herramientas"),
               icon: Wrench,
               submenus: []
@@ -219,6 +232,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Estatus de Compras",
               active: pathname.includes("/hangar74/estatus"),
               icon: History,
+              roles: ["ANALISTA_COMPRA", "JEFE_COMPRAS", "SUPERUSER"],
               submenus: []
             },
             {
@@ -226,6 +240,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Cotizaciones",
               active: pathname.includes("/hangar74/compras/cotizaciones"),
               icon: HandCoins,
+              roles: ["ANALISTA_COMPRA", "JEFE_COMPRAS"],
               submenus: []
             },
             {
@@ -233,6 +248,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Ordenes de Compra",
               active: pathname.includes("/hangar74/compras/ordenes_compra"),
               icon: Receipt,
+              roles: ["ANALISTA_COMPRA", "JEFE_COMPRAS", "SUPERUSER"],
               submenus: []
             },
           ],
@@ -245,6 +261,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Ordenes de Trabajo",
               active: pathname.includes("/hangar74/planificacion/ordenes_trabajo"),
               icon: SquarePen,
+              roles: ["ANALISTA_PLANIFICACION", "JEFE_PLANIFICACION", "SUPERUSER"],
               submenus: [
                 {
                   href: "/hangar74/planificacion/ordenes_trabajo/",
@@ -258,6 +275,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Aeronaves",
               active: pathname.includes("/hangar74/planificacion/reportes"),
               icon: Plane,
+              roles: ["ANALISTA_PLANIFICACION", "JEFE_PLANIFICACION", "SUPERUSER"],
               submenus: [
                 {
                   href: "/hangar74/planificacion/aeronaves",
@@ -276,6 +294,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Globales",
               active: pathname.includes("/ajustes/globales"),
               icon: Globe,
+              roles: ["SUPERUSER"],
               submenus: [
                 {
                   href: "/ajustes/globales/unidades",
@@ -299,6 +318,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Cuenta",
               active: pathname.includes("/cuenta"),
               icon: Settings,
+              roles: [],
               submenus: []
             },
           ]
@@ -311,6 +331,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Usuarios Y Permisos",
               active: pathname.includes("/administracion/usuarios_permisos"),
               icon: User2,
+              roles: ["SUPERUSER"],
               submenus: [
                 {
                   href: "/administracion/usuarios_permisos/usuarios",
@@ -334,6 +355,7 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
               label: "Empresas",
               active: pathname.includes("/administracion/empresas"),
               icon: Building,
+              roles: ["SUPERUSER"],
               submenus: [
                 {
                   href: "/administracion/empresas/almacenes",
@@ -349,22 +371,17 @@ export function getMenuList(pathname: string, company: CompanyMenu): Group[] {
             },
           ]
         }
-      ];
-
-    default:
-      return [
-        {
-          groupLabel: "",
-          menus: [
-            {
-              href: "/dashboard",
-              label: "Dashboard",
-              active: pathname.includes("/dashboard"),
-              icon: LayoutGrid,
-              submenus: []
-            }
-          ]
-        }
-      ];
-  }
+      ])
+      // Filtrar menús según roles del usuario
+      .map(group => ({
+        ...group,
+        menus: group.menus
+          .filter(hasAccess)
+          .map(menu => ({
+            ...menu,
+            submenus: menu.submenus.filter(sub => !menu.roles.length || menu.roles.some(role => userRoles.includes(role)))
+          }))
+      }))
+      .filter(group => group.menus.length > 0)
+  );
 }
