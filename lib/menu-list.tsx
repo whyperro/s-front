@@ -151,7 +151,7 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               label: "Control de Ingreso",
               active: pathname.includes("/hangar74/almacen/inventario/ingreso"),
               icon: PackagePlus,
-              roles: ["ANALISTA_ALMACEN", "ANALISTA_COMPRA", "SUPERUSER"],
+              roles: ["ANALISTA_ALMACEN", "ANALISTA_COMPRAS", "SUPERUSER"],
               submenus: [
                 {
                   href: "/hangar74/almacen/ingreso/registrar_ingreso",
@@ -232,7 +232,7 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               label: "Estatus de Compras",
               active: pathname.includes("/hangar74/estatus"),
               icon: History,
-              roles: ["ANALISTA_COMPRA", "JEFE_COMPRAS", "SUPERUSER"],
+              roles: ["ANALISTA_COMPRAS", "JEFE_COMPRAS", "SUPERUSER"],
               submenus: []
             },
             {
@@ -240,7 +240,7 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               label: "Cotizaciones",
               active: pathname.includes("/hangar74/compras/cotizaciones"),
               icon: HandCoins,
-              roles: ["ANALISTA_COMPRA", "JEFE_COMPRAS"],
+              roles: ["ANALISTA_COMPRAS", "JEFE_COMPRAS"],
               submenus: []
             },
             {
@@ -248,7 +248,7 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               label: "Ordenes de Compra",
               active: pathname.includes("/hangar74/compras/ordenes_compra"),
               icon: Receipt,
-              roles: ["ANALISTA_COMPRA", "JEFE_COMPRAS", "SUPERUSER"],
+              roles: ["ANALISTA_COMPRAS", "JEFE_COMPRAS", "SUPERUSER"],
               submenus: []
             },
           ],
