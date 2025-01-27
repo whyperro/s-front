@@ -11,31 +11,11 @@ import { columns } from './columns';
 import { DataTable } from './data-table';
 
 const InventarioPage = () => {
-  const { user } = useAuth();
   const { selectedCompany, selectedStation } = useCompanyStore();
-
-  const [filteredRequisitions, setFilteredRequisitions] = useState<Requisition[]>([]);
-
   const { data: requisitions, isLoading, isError } = useGetRequisition(
     selectedCompany && selectedCompany.split(' ').join('') || null,
     selectedStation || null
   );
-
-  // Memoize userRoles to avoid unnecessary re-renders
-  const userRoles = useMemo(() => user?.roles?.map(role => role.name) || [], [user]);
-
-  useEffect(() => {
-    if (requisitions && user) {
-      const shouldFilterByUser = (userRoles.includes('ANALISTA_COMPRAS'));
-      const filtered = shouldFilterByUser
-        ? requisitions.filter(
-          requisition => requisition.requested_by === `${user.first_name} ${user.last_name}`
-        )
-        : requisitions;
-
-      setFilteredRequisitions(filtered);
-    }
-  }, [requisitions, user, userRoles]);
 
   if (isLoading) {
     return <LoadingPage />;
@@ -48,7 +28,7 @@ const InventarioPage = () => {
         <p className="text-sm text-muted-foreground text-center italic">
           Aquí puede observar todas las requisiciones generales. <br />Filtre y/o busque si desea una en específico.
         </p>
-        {requisitions && <DataTable columns={columns} data={filteredRequisitions} />}
+        {requisitions && <DataTable columns={columns} data={requisitions} />}
         {isError && <p className="text-muted-foreground italic">Ha ocurrido un error al cargar las requisiciones...</p>}
       </div>
     </ContentLayout>

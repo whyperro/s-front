@@ -72,6 +72,7 @@ export const columns: ColumnDef<IArticleByBatch>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Nro. de Parte" />
     ),
+    meta: { title: "Nro. Parte" },
     cell: ({ row }) => (
       <p className="flex justify-center text-muted-foreground">
         {row.original.part_number}
