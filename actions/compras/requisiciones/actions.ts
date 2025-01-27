@@ -4,7 +4,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 interface CreateRequisitionData {
-  order_number: string,
   justification: string,
   requested_by: string,
   created_by: string,

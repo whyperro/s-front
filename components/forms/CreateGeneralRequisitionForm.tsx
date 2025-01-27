@@ -22,7 +22,6 @@ import { Separator } from "../ui/separator"
 import { Textarea } from "../ui/textarea"
 
 const FormSchema = z.object({
-  order_number: z.string().min(3, { message: "Debe ingresar un nro. de orden." }),
   justification: z.string().min(2, { message: "La justificación debe tener al menos 5 caracteres." }),
   company: z.string(),
   location_id: z.string(),
@@ -84,7 +83,6 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      order_number: "",
       articles: [],
     },
   })
@@ -114,14 +112,24 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
 
 
   // Maneja la selección de un lote.
-  const handleBatchSelect = (batchName: string, batch: string) => {
-    if (!selectedBatches.some((batch) => batch.batch === batchName)) {
-      setSelectedBatches((prev) => [
+  const handleBatchSelect = (batchName: string, batchId: string) => {
+    setSelectedBatches((prev) => {
+      // Verificar si el batch ya está seleccionado
+      const exists = prev.some((b) => b.batch === batchId);
+
+      if (exists) {
+        // Si ya existe, lo eliminamos
+        return prev.filter((b) => b.batch !== batchId);
+      }
+
+      // Si no existe, lo agregamos
+      return [
         ...prev,
-        { batch: batch, batch_name: batchName, batch_articles: [{ part_number: "", quantity: 0 }] },
-      ]);
-    }
+        { batch: batchId, batch_name: batchName, batch_articles: [{ part_number: "", quantity: 0 }] },
+      ];
+    });
   };
+
 
   // Maneja el cambio en un artículo.
   const handleArticleChange = (
@@ -193,90 +201,75 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-3">
-        <div className='flex gap-2 items-center'>
-          <FormField
-            control={form.control}
-            name="order_number"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Nro. de Orden</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ej: 001OCA, etc..." {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="requested_by"
-            render={({ field }) => (
-              <FormItem className="w-full flex flex-col space-y-3 mt-1.5">
-                <FormLabel>Solicitante</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        disabled={employeesLoading}
-                        variant="outline"
-                        role="combobox"
-                        className={cn(
-                          "justify-between",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {
-                          employeesLoading && <Loader2 className="size-4 animate-spin mr-2" />
-                        }
-                        {field.value
-                          ? <p>{employees?.find(
-                            (employee) => `${employee.first_name} ${employee.last_name}` === field.value
-                          )?.first_name} - {employees?.find(
-                            (employee) => `${employee.first_name} ${employee.last_name}` === field.value
-                          )?.last_name}</p>
-                          : "Elige al solicitante..."
-                        }
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="p-0">
-                    <Command>
-                      <CommandInput placeholder="Busque un empleado..." />
-                      <CommandList>
-                        <CommandEmpty className="text-sm p-2 text-center">No se ha encontrado ningún empleado.</CommandEmpty>
-                        <CommandGroup>
-                          {employees?.map((employee) => (
-                            <CommandItem
-                              value={`${employee.first_name} ${employee.last_name}`}
-                              key={employee.id}
-                              onSelect={() => {
-                                form.setValue("requested_by", `${employee.first_name} ${employee.last_name}`)
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  `${employee.first_name} ${employee.last_name}` === field.value
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                              {
-                                <p>{employee.first_name} {employee.last_name}</p>
-                              }
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        <FormField
+          control={form.control}
+          name="requested_by"
+          render={({ field }) => (
+            <FormItem className="w-full flex flex-col space-y-3 mt-1.5">
+              <FormLabel>Solicitante</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      disabled={employeesLoading}
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        "justify-between",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {
+                        employeesLoading && <Loader2 className="size-4 animate-spin mr-2" />
+                      }
+                      {field.value
+                        ? <p>{employees?.find(
+                          (employee) => `${employee.first_name} ${employee.last_name}` === field.value
+                        )?.first_name} - {employees?.find(
+                          (employee) => `${employee.first_name} ${employee.last_name}` === field.value
+                        )?.last_name}</p>
+                        : "Elige al solicitante..."
+                      }
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="p-0">
+                  <Command>
+                    <CommandInput placeholder="Busque un empleado..." />
+                    <CommandList>
+                      <CommandEmpty className="text-sm p-2 text-center">No se ha encontrado ningún empleado.</CommandEmpty>
+                      <CommandGroup>
+                        {employees?.map((employee) => (
+                          <CommandItem
+                            value={`${employee.first_name} ${employee.last_name}`}
+                            key={employee.id}
+                            onSelect={() => {
+                              form.setValue("requested_by", `${employee.first_name} ${employee.last_name}`)
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                `${employee.first_name} ${employee.last_name}` === field.value
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                            {
+                              <p>{employee.first_name} {employee.last_name}</p>
+                            }
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="articles"
