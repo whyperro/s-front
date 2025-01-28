@@ -253,9 +253,9 @@ export function CreateRequisitionForm({ onClose }: FormProps) {
                   </PopoverTrigger>
                   <PopoverContent className="w-[200px] p-0">
                     <Command>
-                      <CommandInput placeholder="Busque un cliente..." />
+                      <CommandInput placeholder="Busque un empleado..." />
                       <CommandList>
-                        <CommandEmpty>No se ha encontrado un cliente.</CommandEmpty>
+                        <CommandEmpty>No se ha encontrado un empleado.</CommandEmpty>
                         <CommandGroup>
                           {employees?.map((employee) => (
                             <CommandItem

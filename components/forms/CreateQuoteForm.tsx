@@ -24,9 +24,12 @@ import { Calendar } from "../ui/calendar"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { CreateVendorDialog } from "../dialogs/CreateVendorDialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
+import CreateVendorForm from "./CreateVendorForm"
 
 const FormSchema = z.object({
-  justification: z.string(),
+  justification: z.string({ message: "Debe ingresar una justificacion." }),
   articles: z.array(
     z.object({
       part_number: z.string(),
@@ -34,9 +37,9 @@ const FormSchema = z.object({
       unit_price: z.string().min(0, { message: "El precio no puede ser negativo." }),
     })
   ),
-  vendor_id: z.string(),
-  location_id: z.string(),
-  quote_date: z.date(),
+  vendor_id: z.string({ message: "Debe seleccionar un proveedor." }),
+  location_id: z.string({ message: "Debe ingresar una ubicacion destino." }),
+  quote_date: z.date({ message: "Debe ingresar una fecha de cotizacion." }),
 })
 
 type FormSchemaType = z.infer<typeof FormSchema>
@@ -44,6 +47,8 @@ type FormSchemaType = z.infer<typeof FormSchema>
 export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: any, onClose: () => void, req: Requisition }) {
 
   const [openVendor, setOpenVendor] = useState(false)
+
+  const [openVendorDialog, setOpenVendorDialog] = useState(false)
 
   const { selectedCompany } = useCompanyStore()
 
@@ -58,7 +63,7 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
       article.batch_articles.map((batchArticle: any) => ({
         part_number: batchArticle.part_number,
         quantity: batchArticle.quantity,
-        unit_price: 0, // Inicializa unit_price como 0
+        unit_price: 0,
         image: batchArticle.image,
       }))
     ) || [];
@@ -135,7 +140,7 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
             control={form.control}
             name="quote_date"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col mt-1.5">
                 <FormLabel>Fecha de Cotizacion</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -211,6 +216,22 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
                       <CommandList>
                         <CommandEmpty>No se ha encontrado un proveedor.</CommandEmpty>
                         <CommandGroup>
+                          <Dialog open={openVendorDialog} onOpenChange={setOpenVendorDialog}>
+                            <DialogTrigger asChild>
+                              <div className="flex justify-center">
+                                <Button variant={"ghost"} className="w-[130px] h-[30px] m-1" onClick={() => setOpenVendorDialog(true)}>Crear Proveedor</Button>
+                              </div>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[490px]">
+                              <DialogHeader>
+                                <DialogTitle>Creación de Proveedor</DialogTitle>
+                                <DialogDescription>
+                                  Cree un proveedor rellenando la información necesaria.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <CreateVendorForm onClose={() => setOpenVendorDialog(false)} />
+                            </DialogContent>
+                          </Dialog>
                           {vendors?.map((vendor) => (
                             <CommandItem
                               value={vendor.id.toString()}

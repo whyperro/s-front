@@ -307,6 +307,11 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
                   active: pathname === ("/administracion/globales/fabricantes"),
                 },
                 {
+                  href: "/ajustes/globales/proveedores",
+                  label: "Proveedores",
+                  active: pathname === ("/administracion/globales/proveedores"),
+                },
+                {
                   href: "/ajustes/globales/condiciones",
                   label: "Condiciones",
                   active: pathname === ("/ajustes/globales/condiciones"),
