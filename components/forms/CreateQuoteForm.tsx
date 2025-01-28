@@ -22,10 +22,9 @@ import { z } from "zod"
 import { AmountInput } from "../misc/AmountInput"
 import { Calendar } from "../ui/calendar"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { CreateVendorDialog } from "../dialogs/CreateVendorDialog"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 import CreateVendorForm from "./CreateVendorForm"
 
 const FormSchema = z.object({
