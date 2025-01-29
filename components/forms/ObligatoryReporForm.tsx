@@ -413,6 +413,7 @@ export function ObligatoryReportForm() {
             </FormItem>
           )}
         />
+
         <div className="flex justify-between items-center gap-x-4">
           <Separator className="flex-1" />
           <p className="text-muted-foreground">SIGEAC</p>
