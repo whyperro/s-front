@@ -1,6 +1,6 @@
 "use client";
 
-import { ObligatoryReportForm } from "@/components/forms/ObligatoryReporForm";
+import { ObligatoryReportForm } from "@/components/forms/CreateObligatoryReportForm";
 import React from "react";
 
 const page = () => {

@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "react-day-picker";
 import AddVoluntaryReport from "../AddVoluntaryReport";
-import { ObligatoryReportForm } from "@/components/forms/ObligatoryReporForm";
+import { ObligatoryReportForm } from "@/components/forms/CreateObligatoryReportForm";
 import { CreateObligatoryDialog } from "@/components/dialogs/CreateObligatoryDialog";
 
 interface DataTableProps<TData, TValue> {

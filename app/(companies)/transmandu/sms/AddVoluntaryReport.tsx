@@ -1,6 +1,6 @@
 "use client";
 
-import { VoluntaryReportForm } from "@/components/forms/VoluntaryReportForm";
+import { VoluntaryReportForm } from "@/components/forms/CreateVoluntaryReportForm";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
