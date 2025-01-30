@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ObligatoryReportForm } from "../forms/ObligatoryReporForm";
+import { ObligatoryReportForm } from "../forms/CreateObligatoryReportForm";
 
 export function CreateObligatoryDialog() {
   return (
