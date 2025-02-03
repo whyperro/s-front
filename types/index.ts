@@ -366,3 +366,23 @@ export type VoluntaryReport = {
   phone?: string;
   email?: string;
 };
+
+export type FollowUp = {
+  id: number;
+  date: string;
+  description: string;
+}
+
+export type Measure = {
+  id: number;
+  name: string;
+  followUpInCharge: string;
+  responsiblePerson: string;
+  followUps: FollowUp[];
+}
+
+export type MitigationPlan = {
+  id: number;
+  description: string;
+  measures: Measure[];
+};

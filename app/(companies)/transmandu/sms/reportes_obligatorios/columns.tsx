@@ -38,7 +38,7 @@ export const columns: ColumnDef<MandatoryReport>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Nro. de Reporte" />
     ),
-    meta:{title:"Nro. de Reporte"},
+    meta: { title: "Nro. de Reporte" },
     cell: ({ row }) => {
       return (
         <div className="flex justify-center">
