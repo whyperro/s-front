@@ -22,7 +22,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 
 export function UserNav() {
-  const {user, loading, logout} = useAuth()
+  const { user, loading, logout } = useAuth()
   return (
     <DropdownMenu>
       <TooltipProvider disableHoverableContent>
@@ -35,7 +35,7 @@ export function UserNav() {
               >
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="#" alt="Avatar" />
-                  <AvatarFallback className="bg-transparent">AA</AvatarFallback>
+                  <AvatarFallback className="bg-transparent">{`${user?.first_name[0]}${user?.last_name[0]}`}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
@@ -45,7 +45,7 @@ export function UserNav() {
       </TooltipProvider>
 
       <DropdownMenuContent className="w-56" align="end" forceMount>
-      <DropdownMenuSeparator />
+        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem className="hover:cursor-pointer" asChild>
             <Link href="/dashboard" className="flex items-center">
@@ -70,7 +70,7 @@ export function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-      <DropdownMenuSeparator />
+        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem className="hover:cursor-pointer" asChild>
             <Link href="/dashboard" className="flex items-center">

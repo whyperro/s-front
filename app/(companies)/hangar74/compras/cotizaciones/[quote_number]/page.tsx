@@ -32,8 +32,6 @@ const CotizacionPage = () => {
 
   const { data, isLoading } = useGetQuoteByQuoteNumber(selectedCompany?.split(" ").join("") ?? null, quote_number);
 
-  console.log(quote_number)
-
   const { deleteQuote } = useDeleteQuote();
 
   if (isLoading) return <LoadingPage />;
@@ -75,11 +73,12 @@ const CotizacionPage = () => {
             {
               data?.article_quote_order.map((article) => (
                 <Card className='w-[280px] text-center' key={article.article_part_number}>
-                  <CardTitle className='p-6'>Parte - {article.article_part_number}</CardTitle>
+                  <CardTitle className='p-6'>{article.batch.name}</CardTitle>
                   <CardContent>
+                    <p className='font-medium'>Nro. de Parte: <span className='font-bold italic'>{article.article_part_number}</span></p>
                     <p className='font-medium'>Cantidad: <span className='font-bold italic'>{article.quantity}</span></p>
-                    <p className='font-medium'>Precio Unitario: <span className='font-bold italic'>${article.unit_price}</span></p>
-                    <p className='font-medium'>Total: <span className='font-bold italic'>${article.quantity * Number(article.unit_price)}</span></p>
+                    <p className='font-medium'>Precio Unitario: <span className='font-bold italic'>${Number(article.unit_price).toFixed(2)}</span></p>
+                    <p className='font-medium'>Total: <span className='font-bold italic'>${(article.quantity * Number(article.unit_price)).toFixed(2)}</span></p>
                   </CardContent>
                 </Card>
               ))

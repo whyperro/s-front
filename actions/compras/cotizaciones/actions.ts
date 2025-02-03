@@ -3,14 +3,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 interface CreateQuoteData {
-    quote_number: string,
     justification: string,
     articles: {
       part_number: string,
       quantity: number,
       unit_price: string,
     }[],
-    tax: number,
     sub_total: number,
     total: number,
     vendor_id: number,

@@ -48,6 +48,7 @@ export const columns: ColumnDef<Requisition>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Nro. Req." />
     ),
+    meta: { title: "Nro. Req." }, // 👈 Agrega el título aquí
     cell: ({ row }) => {
       return (
         <div className="flex justify-center">
@@ -61,6 +62,7 @@ export const columns: ColumnDef<Requisition>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Justificación" />
     ),
+    meta: { title: "Justificación" },
     cell: ({ row }) => (
       <p className="text-center flex justify-center text-muted-foreground italic">{row.original.justification}</p>
     )
@@ -70,6 +72,7 @@ export const columns: ColumnDef<Requisition>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Solicitado por" />
     ),
+    meta: { title: "Solicitado por" },
     cell: ({ row }) => (
       <p className="flex justify-center font-bold">{row.original.requested_by}</p>
     )
@@ -79,6 +82,7 @@ export const columns: ColumnDef<Requisition>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
     ),
+    meta: { title: "Status" },
     cell: ({ row }) => {
       const process = row.original.status === 'proceso' || row.original.status === 'cotizado'
       const aproved = row.original.status === 'aprobada'
@@ -92,6 +96,7 @@ export const columns: ColumnDef<Requisition>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Fecha de Creación" />
     ),
+    meta: { title: "Fecha de c." },
     cell: ({ row }) => (
       <p className="text-center">{format(row.original.submission_date, "PPP", { locale: es })}</p>
     )
@@ -101,6 +106,7 @@ export const columns: ColumnDef<Requisition>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Acciones" />
     ),
+    meta: { title: "Acciones" },
     cell: ({ row }) => (
       <div className="flex justify-center">
         <RequisitionsDropdownActions req={row.original} />

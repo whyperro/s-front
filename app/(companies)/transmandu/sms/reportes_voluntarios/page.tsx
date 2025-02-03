@@ -1,32 +1,23 @@
 "use client";
 
 import { ContentLayout } from "@/components/layout/ContentLayout";
-import { useGetQuotes } from "@/hooks/compras/useGetQuotes";
-import { useCompanyStore } from "@/stores/CompanyStore";
 import { Loader2 } from "lucide-react";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { useGetVoluntaryReports } from "@/hooks/sms/useGetVoluntaryReports";
+import LoadingPage from "@/components/misc/LoadingPage";
 
 const VoluntaryReportsPage = () => {
-  const { selectedStation, selectedCompany } = useCompanyStore();
-  const {
-    data: reportes,
-    isLoading,
-    isError,
-  } = useGetQuotes(
-    (selectedCompany && selectedCompany.split(" ").join("")) || null,
-    selectedStation || null
-  );
+  const { data, isLoading, isError } = useGetVoluntaryReports();
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
   return (
     <ContentLayout title="Reportes Voluntarios">
-      <div className="flex items-center py-4"></div>
       <div className="flex flex-col gap-y-2">
-        {isLoading && (
-          <div className="flex w-full h-full justify-center items-center">
-            <Loader2 className="size-24 animate-spin mt-48" />
-          </div>
-        )}
-        {reportes && <DataTable columns={columns} data={[]} />}
+        {data && <DataTable columns={columns} data={data} />}
         {isError && (
           <p className="text-sm text-muted-foreground">
             Ha ocurrido un error al cargar los reportes...

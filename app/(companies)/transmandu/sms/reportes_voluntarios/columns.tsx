@@ -4,8 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 
-import QuoteDropdownActions from "@/components/misc/QuoteDropdownActions";
-import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { VoluntaryReport } from "@/types";
 import { format } from "date-fns";
@@ -47,7 +45,7 @@ export const columns: ColumnDef<VoluntaryReport>[] = [
             href={`/hangar74/compras/cotizaciones/${row.original.report_number}`}
             className="font-bold text-center hover:italic hover:scale-110 transition-all"
           >
-            {row.original.report_number}
+            {row.original.report_number ?? "N/A"}
           </Link>
         </div>
       );
@@ -84,41 +82,37 @@ export const columns: ColumnDef<VoluntaryReport>[] = [
     },
   },
   {
-    accessorKey: "identification_area",
+    accessorKey: "danger_area",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Area de identificacion" />
     ),
     cell: ({ row }) => {
       return (
-        <p className="font-medium text-center">
-          {row.original.identification_area}
-        </p>
+        <p className="font-medium text-center">{row.original.danger_area}</p>
       );
     },
   },
   {
-    accessorKey: "hazard_location",
+    accessorKey: "danger_location",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Localización del peligro" />
     ),
     cell: ({ row }) => {
       return (
         <p className="font-medium text-center">
-          {row.original.hazard_location}
+          {row.original.danger_location}
         </p>
       );
     },
   },
 
   {
-    accessorKey: "hazard_description",
+    accessorKey: "description",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Descripcion del peligro" />
     ),
     cell: ({ row }) => (
-      <div className="flex justify-center">
-        {row.original.hazard_description}
-      </div>
+      <div className="flex justify-center">{row.original.description}</div>
     ),
   },
 ];

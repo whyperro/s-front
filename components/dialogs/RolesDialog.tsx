@@ -21,11 +21,6 @@ interface RolesDialogProps {
   roles: {
     id: number,
     name: string,
-    pivot: {
-      model_type: string,
-      model_id: string,
-      rolde_id: string,
-    }[],
     permissions: Permission[]
   }[];
   names: string;

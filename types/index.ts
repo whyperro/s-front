@@ -22,11 +22,6 @@ export type User = {
   roles?: {
     id: number;
     name: string;
-    pivot: {
-      model_type: string;
-      model_id: string;
-      rolde_id: string;
-    }[];
     permissions: Permission[];
   }[];
   permissions: Permission[];
@@ -302,12 +297,14 @@ export type Quote = {
   quote_number: string;
   justification: string;
   article_quote_order: {
+    batch: {
+      name: string;
+    };
     article_part_number: string;
     quantity: number;
     unit_price: string;
     image: string;
   }[];
-  tax: number;
   sub_total: number;
   total: number;
   vendor: Vendor;
@@ -317,8 +314,40 @@ export type Quote = {
   status: string;
 };
 
-export type Pilot = {
+export type PurchaseOrder = {
   id: number;
+  order_number: string;
+  justification: string;
+  article_purchase_order: {
+    batch?: {
+      name: string;
+    };
+    id: number;
+    article_part_number: string;
+    quantity: number;
+    unit_price: string;
+    article_tax: number;
+    usa_tracking: string;
+    ock_tracking: string;
+    article_location: string;
+  }[];
+  status: string;
+  purchase_date: Date;
+  tax: number;
+  handling_fee: number;
+  shipping_fee: number;
+  sub_total: number;
+  total: number;
+  vendor: Vendor;
+  requisition_order: Requisition;
+  quote_order: Quote;
+  location: Location;
+  created_by: string;
+  company: string;
+};
+
+export type Pilot = {
+  dni: number;
   name: string;
   last_name: string;
   license_number: string;
@@ -328,6 +357,8 @@ export type Pilot = {
 
 export type InformationSource = {
   id: number;
+  name: string;
+  type: 'PROACTIVO' | 'REACTIVO' | 'PREDICTIVO';
 };
 
 export type MandatoryReport = {
@@ -357,9 +388,9 @@ export type VoluntaryReport = {
   report_number: string;
   report_date: Date;
   identification_date: Date;
-  hazard_location: string;
-  identification_area: string;
-  hazard_description: string;
+  danger_location: string;
+  danger_area: string;
+  description: string;
   possible_consequences: string;
   first_name?: string;
   last_name?: string;
@@ -371,7 +402,7 @@ export type FollowUp = {
   id: number;
   date: string;
   description: string;
-}
+};
 
 export type Measure = {
   id: number;
@@ -379,7 +410,7 @@ export type Measure = {
   followUpInCharge: string;
   responsiblePerson: string;
   followUps: FollowUp[];
-}
+};
 
 export type MitigationPlan = {
   id: number;

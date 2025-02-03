@@ -24,7 +24,7 @@ const ManufacturersPage = () => {
       {
         error && (
           <div className='grid mt-72 place-content-center'>
-            <p className='text-sm text-muted-foreground'>Ha ocurrido un error al cargar las empresas...</p>
+            <p className='text-sm text-muted-foreground'>Ha ocurrido un error al cargar los proveedores...</p>
           </div>
         )
       }

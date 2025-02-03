@@ -15,15 +15,23 @@ import {
 } from "@/components/ui/tooltip";
 import { getMenuList } from "@/lib/menu-list";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface MenuProps {
   isOpen: boolean | undefined;
   company: 'transmandu' | "hangar 74"
 }
 
+
 export function Menu({ isOpen, company }: MenuProps) {
+
+  const { user } = useAuth()
+
+  const userRoles = user?.roles?.map(role => role.name) || [];
+
   const pathname = usePathname();
-  const menuList = getMenuList(pathname, company);
+
+  const menuList = getMenuList(pathname, company, userRoles);
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">

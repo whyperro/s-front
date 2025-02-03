@@ -22,7 +22,11 @@ const UserInfoCard = ({ user }: {
           <div className="flex flex-col gap-2 items-center">
             <CardTitle className="text-4xl">{user.first_name} {user.last_name}</CardTitle>
             <CardDescription>
-              <Badge className="bg-black text-[10px]">Administrador</Badge>
+              {
+                user.roles?.map((role, index) => (
+                  <Badge key={index} className="bg-black text-[10px]">{role.name}</Badge>
+                ))
+              }
             </CardDescription>
           </div>
         </div>
