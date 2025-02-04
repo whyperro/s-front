@@ -11,23 +11,30 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ObligatoryReportForm } from "../forms/CreateObligatoryReportForm";
+import { useState } from "react";
 
 export function CreateObligatoryDialog() {
+  const [open, setOpen] = useState(false);
   return (
     <>
       <Card className="flex">
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm" className=" hidden h-8 lg:flex">
+            <Button
+              onClick={() => setOpen(true)}
+              variant="outline"
+              size="sm"
+              className=" hidden h-8 lg:flex"
+            >
               Nuevo reporte
             </Button>
           </DialogTrigger>
-          <DialogContent className="flex flex-col h-screen w-1/3 overflow-auto m-2">
+          <DialogContent className="flex flex-col overflow-auto max-h-screen">
             <DialogHeader>
               <DialogTitle></DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
-            <ObligatoryReportForm />
+            <ObligatoryReportForm onClose={() => setOpen(false)} />
           </DialogContent>
         </Dialog>
       </Card>
