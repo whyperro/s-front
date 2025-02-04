@@ -53,18 +53,18 @@ const FormSchema = z
       message: "Debe ser una hora válida",
     }),
 
-    aicraft_id: z.string(),
-    aircraft_model: z.string(),
-    flight_number: z.string(),
-    flight_origin: z.string(),
-    flight_destination: z.string(),
-    alternate_destination: z.string(),
+    aicraft_id: z.string().min(3),
+    aircraft_model: z.string().min(3),
+    flight_number: z.string().min(3),
+    flight_origin: z.string().min(3),
+    flight_destination: z.string().min(3),
+    alternate_destination: z.string().min(3),
     incidents: z.array(z.string()),
-    others: z.string().optional(),
+    other_incidents: z.string().optional(),
   })
+
   .refine(
-    (data) =>
-      data.incidents.length > 0 || (data.others && data.others.trim() !== ""),
+    (data) => data.other_incidents && data.other_incidents.trim() !== "",
     {
       message:
         "Debes seleccionar al menos un ítem o ingresar un texto en 'Other'.",
@@ -104,24 +104,16 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      incident_place: "",
-      id_pilot: "",
-      id_copilot: "",
-      aicraft_id: "",
-      aircraft_model: "",
-      flight_number: "",
-      flight_origin: "",
-      alternate_destination: "",
-      flight_destination: "",
+      incident_date: new Date(),
+      report_date: new Date(),
       incidents: [],
-      others: "",
     },
   });
 
   const onSubmit = (data: FormSchemaType) => {
-    // Añadir contenido de "others" a "incidents" si está presente
-    if (data.others && data.others.trim() !== "") {
-      data.incidents.push(data.others);
+    // Añadir contenido de "other_incidents" a "incidents" si está presente
+    if (data.other_incidents && data.other_incidents.trim() !== "") {
+      data.incidents.push(data.other_incidents);
     }
     console.log(data);
     // onClose(); // Call onClose when the form is submitted
@@ -130,10 +122,10 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
   const handleOtherCheckboxChange = (checked: boolean) => {
     setShowOtherInput(checked);
     if (!checked) {
-      form.setValue("others", "");
+      form.setValue("other_incidents", "");
       const currentIncidents = form.getValues("incidents");
       const updatedIncidents = currentIncidents.filter(
-        (incident) => incident !== "others"
+        (incident) => incident !== "other_incidents"
       );
       form.setValue("incidents", updatedIncidents);
     }
@@ -142,7 +134,7 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
   const handleOtherInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    form.setValue("others", event.target.value);
+    form.setValue("other_incidents", event.target.value);
   };
 
   return (
@@ -154,94 +146,96 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
         <FormLabel className="text-lg text-center m-2">
           Reporte Obligatorio de suceso
         </FormLabel>
-        <FormField
-          control={form.control}
-          name="report_date"
-          render={({ field }) => (
-            <FormItem className="flex flex-col mt-2.5">
-              <FormLabel>Fecha de identificacion de peligro</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP", {
-                          locale: es,
-                        })
-                      ) : (
-                        <span>Seleccione una fecha...</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                    locale={es}
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="incident_date"
-          render={({ field }) => (
-            <FormItem className="flex flex-col mt-2.5">
-              <FormLabel>Fecha de identificacion de peligro</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP", {
-                          locale: es,
-                        })
-                      ) : (
-                        <span>Seleccione una fecha...</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                    locale={es}
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex flex-col">
+          <FormField
+            control={form.control}
+            name="report_date"
+            render={({ field }) => (
+              <FormItem className="flex flex-col mt-2.5">
+                <FormLabel>Fecha de reporte del incidente</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP", {
+                            locale: es,
+                          })
+                        ) : (
+                          <span>Seleccione una fecha...</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                      locale={es}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="incident_date"
+            render={({ field }) => (
+              <FormItem className="flex flex-col mt-2.5">
+                <FormLabel>Fecha del incidente</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP", {
+                            locale: es,
+                          })
+                        ) : (
+                          <span>Seleccione una fecha...</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                      locale={es}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="incident_time"
@@ -405,6 +399,19 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
         />
         <FormField
           control={form.control}
+          name="flight_number"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Numero de vuelo</FormLabel>
+              <FormControl>
+                <Input placeholder="Numero del vuelo" {...field} />
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="flight_origin"
           render={({ field }) => (
             <FormItem>
@@ -471,7 +478,6 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
                   <FormLabel className="text-sm font-normal">{item}</FormLabel>
                 </FormItem>
               ))}
-              {/* "Other" checkbox and input */}
               <FormItem className="flex flex-row items-start space-x-3 space-y-0 mt-4">
                 <FormControl>
                   <Checkbox
@@ -487,7 +493,7 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
                     <Input
                       type="text"
                       placeholder="Enter details"
-                      {...form.register("others")} // Use register for the "others" input
+                      {...form.register("other_incidents")} // Use register for the "other_incidents" input
                       onChange={handleOtherInputChange} // Keep the onChange handler for updating the incidents array
                     />
                   </FormControl>
@@ -497,7 +503,6 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
             </FormItem>
           )}
         />
-        {/* ... rest of your form */}
         <div className="flex justify-between items-center gap-x-4">
           <Separator className="flex-1" />
           <p className="text-muted-foreground">SIGEAC</p>
