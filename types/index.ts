@@ -358,7 +358,7 @@ export type Pilot = {
 export type InformationSource = {
   id: number;
   name: string;
-  type: 'PROACTIVO' | 'REACTIVO' | 'PREDICTIVO';
+  type: "PROACTIVO" | "REACTIVO" | "PREDICTIVO";
 };
 
 export type MandatoryReport = {
@@ -367,7 +367,7 @@ export type MandatoryReport = {
   report_number: string;
   report_date: Date;
   incident_date: Date;
-  incident_time?: Date;
+  incident_time: Date;
   incident_location: string;
   pilot: Pilot;
   copilot: Pilot;
@@ -377,8 +377,8 @@ export type MandatoryReport = {
   flight_origin: string;
   flight_destination: string;
   alternate_destination: string;
-  incident_type: string;
-  other_incident_description: string;
+  incidents: string;
+  other_incidents: string;
   incident_description: string;
 };
 
