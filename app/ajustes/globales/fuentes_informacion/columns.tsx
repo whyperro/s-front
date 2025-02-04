@@ -33,7 +33,11 @@ export const columns: ColumnDef<InformationSource>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Nombre" />
+      <DataTableColumnHeader
+        filter
+        column={column}
+        title="Nombre de la Fuente"
+      />
     ),
     meta: { title: "Nombre" },
     cell: ({ row }) => (
@@ -45,7 +49,7 @@ export const columns: ColumnDef<InformationSource>[] = [
   {
     accessorKey: "type",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Nombre" />
+      <DataTableColumnHeader filter column={column} title="Tipo de Fuente" />
     ),
     meta: { title: "Tipo" },
     cell: ({ row }) => (
