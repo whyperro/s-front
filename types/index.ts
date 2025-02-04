@@ -356,7 +356,6 @@ export type Pilot = {
 };
 
 export type InformationSource = {
-  id: number;
   name: string;
   type: "PROACTIVO" | "REACTIVO" | "PREDICTIVO";
 };
