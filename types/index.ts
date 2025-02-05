@@ -348,7 +348,7 @@ export type PurchaseOrder = {
 
 export type Pilot = {
   dni: number;
-  name: string;
+  first_name: string;
   last_name: string;
   license_number: string;
   phone: string;
