@@ -2,23 +2,26 @@ import axiosInstance from "@/lib/axios"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
-interface CreateBankSchema {
+interface CreateBankAccountSchema {
     name: string,
-    type: string,
+    account_number: string,
+    account_type: string,
+    account_owner: string,
+    bank_id: string,
 }
 
-export const useCreateBank = () => {
+export const useCreateBankAccount = () => {
 
     const queryClient = useQueryClient()
 
     const createMutation = useMutation({
-        mutationFn: async (data: CreateBankSchema) => {
-            await axiosInstance.post('/banks', data)
+        mutationFn: async (data: CreateBankAccountSchema) => {
+            await axiosInstance.post('/bank-accounts', data)
           },
         onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ['banks']})
+            queryClient.invalidateQueries({queryKey: ['bank-accounts']})
             toast("¡Creado!", {
-                description: `¡El banco se ha creado correctamente!`
+                description: `¡La cuenta se ha creado correctamente!`
             })
           },
         onError: (error) => {
@@ -30,7 +33,7 @@ export const useCreateBank = () => {
     )
 
     return {
-      createBank: createMutation,
+      createBankAccount: createMutation,
     }
 }
 
@@ -40,18 +43,18 @@ export const useDeleteBank = () => {
 
   const deleteMutation = useMutation({
       mutationFn: async (id: number | string) => {
-          await axiosInstance.delete(`/banks/${id}`)
+          await axiosInstance.delete(`/bank-accounts/${id}`)
         },
       onSuccess: () => {
 
           queryClient.invalidateQueries({queryKey: ['banks']})
           toast.success("¡Eliminado!", {
-              description: `¡El banco ha sido eliminado correctamente!`
+              description: `¡La cuenta ha sido eliminado correctamente!`
           })
         },
       onError: (e) => {
           toast.error("Oops!", {
-            description: "¡Hubo un error al eliminar el banco!"
+            description: "¡Hubo un error al eliminar la cuenta!"
         })
         },
       }

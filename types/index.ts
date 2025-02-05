@@ -376,8 +376,10 @@ export type Bank = {
 
 export type BankAccount = {
   id: number,
+  name: string,
   account_number: string,
   account_type: string,
+  account_owner: string,
   bank: Bank,
   cards: Card[],
   created_by: string,

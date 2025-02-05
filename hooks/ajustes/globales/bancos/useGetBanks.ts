@@ -8,7 +8,7 @@ const fetchBanks = async (): Promise<Bank[]> => {
   return data;
 };
 
-export const useGetBanks = () => {
+export const useGetBanks   = () => {
   return useQuery<Bank[]>({
     queryKey: ["banks"],
     queryFn: fetchBanks,

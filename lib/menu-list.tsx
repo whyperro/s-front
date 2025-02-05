@@ -398,12 +398,12 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
                   active: pathname === ("/ajustes/bancos_cuentas/bancos"),
                 },
                 {
-                  href: "/ajustes/bancos_cuentas/cuentas_bancos",
+                  href: "/ajustes/bancos_cuentas/cuentas",
                   label: "Cuentas",
                   active: pathname === ("/ajustes/bancos_cuentas/cuentas"),
                 },
                 {
-                  href: "/ajustes/bancos_cuentas/tarjetas_bancos",
+                  href: "/ajustes/bancos_cuentas/tarjetas",
                   label: "Tarjetas",
                   active: pathname === ("/ajustes/bancos_cuentas/tarjetas"),
                 },

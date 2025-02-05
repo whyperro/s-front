@@ -9,6 +9,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
@@ -31,7 +38,7 @@ interface FormProps {
   onClose: () => void,
 }
 
-export default function CreateUnitForm({ onClose }: FormProps) {
+export default function CreateBankForm({ onClose }: FormProps) {
   const { createBank } = useCreateBank();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,7 +49,7 @@ export default function CreateUnitForm({ onClose }: FormProps) {
   })
   const { control } = form;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await createBank.mutate(values);
+    await createBank.mutateAsync(values);
     onClose()
   }
   return (
@@ -55,7 +62,7 @@ export default function CreateUnitForm({ onClose }: FormProps) {
             <FormItem>
               <FormLabel>Nombre</FormLabel>
               <FormControl>
-                <Input placeholder="EJ: Kilogramo, Litro, Mililitro" {...field} />
+                <Input placeholder="EJ: Banesco, BOFA, etc..." {...field} />
               </FormControl>
               <FormDescription>
                 Este será el nombre de su banco.
@@ -65,16 +72,24 @@ export default function CreateUnitForm({ onClose }: FormProps) {
           )}
         />
         <FormField
-          control={control}
+          control={form.control}
           name="type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Valor</FormLabel>
-              <FormControl>
-                <Input placeholder="EJ: Kg, L, mL" {...field} />
-              </FormControl>
+              <FormLabel>Email</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccione un tipo..." />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="NACIONAL">Nacional</SelectItem>
+                  <SelectItem value="EXTRANJERA">Extranjera</SelectItem>
+                </SelectContent>
+              </Select>
               <FormDescription>
-                Este será el tipo de su banco.
+                Este sera el tipo de su banco.
               </FormDescription>
               <FormMessage />
             </FormItem>
