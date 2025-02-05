@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { InformationSource } from "../forms/CreateInformationSourceForm";
+import { CreateInformationSourceForm } from "../forms/CreateInformationSourceForm";
 
 export default function CreateInformationSourceDialog() {
   const [open, setOpen] = useState(false);
@@ -27,7 +27,7 @@ export default function CreateInformationSourceDialog() {
               size="sm"
               className=" hidden h-8 lg:flex"
             >
-              Nuevo reporte
+              Nueva Fuente
             </Button>
           </DialogTrigger>
           <DialogContent className="flex flex-col max-w-2xl m-2">
@@ -35,7 +35,7 @@ export default function CreateInformationSourceDialog() {
               <DialogTitle></DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
-            <InformationSource onClose={() => setOpen(false)} />
+            <CreateInformationSourceForm onClose={() => setOpen(false)} />
           </DialogContent>
         </Dialog>
       </Card>

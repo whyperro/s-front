@@ -53,7 +53,7 @@ interface FormProps {
 }
 // { onClose }: FormProps
 // lo de arriba va en prop
-export function InformationSourceForm({ onClose }: FormProps) {
+export function CreateInformationSourceForm({ onClose }: FormProps) {
   const { createInformationSource } = useCreateInformationSource();
 
   const form = useForm<FormSchemaType>({
@@ -62,7 +62,7 @@ export function InformationSourceForm({ onClose }: FormProps) {
   });
 
   const onSubmit = async (data: FormSchemaType) => {
-    //await createVoluntaryReport.mutateAsync(data);
+    await createInformationSource.mutateAsync(data);
     onClose();
   };
 
@@ -73,7 +73,7 @@ export function InformationSourceForm({ onClose }: FormProps) {
         className="flex flex-col space-y-3"
       >
         <FormLabel className="text-lg text-center">
-          Formulario de identificación de peligro
+          Formulario de Fuente de Informacion
         </FormLabel>
         <div className="flex gap-2 items-center justify-center  ">
           <FormField
@@ -124,7 +124,7 @@ export function InformationSourceForm({ onClose }: FormProps) {
           {createInformationSource.isPending ? (
             <Loader2 className="size-4 animate-spin" />
           ) : (
-            "Enviar Reporte"
+            "Enviar"
           )}
         </Button>
       </form>
