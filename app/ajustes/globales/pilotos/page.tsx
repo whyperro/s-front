@@ -1,22 +1,28 @@
-'use client'
+"use client";
 
-import { ContentLayout } from '@/components/layout/ContentLayout'
-import { useGetVendors } from '@/hooks/ajustes/globales/proveedores/useGetVendors'
-import { Loader2 } from 'lucide-react'
-import { columns } from './columns'
-import { DataTable } from './data-table'
+import { ContentLayout } from "@/components/layout/ContentLayout";
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
+import { useGetPilots } from "@/hooks/sms/useGetPilots";
+import LoadingPage from "@/components/misc/LoadingPage";
 
 const PilotsPage = () => {
-  
+  const { data, isLoading, isError } = useGetPilots();
+  if (isLoading) {
+    return <LoadingPage />;
+  }
   return (
-    <ContentLayout title='Permisos'>
-      <h1 className='text-5xl font-bold text-center mt-2'>
-        Control de Proveedores
-      </h1>
-      <p className='text-sm text-muted-foreground text-center italic mt-2'>Aquí puede llevar el control de los proveedores registrados para las diferentes compras.</p>
-     
+    <ContentLayout title="Permisos">
+      <div className="flex flex-col gap-y-2">
+        {data && <DataTable columns={columns} data={data} />}
+        {isError && (
+          <p className="text-sm text-muted-foreground">
+            Ha ocurrido un error al cargar las fuentes...
+          </p>
+        )}
+      </div>
     </ContentLayout>
-  )
-}
+  );
+};
 
-export default PilotsPage
+export default PilotsPage;

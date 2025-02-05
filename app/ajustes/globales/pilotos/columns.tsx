@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef } from "@tanstack/react-table";
 
-import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
+import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 
-import { Checkbox } from "@/components/ui/checkbox"
-import { Manufacturer, Pilot, Vendor } from "@/types"
+import { Checkbox } from "@/components/ui/checkbox";
+import { Pilot } from "@/types";
 
 export const columns: ColumnDef<Pilot>[] = [
   {
@@ -33,67 +33,82 @@ export const columns: ColumnDef<Pilot>[] = [
   {
     accessorKey: "dni",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Nombre" />
+      <DataTableColumnHeader filter column={column} title="Cedula" />
     ),
-    meta: { title: 'Cedula' },
-    cell: ({ row }) =>
+    meta: { title: "Cedula" },
+    cell: ({ row }) => (
       <div className="flex justify-center">
-        <span className='font-bold text-center'>{row.original.dni }</span>
+        <span className="font-bold text-center">{row.original.dni}</span>
       </div>
+    ),
   },
   {
-    accessorKey: "name",
+    accessorKey: "first_name",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Nombre" />
     ),
-    meta: { title: 'Nombre' },
-    cell: ({ row }) =>
+    meta: { title: "Nombre" },
+    cell: ({ row }) => (
       <div className="flex justify-center">
-        <span className='font-bold text-center'>{row.original.name }</span>
+        <span className="font-bold text-center">{row.original.first_name}</span>
       </div>
+    ),
   },
   {
     accessorKey: "last_name",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Email" />
+      <DataTableColumnHeader filter column={column} title="Apellido" />
     ),
-    meta: { title: 'Apellido' },
-    cell: ({ row }) =>
+    meta: { title: "Apellido" },
+    cell: ({ row }) => (
       <div className="flex justify-center">
-        <span className='text-muted-foreground italic'>{row.original.last_name}</span>
+        <span className="text-muted-foreground italic">
+          {row.original.last_name}
+        </span>
       </div>
+    ),
   },
   {
     accessorKey: "license_number",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Nro. TLF" />
+      <DataTableColumnHeader column={column} title="Nro. de Licencia" />
     ),
-    meta: { title: 'Nro. Licencia' },
-    cell: ({ row }) =>
+    meta: { title: "Nro. Licencia" },
+    cell: ({ row }) => (
       <div className="flex justify-center">
-        <span className='text-muted-foreground italic'>{row.original.license_number}</span>
+        <span className="text-muted-foreground italic">
+          {row.original.license_number}
+        </span>
       </div>
+    ),
+  },
+
+  {
+    accessorKey: "phone",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Telefono" />
+    ),
+    meta: { title: "Telefono" },
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <span className="text-muted-foreground italic">
+          {row.original.phone}
+        </span>
+      </div>
+    ),
   },
   {
     accessorKey: "email",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Ubicacion" />
+      <DataTableColumnHeader column={column} title="Correo Electronico" />
     ),
-    meta: { title: 'Email' },
-    cell: ({ row }) =>
+    meta: { title: "Email" },
+    cell: ({ row }) => (
       <div className="flex justify-center">
-        <span className='text-muted-foreground italic'>{row.original.email}</span>
+        <span className="text-muted-foreground italic">
+          {row.original.email}
+        </span>
       </div>
-  },
-  {
-    accessorKey: "phone",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Ubicacion" />
     ),
-    meta: { title: 'Telefono' },
-    cell: ({ row }) =>
-      <div className="flex justify-center">
-        <span className='text-muted-foreground italic'>{row.original.phone}</span>
-      </div>
   },
-]
+];
