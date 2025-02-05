@@ -361,8 +361,8 @@ export type InformationSource = {
 };
 
 export type MandatoryReport = {
-  id: number;
-  information_source: InformationSource;
+  report_code: number;
+  //information_source: InformationSource;
   report_number: string;
   report_date: Date;
   incident_date: Date;
@@ -378,7 +378,6 @@ export type MandatoryReport = {
   alternate_destination: string;
   incidents: string;
   other_incidents: string;
-  incident_description: string;
 };
 
 export type VoluntaryReport = {

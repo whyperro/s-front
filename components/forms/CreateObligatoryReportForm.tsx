@@ -63,8 +63,10 @@ const FormSchema = z
     other_incidents: z.string(),
   })
 
-  .refine(data => 
-    (data.incidents?.length ?? 0) > 0 || (data.other_incidents?.trim().length ?? 0) > 0, 
+  .refine(
+    (data) =>
+      (data.incidents?.length ?? 0) > 0 ||
+      (data.other_incidents?.trim().length ?? 0) > 0,
     {
       message: "Debe haber al menos un incidente o un otro incidente.",
       path: ["incidentes"], // Puedes cambiarlo a "otrosIncidentes" si prefieres mostrar el error ahí
@@ -74,7 +76,7 @@ const FormSchema = z
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
-  onClose?: () => void;
+  onClose: () => void;
 }
 
 export function ObligatoryReportForm({ onClose }: FormProps) {
@@ -111,10 +113,8 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
   });
 
   const onSubmit = (data: FormSchemaType) => {
-    // Añadir contenido de "other_incidents" a "incidents" si está presente
-
     console.log(data);
-    // onClose(); // Call onClose when the form is submitted
+    onClose();
   };
 
   const handleOtherCheckboxChange = (checked: boolean) => {

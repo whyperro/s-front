@@ -24,7 +24,7 @@ interface VoluntaryReportData {
 export const useCreateVoluntaryReport = () => {
   const queryClient = useQueryClient();
   const createMutation = useMutation({
-    mutationKey: ["voluntary-report"],
+    mutationKey: ["voluntary-reports"],
     mutationFn: async (data: VoluntaryReportData) => {
       await axiosInstance.post("/transmandu/voluntary-reports", data, {
         headers: {

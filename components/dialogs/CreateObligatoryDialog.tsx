@@ -18,7 +18,7 @@ export function CreateObligatoryDialog() {
   return (
     <>
       <Card className="flex">
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button
               onClick={() => setOpen(true)}
