@@ -19,7 +19,7 @@ import { Loader2 } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
 
-import { useCreateInformationSource } from "@/actions/sms/tipos_fuente/actions";
+import { useCreatePilot } from "@/actions/sms/piloto/actions";
 
 const FormSchema = z.object({
   dni: z.string(),
@@ -38,7 +38,7 @@ interface FormProps {
 // { onClose }: FormProps
 // lo de arriba va en prop
 export function CreatePilotForm({ onClose }: FormProps) {
-  const { createInformationSource } = useCreateInformationSource();
+  const { createPilot } = useCreatePilot();
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
@@ -46,7 +46,7 @@ export function CreatePilotForm({ onClose }: FormProps) {
   });
 
   const onSubmit = async (data: FormSchemaType) => {
-    //await createInformationSource.mutateAsync(data);
+    await createPilot.mutateAsync(data);
     onClose();
   };
 
@@ -145,8 +145,8 @@ export function CreatePilotForm({ onClose }: FormProps) {
           <p className="text-muted-foreground">SIGEAC</p>
           <Separator className="flex-1" />
         </div>
-        <Button disabled={createInformationSource.isPending}>
-          {createInformationSource.isPending ? (
+        <Button disabled={createPilot.isPending}>
+          {createPilot.isPending ? (
             <Loader2 className="size-4 animate-spin" />
           ) : (
             "Enviar"
