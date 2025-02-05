@@ -60,14 +60,14 @@ const FormSchema = z
     flight_destination: z.string().min(3),
     alternate_destination: z.string().min(3),
     incidents: z.array(z.string()),
-    other_incidents: z.string().optional(),
+    other_incidents: z.string(),
   })
 
-  .refine(
-    (data) => data.other_incidents && data.other_incidents.trim() !== "",
+  .refine(data => 
+    (data.incidents?.length ?? 0) > 0 || (data.other_incidents?.trim().length ?? 0) > 0, 
     {
-      message:
-        "Debes seleccionar al menos un ítem o ingresar un texto en 'Other'.",
+      message: "Debe haber al menos un incidente o un otro incidente.",
+      path: ["incidentes"], // Puedes cambiarlo a "otrosIncidentes" si prefieres mostrar el error ahí
     }
   );
 
@@ -112,9 +112,7 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
 
   const onSubmit = (data: FormSchemaType) => {
     // Añadir contenido de "other_incidents" a "incidents" si está presente
-    if (data.other_incidents && data.other_incidents.trim() !== "") {
-      data.incidents.push(data.other_incidents);
-    }
+
     console.log(data);
     // onClose(); // Call onClose when the form is submitted
   };
@@ -454,13 +452,12 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
           name="incidents"
           render={() => (
             <FormItem>
-              <FormLabel>Marque los sucesos ocurridos</FormLabel>{" "}
+              <FormLabel>Marque los sucesos ocurridos</FormLabel>
               {OPTIONS_LIST.map((item, index) => (
                 <FormItem
                   key={index}
                   className="flex flex-row items-start space-x-3 space-y-0"
                 >
-                  {/* ... checkbox and label for regular incidents */}
                   <FormControl>
                     <Checkbox
                       checked={form.getValues("incidents").includes(item)}
@@ -478,7 +475,18 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
                   <FormLabel className="text-sm font-normal">{item}</FormLabel>
                 </FormItem>
               ))}
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 mt-4">
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="other_incidents" // Campo separado para "other_incidents"
+          render={() => (
+            <FormItem className="mt-4">
+              {" "}
+              {/* Espacio para separar visualmente */}
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                 <FormControl>
                   <Checkbox
                     checked={showOtherInput}
@@ -493,8 +501,8 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
                     <Input
                       type="text"
                       placeholder="Enter details"
-                      {...form.register("other_incidents")} // Use register for the "other_incidents" input
-                      onChange={handleOtherInputChange} // Keep the onChange handler for updating the incidents array
+                      {...form.register("other_incidents")}
+                      onChange={handleOtherInputChange}
                     />
                   </FormControl>
                 </FormItem>
@@ -508,8 +516,7 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
           <p className="text-muted-foreground">SIGEAC</p>
           <Separator className="flex-1" />
         </div>
-        <Button type="submit">Enviar reporte</Button>{" "}
-        {/* Add type="submit" to the button */}
+        <Button type="submit">Enviar reporte</Button>
       </form>
     </Form>
   );
