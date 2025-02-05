@@ -27,12 +27,12 @@ export const useCreateInformationSource = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["information-sources"] });
       toast.success("¡Creado!", {
-        description: ` La fuente voluntario ha sido creado correctamente.`,
+        description: ` La fuente de informacion ha sido creado correctamente.`,
       });
     },
     onError: (error) => {
       toast.error("Oops!", {
-        description: "No se pudo crear el reporte...",
+        description: "No se pudo crear la fuente...",
       });
       console.log(error);
     },
