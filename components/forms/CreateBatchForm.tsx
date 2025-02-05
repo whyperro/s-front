@@ -22,6 +22,7 @@ import { useForm, useWatch } from "react-hook-form"
 import { z } from "zod"
 import { Checkbox } from "../ui/checkbox"
 import { Textarea } from "../ui/textarea"
+import { generateSlug } from "@/lib/utils"
 
 const FormSchema = z.object({
   name: z.string().min(3, {
@@ -75,7 +76,7 @@ export function CreateBatchForm({ onClose }: FormProps) {
     if (existingBatch) {
       setError("name", {
         type: "manual",
-        message: "El numero de parte ya está en existe."
+        message: "El numero de parte ya existe."
       });
     } else {
       clearErrors("name");
@@ -86,6 +87,7 @@ export function CreateBatchForm({ onClose }: FormProps) {
   const onSubmit = async (data: FormSchemaType) => {
     const formattedData = {
       ...data,
+      slug: generateSlug(data.name),
       min_quantity: Number(data.min_quantity),
       warehouse_id: Number(data.warehouse_id)
     }

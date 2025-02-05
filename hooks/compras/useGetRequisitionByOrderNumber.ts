@@ -1,5 +1,5 @@
 import axios from '@/lib/axios';
-import { User } from '@/types';
+import { Convertion, User } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 
 interface Requisition {
@@ -17,7 +17,8 @@ interface Requisition {
     name: string,
     batch_articles: {
       article_part_number: string,
-      quantity: number
+      unit?: Convertion,
+      quantity: number,
     }[]
   }[]
 }[]

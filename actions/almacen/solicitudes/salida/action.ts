@@ -70,6 +70,7 @@ export const useUpdateStatusDispatchRequest = () => {
         },
       onSuccess: () => {
           queryClient.invalidateQueries({queryKey: ['dispatches-requests-in-process']}),
+          queryClient.invalidateQueries({queryKey: ['dispatched-articles']}),
           toast.success('¡Actualizado!', {
             description: '¡La solicitud ha sido actualizada!'
           })

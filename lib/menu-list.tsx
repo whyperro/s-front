@@ -1,10 +1,12 @@
 import {
+  Banknote,
   BookOpen,
   Building,
   ClipboardCopy,
   Globe,
   HandCoins,
   History,
+  Landmark,
   LayoutGrid,
   LucideIcon,
   PackageOpen,
@@ -92,6 +94,71 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
                 }
               ]
             }
+          ]
+        },
+        {
+          groupLabel: "Ajustes",
+          menus: [
+            {
+              href: "/ajustes/empresas",
+              label: "Globales",
+              active: pathname.includes("/ajustes/globales"),
+              icon: Globe,
+              roles: ["SUPERUSER"],
+              submenus: [
+                {
+                  href: "/ajustes/globales/bancos",
+                  label: "Bancos",
+                  active: pathname === ("/ajustes/globales/bancos"),
+                },
+                {
+                  href: "/ajustes/globales/cuentas_bancos",
+                  label: "Cuentas",
+                  active: pathname === ("/ajustes/globales/bancos"),
+                },
+                {
+                  href: "/ajustes/globales/tarjetas_bancos",
+                  label: "Tarjetas",
+                  active: pathname === ("/ajustes/globales/bancos"),
+                },
+                {
+                  href: "/ajustes/globales/unidades",
+                  label: "Unidades",
+                  active: pathname === ("/ajustes/globales/unidades"),
+                },
+                {
+                  href: "/ajustes/globales/fabricantes",
+                  label: "Fabricantes",
+                  active: pathname === ("/administracion/globales/fabricantes"),
+                },
+                {
+                  href: "/ajustes/globales/proveedores",
+                  label: "Proveedores",
+                  active: pathname === ("/administracion/globales/proveedores"),
+                },
+                {
+                  href: "/ajustes/globales/condiciones",
+                  label: "Condiciones",
+                  active: pathname === ("/ajustes/globales/condiciones"),
+                },
+              ]
+            },
+            {
+              href: "/ajustes/cuentas_bancos",
+              label: "Cuentas y Bancos",
+              active: pathname.includes("/ajustes"),
+              icon: Banknote,
+              roles: [],
+              submenus: []
+            },
+            {
+              href: "/hangar74/cuenta",
+              label: "Cuenta",
+              active: pathname.includes("/cuenta"),
+              icon: Settings,
+              roles: [],
+              submenus: []
+            },
           ]
         },
         {
@@ -240,7 +307,7 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               label: "Cotizaciones",
               active: pathname.includes("/hangar74/compras/cotizaciones"),
               icon: HandCoins,
-              roles: ["ANALISTA_COMPRAS", "JEFE_COMPRAS"],
+              roles: ["ANALISTA_COMPRAS", "JEFE_COMPRAS", "SUPERUSER"],
               submenus: []
             },
             {
@@ -319,12 +386,28 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               ]
             },
             {
-              href: "/hangar74/cuenta",
-              label: "Cuenta",
-              active: pathname.includes("/cuenta"),
-              icon: Settings,
+              href: "/ajustes/bancos_cuentas",
+              label: "Bancos y Cuentas",
+              active: pathname.includes("/bancos_cuentas"),
+              icon: Landmark,
               roles: [],
-              submenus: []
+              submenus: [
+                {
+                  href: "/ajustes/bancos_cuentas/bancos",
+                  label: "Bancos",
+                  active: pathname === ("/ajustes/bancos_cuentas/bancos"),
+                },
+                {
+                  href: "/ajustes/bancos_cuentas/cuentas_bancos",
+                  label: "Cuentas",
+                  active: pathname === ("/ajustes/bancos_cuentas/cuentas"),
+                },
+                {
+                  href: "/ajustes/bancos_cuentas/tarjetas_bancos",
+                  label: "Tarjetas",
+                  active: pathname === ("/ajustes/bancos_cuentas/tarjetas"),
+                },
+              ]
             },
           ]
         },

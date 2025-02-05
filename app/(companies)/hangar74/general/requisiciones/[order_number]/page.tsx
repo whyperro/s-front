@@ -79,8 +79,13 @@ const InventarioPage = () => {
                     {
                       batch.batch_articles.map((article) => (
                         <>
-                          <div key={article.article_part_number} className='my-2'>
+                          <div key={article.article_part_number} className='space-y-2'>
                             <p className='font-medium'>Nro. Parte: <span className='font-bold italic'>{article.article_part_number}</span></p>
+                            {
+                              article.unit && (
+                                <p className='font-medium'>Unidad: <span className='font-bold italic'>{article.unit.secondary_unit}</span></p>
+                              )
+                            }
                             <p className='font-medium'>Cantidad: <span className='font-bold italic'>{article.quantity}</span></p>
                           </div>
                           <Separator />

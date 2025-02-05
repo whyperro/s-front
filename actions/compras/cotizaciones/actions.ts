@@ -7,6 +7,7 @@ interface CreateQuoteData {
     articles: {
       part_number: string,
       quantity: number,
+      unit: string,
       unit_price: string,
     }[],
     sub_total: number,

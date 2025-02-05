@@ -1,20 +1,20 @@
 'use client'
 
 import { ContentLayout } from '@/components/layout/ContentLayout';
-import { useGetWarehouses } from '@/hooks/administracion/useGetWarehouses';
+import { useGetConditions } from '@/hooks/administracion/useGetConditions';
 import { Loader2 } from 'lucide-react';
 import { columns } from './columns';
 import { DataTable } from './data-table';
+import { useGetBanks } from '@/hooks/ajustes/globales/bancos/useGetBanks';
 
-const AlmacenesPage = () => {
+const BanksPage = () => {
 
-  const { data: warehouses, isLoading, error } = useGetWarehouses();
-  console.log(warehouses)
+  const { data: banks, isLoading, error } = useGetBanks();
   return (
     <ContentLayout title={'Almacenes'}>
-      <h1 className='text-4xl font-bold text-center mb-2'>Control de Almácenes</h1>
+      <h1 className='text-4xl font-bold text-center mb-2'>Control de Bancos</h1>
       <p className='text-sm text-muted-foreground text-center'>
-        Aquí puede observar todos los almacénes registrados. Filtre y/o busque sí desea un item en específico. <br /> Presione el boton de <strong>Crear</strong> en caso de querer crear un nuevo almácen.
+        Lleve un control de los diferentes bancos que se han registrado.
       </p>
       {
         isLoading && (
@@ -31,12 +31,12 @@ const AlmacenesPage = () => {
         )
       }
       {
-        warehouses && (
-          <DataTable columns={columns} data={warehouses} />
+        banks && (
+          <DataTable columns={columns} data={banks} />
         )
       }
     </ContentLayout>
   )
 }
 
-export default AlmacenesPage
+export default BanksPage

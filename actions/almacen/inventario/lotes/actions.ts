@@ -3,7 +3,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 type BatchType = {
-  name?: string,
+  name: string,
+  slug: string,
   description?: string,
   ata_code?: string,
   brand?: string,

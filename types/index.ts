@@ -96,6 +96,7 @@ export type Warehouse = {
 export type Batch = {
   id: number,
   name: string,
+  slug: string,
   description: string,
   category: string,
   ata_code: string,
@@ -223,6 +224,15 @@ export interface DispatchRequest extends Request {
   part_number: string,
   articles: Article[],
   destination_place: string,
+  batch: {
+    id: string,
+    name: string,
+    articles: {
+      article_id: string,
+      serial: string,
+      quantity: string,
+    }
+  },
   category: string,
 }
 
@@ -275,6 +285,13 @@ export type Requisition = {
   created_by: string,
   approved_by: string,
   requested_by: string,
+  article_requisition_order: {
+    article_part_number: string,
+    quantity: number,
+    unit_price: string,
+    unit?: Convertion,
+    image: string,
+  }[],
   received_by: string,
   justification: string,
   arrival_date: Date,
@@ -304,6 +321,7 @@ export type Quote = {
     article_part_number: string,
     quantity: number,
     unit_price: string,
+    unit?: Convertion,
     image: string,
   }[],
   sub_total: number,
@@ -345,4 +363,31 @@ export type PurchaseOrder = {
   location: Location,
   created_by: string,
   company: string,
+}
+
+
+export type Bank = {
+  id: number,
+  name: string,
+  type: string,
+  created_by: string,
+  updated_by: string,
+}
+
+export type BankAccount = {
+  id: number,
+  account_number: string,
+  account_type: string,
+  bank: Bank,
+  cards: Card[],
+  created_by: string,
+  updated_by: string,
+}
+
+export type Card = {
+  id: number,
+  card_number: string,
+  card_type: string,
+  created_by: string,
+  updated_by: string,
 }

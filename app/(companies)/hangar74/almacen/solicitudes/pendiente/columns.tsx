@@ -1,30 +1,15 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ClipboardCheck, MoreHorizontal, SquarePen, Trash2 } from "lucide-react"
 
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
 
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { DispatchRequest } from "@/types"
 import DispatchArticlesDialog from "@/components/dialogs/DispatchArticlesDialog"
+import PendingDispatchRequestDropdownActions from "@/components/misc/PendingDispatchRequestDropdownActions"
+import { Checkbox } from "@/components/ui/checkbox"
+import { DispatchRequest } from "@/types"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import PendingDispatchRequestDropdownActions from "@/components/misc/PendingDispatchRequestDropdownActions"
 
 export const columns: ColumnDef<DispatchRequest>[] = [
   {
@@ -107,10 +92,10 @@ export const columns: ColumnDef<DispatchRequest>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const item = row.original
+      const request = row.original
 
       return (
-        <PendingDispatchRequestDropdownActions id={row.original.id} />
+        <PendingDispatchRequestDropdownActions request={request} />
       )
     },
   },

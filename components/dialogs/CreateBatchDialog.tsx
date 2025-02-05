@@ -17,7 +17,7 @@ export function CreateBatchDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button onClick={() => setOpen(true)} variant={'outline'} className="flex items-center justify-center gap-2 h-8 border-dashed">Crear Renglón</Button>
+        <Button onClick={() => setOpen(true)} variant={'ghost'}>Crear Renglón</Button>
       </DialogTrigger>
       <DialogContent className="max-w-xl">
         <DialogHeader>

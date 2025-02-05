@@ -1,6 +1,6 @@
 import axios from '@/lib/axios';
 import { Article, Batch } from '@/types';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 interface EditingArticle extends Article {
   batches: Batch,
   tool?: {

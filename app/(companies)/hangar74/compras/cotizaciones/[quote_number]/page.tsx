@@ -20,7 +20,7 @@ import { Loader2, Trash2, User } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-const CotizacionPage = () => {
+const QuotePage = () => {
 
   const [openDelete, setOpenDelete] = useState<boolean>(false);
 
@@ -109,4 +109,4 @@ const CotizacionPage = () => {
   );
 };
 
-export default CotizacionPage;
+export default QuotePage;

@@ -26,6 +26,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import CreateVendorForm from "./CreateVendorForm"
+import { useGetSecondaryUnits } from "@/hooks/ajustes/globales/unidades/useGetSecondaryUnits"
 
 const FormSchema = z.object({
   justification: z.string({ message: "Debe ingresar una justificacion." }),
@@ -33,6 +34,7 @@ const FormSchema = z.object({
     z.object({
       part_number: z.string(),
       quantity: z.number().min(1, { message: "Debe ingresar al menos 1." }),
+      unit: z.string().optional(),
       unit_price: z.string().min(0, { message: "El precio no puede ser negativo." }),
     })
   ),
@@ -53,6 +55,8 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
 
   const { updateStatusRequisition } = useUpdateRequisitionStatus()
 
+  const { data: secondaryUnits } = useGetSecondaryUnits()
+
   const { createQuote } = useCreateQuote()
 
   const { user } = useAuth()
@@ -62,6 +66,7 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
       article.batch_articles.map((batchArticle: any) => ({
         part_number: batchArticle.part_number,
         quantity: batchArticle.quantity,
+        unit: batchArticle.unit.id.toString(),
         unit_price: 0,
         image: batchArticle.image,
       }))
@@ -97,6 +102,8 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
 
   const { mutate, data: locations, isPending: isLocationsPending } = useGetLocationsByCompanyId()
 
+  console.log(form.getValues())
+
   useEffect(() => {
     if (selectedCompany) {
       mutate(Number(2))
@@ -104,7 +111,6 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
   }, [selectedCompany, mutate])
 
   const onSubmit = async (data: FormSchemaType) => {
-    console.log('click')
     const formattedData = {
       ...data,
       created_by: `${user?.first_name} ${user?.last_name}`,
@@ -128,6 +134,7 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
         company: selectedCompany!.split(" ").join("").toLowerCase(),
       }
     });
+    console.log(formattedData)
     onClose()
   }
 
@@ -233,7 +240,7 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
                           </Dialog>
                           {vendors?.map((vendor) => (
                             <CommandItem
-                              value={vendor.id.toString()}
+                              value={vendor.name}
                               key={vendor.id.toString()}
                               onSelect={() => {
                                 form.setValue("vendor_id", vendor.id.toString())
@@ -325,25 +332,46 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
               />
 
               {/* Cantidad */}
-              <FormField
-                control={control}
-                name={`articles.${index}.quantity`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Cantidad</FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled className="disabled:opacity-85 font-semibold"
-                        type="number"
-                        min={1}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex gap-2 items-center">
+                <FormField
+                  control={control}
+                  name={`articles.${index}.quantity`}
+                  render={({ field }) => (
+                    <FormItem className="w-1/3">
+                      <FormLabel>Cantidad</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled className="disabled:opacity-85 font-semibold"
+                          type="number"
+                          min={1}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {
+                  articles[index].unit && (
+                    <div className="space-y-2 w-full">
+                      <Label>Unidad</Label>
+                      <Select defaultValue={articles[index].unit.toString()}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Unidad" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {
+                            secondaryUnits && secondaryUnits.map((unit) => (
+                              <SelectItem disabled key={unit.id} value={unit.id.toString()}>{unit.secondary_unit}</SelectItem>
+                            ))
+                          }
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )
+                }
 
+              </div>
               {/* Precio Unitario */}
               <FormField
                 control={control}

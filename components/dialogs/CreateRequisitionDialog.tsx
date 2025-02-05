@@ -25,7 +25,7 @@ export function CreateRequisitionDialog() {
       <DialogTrigger asChild>
         <Button onClick={() => setOpen(true)} variant={'outline'} className="flex items-center justify-center gap-2 h-8 border-dashed">Nueva Req.</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[620px]">
+      <DialogContent className="sm:max-w-[680px]">
         <DialogHeader>
           <DialogTitle>Creación de Requisición</DialogTitle>
           <DialogDescription>

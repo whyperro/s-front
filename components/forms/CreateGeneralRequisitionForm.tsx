@@ -21,27 +21,44 @@ import { ScrollArea } from "../ui/scroll-area"
 import { Separator } from "../ui/separator"
 import { Textarea } from "../ui/textarea"
 import { CreateBatchDialog } from "../dialogs/CreateBatchDialog"
+import { useGetSecondaryUnits } from "@/hooks/ajustes/globales/unidades/useGetSecondaryUnits"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
 const FormSchema = z.object({
-  justification: z.string().min(2, { message: "La justificación debe tener al menos 5 caracteres." }),
+  justification: z.string().min(2, { message: "La justificación debe ser válida." }),
   company: z.string(),
   location_id: z.string(),
   created_by: z.string(),
-  requested_by: z.string(),
+  requested_by: z.string({ message: "Debe ingresar quien lo solicita." }),
   image: z.instanceof(File).optional(), // Nueva imagen general
-  articles: z.array(
-    z.object({
-      batch: z.string(),
-      batch_name: z.string(),
-      batch_articles: z.array(
-        z.object({
-          part_number: z.string(),
-          quantity: z.number(),
-          image: z.instanceof(File).optional(), // Imagen por artículo
-        })
-      ),
-    })
-  ),
+  articles: z
+    .array(
+      z.object({
+        batch: z.string(),
+        batch_name: z.string(),
+        category: z.string(),
+        batch_articles: z.array(
+          z.object({
+            part_number: z.string().min(1, "El número de parte es obligatorio"),
+            quantity: z.number().min(1, "Debe ingresar una cantidad válida"),
+            image: z.any().optional(),
+            unit: z.string().optional(), // Inicialmente opcional
+          })
+        ),
+      })
+    )
+    .refine(
+      (articles) =>
+        articles.every((batch) =>
+          batch.batch_articles.every((article) =>
+            batch.category !== "consumible" || article.unit
+          )
+        ),
+      {
+        message: "La unidad secundaria es obligatoria para consumibles",
+        path: ["articles"],
+      }
+    ),
 });
 
 type FormSchemaType = z.infer<typeof FormSchema>
@@ -57,10 +74,12 @@ interface FormProps {
 interface Article {
   part_number: string;
   quantity: number;
+  unit?: string,
 }
 
 interface Batch {
   batch: string;
+  category: string
   batch_name: string,
   batch_articles: Article[];
 }
@@ -72,6 +91,8 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
   const { mutate, data } = useGetBatchesByLocationId();
 
   const { mutate: employeesMutation, data: employees, isPending: employeesLoading } = useGetDepartamentEmployees();
+
+  const { data: secondaryUnits, isLoading: secondaryUnitLoading } = useGetSecondaryUnits()
 
   const { selectedCompany, selectedStation } = useCompanyStore()
 
@@ -113,7 +134,7 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
 
 
   // Maneja la selección de un lote.
-  const handleBatchSelect = (batchName: string, batchId: string) => {
+  const handleBatchSelect = (batchName: string, batchId: string, batch_category: string) => {
     setSelectedBatches((prev) => {
       // Verificar si el batch ya está seleccionado
       const exists = prev.some((b) => b.batch === batchId);
@@ -126,7 +147,7 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
       // Si no existe, lo agregamos
       return [
         ...prev,
-        { batch: batchId, batch_name: batchName, batch_articles: [{ part_number: "", quantity: 0 }] },
+        { batch: batchId, batch_name: batchName, category: batch_category, batch_articles: [{ part_number: "", quantity: 0 }] },
       ];
     });
   };
@@ -194,7 +215,6 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
     } else {
       await createRequisition.mutateAsync(formattedData)
     }
-    console.log(formattedData)
     onClose()
   }
 
@@ -301,13 +321,13 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
                     <CommandList>
                       <CommandEmpty>No existen renglones...</CommandEmpty>
                       <CommandGroup>
-                        <CreateBatchDialog />
+                        <div className="flex justify-center m-2"><CreateBatchDialog /></div>
                         {data &&
                           data.map((batch) => (
                             <CommandItem
                               key={batch.name}
-                              value={batch.id.toString()}
-                              onSelect={() => handleBatchSelect(batch.name, batch.id.toString())}
+                              value={batch.name}
+                              onSelect={() => handleBatchSelect(batch.name, batch.id.toString(), batch.category)}
                             >
                               <Check
                                 className={cn(
@@ -345,11 +365,32 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
                           <div key={index} className="flex items-center space-x-4 mt-2">
                             <Input
                               placeholder="Número de parte"
-                              onChange={(e) => {
-                                handleArticleChange(batch.batch, index, "part_number", e.target.value)
-                              }
-                              }
+                              onChange={(e) => handleArticleChange(batch.batch, index, "part_number", e.target.value)}
                             />
+                            {/* Campo adicional si es consumible */}
+                            {batch.category === "consumible" && (
+                              <>
+                                <Select disabled={secondaryUnitLoading} onValueChange={(value) => handleArticleChange(batch.batch, index, "unit", value)}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Unidad Sec." />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {
+                                      secondaryUnits && secondaryUnits.map((secU) => (
+                                        <SelectItem key={secU.id} value={secU.id.toString()}>{secU.secondary_unit}</SelectItem>
+                                      )
+                                      )
+                                    }
+                                  </SelectContent>
+                                </Select>
+                                {form.formState.errors.articles?.[index]?.batch_articles?.[index]?.unit && (
+                                  <p className="text-red-500 text-xs">
+                                    La unidad es obligatoria para consumibles.
+                                  </p>
+                                )}
+                              </>
+                            )}
                             <Input
                               type="number"
                               placeholder="Cantidad"

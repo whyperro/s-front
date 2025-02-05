@@ -1,6 +1,6 @@
 {
-  "name": "frontend-login-dashboard",
-  "version": "0.1.0",
+  "name": "sigec_frontend",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev",

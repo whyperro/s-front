@@ -6,7 +6,7 @@ import { toast } from "sonner"
 interface CreateRequisitionData {
   justification: string,
   requested_by: string,
-  created_by: string,
+  created_by: number | string,
   aircraft_id?: number,
   work_order_id?: number,
   company: string,
@@ -17,6 +17,7 @@ interface CreateRequisitionData {
     batch_articles: {
       quantity: number,
       part_number: string,
+      unit?: string,
       image?: File,
     }[]
   }[]

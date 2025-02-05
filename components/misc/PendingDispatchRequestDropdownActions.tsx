@@ -29,6 +29,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext"
 import { useGetWarehousesEmployees } from "@/hooks/almacen/useGetWarehousesEmployees"
 import { cn } from "@/lib/utils"
+import { useCompanyStore } from "@/stores/CompanyStore"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
@@ -39,8 +40,9 @@ import { z } from "zod"
 import { Calendar } from "../ui/calendar"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { useCompanyStore } from "@/stores/CompanyStore"
-import { toast } from "sonner"
+import { DispatchRequest } from "@/types"
+import { useGetBatchById } from "@/hooks/almacen/useGetBatchById"
+import { useCreateRequisition } from "@/actions/compras/requisiciones/actions"
 
 
 const formSchema = z.object({
@@ -52,7 +54,7 @@ const formSchema = z.object({
 })
 
 const PendingDispatchRequestDropdownActions
-  = ({ id }: { id: string | number }) => {
+  = ({ request }: { request: DispatchRequest }) => {
 
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -65,9 +67,13 @@ const PendingDispatchRequestDropdownActions
 
     const [open, setOpen] = useState<boolean>(false)
 
-    const { selectedStation } = useCompanyStore()
+    const { selectedStation, selectedCompany } = useCompanyStore()
 
     const { updateDispatchStatus } = useUpdateStatusDispatchRequest()
+
+    const { createRequisition } = useCreateRequisition()
+
+    const { data: batch } = useGetBatchById(request.batch.id)
 
     const { user } = useAuth();
 
@@ -82,12 +88,33 @@ const PendingDispatchRequestDropdownActions
     const handleAprove = async (data: z.infer<typeof formSchema>) => {
       const formattedData = {
         ...data,
-        id: Number(id),
+        id: Number(request.id),
         status: "aprobado",
         approved_by: `${user?.first_name} ${user?.last_name}`
       }
-      // console.log(formattedData)
+      const reqData = {
+        justification: `Restock por solicitud de salida de ${request.batch.name} - ${request.part_number}`,
+        requested_by: `${user?.first_name} ${user?.last_name}`,
+        created_by: user!.id,
+        company: selectedCompany!.split(" ").join("").toLowerCase(),
+        location_id: selectedStation!,
+        articles: [
+          {
+            batch: request.batch.id,
+            batch_name: request.batch.name,
+            batch_articles: [
+              {
+                quantity: 1,
+                part_number: request.part_number,
+              }
+            ]
+          }
+        ]
+      }
       await updateDispatchStatus.mutateAsync(formattedData);
+      if (batch && (batch?.article_count - 1 < batch.min_quantity)) {
+        createRequisition.mutateAsync(reqData)
+      }
       setOpen(false)
     }
     return (

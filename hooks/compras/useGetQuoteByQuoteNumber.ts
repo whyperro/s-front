@@ -14,4 +14,3 @@ export const useGetQuoteByQuoteNumber = (company: string | null, quote_number: s
     enabled: !!company && !!quote_number,
   });
 };
-

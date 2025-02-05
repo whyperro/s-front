@@ -6,7 +6,7 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
 
 import BatchDropdownActions from "@/components/misc/BatchDropdownActions"
 import { Checkbox } from "@/components/ui/checkbox"
-import { cn } from "@/lib/utils"
+import { cn, generateSlug } from "@/lib/utils"
 import { Batch } from "@/types"
 import Link from "next/link"
 
@@ -47,7 +47,7 @@ export const columns: ColumnDef<BatchesWithCountProp>[] = [
     ),
     cell: ({ row }) => {
       return (
-        <Link href={`/hangar74/almacen/inventario/gestion/${row.original.name.toLowerCase()}`} className="font-medium flex justify-center hover:scale-105 hover:text-blue-600 transition-all ease-in cursor-pointer duration-150">{row.original.name}</Link>
+        <Link href={`/hangar74/almacen/inventario/gestion/${row.original.slug}`} className="font-medium flex justify-center hover:scale-105 hover:text-blue-600 transition-all ease-in cursor-pointer duration-150 text-center text-base">{row.original.name}</Link>
       )
     }
   },
