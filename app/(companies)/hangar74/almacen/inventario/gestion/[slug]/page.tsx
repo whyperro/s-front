@@ -1,14 +1,13 @@
 'use client';
 
 import { ContentLayout } from '@/components/layout/ContentLayout';
-import { useGetBatches } from '@/hooks/almacen/useGetBatches';
-import { DataTable } from './data-table';
-import { columns } from './columns';
-import { useParams } from 'next/navigation';
 import { useGetArticlesByBatch } from '@/hooks/almacen/useGetArticlesByBatch';
-import { useEffect } from 'react';
 import { useCompanyStore } from '@/stores/CompanyStore';
 import { Loader2 } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { columns } from './columns';
+import { DataTable } from './data-table';
 
 const BatchDetailPage = () => {
 
@@ -16,19 +15,19 @@ const BatchDetailPage = () => {
 
   const { selectedStation } = useCompanyStore();
 
-  const { mutate, data: articles, isPending: isBatchesLoading, isError } = useGetArticlesByBatch(Number(selectedStation), slug);
+  const { mutate, data: batch, isPending: isBatchesLoading, isError } = useGetArticlesByBatch(Number(selectedStation), slug);
 
   useEffect(() => {
     if (selectedStation) {
       mutate(Number(selectedStation))
     }
   }, [selectedStation, mutate])
-
+  console.log(batch)
   return (
     <ContentLayout title='Inventario'>
       <div className='flex flex-col gap-y-2'>
         <h1 className='text-4xl font-bold text-center'>Detalles del Renglón</h1>
-        <h3 className='text-3xl font-bold italic text-center'>{slug}</h3>
+        <h3 className='text-3xl font-bold italic text-center'>{batch?.name}</h3>
         <p className='text-sm text-muted-foreground text-center italic mt-2'>
           Aquí puede observar todos los renglones de los diferentes almacenes. Filtre y/o busque sí desea un renglón en específico.
         </p>
@@ -40,15 +39,10 @@ const BatchDetailPage = () => {
           )
         }
         {
-          articles && articles.length > 0 && (
+          batch && (
             <>
-              <DataTable columns={columns} data={articles} />
+              <DataTable columns={columns} data={batch!.articles} />
             </>
-          )
-        }
-        {
-          articles && articles.length === 0 && (
-            <DataTable columns={columns} data={[]} />
           )
         }
         {
