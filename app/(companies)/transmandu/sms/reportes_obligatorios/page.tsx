@@ -8,29 +8,16 @@ import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
 const ObligatoryReportsPage = () => {
-  const { selectedStation, selectedCompany } = useCompanyStore();
+  /*
   const {
     data: reportes,
     isLoading,
     isError,
-  } = useGetQuotes(
-    (selectedCompany && selectedCompany.split(" ").join("")) || null,
-    selectedStation || null
-  );
+  } */
   return (
     <ContentLayout title="Reportes Obligatorios">
       <div className="flex flex-col gap-y-2">
-        {isLoading && (
-          <div className="flex w-full h-full justify-center items-center">
-            <Loader2 className="size-24 animate-spin mt-48" />
-          </div>
-        )}
-        {reportes && <DataTable columns={columns} data={[]} />}
-        {isError && (
-          <p className="text-sm text-muted-foreground">
-            Ha ocurrido un error al cargar los reportes...
-          </p>
-        )}
+        <DataTable columns={columns} data={[]} />
       </div>
     </ContentLayout>
   );
