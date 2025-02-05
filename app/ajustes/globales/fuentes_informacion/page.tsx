@@ -5,18 +5,25 @@ import { useGetVendors } from "@/hooks/ajustes/globales/proveedores/useGetVendor
 import { Loader2 } from "lucide-react";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { useGetInformationSources } from "@/hooks/sms/useGetInformationSource";
+import LoadingPage from "@/components/misc/LoadingPage";
 
 const InformationSourcePage = () => {
+  const { data, isLoading, isError } = useGetInformationSources();
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
   return (
-    <ContentLayout title="Permisos">
-      <h1 className="text-5xl font-bold text-center mt-2">
-        Control de fuentes de información
-      </h1>
-      <p className="text-sm text-muted-foreground text-center italic mt-2">
-        Aquí puede llevar el control de las fuentes de informacion para
-        reportes.
-      </p>
-      <DataTable columns={columns} data={[]} />
+    <ContentLayout title="Fuentes de informacion">
+      <div className="flex flex-col gap-y-2">
+        {data && <DataTable columns={columns} data={data} />}
+        {isError && (
+          <p className="text-sm text-muted-foreground">
+            Ha ocurrido un error al cargar las fuentes...
+          </p>
+        )}
+      </div>
     </ContentLayout>
   );
 };

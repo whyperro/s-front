@@ -26,7 +26,7 @@ import {
 import { ListRestart } from "lucide-react";
 import { useState } from "react";
 import { CreateVendorDialog } from "@/components/dialogs/CreateVendorDialog";
-import CreateInformationSourceDialog from "@/components/dialogs/CreateInformationSource";
+import CreateInformationSourceDialog from "@/components/dialogs/CreateInformationSourceDialog";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
