@@ -156,6 +156,7 @@ const CreateComponentForm = ({ initialData, isEditing }: {
   }, [selectedStation, mutate])
 
 
+
   useEffect(() => {
     if (batches) {
       // Filtrar los batches por categoría
@@ -205,6 +206,7 @@ const CreateComponentForm = ({ initialData, isEditing }: {
       createArticle.mutate(formattedValues);
     }
   }
+  console.log(form.getValues())
 
   return (
     <Form {...form}>

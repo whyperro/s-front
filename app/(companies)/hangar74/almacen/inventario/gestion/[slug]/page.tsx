@@ -10,10 +10,6 @@ import { useEffect } from 'react';
 import { useCompanyStore } from '@/stores/CompanyStore';
 import { Loader2 } from 'lucide-react';
 
-const parseSlug = (slug: string) => {
-  return slug.replace(/-/g, ' ').toUpperCase(); // Convertir guiones a espacios y mayúsculas
-};
-
 const BatchDetailPage = () => {
 
   const { slug } = useParams<{ slug: string }>()
