@@ -6,6 +6,7 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Pilot } from "@/types";
+import PilotDropdownActions from "@/components/misc/PilotDropdownActions";
 
 export const columns: ColumnDef<Pilot>[] = [
   {
@@ -110,5 +111,12 @@ export const columns: ColumnDef<Pilot>[] = [
         </span>
       </div>
     ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const pilot = row.original;
+      return <PilotDropdownActions pilot={pilot} />;
+    },
   },
 ];
