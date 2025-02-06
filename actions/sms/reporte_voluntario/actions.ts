@@ -49,3 +49,30 @@ export const useCreateVoluntaryReport = () => {
     createVoluntaryReport: createMutation,
   };
 };
+
+
+export const useDeleteVoluntaryReport = () => {
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number | string) => {
+      await axiosInstance.delete(`/transmandu/voluntary-reports/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["voluntary-reports"] });
+      toast.success("¡Eliminado!", {
+        description: `¡El reporte ha sido eliminada correctamente!`,
+      });
+    },
+    onError: (e) => {
+      toast.error("Oops!", {
+        description: "¡Hubo un error al eliminar el reporte!",
+      });
+    },
+  });
+
+  return {
+    deleteVoluntaryReport: deleteMutation,
+  };
+};
+
