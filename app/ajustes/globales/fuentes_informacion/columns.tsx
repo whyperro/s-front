@@ -6,6 +6,7 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { InformationSource, Manufacturer, Pilot, Vendor } from "@/types";
+import InformationSourceDropdownActions from "@/components/misc/InformationSourceDropDownMenu";
 
 export const columns: ColumnDef<InformationSource>[] = [
   {
@@ -57,5 +58,12 @@ export const columns: ColumnDef<InformationSource>[] = [
         <span className="font-bold text-center">{row.original.type}</span>
       </div>
     ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const informationSource = row.original;
+      return <InformationSourceDropdownActions informationSource={informationSource} />;
+    },
   },
 ];
