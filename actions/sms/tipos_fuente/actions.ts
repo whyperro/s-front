@@ -41,3 +41,30 @@ export const useCreateInformationSource = () => {
     createInformationSource: createMutation,
   };
 };
+
+
+export const useDeleteInformationSource = () => {
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number | string) => {
+      await axiosInstance.delete(`/transmandu/information-sources/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["information-sources"] });
+      toast.success("¡Eliminado!", {
+        description: `¡La fuente ha sido eliminada correctamente!`,
+      });
+    },
+    onError: (e) => {
+      toast.error("Oops!", {
+        description: "¡Hubo un error al eliminar la fuente!",
+      });
+    },
+  });
+
+  return {
+    deleteInformationSource: deleteMutation,
+  };
+};
+
