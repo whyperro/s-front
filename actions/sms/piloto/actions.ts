@@ -45,3 +45,28 @@ export const useCreatePilot = () => {
     createPilot: createMutation,
   };
 };
+
+export const useDeletePilot = () => {
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number | string) => {
+      await axiosInstance.delete(`/transmandu/pilots/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pilots"] });
+      toast.success("¡Eliminado!", {
+        description: `¡El piloto ha sido eliminado correctamente!`,
+      });
+    },
+    onError: (e) => {
+      toast.error("Oops!", {
+        description: "¡Hubo un error al eliminar un piloto!",
+      });
+    },
+  });
+
+  return {
+    deletePilot: deleteMutation,
+  };
+};
