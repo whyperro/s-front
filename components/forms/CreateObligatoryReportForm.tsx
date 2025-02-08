@@ -24,11 +24,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon, ClockIcon } from "lucide-react";
+import { CalendarIcon, Check, ChevronsUpDown, ClockIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format, isValid, parse } from "date-fns";
 import { es } from "date-fns/locale";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../ui/command";
 
 //Falta añadir validaciones
 const FormSchema = z
@@ -64,15 +72,12 @@ const FormSchema = z
   })
 
   .refine(
-    (data) =>
-      (data.incidents?.length ?? 0) > 0 ||
-      (data.other_incidents?.trim().length ?? 0) > 0,
+    (data) => data.incidents.length > 0 || data.other_incidents.length > 0,
     {
-      message: "Debe haber al menos un incidente o un otro incidente.",
-      path: ["incidentes"], // Puedes cambiarlo a "otrosIncidentes" si prefieres mostrar el error ahí
+      message: "Debes completar al menos uno de los campos.",
+      path: ["incidents"], // Puedes especificar el path para mostrar el error en el campo incidents
     }
   );
-
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
@@ -81,6 +86,8 @@ interface FormProps {
 
 export function ObligatoryReportForm({ onClose }: FormProps) {
   const [showOtherInput, setShowOtherInput] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
   const OPTIONS_LIST = [
     "La aereonave aterriza quedándose solo con el combustible de reserva o menos",
@@ -121,11 +128,6 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
     setShowOtherInput(checked);
     if (!checked) {
       form.setValue("other_incidents", "");
-      const currentIncidents = form.getValues("incidents");
-      const updatedIncidents = currentIncidents.filter(
-        (incident) => incident !== "other_incidents"
-      );
-      form.setValue("incidents", updatedIncidents);
     }
   };
 
@@ -447,34 +449,71 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="incidents"
-          render={() => (
+          render={({ field }) => (
             <FormItem>
-              <FormLabel>Marque los sucesos ocurridos</FormLabel>
-              {OPTIONS_LIST.map((item, index) => (
-                <FormItem
-                  key={index}
-                  className="flex flex-row items-start space-x-3 space-y-0"
-                >
-                  <FormControl>
-                    <Checkbox
-                      checked={form.getValues("incidents").includes(item)}
-                      onCheckedChange={(checked) => {
-                        const currentIncidents = form.getValues("incidents");
-                        const updatedIncidents = checked
-                          ? [...currentIncidents, item]
-                          : currentIncidents.filter(
-                              (incident) => incident !== item
-                            );
-                        form.setValue("incidents", updatedIncidents);
-                      }}
-                    />
-                  </FormControl>
-                  <FormLabel className="text-sm font-normal">{item}</FormLabel>
-                </FormItem>
-              ))}
+              <FormLabel>Destino alterno del vuelo</FormLabel>
+              <FormControl>
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={open}
+                      className="w-[300px] justify-between" // Aumentada la anchura para opciones más largas
+                    >
+                      {selectedValues.length > 0
+                        ? selectedValues.join(", ")
+                        : "Seleccionar opciones..."}
+                      <ChevronsUpDown className="opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[300px] p-0">
+                    {" "}
+                    {/* Aumentada la anchura para opciones más largas */}
+                    <Command>
+                      <CommandInput placeholder="Buscar opciones..." />
+                      <CommandList>
+                        <CommandEmpty>No se encontraron opciones.</CommandEmpty>
+                        <CommandGroup>
+                          {OPTIONS_LIST.map((option) => (
+                            <CommandItem
+                              key={option}
+                              value={option}
+                              onSelect={(currentValue) => {
+                                const isSelected =
+                                  selectedValues.includes(currentValue);
+                                const newValues = isSelected
+                                  ? selectedValues.filter(
+                                      (v) => v !== currentValue
+                                    )
+                                  : [...selectedValues, currentValue];
+
+                                setSelectedValues(newValues);
+                                field.onChange(newValues); // Actualizar el valor del campo de formulario
+                              }}
+                            >
+                              {option}
+                              <Check
+                                className={cn(
+                                  "ml-auto",
+                                  selectedValues.includes(option)
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </FormControl>
+              <FormMessage className="text-xs" />
             </FormItem>
           )}
         />
@@ -484,8 +523,6 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
           name="other_incidents" // Campo separado para "other_incidents"
           render={() => (
             <FormItem className="mt-4">
-              {" "}
-              {/* Espacio para separar visualmente */}
               <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                 <FormControl>
                   <Checkbox
@@ -493,14 +530,16 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
                     onCheckedChange={handleOtherCheckboxChange}
                   />
                 </FormControl>
-                <FormLabel className="text-sm font-normal">Other</FormLabel>
+                <FormLabel className="text-sm font-normal">
+                  Otros incidentes
+                </FormLabel>
               </FormItem>
               {showOtherInput && (
                 <FormItem className="mt-2">
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Enter details"
+                      placeholder="Detalles del incidente"
                       {...form.register("other_incidents")}
                       onChange={handleOtherInputChange}
                     />
@@ -511,6 +550,7 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
             </FormItem>
           )}
         />
+
         <div className="flex justify-between items-center gap-x-4">
           <Separator className="flex-1" />
           <p className="text-muted-foreground">SIGEAC</p>
