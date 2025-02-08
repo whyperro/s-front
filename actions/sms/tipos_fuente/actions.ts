@@ -83,7 +83,7 @@ export const useUpdateInformationSource = () => {
   const updateInformationSourceMutation = useMutation({
       mutationKey: ["update-tool-box"],
       mutationFn: async (data: UpdateInformationSourceData) => {
-          await axiosInstance.put(`/hangar74/information-sources/${data.id}`, data)
+          await axiosInstance.put(`/transmandu/information-sources/${data.id}`, data)
         },
       onSuccess: () => {
           queryClient.invalidateQueries({queryKey: ['information-sources']})
