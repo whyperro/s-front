@@ -41,6 +41,8 @@ import {
 //Falta añadir validaciones
 const FormSchema = z
   .object({
+    report_code: z.string(),
+
     report_date: z
       .date()
       .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
@@ -54,19 +56,19 @@ const FormSchema = z
       message: "Debe ser una fecha válida",
     }),
 
-    incident_place: z.string(),
     id_pilot: z.string(),
     id_copilot: z.string(),
+
     flight_time: z.date().refine((date) => !isNaN(date.getTime()), {
       message: "Debe ser una hora válida",
     }),
 
-    aicraft_id: z.string().min(3),
+    aircraft_acronym: z.string().min(3),
     aircraft_model: z.string().min(3),
     flight_number: z.string().min(3),
     flight_origin: z.string().min(3),
-    flight_destination: z.string().min(3),
-    alternate_destination: z.string().min(3),
+    flight_destiny: z.string().min(3),
+    flight_alt_destiny: z.string().min(3),
     incidents: z.array(z.string()),
     other_incidents: z.string(),
   })
@@ -146,7 +148,22 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
         <FormLabel className="text-lg text-center m-2">
           Reporte Obligatorio de suceso
         </FormLabel>
-        <div className="flex flex-col">
+
+        <FormField
+          control={form.control}
+          name="report_code"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Codigo del Reporte</FormLabel>
+              <FormControl>
+                <Input placeholder="RSO-123" {...field} />
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
             name="report_date"
@@ -236,219 +253,220 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
             )}
           />
         </div>
-        <FormField
-          control={form.control}
-          name="incident_time"
-          render={({ field }) => {
-            const handleChange = (event: { target: { value: any } }) => {
-              const timeString = event.target.value;
-              const time = parse(timeString, "HH:mm", new Date());
-              if (isValid(time)) {
-                field.onChange(time);
-              }
-            };
 
-            return (
-              <FormItem className="flex flex-col">
-                <FormLabel>Indicar hora del incidente</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "HH:mm") // Formato 24 horas
-                        ) : (
-                          <span>Seleccionar Hora</span>
-                        )}
-                        <ClockIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <input
-                      type="time"
-                      value={field.value ? format(field.value, "HH:mm") : ""}
-                      onChange={handleChange}
-                      className="w-full p-2 border rounded"
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
+        <div className="flex gap-2 justify-center items-center">
+          <FormField
+            control={form.control}
+            name="id_pilot"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Cedula del Piloto</FormLabel>
+                <FormControl>
+                  <Input placeholder="ejemplo: 12345600" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
               </FormItem>
-            );
-          }}
-        />
-        <FormField
-          control={form.control}
-          name="incident_place"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Lugar de identificacion de peligro</FormLabel>
-              <FormControl>
-                <Input placeholder="ej: Hangar13B" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="id_pilot"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cedula de identidad del piloto</FormLabel>
-              <FormControl>
-                <Input placeholder="ejemplo: 12345600" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="id_copilot"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cedula de identidad del copiloto</FormLabel>
-              <FormControl>
-                <Input placeholder="ejemplo: 12345600" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="flight_time"
-          render={({ field }) => {
-            const handleChange = (event: { target: { value: any } }) => {
-              const timeString = event.target.value;
-              const time = parse(timeString, "HH:mm", new Date());
-              if (isValid(time)) {
-                field.onChange(time);
-              }
-            };
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="id_copilot"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Cedula del Copiloto</FormLabel>
+                <FormControl>
+                  <Input placeholder="ejemplo: 12345600" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+        </div>
 
-            return (
-              <FormItem className="flex flex-col">
-                <FormLabel>Indicar hora de vuelo</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "HH:mm") // Formato 24 horas
-                        ) : (
-                          <span>Seleccionar Hora</span>
-                        )}
-                        <ClockIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <input
-                      type="time"
-                      value={field.value ? format(field.value, "HH:mm") : ""}
-                      onChange={handleChange}
-                      className="w-full p-2 border rounded"
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
+        <div className="flex gap-2 justify-center items-center">
+          <FormField
+            control={form.control}
+            name="flight_time"
+            render={({ field }) => {
+              const handleChange = (event: { target: { value: any } }) => {
+                const timeString = event.target.value;
+                const time = parse(timeString, "HH:mm", new Date());
+                if (isValid(time)) {
+                  field.onChange(time);
+                }
+              };
+
+              return (
+                <FormItem className="w-full">
+                  <FormLabel>Indicar hora de vuelo</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "HH:mm") // Formato 24 horas
+                          ) : (
+                            <span>Seleccionar Hora</span>
+                          )}
+                          <ClockIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <input
+                        type="time"
+                        value={field.value ? format(field.value, "HH:mm") : ""}
+                        onChange={handleChange}
+                        className="w-full p-2 border rounded"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+
+          <FormField
+            control={form.control}
+            name="incident_time"
+            render={({ field }) => {
+              const handleChange = (event: { target: { value: any } }) => {
+                const timeString = event.target.value;
+                const time = parse(timeString, "HH:mm", new Date());
+                if (isValid(time)) {
+                  field.onChange(time);
+                }
+              };
+
+              return (
+                <FormItem className="w-full">
+                  <FormLabel>Indicar hora del incidente</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "HH:mm") // Formato 24 horas
+                          ) : (
+                            <span>Seleccionar Hora</span>
+                          )}
+                          <ClockIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <input
+                        type="time"
+                        value={field.value ? format(field.value, "HH:mm") : ""}
+                        onChange={handleChange}
+                        className="w-full p-2 border rounded"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+        </div>
+        <div className="flex gap-2 justify-center items-center">
+          <FormField
+            control={form.control}
+            name="aircraft_acronym"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Matricula de la aereonave</FormLabel>
+                <FormControl>
+                  <Input placeholder="Matricula de aereonave" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
               </FormItem>
-            );
-          }}
-        />
-        <FormField
-          control={form.control}
-          name="aicraft_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Matricula de la aereonave</FormLabel>
-              <FormControl>
-                <Input placeholder="Matricula de aereonave" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="aircraft_model"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Modelo de la aereonave</FormLabel>
-              <FormControl>
-                <Input placeholder="Modelo de aereonave" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="flight_number"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Numero de vuelo</FormLabel>
-              <FormControl>
-                <Input placeholder="Numero del vuelo" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="flight_origin"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Origen de vuelo</FormLabel>
-              <FormControl>
-                <Input placeholder="Salida del vuelo" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="flight_destination"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Destino de vuelo</FormLabel>
-              <FormControl>
-                <Input placeholder="Destino del vuelo" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="alternate_destination"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Destino alterno del vuelo</FormLabel>
-              <FormControl>
-                <Input placeholder="Destino alterno del vuelo" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="aircraft_model"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Modelo de la aereonave</FormLabel>
+                <FormControl>
+                  <Input placeholder="Modelo de aereonave" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex gap-2 justify-center items-center">
+          <FormField
+            control={form.control}
+            name="flight_number"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Numero de vuelo</FormLabel>
+                <FormControl>
+                  <Input placeholder="Numero del vuelo" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="flight_origin"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Origen de vuelo</FormLabel>
+                <FormControl>
+                  <Input placeholder="Salida del vuelo" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="flex gap-2 justify-center items-center">
+          <FormField
+            control={form.control}
+            name="flight_destiny"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Destino de vuelo</FormLabel>
+                <FormControl>
+                  <Input placeholder="Destino del vuelo" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="flight_alt_destiny"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Destino alterno del vuelo</FormLabel>
+                <FormControl>
+                  <Input placeholder="Destino alterno del vuelo" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}
