@@ -17,18 +17,18 @@ import { z } from "zod";
 
 import { useState } from "react";
 
-import { Separator } from "@/components/ui/separator";
+import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon, Check, ChevronsUpDown, ClockIcon } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { format, isValid, parse } from "date-fns";
 import { es } from "date-fns/locale";
+import { CalendarIcon, Check, ChevronsUpDown, ClockIcon } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -37,6 +37,14 @@ import {
   CommandItem,
   CommandList,
 } from "../ui/command";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { useGetPilots } from "@/hooks/sms/useGetPilots";
 
 //Falta añadir validaciones
 const FormSchema = z
@@ -56,8 +64,8 @@ const FormSchema = z
       message: "Debe ser una fecha válida",
     }),
 
-    id_pilot: z.string(),
-    id_copilot: z.string(),
+    pilot_id: z.string(),
+    copilot_id: z.string(),
 
     flight_time: z.date().refine((date) => !isNaN(date.getTime()), {
       message: "Debe ser una hora válida",
@@ -91,6 +99,9 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
   const [open, setOpen] = useState(false);
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
+  // No estoy seguro si esto va aca lol
+  const { data: pilots, isLoading } = useGetPilots();
+  
   const OPTIONS_LIST = [
     "La aereonave aterriza quedándose solo con el combustible de reserva o menos",
     "Incursion en pista o calle de rodaje ( RUNAWAY INCURSION-RI)",
@@ -257,20 +268,40 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
         <div className="flex gap-2 justify-center items-center">
           <FormField
             control={form.control}
-            name="id_pilot"
+            name="pilot_id"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Cedula del Piloto</FormLabel>
-                <FormControl>
-                  <Input placeholder="ejemplo: 12345600" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
+                <FormLabel>Piloto</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar Piloto" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    if(isLoading){
+
+                    }
+                    
+                    {pilots &&
+                      pilots.map((pilot) => (
+                        <SelectItem key={pilot.id} value={pilot.id.toString()}>
+                          {pilot.first_name} {pilot.last_name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
-            name="id_copilot"
+            name="copilot_id"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Cedula del Copiloto</FormLabel>
@@ -483,9 +514,11 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
                       aria-expanded={open}
                       className="w-[300px] justify-between" // Aumentada la anchura para opciones más largas
                     >
-                      {selectedValues.length > 0
-                        ? selectedValues.join(", ")
-                        : "Seleccionar opciones..."}
+                      {selectedValues.length > 0 ? (
+                        <p>({selectedValues.length}) seleccionados</p>
+                      ) : (
+                        "Seleccionar opciones..."
+                      )}
                       <ChevronsUpDown className="opacity-50" />
                     </Button>
                   </PopoverTrigger>
