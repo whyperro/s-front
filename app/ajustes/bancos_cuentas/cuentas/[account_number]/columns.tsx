@@ -3,11 +3,10 @@
 import WarehouseDropdownActions from "@/components/misc/WarehouseDropdownActions"
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
 import { Checkbox } from "@/components/ui/checkbox"
-import { BankAccount } from "@/types"
+import { Card } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
-import Link from "next/link"
 
-export const columns: ColumnDef<BankAccount>[] = [
+export const columns: ColumnDef<Card>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -33,23 +32,23 @@ export const columns: ColumnDef<BankAccount>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Nombre" />
+      <DataTableColumnHeader filter column={column} title="Nro. de Tarjeta" />
     ),
-    meta: { title: 'Nombre' },
+    meta: { title: 'Nro. de Tarjeta' },
     cell: ({ row }) =>
       <>
-        <Link href={`/ajustes/bancos_cuentas/cuentas/${row.original.account_number}`} className='font-bold flex justify-center'>{row.original.name ?? "N/A"}</Link>
+        <span className='font-bold flex justify-center'>****-******-****-{row.original.card_number}</span>
       </>
   },
   {
-    accessorKey: "account_number",
+    accessorKey: "type",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nro. de Cuenta" />
+      <DataTableColumnHeader column={column} title="Tipo de Tarjeta" />
     ),
-    meta: { title: 'Tipo de Banco' },
+    meta: { title: 'Tipo de Tarjeta' },
     cell: ({ row }) =>
       <>
-        <span className='font-medium flex justify-center italic'>***-******-*****-{row.original.account_number}</span>
+        <span className='font-medium flex justify-center italic'>{row.original.type}</span>
       </>
   },
   {
@@ -57,32 +56,21 @@ export const columns: ColumnDef<BankAccount>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Banco" />
     ),
-    meta: { title: 'Tipo de Banco' },
+    meta: { title: 'Banco' },
     cell: ({ row }) =>
       <>
-        <span className='text-muted-foreground flex justify-center italic'>{row.original.bank.name}</span>
+        <span className='text-muted-foreground flex justify-center italic'>{row.original.bank_account.bank.name}</span>
       </>
   },
   {
-    accessorKey: "account_owner",
+    accessorKey: "bank_account",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Tipo" />
+      <DataTableColumnHeader column={column} title="Cuenta" />
     ),
-    meta: { title: 'Tipo de Banco' },
+    meta: { title: 'Cuenta' },
     cell: ({ row }) =>
       <>
-        <span className='font-bold flex justify-center italic'>{row.original.account_owner}</span>
-      </>
-  },
-  {
-    accessorKey: "account_type",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Tipo de Cuenta" />
-    ),
-    meta: { title: 'Tipo de Banco' },
-    cell: ({ row }) =>
-      <>
-        <span className='font-bold flex justify-center italic'>{row.original.account_type}</span>
+        <span className='text-muted-foreground flex justify-center italic'>******-*******-****-{row.original.bank_account.account_number}</span>
       </>
   },
   {

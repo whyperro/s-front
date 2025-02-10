@@ -3,32 +3,12 @@
 import WarehouseDropdownActions from "@/components/misc/WarehouseDropdownActions"
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
 import { Checkbox } from "@/components/ui/checkbox"
+import { generateSlug } from "@/lib/utils"
 import { Bank } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
+import Link from "next/link"
 
 export const columns: ColumnDef<Bank>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Seleccionar todos"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Seleccionar fila"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -37,7 +17,7 @@ export const columns: ColumnDef<Bank>[] = [
     meta: { title: 'Nombre' },
     cell: ({ row }) =>
       <>
-        <span className='font-bold flex justify-center'>{row.original.name ?? "N/A"}</span>
+        <Link href={`/ajustes/bancos_cuentas/bancos/${row.original.id}`} className='font-bold flex justify-center hover:scale-110 transition-all ease-in '>{row.original.name ?? "N/A"}</Link>
       </>
   },
   {

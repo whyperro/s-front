@@ -75,9 +75,6 @@ export function ToolDispatchForm({ onClose }: FormProps) {
 
   const { mutate, data: batches, isPending: isBatchesLoading, isError: batchesError } = useGetBatchesWithInWarehouseArticles();
 
-  const { data: employees, isLoading: employeesLoading, isError: employeesError } = useGetWorkOrderEmployees();
-
-
   useEffect(() => {
     if (selectedStation) {
       mutate(Number(selectedStation))

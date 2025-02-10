@@ -70,6 +70,8 @@ export const useCompletePurchase = () => {
         ock_shipping: string,
         usa_shipping: string,
         observation?: string,
+        bank_account_id: string,
+        card_id?: string,
         invoice?: File,
         company: string,
         articles_purchase_orders: POArticles[]
@@ -104,7 +106,7 @@ export const useDeleteQuote = () => {
           await axiosInstance.post(`/delete-quote/${id}`, {company})
         },
       onSuccess: () => {
-          queryClient.invalidateQueries({queryKey: ['quotes']})
+          queryClient.invalidateQueries({queryKey: ['purchase-orders']})
           toast.success("¡Eliminado!", {
               description: `¡La cotización ha sido eliminada correctamente!`
           })

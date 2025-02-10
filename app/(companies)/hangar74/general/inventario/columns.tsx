@@ -63,7 +63,7 @@ export const columns: ColumnDef<BatchesWithCountProp>[] = [
     ),
     cell: ({ row }) => {
       return (
-        <Link href={`/hangar74/almacen/inventario/gestion/${row.original.name.toLowerCase()}`} className="font-medium flex justify-center hover:scale-105 hover:text-blue-600 transition-all ease-in cursor-pointer duration-150">{row.original.name}</Link>
+        <Link href={`/hangar74/almacen/inventario/gestion/${row.original.slug}`} className="font-medium flex justify-center hover:scale-105 hover:text-blue-600 transition-all ease-in cursor-pointer duration-150">{row.original.name}</Link>
       )
     }
   },

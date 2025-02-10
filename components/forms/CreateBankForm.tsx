@@ -22,6 +22,7 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
+import { generateSlug } from "@/lib/utils";
 
 
 const formSchema = z.object({
@@ -49,7 +50,10 @@ export default function CreateBankForm({ onClose }: FormProps) {
   })
   const { control } = form;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await createBank.mutateAsync(values);
+    await createBank.mutateAsync({
+      ...values,
+      slug: generateSlug(values.name)
+    });
     onClose()
   }
   return (
@@ -85,7 +89,7 @@ export default function CreateBankForm({ onClose }: FormProps) {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="NACIONAL">Nacional</SelectItem>
-                  <SelectItem value="EXTRANJERA">Extranjera</SelectItem>
+                  <SelectItem value="EXTRANJERO">Extranjero</SelectItem>
                 </SelectContent>
               </Select>
               <FormDescription>

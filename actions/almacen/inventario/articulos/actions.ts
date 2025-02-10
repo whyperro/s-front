@@ -115,6 +115,9 @@ export const useConfirmIncomingArticle = () => {
         batches_id: string,
         is_special?: boolean,
         status: string,
+        caducate_date?: string,
+        fabrication_date?:string,
+        calendar_date?: string,
         certificate_8130?: File | string,
         certificate_fabricant?: File | string,
         certificate_vendor?: File | string,
@@ -130,6 +133,7 @@ export const useConfirmIncomingArticle = () => {
           })
         },
       onSuccess: () => {
+          queryClient.invalidateQueries({queryKey: ['article']})
           queryClient.invalidateQueries({queryKey: ['in-transit-articles']})
           queryClient.invalidateQueries({queryKey: ['in-reception-articles']})
           queryClient.invalidateQueries({queryKey: ['articles']})

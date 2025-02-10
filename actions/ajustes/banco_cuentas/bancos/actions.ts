@@ -4,6 +4,7 @@ import { toast } from "sonner"
 
 interface CreateBankSchema {
     name: string,
+    slug: string,
     type: string,
 }
 

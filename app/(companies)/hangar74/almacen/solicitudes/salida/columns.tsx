@@ -60,7 +60,7 @@ export const columns: ColumnDef<DispatchRequest>[] = [
   {
     accessorKey: "created_by",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Empleado Responsable" />
+      <DataTableColumnHeader column={column} title="Empleado Responsable" />
     ),
     cell: ({ row }) => {
       return (
@@ -71,7 +71,7 @@ export const columns: ColumnDef<DispatchRequest>[] = [
   {
     accessorKey: "justification",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Justificación" />
+      <DataTableColumnHeader column={column} title="Justificación" />
     ),
     cell: ({ row }) => {
       return (
@@ -82,7 +82,7 @@ export const columns: ColumnDef<DispatchRequest>[] = [
   {
     accessorKey: "date",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Fecha" />
+      <DataTableColumnHeader column={column} title="Fecha" />
     ),
     cell: ({ row }) => (
       <p className="flex justify-center text-muted-foreground italic">{format(row.original.submission_date, "PPP", {
@@ -93,7 +93,7 @@ export const columns: ColumnDef<DispatchRequest>[] = [
   {
     accessorKey: "articles",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Articulos" />
+      <DataTableColumnHeader column={column} title="Articulos" />
     ),
     cell: ({ row }) => (
       <div className="flex justify-center">

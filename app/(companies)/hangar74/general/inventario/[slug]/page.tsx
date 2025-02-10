@@ -1,14 +1,13 @@
 'use client';
 
 import { ContentLayout } from '@/components/layout/ContentLayout';
-import { useGetBatches } from '@/hooks/almacen/useGetBatches';
-import { DataTable } from './data-table';
-import { columns } from './columns';
-import { useParams } from 'next/navigation';
 import { useGetArticlesByBatch } from '@/hooks/almacen/useGetArticlesByBatch';
-import { useEffect } from 'react';
 import { useCompanyStore } from '@/stores/CompanyStore';
 import { Loader2 } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { columns } from './columns';
+import { DataTable } from './data-table';
 const BatchDetailPage = () => {
 
   const { part_number } = useParams()
@@ -40,14 +39,14 @@ const BatchDetailPage = () => {
           )
         }
         {
-          articles && articles.length > 0 && (
+          articles && articles.articles.length > 0 && (
             <>
-              <DataTable columns={columns} data={articles} />
+              <DataTable columns={columns} data={articles.articles} />
             </>
           )
         }
         {
-          articles && articles.length === 0 && (
+          articles?.articles && articles.articles.length === 0 && (
             <DataTable columns={columns} data={[]} />
           )
         }

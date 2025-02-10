@@ -155,6 +155,7 @@ export interface ToolArticle extends Article {
 
 export type Request = {
   id: number,
+  request_number: string,
   justification: string,
   submission_date: string,
   work_order?: WorkOrder,
@@ -353,8 +354,13 @@ export type PurchaseOrder = {
   status: string,
   purchase_date: Date,
   tax: number,
+  wire_fee: number,
+  card?: Card,
+  bank_account?: BankAccount,
   handling_fee: number,
   shipping_fee: number,
+  ock_shipping: number,
+  usa_shipping: number,
   sub_total: number,
   total: number,
   vendor: Vendor,
@@ -382,14 +388,17 @@ export type BankAccount = {
   account_owner: string,
   bank: Bank,
   cards: Card[],
+  company: Company,
   created_by: string,
   updated_by: string,
 }
 
 export type Card = {
   id: number,
+  name: string,
   card_number: string,
-  card_type: string,
+  type: string,
+  bank_account: BankAccount,
   created_by: string,
   updated_by: string,
 }

@@ -114,7 +114,7 @@ const RequisitionsDropdownActions = ({ req }: { req: Requisition }) => {
               </>
             )
           }
-          <DropdownMenuItem disabled={!(userRoles.includes("JEFE_ALMACEN") || userRoles.includes("ADMIN_INGENIERIA")) || (user!.roles!.map(role => role.name).includes("SUPERUSER"))} onClick={() => setOpenDelete(true)} className="cursor-pointer">
+          <DropdownMenuItem onClick={() => setOpenDelete(true)} className="cursor-pointer">
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
         </DropdownMenuContent>

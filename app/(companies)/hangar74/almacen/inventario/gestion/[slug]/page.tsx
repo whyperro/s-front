@@ -22,7 +22,6 @@ const BatchDetailPage = () => {
       mutate(Number(selectedStation))
     }
   }, [selectedStation, mutate])
-  console.log(batch)
   return (
     <ContentLayout title='Inventario'>
       <div className='flex flex-col gap-y-2'>

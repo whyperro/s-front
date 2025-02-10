@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 export interface IArticleByBatch {
   name: string,
   articles: {
-    id:number,
+    id: number,
   article_type: string,
   status: string,
   serial: string,
@@ -21,6 +21,7 @@ export interface IArticleByBatch {
   part_number: string,
   alternate_part_number: string,
   certificates?: string[],
+  unit_secondary: string,
   image: string,
   quantity: number,
   tool?: {
@@ -59,7 +60,7 @@ export interface IArticleByBatch {
       fabrication_date: Date,
       consumable_id: string,
     }
-  },
+  }
   }[]
 }
 

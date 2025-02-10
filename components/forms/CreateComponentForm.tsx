@@ -26,7 +26,7 @@ import loadingGif from '@/public/loading2.gif'
 import { useCompanyStore } from "@/stores/CompanyStore"
 import { Article, Batch } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { addYears, format, subYears } from "date-fns"
+import { addYears, format, parse, subYears } from "date-fns"
 import { es } from 'date-fns/locale'
 import { CalendarIcon, FileUpIcon, Loader2 } from "lucide-react"
 import Image from "next/image"
@@ -36,6 +36,7 @@ import { z } from "zod"
 import { AmountInput } from "../misc/AmountInput"
 import { Textarea } from "../ui/textarea"
 import { useGetConditions } from "@/hooks/administracion/useGetConditions"
+import { useRouter } from "next/navigation"
 
 interface EditingArticle extends Article {
   batches: Batch,
@@ -72,6 +73,8 @@ const CreateComponentForm = ({ initialData, isEditing }: {
 
   const { confirmIncoming } = useConfirmIncomingArticle();
 
+  const router = useRouter();
+
   const { mutate, data: batches, isPending: isBatchesLoading, isError } = useGetBatchesByLocationId();
 
   const { data: manufacturers, isLoading: isManufacturerLoading, isError: isManufacturerError } = useGetManufacturers()
@@ -107,23 +110,17 @@ const CreateComponentForm = ({ initialData, isEditing }: {
     zone: z.string({
       message: "Debe ingresar la ubicación del articulo.",
     }),
-    caducate_date: z.date({
-      required_error: "Ingrese una fecha de caducidad.",
-    }).optional(),
-    fabrication_date: z.date({
-      required_error: "Ingrese fecha de fabricación.",
-    }).optional(),
-    cost: z.string(),
-    calendar_date: z.date({
-      required_error: "Ingrese fecha máxima de calendario.",
-    }).optional(),
+    caducate_date: z.date().optional(),
+    fabrication_date: z.date().optional(),
+    cost: z.string().optional(),
+    calendar_date: z.date(),
     hour_date: z.coerce.number({
       required_error: "Ingrese las horas máximas.",
     }).optional(),
     cycle_date: z.coerce.number({
       required_error: "Ingrese los ciclos máximos.",
     }).optional(),
-    manufacturer_id: z.coerce.number({
+    manufacturer_id: z.string({
       message: "Debe ingresar una marca.",
     }).optional(),
     condition_id: z.string({
@@ -166,15 +163,14 @@ const CreateComponentForm = ({ initialData, isEditing }: {
   }, [batches]);
 
 
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       part_number: initialData?.part_number || "",
-      serial: initialData?.component && initialData?.component.serial || "",
+      serial: initialData?.serial || "",
       alternative_part_number: initialData?.alternative_part_number || "",
       batches_id: initialData?.batches.id?.toString() || "",
-      manufacturer_id: initialData?.manufacturer && initialData?.manufacturer?.id || undefined,
+      manufacturer_id: initialData?.manufacturer?.id.toString() || "",
       condition_id: initialData?.condition?.id.toString() || "",
       description: initialData?.description || "",
       zone: initialData?.zone || "",
@@ -184,7 +180,7 @@ const CreateComponentForm = ({ initialData, isEditing }: {
   })
   form.setValue("article_type", "componente");
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const formattedValues = {
       ...values,
       caducate_date: caducateDate && format(caducateDate, "yyyy-MM-dd"),
@@ -194,20 +190,20 @@ const CreateComponentForm = ({ initialData, isEditing }: {
       cost: values.cost && parseFloat(values.cost) || initialData?.cost,
     }
     if (isEditing) {
-      confirmIncoming.mutate({
+      confirmIncoming.mutateAsync({
         ...values,
         id: initialData?.id,
-        certificate_8130: values.certificate_8130 || initialData?.certifcate_8130,
-        certificate_fabricant: values.certificate_fabricant || initialData?.certifcate_fabricant,
-        certificate_vendor: values.certificate_vendor || initialData?.certifcate_vendor,
+        caducate_date: caducateDate && format(caducateDate, "yyyy-MM-dd"),
+        fabrication_date: fabricationDate && format(fabricationDate, "yyyy-MM-dd"),
+        calendar_date: calendarDate && format(calendarDate, "yyyy-MM-dd"),
+        batches_id: values.batches_id,
         status: "Stored"
       })
+      router.push("/hangar74/almacen/inventario/gestion")
     } else {
-      createArticle.mutate(formattedValues);
+      createArticle.mutateAsync(formattedValues);
     }
   }
-  console.log(form.getValues())
-
   return (
     <Form {...form}>
       <form className="flex flex-col gap-4 max-w-6xl mx-auto" onSubmit={form.handleSubmit(onSubmit)}>
@@ -506,7 +502,7 @@ const CreateComponentForm = ({ initialData, isEditing }: {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Fabricante</FormLabel>
-                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange}>
+                  <Select value={field.value} disabled={isManufacturerLoading} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecccione..." />

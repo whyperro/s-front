@@ -1,5 +1,6 @@
 "use client"
 
+import { useCompletePurchase } from "@/actions/compras/ordenes_compras/actions"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import {
@@ -9,27 +10,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useAuth } from "@/contexts/AuthContext"
+import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts"
+import { useGetCards } from "@/hooks/ajustes/tarjetas/useGetCards"
+import { cn } from "@/lib/utils"
+import { useCompanyStore } from "@/stores/CompanyStore"
+import { PurchaseOrder } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Loader2 } from "lucide-react"
+import { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { AmountInput } from "../misc/AmountInput"
-import { useCompletePurchase } from "@/actions/compras/ordenes_compras/actions"
-import { PurchaseOrder } from "@/types"
-import { useCompanyStore } from "@/stores/CompanyStore"
 import { Input } from "../ui/input"
-import { useMemo } from "react"
-import { Textarea } from "../ui/textarea"
 import { ScrollArea } from "../ui/scroll-area"
-import { cn } from "@/lib/utils"
 import { Separator } from "../ui/separator"
-import { useAuth } from "@/contexts/AuthContext"
-import { Loader2 } from "lucide-react"
+import { Textarea } from "../ui/textarea"
 
 const FormSchema = z.object({
   tax: z.string(),
   wire_fee: z.string(),
   handling_fee: z.string(),
   payment_method: z.string(),
+  bank_account_id: z.string(),
+  card_id: z.string().optional(),
   ock_shipping: z.string(),
   usa_shipping: z.string(),
   invoice: z.instanceof(File).optional(),
@@ -52,6 +56,10 @@ interface FormProps {
 export function CompletePurchaseForm({ onClose, po }: FormProps) {
 
   const { user } = useAuth()
+
+  const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts()
+
+  const { data: cards, isLoading: isCardsLoading } = useGetCards()
 
   const { selectedCompany } = useCompanyStore()
 
@@ -122,6 +130,8 @@ export function CompletePurchaseForm({ onClose, po }: FormProps) {
     onClose()
 
   }
+
+  console.log(form.getValues())
 
   return (
     <Form {...form}>
@@ -195,7 +205,7 @@ export function CompletePurchaseForm({ onClose, po }: FormProps) {
             )}
           />
         </div>
-        <div className="flex flex-col items-center justify-center gap-1">
+        <div className="flex flex-col items-center justify-center gap-1 text-sm">
           <p>Subtotal: <span className="font-medium">${Number(po.sub_total).toFixed(2)}</span></p>
           <p>Total <span className="italic">(+ impuestos)</span> : <span className="font-medium">${Number(total).toFixed(2)}</span></p>
         </div>
@@ -243,7 +253,7 @@ export function CompletePurchaseForm({ onClose, po }: FormProps) {
             ))}
           </ScrollArea>
         </div>
-        <div className="flex gap-2 items-center">
+        <div className="grid grid-cols-2 gap-2 items-center">
           <FormField
             control={form.control}
             name="payment_method"
@@ -259,14 +269,72 @@ export function CompletePurchaseForm({ onClose, po }: FormProps) {
                   <SelectContent>
                     <SelectItem value="transferencia_usa">Transferencia - USA</SelectItem>
                     <SelectItem value="transferencia_nacional">Transferencia - Nacional</SelectItem>
+                    <SelectItem value="debito_credito">Debito / Credito</SelectItem>
                     <SelectItem value="zelle">Zelle</SelectItem>
-                    <SelectItem value="pago_movil">Pago Móvil</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
+          {
+            (form.watch("payment_method") === 'transferencia_nacional' || form.watch("payment_method") === 'transferencia_usa') && (
+              <FormField
+                control={form.control}
+                name="bank_account_id"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Cuenta Bancaria</FormLabel>
+                    <Select disabled={isAccLoading} onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccione el método..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {
+                          accounts && accounts.map((acc) => (
+                            <SelectItem value={acc.id.toString()} key={acc.id}>{acc.name} ({acc.account_number}) - {acc.bank.name}</SelectItem>
+                          ))
+                        }
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )
+          }
+          {
+            (form.watch("payment_method") === 'debito_credito') && (
+              <FormField
+                control={form.control}
+                name="card_id"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Tarjeta Bancaria</FormLabel>
+                    <Select disabled={isCardsLoading} onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccione el método..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {
+                          cards && cards.map((card) => (
+                            <SelectItem value={card.id.toString()} onClick={() => {
+                              form.setValue("bank_account_id", card.bank_account.id.toString())
+                            }} key={card.id}>{card.name} ({card.card_number}) - {card.bank_account.bank.name}</SelectItem>
+                          ))
+                        }
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )
+          }
           <FormField
             control={form.control}
             name="invoice"

@@ -6,6 +6,15 @@ import { useCompanyStore } from '@/stores/CompanyStore';
 import { Loader2 } from 'lucide-react';
 import { columns } from './columns';
 import { DataTable } from './data-table';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+
 const InventarioPage = () => {
 
   const { selectedStation } = useCompanyStore();
@@ -15,6 +24,17 @@ const InventarioPage = () => {
   return (
     <ContentLayout title='Inventario'>
       <div className='flex flex-col gap-y-2'>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/hangar74/dashboard">Inicio</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Inventario General</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
         <h1 className='text-4xl font-bold text-center'>Inventario General</h1>
         <p className='text-sm text-muted-foreground text-center  italic'>
           Aquí puede observar todos los renglones de los diferentes almacenes. <br />Filtre y/o busque sí desea un renglón en específico.

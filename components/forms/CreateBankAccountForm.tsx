@@ -1,5 +1,5 @@
 'use client';
-import { useCreateBank } from "@/actions/ajustes/banco_cuentas/bancos/actions";
+import { useCreateBankAccount } from "@/actions/ajustes/banco_cuentas/cuentas/actions";
 import {
   Form,
   FormControl,
@@ -9,21 +9,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/select";
+import { useGetCompanies } from "@/hooks/administracion/useGetClients";
+import { useGetBanks } from "@/hooks/ajustes/globales/bancos/useGetBanks";
+import { generateSlug } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
-import { useGetBanks } from "@/hooks/ajustes/globales/bancos/useGetBanks";
-import { useCreateBankAccount } from "@/actions/ajustes/banco_cuentas/cuentas/actions";
 
 
 const formSchema = z.object({
@@ -36,6 +37,7 @@ const formSchema = z.object({
   account_owner: z.string(),
   account_type: z.string(),
   bank_id: z.string(),
+  company_id: z.string(),
 })
 
 
@@ -46,6 +48,7 @@ interface FormProps {
 export default function CreateBankAccountForm({ onClose }: FormProps) {
   const { createBankAccount } = useCreateBankAccount();
   const { data: banks } = useGetBanks()
+  const { data: companies } = useGetCompanies()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,28 +60,60 @@ export default function CreateBankAccountForm({ onClose }: FormProps) {
   const { control } = form;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await createBankAccount.mutateAsync(values);
+    await createBankAccount.mutateAsync({
+      ...values,
+      slug: generateSlug(values.name)
+    });
     onClose()
   }
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <FormField
-          control={control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre</FormLabel>
-              <FormControl>
-                <Input placeholder="EJ: Cuenta de TMD, etc..." {...field} />
-              </FormControl>
-              <FormDescription>
-                Este será el nombre de su banco.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex gap-2">
+          <FormField
+            control={control}
+            name="name"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Nombre</FormLabel>
+                <FormControl>
+                  <Input placeholder="EJ: Cuenta de TMD, etc..." {...field} />
+                </FormControl>
+                <FormDescription>
+                  Este será el nombre de su banco.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="company_id"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Compañía</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione una compañía..." />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {
+                      companies && companies.map((company) => (
+                        <SelectItem value={company.id.toString()} key={company.id}>{company.name}</SelectItem>
+                      ))
+                    }
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  Compañía a la que pertenecerá la cuenta.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <div className="grid grid-cols-2 gap-2">
           <FormField
             control={form.control}

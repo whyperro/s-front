@@ -11,7 +11,6 @@ const ConfirmIncomingPage = () => {
   const params = useParams<{ id: string }>()
   const { selectedStation } = useCompanyStore()
   const { data, isLoading, isError } = useGetArticleById(params.id, selectedStation)
-
   if (isLoading) {
     return <LoadingPage />
   }

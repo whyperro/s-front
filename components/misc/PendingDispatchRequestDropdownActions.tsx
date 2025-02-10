@@ -112,7 +112,8 @@ const PendingDispatchRequestDropdownActions
         ]
       }
       await updateDispatchStatus.mutateAsync(formattedData);
-      if (batch && (batch?.article_count - 1 < batch.min_quantity)) {
+
+      if (batch && batch.category !== 'herramienta' && (batch?.article_count - 1 < batch.min_quantity)) {
         createRequisition.mutateAsync(reqData)
       }
       setOpen(false)
