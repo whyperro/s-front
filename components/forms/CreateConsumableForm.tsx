@@ -165,7 +165,6 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
       condition_id: initialData?.condition?.id.toString() || "",
       description: initialData?.description || "",
       zone: initialData?.zone || "",
-      is_managed: initialData?.consumable?.is_managed || false,
     }
   })
   form.setValue("article_type", "consumible");
