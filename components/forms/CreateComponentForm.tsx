@@ -199,11 +199,10 @@ const CreateComponentForm = ({ initialData, isEditing }: {
         batches_id: values.batches_id,
         status: "Stored"
       })
-      router.push("/hangar74/almacen/inventario/gestion")
+      router.push("/hangar74/almacen/ingreso/en_recepcion")
     } else {
       createArticle.mutateAsync(formattedValues);
     }
-    router.push("/hangar74/almacen/ingreso/en_recepcion")
   }
   return (
     <Form {...form}>

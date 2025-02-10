@@ -27,6 +27,7 @@ import { Textarea } from "../ui/textarea"
 import { AmountInput } from "../misc/AmountInput"
 import { useGetManufacturers } from "@/hooks/ajustes/globales/fabricantes/useGetManufacturers"
 import { useGetConditions } from "@/hooks/administracion/useGetConditions"
+import { useRouter } from "next/navigation"
 
 const formSchema = z.object({
   article_type: z.string(),
@@ -96,6 +97,8 @@ const CreateToolForm = ({ initialData, isEditing }: {
 
   const { selectedStation } = useCompanyStore();
 
+  const router = useRouter()
+
   const { mutate, data: batches, isPending: isBatchesLoading, isError } = useGetBatchesByLocationId();
 
   const { data: conditions, isLoading: isConditionsLoading, error: isConditionsError } = useGetConditions();
@@ -148,6 +151,7 @@ const CreateToolForm = ({ initialData, isEditing }: {
         certificate_vendor: values.certificate_vendor || initialData?.certifcate_vendor,
         status: "Stored"
       })
+      router.push("/hangar74/almacen/ingreso/en_recepcion")
     } else {
       createArticle.mutate(formattedValues);
     }

@@ -193,9 +193,11 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
         certificate_vendor: values.certificate_vendor || initialData?.certifcate_vendor,
         status: "Stored"
       })
+      router.push("/hangar74/almacen/ingreso/en_recepcion")
     } else {
       createArticle.mutate(formattedValues);
     }
+
   }
   return (
     <Form {...form}>
