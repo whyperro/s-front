@@ -203,6 +203,7 @@ const CreateComponentForm = ({ initialData, isEditing }: {
     } else {
       createArticle.mutateAsync(formattedValues);
     }
+    router.push("/hangar74/almacen/ingreso/en_recepcion")
   }
   return (
     <Form {...form}>
