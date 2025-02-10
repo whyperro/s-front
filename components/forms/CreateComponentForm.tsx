@@ -113,7 +113,7 @@ const CreateComponentForm = ({ initialData, isEditing }: {
     caducate_date: z.date().optional(),
     fabrication_date: z.date().optional(),
     cost: z.string().optional(),
-    calendar_date: z.date(),
+    calendar_date: z.date().optional(),
     hour_date: z.coerce.number({
       required_error: "Ingrese las horas máximas.",
     }).optional(),
