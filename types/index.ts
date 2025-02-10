@@ -347,7 +347,6 @@ export type PurchaseOrder = {
 };
 
 export type Pilot = {
-  id: number;
   dni: number;
   first_name: string;
   last_name: string;
@@ -362,22 +361,20 @@ export type InformationSource = {
   type: "PROACTIVO" | "REACTIVO" | "PREDICTIVO";
 };
 
-export type MandatoryReport = {
-  report_code: number;
-  //information_source: InformationSource;
-  report_number: string;
+export type ObligatoryReport = {
+  report_code: string;
   report_date: Date;
   incident_date: Date;
   incident_time: Date;
-  incident_location: string;
+  flight_time: Date;
   pilot: Pilot;
   copilot: Pilot;
-  flight_time: Date;
-  aircraft: Aircraft;
+  aircraft_acronym: string;
+  aircraft_model: string;
   flight_number: string;
   flight_origin: string;
-  flight_destination: string;
-  alternate_destination: string;
+  flight_destiny: string;
+  flight_alt_destiny: string;
   incidents: string;
   other_incidents: string;
 };
