@@ -35,6 +35,7 @@ import { Checkbox } from "../ui/checkbox"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
 import { Label } from "../ui/label"
 import { Textarea } from "../ui/textarea"
+import { useRouter } from "next/navigation"
 
 
 const formSchema = z.object({
@@ -115,6 +116,8 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
   initialData?: EditingArticle,
   isEditing?: boolean,
 }) => {
+
+  const router = useRouter()
 
   const [open, setOpen] = useState(false);
 
