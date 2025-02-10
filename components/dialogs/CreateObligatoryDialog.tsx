@@ -29,7 +29,7 @@ export function CreateObligatoryDialog() {
               Nuevo reporte
             </Button>
           </DialogTrigger>
-          <DialogContent className="flex flex-col overflow-auto max-h-screen">
+          <DialogContent className="flex flex-col max-w-2xl m-2 max-h-screen overflow-auto">
             <DialogHeader>
               <DialogTitle></DialogTitle>
               <DialogDescription></DialogDescription>
