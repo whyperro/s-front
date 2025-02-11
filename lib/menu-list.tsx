@@ -83,11 +83,11 @@ export function getMenuList(
                 roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
                 submenus: [
                   {
-                    href: "/transmandu/sms/nuevo_reporte",
-                    label: "Nuevo Reporte",
+                    href: "/transmandu/sms/prueba",
+                    label: "prueba",
                     roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
                     active:
-                      pathname === "/transmandu/sms/reportes_obligatorios",
+                      pathname === "/transmandu/sms/prueba",
                   },
                   {
                     href: "/transmandu/sms/reportes_obligatorios",
