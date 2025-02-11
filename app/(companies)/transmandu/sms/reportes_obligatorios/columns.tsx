@@ -96,7 +96,12 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
       <DataTableColumnHeader column={column} title="Datos del piloto" />
     ),
     cell: ({ row }) => {
-      return <p className="font-medium text-center"></p>;
+      return (
+        <p className="font-medium text-center">
+          {row.original.pilot.first_name}
+          {row.original.pilot.last_name}
+        </p>
+      );
     },
   },
   {
@@ -105,7 +110,12 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
       <DataTableColumnHeader column={column} title="Datos del copiloto" />
     ),
     cell: ({ row }) => {
-      return <p className="font-medium text-center"></p>;
+      return (
+        <p className="font-medium text-center">
+          {row.original.copilot.first_name}
+          {row.original.copilot.last_name}
+        </p>
+      );
     },
   },
   {
@@ -179,9 +189,7 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
       <DataTableColumnHeader column={column} title="Destino del vuelo" />
     ),
     cell: ({ row }) => (
-      <div className="flex justify-center">
-        {row.original.flight_destiny}
-      </div>
+      <div className="flex justify-center">{row.original.flight_destiny}</div>
     ),
   },
   {
