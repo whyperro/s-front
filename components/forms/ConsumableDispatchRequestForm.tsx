@@ -268,12 +268,12 @@ export function ConsumableDispatchForm({ onClose }: FormProps) {
                                       handleArticleSelect(article.id!, article.serial ? article.serial : null, batch.batch_id)
                                       setArticleSelected(article)
                                     }}><Check className={cn("mr-2 h-4 w-4", articleSelected?.id === article.id ? "opacity-100" : "opacity-0")} />
-                                      {article.serial ?? (article.part_number ?? article.alternative_part_number)} - {article.quantity}</CommandItem>
+                                      {article.serial ?? article.part_number} - {article.quantity}</CommandItem>
                                   ))
                                 }
                               </CommandGroup>
                             ))
-                          }s
+                          }
                         </CommandList>
                       </Command>
                     </PopoverContent>
