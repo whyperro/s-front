@@ -363,6 +363,7 @@ export type InformationSource = {
 };
 
 export type ObligatoryReport = {
+  id: string;
   report_code: string;
   report_date: Date;
   incident_date: Date;
@@ -381,7 +382,7 @@ export type ObligatoryReport = {
 };
 
 export type VoluntaryReport = {
-  id: number;
+  id: string;
   information_source: InformationSource;
   report_number: string;
   report_date: Date;
@@ -394,6 +395,19 @@ export type VoluntaryReport = {
   last_name?: string;
   phone?: string;
   email?: string;
+};
+
+export type DangerIdentification = {
+  id: string;
+  danger: string;
+  danger_location: string;
+  danger_area: string;
+  description: string;
+  possible_consequences: string;
+  consequence_to_evaluate: string;
+  danger_type: string;
+  root_cause_analysis: string;
+  information_source_: InformationSource;
 };
 
 export type FollowUp = {

@@ -1,27 +1,24 @@
 import axiosInstance from "@/lib/axios";
-import {
-  Aircraft
-} from "@/types";
+import { Aircraft } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 interface ObligatoryReportData {
-  report_code: number;
-  //information_source: InformationSource;
-  report_number: string;
+  report_code: string;
   report_date: Date;
-  incident_date: Date;
   incident_time: Date;
-  incident_location: string;
-  pilot: string;
-  copilot: string;
   flight_time: Date;
-  aircraft: Aircraft;
+
+  pilot_id: string;
+  copilot_id: string;
+
+  aircraft_acronym: string;
+  aircraft_model: string;
   flight_number: string;
   flight_origin: string;
-  flight_destination: string;
-  alternate_destination: string;
-  incidents: string;
+  flight_destiny: string;
+  flight_alt_destiny: string;
+  incidents: string[];
   other_incidents: string;
 }
 
