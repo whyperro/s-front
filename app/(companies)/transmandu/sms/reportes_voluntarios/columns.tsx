@@ -9,6 +9,7 @@ import { VoluntaryReport } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import Link from "next/link";
+import VoluntaryReportDropdownActions from "@/components/misc/VoluntaryReportDropDownMenu";
 
 export const columns: ColumnDef<VoluntaryReport>[] = [
   {
@@ -114,5 +115,12 @@ export const columns: ColumnDef<VoluntaryReport>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">{row.original.description}</div>
     ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const voluntaryReport = row.original;
+      return <VoluntaryReportDropdownActions voluntaryReport={voluntaryReport} />;
+    },
   },
 ];
