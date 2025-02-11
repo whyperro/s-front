@@ -24,73 +24,57 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-
-const areas = [
-  "Operacional",
-  "Mantenimiento",
-  "Administracion y RRHH",
-  "Control de calidad",
-  "Tecnologia e informacion",
-];
+import { useGetInformationSources } from "@/hooks/sms/useGetInformationSource";
 
 // HAY DATOS QUE VIENEN DEL REPORTE
 // COMO FECHA DE REPORTE E IDENTIFICACION
 // A LADO DEL CODIGO TENDRA EL TIPO DE REPORTE (RVP-RSO) DETECTADO DEL ORIGEN DEL REPORTE
 
 // NOMBRE DE QUIEN REPORTA (PUEDE SER ANONIMO)
+
 const FormSchema = z.object({
-  report_code: z
-    .string()
-    .min(3, "Debe contener al menos 3 dígitos numéricos")
-    .max(3, "Debe contener exactamente 3 dígitos numéricos")
-    .regex(/^\d{3}$/, "Debe contener exactamente 3 dígitos numéricos"),
-
   danger: z.string().min(3, "Debe contener al menos 3 dígitos caracteres"),
-  description: z.string().min(3, "Debe contener al menos 3 dígitos caracteres"),
-
-  identification_area: z.enum([
-    "Operacional",
-    "Mantenimiento",
-    "Administracion y RRHH",
-    "Control de calidad",
-    "Tecnologia e informacion",
-  ]),
-
-  danger_place: z
+  danger_location: z
     .string()
     .min(3, "Debe contener al menos 3 dígitos caracteres"),
-  consequences: z
+  danger_area: z.string(),
+
+  description: z.string().min(3, "Debe contener al menos 3 dígitos caracteres"),
+
+  possible_consequences: z
     .string()
     .min(3, "Debe contener al menos 3 dígitos caracteres"),
   consequence_to_evaluate: z
     .string()
     .min(3, "Debe contener al menos 3 dígitos caracteres"),
-  information_source: z
-    .string()
-    .min(3, "Debe contener al menos 3 dígitos caracteres"),
-  identification_method: z.string(),
+
   danger_type: z.string(),
-  root_cause: z.string(),
+  root_cause_analysis: z.string(),
+
+  information_source_id: z.string(),
 });
 
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
-  onClose?: () => void;
+  onClose: () => void;
 }
 // { onClose }: FormProps
 // lo de arriba va en prop
-export default function IdentificationForm({ onClose }: FormProps) {
+export default function CreateDangerIdentificationForm({ onClose }: FormProps) {
+
+  const { data: informationSources, isLoading } = useGetInformationSources();
+
   const AREAS = [
-    "Operacional",
-    "Mantenimiento",
-    "Administracion y RRHH",
-    "Control de calidad",
-    "Tecnologia e informacion",
+    "OPERACIONAL",
+    "MANTENIMIENTO",
+    "ADMINISTRACION",
+    "CONTROL_CALIDAD",
+    "IT",
   ];
 
-  const DANGER_TYPES = ["Organizacional", "Técnico", "Humano", "Natural"];
+  const DANGER_TYPES = ["ORGANIZACIONAL", "TECNICO", "HUMANO", "NATURAL"];
+
   const SOURCES = [
     "RVP",
     "RSO",
@@ -99,25 +83,15 @@ export default function IdentificationForm({ onClose }: FormProps) {
     "Encuesta",
     "Entrevista",
   ];
+
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      report_code: "",
-      danger: "Cual es el peligro (Viene del reporte)",
-      description: "",
-      identification_area: "Operacional",
-      danger_place: "",
-      consequences: "Vienen, del, reporte",
-      consequence_to_evaluate: "",
-      information_source: "",
-      identification_method: "",
-      danger_type: "Organizacional",
-      root_cause: "",
-    },
+    defaultValues: {},
   });
 
   const onSubmit = (data: FormSchemaType) => {
     console.log(data);
+    onClose();
   };
 
   return (
@@ -132,28 +106,10 @@ export default function IdentificationForm({ onClose }: FormProps) {
 
         <FormField
           control={form.control}
-          name="report_code"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Código del reporte</FormLabel>
-              <FormControl>
-                <Input
-                  maxLength={3}
-                  placeholder="Ingresar el código"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
           name="danger"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Peligro identificado</FormLabel>
+              <FormLabel>Peligro Identificado</FormLabel>
               <FormControl>
                 <Input placeholder="Cual es el peligro" {...field} />
               </FormControl>
@@ -177,14 +133,14 @@ export default function IdentificationForm({ onClose }: FormProps) {
 
         <FormField
           control={form.control}
-          name="identification_area"
+          name="danger_area"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Area de identificación</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar area" />
+                    <SelectValue placeholder="Seleccionar Area" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -205,12 +161,12 @@ export default function IdentificationForm({ onClose }: FormProps) {
 
         <FormField
           control={form.control}
-          name="danger_place"
+          name="danger_location"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Lugar de identificación</FormLabel>
               <FormControl>
-                <Input placeholder="Cual es el peligro" {...field} />
+                <Input placeholder="Donde se identifico" {...field} />
               </FormControl>
               <FormMessage className="text-xs" />
             </FormItem>
@@ -219,7 +175,7 @@ export default function IdentificationForm({ onClose }: FormProps) {
 
         <FormField
           control={form.control}
-          name="consequences"
+          name="possible_consequences"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Consecuencias</FormLabel>
@@ -253,27 +209,26 @@ export default function IdentificationForm({ onClose }: FormProps) {
 
         <FormField
           control={form.control}
-          name="information_source"
+          name="information_source_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Método de identificacio</FormLabel>
+              <FormLabel>Método de identificacion</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar método" />
+                    <SelectValue placeholder="Seleccionar Fuente de Informacion" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {SOURCES.map((source, index) => (
-                    <SelectItem key={index} value={source}>
-                      {source}
-                    </SelectItem>
-                  ))}
+                  {informationSources &&
+                    informationSources.map((source) => (
+                      <SelectItem key={source.id} value={source.id.toString()}>
+                        {source.name}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
-              <FormDescription>
-                Elegir el método de identificacion de peligro
-              </FormDescription>
+              <FormDescription>Elegir Fuente de Informacion</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -308,13 +263,13 @@ export default function IdentificationForm({ onClose }: FormProps) {
 
         <FormField
           control={form.control}
-          name="root_cause"
+          name="root_cause_analysis"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Análisis causa raiz</FormLabel>
+              <FormLabel>Consecuencia a evaluar</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Responder al ¿Por qué? hasta encontrar  la causa "
+                <Input
+                  placeholder="Consecuencia que sera evaluada"
                   {...field}
                 />
               </FormControl>
