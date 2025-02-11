@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { InformationSource, Pilot, VoluntaryReport } from "@/types";
-import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
+import { EyeIcon, Loader2, MoreHorizontal, Trash2 , ClipboardPenLine } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import {
@@ -53,10 +53,12 @@ const VoluntaryReportDropdownActions = ({
           className="flex gap-2 justify-center"
         >
           <DialogTrigger asChild>
+
             <DropdownMenuItem>
               <Trash2 className="size-5 text-red-500" />
             </DropdownMenuItem>
           </DialogTrigger>
+
           <DropdownMenuItem
             onClick={() => {
               router.push(`/ajustes/globales/pilotos/${voluntaryReport.id}`);
@@ -64,6 +66,16 @@ const VoluntaryReportDropdownActions = ({
           >
             <EyeIcon className="size-5" />
           </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={() => {
+              router.push(`/ajustes/globales/pilotos/${voluntaryReport.id}`);
+            }}
+          >
+            <ClipboardPenLine className="size-5" />
+          </DropdownMenuItem>
+            
+            
         </DropdownMenuContent>
       </DropdownMenu>
 

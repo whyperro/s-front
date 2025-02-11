@@ -45,6 +45,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useGetPilots } from "@/hooks/sms/useGetPilots";
+import { useCreateObligatoryReport } from "@/actions/sms/reporte_obligatorio/actions";
 
 //Falta añadir validaciones
 const FormSchema = z
@@ -95,13 +96,14 @@ interface FormProps {
 }
 
 export function ObligatoryReportForm({ onClose }: FormProps) {
+  const { createObligatoryReport } = useCreateObligatoryReport();
   const [showOtherInput, setShowOtherInput] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
   // No estoy seguro si esto va aca lol
   const { data: pilots, isLoading } = useGetPilots();
-  
+
   const OPTIONS_LIST = [
     "La aereonave aterriza quedándose solo con el combustible de reserva o menos",
     "Incursion en pista o calle de rodaje ( RUNAWAY INCURSION-RI)",
@@ -126,14 +128,17 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      incident_date: new Date(),
       report_date: new Date(),
+      flight_time: new Date(),
+      incident_time: new Date(),
+      incident_date: new Date(),
       incidents: [],
     },
   });
 
-  const onSubmit = (data: FormSchemaType) => {
+  const onSubmit = async (data: FormSchemaType) => {
     console.log(data);
+    await createObligatoryReport.mutateAsync(data);
     onClose();
   };
 
@@ -282,10 +287,6 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    if(isLoading){
-
-                    }
-                    
                     {pilots &&
                       pilots.map((pilot) => (
                         <SelectItem key={pilot.id} value={pilot.id.toString()}>
@@ -304,11 +305,26 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
             name="copilot_id"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Cedula del Copiloto</FormLabel>
-                <FormControl>
-                  <Input placeholder="ejemplo: 12345600" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
+                <FormLabel>Copiloto</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar Copiloto" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {pilots &&
+                      pilots.map((pilot) => (
+                        <SelectItem key={pilot.id} value={pilot.id.toString()}>
+                          {pilot.first_name} {pilot.last_name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
