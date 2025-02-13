@@ -97,7 +97,7 @@ export const columns: ColumnDef<DispatchRequest>[] = [
     ),
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <DispatchArticlesDialog articles={row.original.articles} work_order={row.original.work_order?.order_number!} />
+        <DispatchArticlesDialog articles={row.original.batch.articles} work_order={row.original.work_order?.order_number!} />
       </div>
     )
   },

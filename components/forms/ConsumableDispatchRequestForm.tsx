@@ -249,7 +249,7 @@ export function ConsumableDispatchForm({ onClose }: FormProps) {
                         className="w-[200px] justify-between"
                       >
                         {articleSelected
-                          ? `${articleSelected.description}`
+                          ? `${articleSelected.part_number}`
                           : "Selec. el consumible"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
@@ -268,7 +268,7 @@ export function ConsumableDispatchForm({ onClose }: FormProps) {
                                       handleArticleSelect(article.id!, article.serial ? article.serial : null, batch.batch_id)
                                       setArticleSelected(article)
                                     }}><Check className={cn("mr-2 h-4 w-4", articleSelected?.id === article.id ? "opacity-100" : "opacity-0")} />
-                                      {article.serial ?? article.part_number} - {article.quantity}</CommandItem>
+                                      {article.part_number} - {article.quantity}{article.unit} <p className="hidden">{article.id}</p></CommandItem>
                                   ))
                                 }
                               </CommandGroup>

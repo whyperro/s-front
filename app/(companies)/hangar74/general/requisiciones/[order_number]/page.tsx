@@ -66,7 +66,7 @@ const InventarioPage = () => {
             </div>
             <div className='flex flex-col gap-2 items-center'>
               <h1>Solicitado Por:</h1>
-              <p className='font-bold flex gap-2 items-center'><User /> {data?.requested_by}</p>
+              <p className='font-bold flex gap-2 items-center'><User /> {data?.requested_by.first_name} {data?.requested_by.last_name}</p>
             </div>
           </div>
           <p className='text-center font-medium italic'>{data?.justification}</p>

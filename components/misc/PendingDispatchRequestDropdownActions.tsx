@@ -73,8 +73,6 @@ const PendingDispatchRequestDropdownActions
 
     const { createRequisition } = useCreateRequisition()
 
-    const { data: batch } = useGetBatchById(request.batch.id)
-
     const { user } = useAuth();
 
     const { mutate: employeeMutate, data: employees, isPending: employeesLoading, isError: employeesError } = useGetWarehousesEmployees();
@@ -86,6 +84,9 @@ const PendingDispatchRequestDropdownActions
     }, [selectedStation])
 
     const handleAprove = async (data: z.infer<typeof formSchema>) => {
+      const newQty = request.batch.article_count - Number(request.batch.articles[0].quantity);
+      const qtyToBuy = Math.max(request.batch.min_quantity - newQty + 1, 0);
+      console.log(newQty, qtyToBuy)
       const formattedData = {
         ...data,
         id: Number(request.id),
@@ -93,7 +94,7 @@ const PendingDispatchRequestDropdownActions
         approved_by: `${user?.first_name} ${user?.last_name}`
       }
       const reqData = {
-        justification: `Restock por solicitud de salida de ${request.batch.name} - ${request.part_number}`,
+        justification: `Restock por solicitud de salida de ${request.batch.name} - ${request.batch.articles[0].part_number}`,
         requested_by: `${user?.first_name} ${user?.last_name}`,
         created_by: user!.id,
         company: selectedCompany!.split(" ").join("").toLowerCase(),
@@ -104,8 +105,8 @@ const PendingDispatchRequestDropdownActions
             batch_name: request.batch.name,
             batch_articles: [
               {
-                quantity: 1,
-                part_number: request.part_number,
+                quantity: qtyToBuy,
+                part_number: request.batch.articles[0].part_number,
               }
             ]
           }
@@ -113,7 +114,7 @@ const PendingDispatchRequestDropdownActions
       }
       await updateDispatchStatus.mutateAsync(formattedData);
 
-      if (batch && batch.category !== 'herramienta' && (batch?.article_count - 1 < batch.min_quantity)) {
+      if (request.batch.category !== 'herramienta' && (newQty < request.batch.min_quantity)) {
         createRequisition.mutateAsync(reqData)
       }
       setOpen(false)

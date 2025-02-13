@@ -123,6 +123,7 @@ export type Article = {
   condition_id?: string,
   weight?: number,
   cost?: number,
+  unit?: string,
   quantity?: number,
   batches?: Batch,
   batch_id?: number,
@@ -223,16 +224,19 @@ export interface WorkOrder extends Request {
 
 export interface DispatchRequest extends Request {
   part_number: string,
-  articles: Article[],
   destination_place: string,
   batch: {
     id: string,
     name: string,
+    category: string,
+    article_count: number,
+    min_quantity: number,
     articles: {
       article_id: string,
       serial: string,
+      part_number: string,
       quantity: string,
-    }
+    }[]
   },
   category: string,
 }
@@ -283,8 +287,7 @@ export type Requisition = {
   id: number,
   order_number: string,
   status: string,
-  created_by: string,
-  approved_by: string,
+  created_by: User,
   requested_by: string,
   article_requisition_order: {
     article_part_number: string,
