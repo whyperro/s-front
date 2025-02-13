@@ -123,13 +123,20 @@ const VoluntaryReportDropdownActions = ({
           </DialogContent>
         </Dialog>
 
-        <Dialog open={openCreateDangerIdentification} onOpenChange={setOpenCreateDangerIdentification}>
+        <Dialog
+          open={openCreateDangerIdentification}
+          onOpenChange={setOpenCreateDangerIdentification}
+        >
           <DialogContent className="flex flex-col max-w-2xl m-2">
             <DialogHeader>
               <DialogTitle></DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
-            <CreateDangerIdentificationForm onClose={() => setOpenCreateDangerIdentification(false)} />
+
+            <CreateDangerIdentificationForm
+              onClose={() => setOpenCreateDangerIdentification(false)}
+              id={voluntaryReport.id}
+            />
           </DialogContent>
         </Dialog>
       </Dialog>
