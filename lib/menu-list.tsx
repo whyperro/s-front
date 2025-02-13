@@ -16,6 +16,7 @@ import {
   ScrollText,
   Settings,
   SquarePen,
+  TriangleAlert,
   User2,
   Wrench,
 } from "lucide-react";
@@ -109,6 +110,15 @@ export function getMenuList(
                     active: pathname === "/transmandu/sms/estadisicas",
                   },
                 ],
+              },
+
+              {
+                href: "/transmandu/sms/peligros_identificados",
+                label: "Peligros Identificados",
+                icon: TriangleAlert,
+                active: pathname.includes("/peligros"),
+                roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
+                submenus: [],
               },
             ],
           },
