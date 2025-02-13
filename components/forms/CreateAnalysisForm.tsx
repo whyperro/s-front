@@ -40,18 +40,18 @@ import {
 
 const FormSchema = z.object({
   severity: z.enum([
-    "Catastrófico",
-    "Peligroso",
-    "Grave",
-    "Leve",
-    "Insignificante",
+    "CATASTROFICO",
+    "PELIGROSO",
+    "GRAVE",
+    "LEVE",
+    "INSIGNIFICANTE",
   ]),
   probability: z.enum([
-    "Frecuente",
-    "Ocasional",
-    "Improbable",
-    "Sumamente improbable",
-    "Remoto",
+    "FRECUENTE",
+    "OCASIONAL",
+    "IMPROBABLE",
+    "SUMAMENTE_IMPROBABLE",
+    "REMOTO",
   ]),
 });
 
@@ -60,23 +60,22 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 interface FormProps {
   onClose: () => void;
 }
-// { onClose }: FormProps
-// lo de arriba va en prop
-export default function AnalysisForm() {
+
+export default function CreateAnalysisForm({onClose}: FormProps) {
   const SEVERITY = [
-    "Catastrófico",
-    "Peligroso",
-    "Grave",
-    "Leve",
-    "Insignificante",
+    "CATASTROFICO",
+    "PELIGROSO",
+    "GRAVE",
+    "LEVE",
+    "INSIGNIFICANTE",
   ];
 
   const PROBABILITY = [
-    "Frecuente",
-    "Ocasional",
-    "Improbable",
-    "Sumamente improbable",
-    "Remoto",
+    "FRECUENTE",
+    "OCASIONAL",
+    "IMPROBABLE",
+    "SUMAMENTE_IMPROBABLE",
+    "REMOTO",
   ];
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
@@ -85,6 +84,7 @@ export default function AnalysisForm() {
 
   const onSubmit = (data: FormSchemaType) => {
     console.log(data);
+    onClose();
   };
 
   return (
