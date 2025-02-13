@@ -3,25 +3,38 @@ import {
   ComponentArticle,
   ConsumableArticle,
   DispatchRequest,
+  InformationSource,
   Request,
 } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 interface DangerIdentificationData {
-  
+  id: string | number;
+  danger: string;
+  danger_location: string;
+  danger_area: string;
+  description: string;
+  possible_consequences: string;
+  consequence_to_evaluate: string;
+  root_cause_analysis: string;
+  information_source_id: string;
 }
 
-export const useCreatePilot = () => {
+export const useCreateDangerIdentification = () => {
   const queryClient = useQueryClient();
   const createMutation = useMutation({
-    mutationKey: ["danger-identifications"],
+    mutationKey: ["danger-identifications/${id}"],
     mutationFn: async (data: DangerIdentificationData) => {
-      await axiosInstance.post("/transmandu/danger_identifications", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axiosInstance.post(
+        `/transmandu/danger-identifications/${data.id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
@@ -37,7 +50,7 @@ export const useCreatePilot = () => {
     },
   });
   return {
-    CreateDangerIdentification: createMutation,
+    createDangerIdentification: createMutation,
   };
 };
 
