@@ -25,6 +25,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetInformationSources } from "@/hooks/sms/useGetInformationSource";
+import { Textarea } from "../ui/textarea";
+import { useCreateDangerIdentification } from "@/actions/sms/identificacion_peligro/actions";
+import { useState } from "react";
 
 // HAY DATOS QUE VIENEN DEL REPORTE
 // COMO FECHA DE REPORTE E IDENTIFICACION
@@ -57,13 +60,18 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
+  id: string | number;
   onClose: () => void;
 }
 // { onClose }: FormProps
 // lo de arriba va en prop
-export default function CreateDangerIdentificationForm({ onClose }: FormProps) {
-
+export default function CreateDangerIdentificationForm({
+  onClose,
+  id,
+}: FormProps) {
+  const [consequences, setConsequences] = useState<string[]>([]);
   const { data: informationSources, isLoading } = useGetInformationSources();
+  const { createDangerIdentification } = useCreateDangerIdentification();
 
   const AREAS = [
     "OPERACIONAL",
@@ -72,25 +80,18 @@ export default function CreateDangerIdentificationForm({ onClose }: FormProps) {
     "CONTROL_CALIDAD",
     "IT",
   ];
-
   const DANGER_TYPES = ["ORGANIZACIONAL", "TECNICO", "HUMANO", "NATURAL"];
-
-  const SOURCES = [
-    "RVP",
-    "RSO",
-    "Auditoria",
-    "Inspección",
-    "Encuesta",
-    "Entrevista",
-  ];
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {},
   });
 
-  const onSubmit = (data: FormSchemaType) => {
-    console.log(data);
+  const onSubmit = async (data: FormSchemaType) => {
+    await createDangerIdentification.mutateAsync({
+      ...data,
+      id,
+    });
     onClose();
   };
 
@@ -124,55 +125,56 @@ export default function CreateDangerIdentificationForm({ onClose }: FormProps) {
             <FormItem>
               <FormLabel>Descripcion de identificacion de peligro</FormLabel>
               <FormControl>
-                <Input placeholder="Breve descripcion " {...field} />
+                <Textarea placeholder="Breve descripcion " {...field} />
               </FormControl>
               <FormMessage className="text-xs" />
             </FormItem>
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="danger_area"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Area de identificación</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+        <div className="flex gap-2 justify-center items-center">
+          <FormField
+            control={form.control}
+            name="danger_area"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Area de identificación</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar Area" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {AREAS.map((area, index) => (
+                      <SelectItem key={index} value={area}>
+                        {area}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="danger_location"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Lugar de identificación</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar Area" />
-                  </SelectTrigger>
+                  <Input placeholder="Donde se identifico" {...field} />
                 </FormControl>
-                <SelectContent>
-                  {AREAS.map((area, index) => (
-                    <SelectItem key={index} value={area}>
-                      {area}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                Elegir el area dónde fue identificado el peligro
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="danger_location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Lugar de identificación</FormLabel>
-              <FormControl>
-                <Input placeholder="Donde se identifico" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
-
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="possible_consequences"
@@ -180,9 +182,18 @@ export default function CreateDangerIdentificationForm({ onClose }: FormProps) {
             <FormItem>
               <FormLabel>Consecuencias</FormLabel>
               <FormControl>
-                <Input
+                <Textarea
                   placeholder="Consecuencias separadas por una coma (,)"
                   {...field}
+                  onChange={(event) => {
+                    field.onChange(event); // Actualiza el valor en el formulario (necesario para la librería de formularios)
+                    const newConsequences = event.target.value
+                      .split(",")
+                      .map((consequence) => consequence.trim()); // Separa por comas y elimina espacios en blanco
+                    setConsequences(newConsequences);
+                    console.log("Consecuencias:", consequences); // Muestra las consecuencias en la consola
+                    // Aquí puedes hacer lo que necesites con el array de consecuencias
+                  }}
                 />
               </FormControl>
               <FormMessage className="text-xs" />
@@ -194,84 +205,102 @@ export default function CreateDangerIdentificationForm({ onClose }: FormProps) {
           control={form.control}
           name="consequence_to_evaluate"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Consecuencia a evaluar</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Consecuencia que sera evaluada"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage className="text-xs" />
+            <FormItem className="w-full">
+              <FormLabel>Consecuencia a Evaluar</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Consecuencia a Evaluar" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {consequences &&
+                    consequences
+                      .filter(
+                        (consequence) => consequence && consequence !== ""
+                      )
+                      .map((consequence, index) => (
+                        <SelectItem key={index} value={consequence}>
+                          {consequence}
+                        </SelectItem>
+                      ))}
+                </SelectContent>
+              </Select>
+
+              <FormMessage />
             </FormItem>
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="information_source_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Método de identificacion</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar Fuente de Informacion" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {informationSources &&
-                    informationSources.map((source) => (
-                      <SelectItem key={source.id} value={source.id.toString()}>
-                        {source.name}
+        <div className="flex gap-2 justify-center items-center">
+          <FormField
+            control={form.control}
+            name="information_source_id"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Método de identificacion</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar Fuente de Informacion" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {informationSources &&
+                      informationSources.map((source) => (
+                        <SelectItem
+                          key={source.id}
+                          value={source.id.toString()}
+                        >
+                          {source.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="danger_type"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Tipo de peligro</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar tipo de peligro" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {DANGER_TYPES.map((area, index) => (
+                      <SelectItem key={index} value={area}>
+                        {area}
                       </SelectItem>
                     ))}
-                </SelectContent>
-              </Select>
-              <FormDescription>Elegir Fuente de Informacion</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="danger_type"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tipo de peligro</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar tipo de peligro" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {DANGER_TYPES.map((area, index) => (
-                    <SelectItem key={index} value={area}>
-                      {area}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                Elgir el tipo de peligro identificado
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                  </SelectContent>
+                </Select>
 
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="root_cause_analysis"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Consecuencia a evaluar</FormLabel>
+              <FormLabel>Analisis Causa Raiz</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Consecuencia que sera evaluada"
-                  {...field}
-                />
+                <Input placeholder="Origen del Peligro" {...field} />
               </FormControl>
               <FormMessage className="text-xs" />
             </FormItem>
