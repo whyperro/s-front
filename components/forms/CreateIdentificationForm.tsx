@@ -28,6 +28,7 @@ import { useGetInformationSources } from "@/hooks/sms/useGetInformationSource";
 import { Textarea } from "../ui/textarea";
 import { useCreateDangerIdentification } from "@/actions/sms/identificacion_peligro/actions";
 import { useState } from "react";
+import { useGetVoluntaryReportById } from "@/hooks/sms/useGetVoluntaryReportById";
 
 // HAY DATOS QUE VIENEN DEL REPORTE
 // COMO FECHA DE REPORTE E IDENTIFICACION
@@ -72,6 +73,7 @@ export default function CreateDangerIdentificationForm({
   const [consequences, setConsequences] = useState<string[]>([]);
   const { data: informationSources, isLoading } = useGetInformationSources();
   const { createDangerIdentification } = useCreateDangerIdentification();
+  const { data: voluntaryReport } = useGetVoluntaryReportById(id); // Para mostrar los datos reporte como referencia en este formulario
 
   const AREAS = [
     "OPERACIONAL",
@@ -82,9 +84,14 @@ export default function CreateDangerIdentificationForm({
   ];
   const DANGER_TYPES = ["ORGANIZACIONAL", "TECNICO", "HUMANO", "NATURAL"];
 
+
+  console.log("Datos del VP ", voluntaryReport);
+
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {},
+    defaultValues: {
+      description: voluntaryReport?.description,
+    },
   });
 
   const onSubmit = async (data: FormSchemaType) => {
