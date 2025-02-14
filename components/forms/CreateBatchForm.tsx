@@ -200,27 +200,29 @@ export function CreateBatchForm({ onClose }: FormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Almacén</FormLabel>
-                  <Select disabled={isLoading} onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    disabled={isLoading}
+                    onValueChange={field.onChange}
+                    value={field.value} // Usa value en lugar de defaultValue
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder={isLoading ? <Loader2 className="size-4 animate-spin" /> : "Seleccione..."} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {
-                        isLoading && <Loader2 className="size-4 animate-spin" />
-                      }
-                      {
-                        warehouses && warehouses.map((warehouse) => (
-                          <SelectItem key={warehouse.id} value={warehouse.id}>{warehouse.name} - {warehouse.address}</SelectItem>
-                        ))
-                      }
-                      {
-                        warehouses && warehouses.length < 1 && <p className="text-xs p-2 text-muted-foreground">No se han encontrado almacenes...</p>
-                      }
-                      {
-                        error && <p className="text-xs p-2 text-muted-foreground">Ha ocurrido un error al cargar los almacenes...</p>
-                      }
+                      {isLoading && <Loader2 className="size-4 animate-spin" />}
+                      {warehouses && warehouses.map((warehouse) => (
+                        <SelectItem key={warehouse.id} value={warehouse.id.toString()}>
+                          {warehouse.name} - {warehouse.address}
+                        </SelectItem>
+                      ))}
+                      {warehouses && warehouses.length < 1 && (
+                        <p className="text-xs p-2 text-muted-foreground">No se han encontrado almacenes...</p>
+                      )}
+                      {error && (
+                        <p className="text-xs p-2 text-muted-foreground">Ha ocurrido un error al cargar los almacenes...</p>
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
