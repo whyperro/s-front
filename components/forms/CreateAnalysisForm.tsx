@@ -110,9 +110,9 @@ export default function CreateAnalysisForm({onClose}: FormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {SEVERITY.map((area, index) => (
-                    <SelectItem key={index} value={area}>
-                      {area}
+                  {SEVERITY.map((severity, index) => (
+                    <SelectItem key={index} value={severity}>
+                      {severity}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -136,9 +136,9 @@ export default function CreateAnalysisForm({onClose}: FormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {PROBABILITY.map((area, index) => (
-                    <SelectItem key={index} value={area}>
-                      {area}
+                  {PROBABILITY.map((probability, index) => (
+                    <SelectItem key={index} value={probability}>
+                      {probability}
                     </SelectItem>
                   ))}
                 </SelectContent>
