@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import Link from "next/link";
 import VoluntaryReportDropdownActions from "@/components/misc/VoluntaryReportDropDownMenu";
+import DangerIdentificationDropdownActions from "@/components/misc/DangerIdentificationDropdownActions";
 
 export const columns: ColumnDef<DangerIdentification>[] = [
   {
@@ -117,6 +118,13 @@ export const columns: ColumnDef<DangerIdentification>[] = [
           {row.original.root_cause_analysis}
         </p>
       );
+    },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const dangerIdentification = row.original;
+      return <DangerIdentificationDropdownActions dangerIdentification={dangerIdentification} />;
     },
   },
 ];
