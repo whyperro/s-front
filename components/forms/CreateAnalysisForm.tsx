@@ -37,6 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCreateAnalysis } from "@/actions/sms/analisis/actions";
 
 const FormSchema = z.object({
   severity: z.enum([
@@ -58,10 +59,15 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
+  id: string | number;
+  name: string;
   onClose: () => void;
 }
 
-export default function CreateAnalysisForm({onClose}: FormProps) {
+export default function CreateAnalysisForm({ onClose, id ,name}: FormProps) {
+
+    const { createAnalysis } = useCreateAnalysis();
+  
   const SEVERITY = [
     "CATASTROFICO",
     "PELIGROSO",
@@ -82,9 +88,25 @@ export default function CreateAnalysisForm({onClose}: FormProps) {
     defaultValues: {},
   });
 
-  const onSubmit = (data: FormSchemaType) => {
+  const onSubmit = async (data: FormSchemaType) => {
     console.log(data);
-    onClose();
+    if (name === "mitigacion") {
+      const values = {
+        ...data,
+        result: "result",
+        mitigation_id: id,
+      };
+      console.log(values);
+      await createAnalysis.mutateAsync(values);
+    } else { 
+      const values = {
+        ...data,
+        identification_id: id,
+        result: "result",
+      };
+      console.log(values);
+      await createAnalysis.mutateAsync(values);
+    }
   };
 
   return (
