@@ -1,6 +1,7 @@
 import {
   BookOpen,
   Building,
+  CalendarCheck,
   ClipboardCopy,
   ClipboardPen,
   Globe,
@@ -91,17 +92,17 @@ export function getMenuList(
                       pathname === "/transmandu/sms/prueba",
                   },
                   {
+                    href: "/transmandu/sms/reportes_voluntarios",
+                    label: "Reportes Voluntarios",
+                    roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
+                    active: pathname === "/transmandu/sms/reportes_voluntarios",
+                  },
+                  {
                     href: "/transmandu/sms/reportes_obligatorios",
                     label: "Reportes Obligatorios",
                     roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
                     active:
                       pathname === "/transmandu/sms/reportes_obligatorios",
-                  },
-                  {
-                    href: "/transmandu/sms/reportes_voluntarios",
-                    label: "Reportes Voluntarios",
-                    roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
-                    active: pathname === "/transmandu/sms/reportes_voluntarios",
                   },
                   {
                     href: "/transmandu/sms/estadisticas",
@@ -111,12 +112,19 @@ export function getMenuList(
                   },
                 ],
               },
-
               {
                 href: "/transmandu/sms/peligros_identificados",
                 label: "Peligros Identificados",
                 icon: TriangleAlert,
                 active: pathname.includes("/peligros"),
+                roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
+                submenus: [],
+              },
+              {
+                href: "/transmandu/sms/planes_de_mitigacion",
+                label: "Planes de Mitigacion",
+                icon: CalendarCheck,
+                active: pathname.includes("/planes_de_mitigacion"),
                 roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
                 submenus: [],
               },
