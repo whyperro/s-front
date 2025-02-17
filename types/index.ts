@@ -409,22 +409,39 @@ export type DangerIdentification = {
   information_source: InformationSource;
 };
 
-export type FollowUp = {
+export type FollowUpControl = {
   id: number;
   date: string;
   description: string;
 };
 
-export type Measure = {
+export type MitigationMeasure = {
   id: number;
-  name: string;
-  followUpInCharge: string;
-  responsiblePerson: string;
-  followUps: FollowUp[];
+  description: string;
+  implementation_supervisor: string;
+  implementation_responsible: string;
+  estimated_date: Date;
+  execution_date: Date;
+  mitigation_plan: MitigationPlan;
 };
 
 export type MitigationPlan = {
   id: number;
   description: string;
-  measures: Measure[];
+  responsible: string;
+  start_date: Date;
+  measures: MitigationMeasure[];
+};
+
+export type Analysis = {
+  id: number;
+  probability: string;
+  severity: string;
+  result: string;
+  danger_identification: DangerIdentification;
+  mitigation_plan: MitigationPlan;
+};
+
+export type MitigationTable = {
+  analysis: Analysis;
 };
