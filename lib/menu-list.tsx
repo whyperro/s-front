@@ -68,6 +68,20 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
           ]
         },
         {
+          groupLabel: "Desarrollo",
+          menus: [
+            {
+              href: "/transmandu/desarrollo/actividades_diarias",
+              label: "Actividades Diarias",
+              active: pathname.includes("/transmandu/desarrollo/actividades_diarias"),
+              icon: SquarePen,
+              roles: ["ANALISTA_PLANIFICACION", "JEFE_PLANIFICACION", "SUPERUSER"],
+              submenus: [
+              ]
+            },
+          ]
+        },
+        {
           groupLabel: "Admistración",
           menus: [
             {
