@@ -17,7 +17,7 @@ interface CreateRequisitionData {
     batch_articles: {
       quantity: number,
       part_number: string,
-      unit?: string,
+      unit?: string | number,
       image?: File,
     }[]
   }[]

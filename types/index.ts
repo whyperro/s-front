@@ -236,6 +236,7 @@ export interface DispatchRequest extends Request {
       serial: string,
       part_number: string,
       quantity: string,
+      unit: Convertion[],
     }[]
   },
   category: string,
@@ -260,7 +261,6 @@ export type Convertion = {
   quantity_unit: number,
   updated_by: string,
   registered_by: string,
-
   created_at: Date,
   updated_at: Date,
 }

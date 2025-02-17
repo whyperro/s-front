@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { useUpdateStatusDispatchRequest } from "@/actions/almacen/solicitudes/salida/action"
+import { useCreateRequisition } from "@/actions/compras/requisiciones/actions"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -30,6 +31,7 @@ import { useAuth } from "@/contexts/AuthContext"
 import { useGetWarehousesEmployees } from "@/hooks/almacen/useGetWarehousesEmployees"
 import { cn } from "@/lib/utils"
 import { useCompanyStore } from "@/stores/CompanyStore"
+import { DispatchRequest } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
@@ -40,9 +42,6 @@ import { z } from "zod"
 import { Calendar } from "../ui/calendar"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { DispatchRequest } from "@/types"
-import { useGetBatchById } from "@/hooks/almacen/useGetBatchById"
-import { useCreateRequisition } from "@/actions/compras/requisiciones/actions"
 
 
 const formSchema = z.object({
@@ -107,6 +106,7 @@ const PendingDispatchRequestDropdownActions
               {
                 quantity: qtyToBuy,
                 part_number: request.batch.articles[0].part_number,
+                unit: request.batch.articles[0].unit[0].id,
               }
             ]
           }

@@ -6,7 +6,7 @@ interface Requisition {
   id: number,
   status: string,
   created_by: User,
-  requested_by: User,
+  requested_by: string,
   received_by: string,
   justification: string,
   arrival_date: Date,

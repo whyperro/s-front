@@ -66,7 +66,7 @@ const InventarioPage = () => {
             </div>
             <div className='flex flex-col gap-2 items-center'>
               <h1>Solicitado Por:</h1>
-              <p className='font-bold flex gap-2 items-center'><User /> {data?.requested_by.first_name} {data?.requested_by.last_name}</p>
+              <p className='font-bold flex gap-2 items-center'><User /> {data?.requested_by}</p>
             </div>
           </div>
           <p className='text-center font-medium italic'>{data?.justification}</p>
@@ -83,7 +83,7 @@ const InventarioPage = () => {
                             <p className='font-medium'>Nro. Parte: <span className='font-bold italic'>{article.article_part_number}</span></p>
                             {
                               article.unit && (
-                                <p className='font-medium'>Unidad: <span className='font-bold italic'>{article.unit.secondary_unit}</span></p>
+                                <p className='font-medium'>Unidad: <span className='font-bold italic'>{article.unit.unit.label} - {article.unit.unit.value}</span></p>
                               )
                             }
                             <p className='font-medium'>Cantidad: <span className='font-bold italic'>{article.quantity}</span></p>

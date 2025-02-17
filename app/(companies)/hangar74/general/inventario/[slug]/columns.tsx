@@ -216,7 +216,7 @@ export const columns: ColumnDef<ColumnI>[] = [
       <DataTableColumnHeader column={column} title="Estado" />
     ),
     cell: ({ row }) => (
-      <Badge className={row.original.status === 'InUse' ? "bg-yellow-500" : "bg-green-500"}>{row.original.status === 'InUse' ? "En Uso" : "En Almc."}</Badge>
+      <Badge className={(row.original.status === 'InUse' || row.original.status === 'InToolBox') ? "bg-yellow-500 text-center" : "bg-green-500 text-center"}>{row.original.status === 'InUse' ? "En Uso" : row.original.status === 'InToolBox' ? "En Toolbox" : "En Almc."}</Badge>
     )
   },
   {

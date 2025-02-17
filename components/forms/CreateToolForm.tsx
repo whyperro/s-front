@@ -122,7 +122,7 @@ const CreateToolForm = ({ initialData, isEditing }: {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      serial: initialData?.tool?.serial || "",
+      serial: initialData?.serial || "",
       part_number: initialData?.part_number || "",
       alternative_part_number: initialData?.alternative_part_number || "",
       batches_id: initialData?.batches.id?.toString() || "",
@@ -219,7 +219,7 @@ const CreateToolForm = ({ initialData, isEditing }: {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Fabricante</FormLabel>
-                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange}>
+                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecccione..." />

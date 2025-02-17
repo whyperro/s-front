@@ -20,12 +20,32 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { DispatchRequest } from "@/types"
+import { DispatchRequest, WorkOrder, Convertion } from "@/types"
 import DispatchArticlesDialog from "@/components/dialogs/DispatchArticlesDialog"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 
-export const columns: ColumnDef<DispatchRequest>[] = [
+interface IDispatch {
+  id: number,
+  requested_by: string,
+  created_by: string,
+  justification: string,
+  destination_place: string,
+  submission_date: string,
+  work_order?: WorkOrder,
+  articles:
+  {
+    id: number,
+    part_number: string,
+    serial: string,
+    description: string,
+    unit?: Convertion[],
+    quantity: string,
+  }[],
+}
+
+
+export const columns: ColumnDef<IDispatch>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -97,15 +117,13 @@ export const columns: ColumnDef<DispatchRequest>[] = [
     ),
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <DispatchArticlesDialog articles={row.original.batch.articles} work_order={row.original.work_order?.order_number!} />
+        <DispatchArticlesDialog articles={row.original.articles} work_order={row.original.work_order?.order_number!} />
       </div>
     )
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const item = row.original
-
       return (
         <TooltipProvider>
           <DropdownMenu>
