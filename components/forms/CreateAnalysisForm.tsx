@@ -64,10 +64,9 @@ interface FormProps {
   onClose: () => void;
 }
 
-export default function CreateAnalysisForm({ onClose, id ,name}: FormProps) {
+export default function CreateAnalysisForm({ onClose, id, name }: FormProps) {
+  const { createAnalysis } = useCreateAnalysis();
 
-    const { createAnalysis } = useCreateAnalysis();
-  
   const SEVERITY = [
     "CATASTROFICO",
     "PELIGROSO",
@@ -89,19 +88,19 @@ export default function CreateAnalysisForm({ onClose, id ,name}: FormProps) {
   });
 
   const onSubmit = async (data: FormSchemaType) => {
-    console.log(data);
+    id = id.toString();
     if (name === "mitigacion") {
       const values = {
         ...data,
         result: "result",
-        mitigation_id: id,
+        mitigation_plan_id: id,
       };
       console.log(values);
       await createAnalysis.mutateAsync(values);
-    } else { 
+    } else {
       const values = {
         ...data,
-        identification_id: id,
+        danger_identification_id: id,
         result: "result",
       };
       console.log(values);
