@@ -76,8 +76,8 @@ const mockData = {
         activities: [
           {
             id: 1,
-            initial_hour: new Date("2024-02-18T09:00:00Z"),
-            final_hour: new Date("2024-02-18T10:00:00Z"),
+            initial_hour: "09:00",
+            final_hour: "10:00",
             employee: {
               id: 1,
               first_name: "Juan",
@@ -123,8 +123,8 @@ const mockData = {
           },
           {
             id: 2,
-            initial_hour: new Date("2024-02-18T10:30:00Z"),
-            final_hour: new Date("2024-02-18T12:00:00Z"),
+            initial_hour: "10:30",
+            final_hour: "12:00",
             employee: {
               id: 1,
               first_name: "Juan",
@@ -217,8 +217,8 @@ const mockData = {
         activities: [
           {
             id: 1,
-            initial_hour: new Date("2024-02-19T09:00:00Z"),
-            final_hour: new Date("2024-02-19T11:00:00Z"),
+            initial_hour: "09:00",
+            final_hour: "11:00",
             employee: {
               id: 2,
               first_name: "Ana",

@@ -414,8 +414,8 @@ export type ActivityReports = {
 
 export type Activity = {
   id: number,
-  initial_hour: Date,
-  final_hour: Date,
+  initial_hour: string,  // Formato "HH:mm"
+  final_hour: string,    // Formato "HH:mm"
   employee: Employee,
-  description: String,
+  description: string,
 }
