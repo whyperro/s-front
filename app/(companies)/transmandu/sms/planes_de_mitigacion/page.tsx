@@ -1,24 +1,20 @@
 "use client";
 
 import { ContentLayout } from "@/components/layout/ContentLayout";
-import { useGetQuotes } from "@/hooks/compras/useGetQuotes";
-import { useCompanyStore } from "@/stores/CompanyStore";
+
 import { Loader2 } from "lucide-react";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { useGetMitigationTable } from "@/hooks/sms/useGetMitigationTable";
 
 const MitigationPlanPage = () => {
-  const { selectedStation, selectedCompany } = useCompanyStore();
   const {
-    data: reportes,
+    data: mitigationTable,
     isLoading,
     isError,
-  } = useGetQuotes(
-    (selectedCompany && selectedCompany.split(" ").join("")) || null,
-    selectedStation || null
-  );
+  } = useGetMitigationTable();
 
-
+  console.log(mitigationTable);
   
   return (
     <ContentLayout title="Planes de Mitigacion">
@@ -28,7 +24,7 @@ const MitigationPlanPage = () => {
             <Loader2 className="size-24 animate-spin mt-48" />
           </div>
         )}
-        {reportes && <DataTable columns={columns} data={[]} />}
+        {mitigationTable && <DataTable columns={columns} data={mitigationTable} />}
         {isError && (
           <p className="text-sm text-muted-foreground">
             Ha ocurrido un error al cargar los planes de mitigaction...
