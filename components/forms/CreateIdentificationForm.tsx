@@ -91,6 +91,7 @@ export default function CreateDangerIdentificationForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       description: voluntaryReport?.description,
+      possible_consequences: voluntaryReport?.possible_consequences,
     },
   });
 
