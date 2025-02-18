@@ -1,4 +1,3 @@
-import { z } from "zod";
 
 export type Role = {
     id: number,
@@ -404,4 +403,19 @@ export type Card = {
   bank_account: BankAccount,
   created_by: string,
   updated_by: string,
+}
+
+export type ActivityReports = {
+  id: number,
+  date: Date,
+  employee: Employee,
+  activities: Activity[],
+}
+
+export type Activity = {
+  id: number,
+  initial_hour: Date,
+  final_hour: Date,
+  employee: Employee,
+  description: String,
 }
