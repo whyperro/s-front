@@ -30,6 +30,7 @@ import { useDeleteVoluntaryReport } from "@/actions/sms/reporte_voluntario/actio
 import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
 import CreateDangerIdentificationDialog from "../dialogs/CreateDangerIdentificationDialog";
 import CreateAnalysisForm from "../forms/CreateAnalysisForm";
+import { useDeleteDangerIdentification } from "@/actions/sms/peligros_identificados/actions";
 
 const DangerIdentificationDropdownActions = ({
   dangerIdentification,
@@ -39,7 +40,7 @@ const DangerIdentificationDropdownActions = ({
   const [open, setOpen] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
 
-  const { deleteVoluntaryReport } = useDeleteVoluntaryReport();
+  const { deleteDangerIdentification } = useDeleteDangerIdentification();
 
   const [openCreateAnalysis, setOpenCreateAnalysis] =
     useState<boolean>(false);
@@ -48,9 +49,10 @@ const DangerIdentificationDropdownActions = ({
   const router = useRouter();
 
   const handleDelete = async (id: number | string) => {
-    await deleteVoluntaryReport.mutateAsync(id);
+    await deleteDangerIdentification.mutateAsync(dangerIdentification.id);
     setOpen(false);
   };
+
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -102,11 +104,11 @@ const DangerIdentificationDropdownActions = ({
               </Button>
 
               <Button
-                disabled={deleteVoluntaryReport.isPending}
+                disabled={deleteDangerIdentification.isPending}
                 className="hover:bg-white hover:text-black hover:border hover:border-black transition-all"
                 onClick={() => handleDelete(dangerIdentification.id)}
               >
-                {deleteVoluntaryReport.isPending ? (
+                {deleteDangerIdentification.isPending ? (
                   <Loader2 className="size-4 animate-spin" />
                 ) : (
                   <p>Confirmar</p>
