@@ -8,6 +8,10 @@ import { Activity, ActivityReports } from "@/types"
 import { format } from "date-fns"
 import { Checkbox } from "@radix-ui/react-checkbox"
 import { es } from "date-fns/locale"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
+import { Button } from "react-day-picker"
+import { MoreVertical } from "lucide-react"
+import ActivityReportsDropdownActions from "@/components/misc/ActivityReportsDropdownActions"
 
 
 export const columns: ColumnDef<ActivityReports>[] = [
@@ -73,8 +77,8 @@ export const columns: ColumnDef<ActivityReports>[] = [
     ),
     cell: ({ row }) => {
       return (
-        <></>
-      )
+        <ActivityReportsDropdownActions id={row.original.id!} />
+      );
     },
   },
 ]
