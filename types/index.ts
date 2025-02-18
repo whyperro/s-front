@@ -391,6 +391,7 @@ export type VoluntaryReport = {
   danger_area: string;
   description: string;
   possible_consequences: string;
+  danger_identification_id: number;
   first_name?: string;
   last_name?: string;
   phone?: string;
@@ -431,6 +432,7 @@ export type MitigationPlan = {
   responsible: string;
   start_date: Date;
   measures: MitigationMeasure[];
+  analysis: Analysis;
 };
 
 export type Analysis = {
@@ -438,10 +440,19 @@ export type Analysis = {
   probability: string;
   severity: string;
   result: string;
-  danger_identification: DangerIdentification;
-  mitigation_plan: MitigationPlan;
 };
 
 export type MitigationTable = {
+  id: number;
+  danger: string;
+  danger_location: string;
+  danger_area: string;
+  description: string;
+  possible_consequences: string;
+  consequence_to_evaluate: string;
+  danger_type: string;
+  root_cause_analysis: string;
+  information_source_id: number;
   analysis: Analysis;
+  mitigation_plan: MitigationPlan | null;
 };
