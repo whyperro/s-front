@@ -79,11 +79,12 @@ const VoluntaryReportDropdownActions = ({
               <EyeIcon className="size-5" />
             </DropdownMenuItem>
 
-            <DropdownMenuItem
+            {!voluntaryReport.danger_identification_id && (<DropdownMenuItem
               onClick={() => setOpenCreateDangerIdentification(true)}
             >
               <ClipboardPenLine className="size-5" />
-            </DropdownMenuItem>
+            </DropdownMenuItem>)}
+
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -139,6 +140,7 @@ const VoluntaryReportDropdownActions = ({
             />
           </DialogContent>
         </Dialog>
+
       </Dialog>
     </>
   );
