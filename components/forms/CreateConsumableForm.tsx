@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils"
 import { useCompanyStore } from "@/stores/CompanyStore"
 import { Article, Batch, Convertion } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { addYears, format, subYears } from "date-fns"
+import { addYears, format, parse, parseISO, subYears } from "date-fns"
 import { es } from 'date-fns/locale'
 import { CalendarIcon, Check, ChevronsUpDown, FileUpIcon, Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -93,23 +93,15 @@ interface EditingArticle extends Article {
   consumable?: {
     article_id: number,
     is_managed: boolean,
-    convertions: {
-      id: number,
-      secondary_unit: string,
-      convertion_rate: number,
-      quantity_unit: number,
-      unit: {
-        label: string,
-        value: string,
-      },
-    }[],
+    convertions: Convertion[],
     shell_time: {
       caducate_date: Date,
-      fabrication_date: Date,
+      fabrication_date: string,
       consumable_id: string,
     }
-  }
+  },
 }
+
 
 
 const CreateConsumableForm = ({ initialData, isEditing }: {
@@ -158,6 +150,13 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
       setFilteredBatches(filtered);
     }
   }, [batches]);
+
+  useEffect(() => {
+    if (initialData && initialData.consumable) {
+      setSecondarySelected(initialData.consumable!.convertions[0])
+      console.log(new Date(initialData!.consumable!.shell_time.fabrication_date))
+    }
+  }, [initialData])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -431,7 +430,7 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Fabricante</FormLabel>
-                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange}>
+                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecccione..." />
