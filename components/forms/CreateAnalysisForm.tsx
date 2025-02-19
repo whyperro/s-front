@@ -106,6 +106,7 @@ export default function CreateAnalysisForm({ onClose, id, name }: FormProps) {
       console.log(values);
       await createAnalysis.mutateAsync(values);
     }
+    onClose();
   };
 
   return (
