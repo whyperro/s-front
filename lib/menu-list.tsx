@@ -78,9 +78,9 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               roles: ["ANALISTA_PLANIFICACION", "JEFE_PLANIFICACION", "SUPERUSER"],
               submenus: [
                 {
-                  href: "/transmandu/desarrollo/actividades_diarias",
+                  href: "/transmandu/desarrollo/registro",
                   label: "Registro de Actividades",
-                  active: pathname === "/transmandu/desarrollo/actividades_diarias",
+                  active: pathname === "/transmandu/desarrollo/registro",
                 },
                 {
                   href: "/transmandu/desarrollo/actividades_diarias",
