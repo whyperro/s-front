@@ -418,4 +418,5 @@ export type Activity = {
   final_hour: string,    // Formato "HH:mm"
   employee: Employee,
   description: string,
+  result?: string | null,
 }

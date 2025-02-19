@@ -9,24 +9,21 @@ import {
 import { Eye, Printer, MoreHorizontal } from "lucide-react"
 import { useState } from "react"
 import { Button } from "../ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
+import { Dialog } from "../ui/dialog"
 import { useRouter } from "next/navigation"
 
 const ActivityReportsDropdownActions = ({ id }: { id: number }) => {
-
   const [open, setOpen] = useState<boolean>(false)
   const router = useRouter()
 
   const handleView = () => {
     console.log("Visualizando reporte con ID:", id)
-    // Aquí puedes abrir un modal, redirigir a una página o cargar detalles
-    router.push(`/reporte/detalle/${id}`) // Ajusta la ruta según tu estructura
+    router.push(`/transmandu/desarrollo/actividades_diarias/${id}`)
   }
 
   const handlePrint = () => {
     console.log("Imprimiendo reporte con ID:", id)
-    // Aquí puedes llamar a una función para generar un PDF o abrir la vista de impresión
-    window.print() // O usa una función específica para manejar la impresión
+    window.print()
   }
 
   return (
