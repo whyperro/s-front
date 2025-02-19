@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { MitigationTable } from "@/types";
 import MitigationPlanPage from "./page";
+import MitigationTableDropdownActions from "@/components/misc/MitigationTableDropdownActions";
 
 export const columns: ColumnDef<MitigationTable>[] = [
   {
@@ -107,14 +108,23 @@ export const columns: ColumnDef<MitigationTable>[] = [
         <div className="font-medium text-center">
           <div className="flex flex-col justify-center">
             <hr />
-            <p>Probabilidad: {mitigation_analysis?.probability}</p>
+            <p>Probabilidad: {mitigation_analysis?.probability ?? "N/A"}</p>
             <hr />
-            <p>Severidad: {mitigation_analysis?.severity}</p>
+            <p>Severidad: {mitigation_analysis?.severity ?? "N/A"}</p>
             <hr />
-            <p>Resultado: {mitigation_analysis?.result}</p>
+            <p>Resultado: {mitigation_analysis?.result ?? "N/A"}</p>
             <hr />
           </div>
         </div>
+      );
+    },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const MitigationTable = row.original;
+      return (
+        <MitigationTableDropdownActions mitigationTable={MitigationTable} />
       );
     },
   },
