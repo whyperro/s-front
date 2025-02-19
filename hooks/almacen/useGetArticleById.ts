@@ -1,5 +1,5 @@
 import axios from '@/lib/axios';
-import { Article, Batch } from '@/types';
+import { Article, Batch, Convertion } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 interface EditingArticle extends Article {
   batches: Batch,
@@ -25,16 +25,7 @@ interface EditingArticle extends Article {
     article_id: number,
     is_managed: boolean,
     quantity: number,
-    convertions: {
-      id: number,
-      secondary_unit: string,
-      convertion_rate: number,
-      quantity_unit: number,
-      unit: {
-        label: string,
-        value: string,
-      },
-    }[],
+    convertions: Convertion[],
     shell_time: {
       caducate_date: Date,
       fabrication_date: Date,

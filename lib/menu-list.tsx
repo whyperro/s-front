@@ -9,6 +9,7 @@ import {
   Landmark,
   LayoutGrid,
   LucideIcon,
+  NotebookPen,
   PackageOpen,
   PackagePlus,
   PackageSearch,
@@ -309,14 +310,6 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
           groupLabel: "Compras",
           menus: [
             {
-              href: "/hangar74/compras/estatus",
-              label: "Estatus de Compras",
-              active: pathname.includes("/hangar74/estatus"),
-              icon: History,
-              roles: ["ANALISTA_COMPRAS", "JEFE_COMPRAS", "SUPERUSER"],
-              submenus: []
-            },
-            {
               href: "/hangar74/compras/cotizaciones",
               label: "Cotizaciones",
               active: pathname.includes("/hangar74/compras/cotizaciones"),
@@ -332,6 +325,30 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               roles: ["ANALISTA_COMPRAS", "JEFE_COMPRAS", "SUPERUSER"],
               submenus: []
             },
+            // {
+            //   href: "/hangar74/compras/reportes",
+            //   label: "Reporte de Compras",
+            //   active: pathname.includes("/hangar74/compras/reportes"),
+            //   icon: NotebookPen,
+            //   roles: ["ANALISTA_COMPRAS", "JEFE_COMPRAS", "SUPERUSER"],
+            //   submenus: [
+            //     {
+            //       href: "/hangar74/compras/reportes/general",
+            //       label: "Reporte General",
+            //       active: pathname === "/hangar74/compras/reportes/general"
+            //     },
+            //     {
+            //       href: "/hangar74/compras/reportes/aeronave",
+            //       label: "Reporte de Aeronave",
+            //       active: pathname === "/hangar74/compras/reportes/aeronave"
+            //     },
+            //     {
+            //       href: "/hangar74/compras/reportes/proveedor",
+            //       label: "Reporte de Proveedor",
+            //       active: pathname === "/hangar74/compras/reportes/proveedor"
+            //     },
+            //   ]
+            // },
           ],
         },
         {
