@@ -48,6 +48,7 @@ const FormSchema = z.object({
     .date()
     .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
 
+  report_number:z.string(),
   danger_location: z.string(),
   danger_area: z.string(),
   description: z.string(),
@@ -187,6 +188,21 @@ export function VoluntaryReportForm({ onClose }: FormProps) {
             )}
           />
         </div>
+        <FormField
+          control={form.control}
+          name="report_number"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Codigo del reporte</FormLabel>
+              <FormControl>
+                <Input placeholder="" {...field} />
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+        
+
         <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
