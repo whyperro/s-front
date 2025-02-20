@@ -24,14 +24,14 @@ interface EditingArticle extends Article {
   consumable?: {
     article_id: number,
     is_managed: boolean,
-    quantity: number,
     convertions: Convertion[],
+    quantity: number,
     shell_time: {
       caducate_date: Date,
-      fabrication_date: Date,
+      fabrication_date: string,
       consumable_id: string,
     }
-  }
+  },
 }
 const fetchArticleById = async (id: string, location_id: string | null): Promise<EditingArticle> => {
   const {data} = await axios.get(`/hangar74/show-article-by-location/${location_id}/${id}`);
