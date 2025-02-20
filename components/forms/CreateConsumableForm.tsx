@@ -94,6 +94,7 @@ interface EditingArticle extends Article {
     article_id: number,
     is_managed: boolean,
     convertions: Convertion[],
+    quantity: number,
     shell_time: {
       caducate_date: Date,
       fabrication_date: string,
@@ -154,7 +155,6 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
   useEffect(() => {
     if (initialData && initialData.consumable) {
       setSecondarySelected(initialData.consumable!.convertions[0])
-      console.log(new Date(initialData!.consumable!.shell_time.fabrication_date))
     }
   }, [initialData])
 

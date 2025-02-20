@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import CreateConsumableForm from './CreateConsumableForm';
 import CreateToolForm from './CreateToolForm';
 import CreateComponentForm from './CreateComponentForm';
-import { Article, Batch, ComponentArticle, ConsumableArticle, ToolArticle } from '@/types';
+import { Article, Batch, ComponentArticle, ConsumableArticle, Convertion, ToolArticle } from '@/types';
 
 interface EditingArticle extends Article {
   batches: Batch,
@@ -30,23 +30,14 @@ interface EditingArticle extends Article {
   consumable?: {
     article_id: number,
     is_managed: boolean,
+    convertions: Convertion[],
     quantity: number,
-    convertions: {
-      id: number,
-      secondary_unit: string,
-      convertion_rate: number,
-      quantity_unit: number,
-      unit: {
-        label: string,
-        value: string,
-      },
-    }[],
     shell_time: {
       caducate_date: Date,
-      fabrication_date: Date,
+      fabrication_date: string,
       consumable_id: string,
     }
-  }
+  },
 }
 
 interface IRegisterArticleProps {

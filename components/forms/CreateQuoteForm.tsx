@@ -66,7 +66,7 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
       article.batch_articles.map((batchArticle: any) => ({
         part_number: batchArticle.part_number,
         quantity: batchArticle.quantity,
-        unit: batchArticle.unit.id.toString(),
+        unit: batchArticle.unit ? batchArticle.unit.id.toString() : undefined,
         unit_price: 0,
         image: batchArticle.image,
       }))
@@ -79,6 +79,8 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
       articles: transformedArticles,
     },
   });
+
+  console.log(form.getValues())
 
   const { control, handleSubmit } = form
 
@@ -113,7 +115,7 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
   const onSubmit = async (data: FormSchemaType) => {
     const formattedData = {
       ...data,
-      created_by: `${user?.first_name} ${user?.last_name}`,
+      created_by: `${user?.id}`,
       sub_total: total,
       total: total,
       location_id: Number(data.location_id),

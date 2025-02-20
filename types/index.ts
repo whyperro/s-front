@@ -288,12 +288,14 @@ export type Requisition = {
   status: string,
   created_by: User,
   requested_by: string,
-  article_requisition_order: {
-    article_part_number: string,
-    quantity: number,
-    unit_price: string,
-    unit?: Convertion,
-    image: string,
+  batch: {
+    name: string,
+    batch_articles: {
+      article_part_number: string,
+      quantity: number,
+      unit?: Convertion,
+      image: string,
+    }[]
   }[],
   received_by: string,
   justification: string,
@@ -404,6 +406,12 @@ export type Card = {
   created_by: string,
   updated_by: string,
 }
+
+export type GeneralSalesReport = {
+  requisition_order: Requisition,
+  purchase_order?: PurchaseOrder,
+  quote_order?: Quote[],
+}[]
 
 export type ActivityReports = {
   id: number,

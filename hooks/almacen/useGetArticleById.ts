@@ -1,5 +1,5 @@
 import axios from '@/lib/axios';
-import { Article, Batch } from '@/types';
+import { Article, Batch, Convertion } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 interface EditingArticle extends Article {
   batches: Batch,
@@ -24,23 +24,14 @@ interface EditingArticle extends Article {
   consumable?: {
     article_id: number,
     is_managed: boolean,
+    convertions: Convertion[],
     quantity: number,
-    convertions: {
-      id: number,
-      secondary_unit: string,
-      convertion_rate: number,
-      quantity_unit: number,
-      unit: {
-        label: string,
-        value: string,
-      },
-    }[],
     shell_time: {
       caducate_date: Date,
-      fabrication_date: Date,
+      fabrication_date: string,
       consumable_id: string,
     }
-  }
+  },
 }
 const fetchArticleById = async (id: string, location_id: string | null): Promise<EditingArticle> => {
   const {data} = await axios.get(`/hangar74/show-article-by-location/${location_id}/${id}`);
