@@ -423,7 +423,7 @@ export type MitigationMeasure = {
   implementation_responsible: string;
   estimated_date: Date;
   execution_date: Date;
-  mitigation_plan: MitigationPlan;
+  mitigation_plan_id: number;
 };
 
 export type MitigationPlan = {
