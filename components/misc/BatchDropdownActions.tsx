@@ -38,11 +38,6 @@ const BatchDropdownActions = ({ id, name }: { id: string | number, name: string 
               <Trash2 className='size-5 text-red-500' />
             </DropdownMenuItem>
           </DialogTrigger>
-          <DropdownMenuItem onClick={() => {
-            router.push(`/almacen/inventario/gestion/${name}`)
-          }}>
-            <EyeIcon className="size-5" />
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <DialogContent>
