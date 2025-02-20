@@ -1,24 +1,19 @@
+import { useDeleteBatch } from "@/actions/almacen/inventario/lotes/actions"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { Loader2, MoreHorizontal, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { Button } from "../ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
-import { useDeleteBatch } from "@/actions/almacen/inventario/lotes/actions"
 
-const BatchDropdownActions = ({ id, name }: { id: string | number, name: string }) => {
+const BatchDropdownActions = ({ id }: { id: string | number }) => {
 
   const [open, setOpen] = useState<boolean>(false)
-
-  const router = useRouter()
-
   const { deleteBatch } = useDeleteBatch()
-
   const handleDelete = async (id: number | string) => {
     await deleteBatch.mutateAsync(id);
     setOpen(false);

@@ -49,6 +49,9 @@ const FormSchema = z.object({
   }),
   destination_place: z.string(),
   status: z.string(),
+  unit: z.enum(["litros", "mililitros"], {
+    message: "Debe seleccionar una unidad.",
+  }), // Nuevo campo
 })
 
 type FormSchemaType = z.infer<typeof FormSchema>
@@ -114,14 +117,33 @@ export function ConsumableDispatchForm({ onClose }: FormProps) {
 
   useEffect(() => {
     const article = form.getValues("articles")
-    form.setValue(
-      "articles",
-      {
-        ...article,
-        quantity: parseFloat(quantity),
-      }
-    );
+
   }, [form, quantity])
+
+  useEffect(() => {
+    const unit = form.watch("unit");
+    const currentQuantity = parseFloat(quantity) || 0;
+    const article = form.getValues("articles")
+    if (unit === "mililitros") {
+      // Convertir mililitros a litros
+      const quantityInLiters = currentQuantity / 1000;
+      form.setValue(
+        "articles",
+        {
+          ...article,
+          quantity: quantityInLiters,
+        }
+      );
+    } else {
+      form.setValue(
+        "articles",
+        {
+          ...article,
+          quantity: currentQuantity,
+        }
+      );
+    }
+  }, [form.watch("unit"), quantity]); // Solo dependemos de la unidad, no de la cantidad
 
   const { setValue } = form;
 
@@ -134,9 +156,9 @@ export function ConsumableDispatchForm({ onClose }: FormProps) {
       category: "consumible",
       user_id: user!.id
     }
-    // console.log(formattedData)
-    await createDispatchRequest.mutateAsync(formattedData);
-    onClose();
+    console.log(formattedData)
+    //await createDispatchRequest.mutateAsync(formattedData);
+    //onClose();
   }
 
   const handleArticleSelect = (id: number, serial: string | null, batch_id: number) => {
@@ -290,28 +312,46 @@ export function ConsumableDispatchForm({ onClose }: FormProps) {
                   value={quantity}
                   onChange={(e) => {
                     const value = parseFloat(e.target.value) || 0;
-                    // Validar contra la cantidad disponible
-                    if (articleSelected && value > articleSelected.quantity!) {
+                    if (articleSelected && value <= 0) {
                       setQuantity(articleSelected.quantity!.toString());
+                      form.setError('articles.quantity', {
+                        type: 'manual',
+                        message: `La cantidad no puede ser menor a 0`,
+                      });
                     } else {
                       setQuantity(e.target.value);
+                      form.clearErrors('articles.quantity');
                     }
-
-                    // Actualizar la cantidad en el objeto de article
                   }}
                   placeholder="Ej: 1, 4, 6, etc..."
                 />
               </div>
-              <RadioGroup defaultValue="option-one">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="option-one" id="option-one" />
-                  <Label htmlFor="option-one">Litros</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="option-two" id="option-two" />
-                  <Label htmlFor="option-two">Mililitros</Label>
-                </div>
-              </RadioGroup>
+              <FormField
+                control={form.control}
+                name="unit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Unidad</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex gap-4"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="litros" id="litros" />
+                          <Label htmlFor="litros">Litros</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="mililitros" id="mililitros" />
+                          <Label htmlFor="mililitros">Mililitros</Label>
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
           </div>
           <FormField
