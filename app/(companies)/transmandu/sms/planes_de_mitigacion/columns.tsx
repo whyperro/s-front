@@ -9,30 +9,18 @@ import Link from "next/link";
 import { MitigationTable } from "@/types";
 import MitigationPlanPage from "./page";
 import MitigationTableDropdownActions from "@/components/misc/MitigationTableDropdownActions";
+import { useState } from "react";
+import MitigationMeasureList from "@/components/misc/MitigationMeasureList";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export const columns: ColumnDef<MitigationTable>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Seleccionar todos"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Seleccionar fila"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: "analysis",
     header: ({ column }) => (
@@ -42,13 +30,18 @@ export const columns: ColumnDef<MitigationTable>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex flex-col justify-center">
-          <hr />
-          <p>Probabilidad: {row.original.analysis.probability}</p>
-          <hr />
-          <p>Severidad: {row.original.analysis.severity}</p>
-          <hr />
-          <p>Resultado: {row.original.analysis.result}</p>
-          <hr />
+          {row.original.analysis ? (
+            <>
+              <p>Probabilidad: {row.original.analysis.probability}</p>
+              <hr />
+              <p>Severidad: {row.original.analysis.severity}</p>
+              <hr />
+              <p>Resultado: {row.original.analysis.result}</p>
+              <hr />
+            </>
+          ) : (
+            <p>Sin análisis disponible</p>
+          )}
         </div>
       );
     },
@@ -92,8 +85,36 @@ export const columns: ColumnDef<MitigationTable>[] = [
       <DataTableColumnHeader column={column} title="Agregar Medidas" />
     ),
     cell: ({ row }) => {
-      // const measure = row.original.measures;
-      return <></>;
+      const measures = row.original.mitigation_plan?.measures;
+      const [openMeasures, setOpenMeasures] = useState(false);
+
+      return (
+        <>
+          <div className="flex flex-col justify-center">
+            {measures ? (
+              <Dialog>
+                <DialogTrigger>Medidas</DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogDescription>
+                      Medidas de mitigacion asociadas al plan de mitigacion.
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <ul>
+                    {measures.map((measure) => (
+                      
+                      <li key={measure.id}>{measure.id}{") "} {measure.description}</li>
+                    ))}
+                  </ul>
+                </DialogContent>
+              </Dialog>
+            ) : (
+              <p>Sin medidas disponible</p>
+            )}
+          </div>
+        </>
+      );
     },
   },
   {
