@@ -75,11 +75,12 @@ const DangerIdentificationDropdownActions = ({
             </DialogTrigger>
 
 
-            <DropdownMenuItem
+            {dangerIdentification &&(<DropdownMenuItem
               onClick={() => setOpenCreateAnalysis(true)}
             >
               <ClipboardPenLine className="size-5" />
-            </DropdownMenuItem>
+            </DropdownMenuItem>)}
+            
           </DropdownMenuContent>
         </DropdownMenu>
 
