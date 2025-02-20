@@ -421,7 +421,7 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               label: "Bancos y Cuentas",
               active: pathname.includes("/bancos_cuentas"),
               icon: Landmark,
-              roles: [],
+              roles: ["SUPERUSER"],
               submenus: [
                 {
                   href: "/ajustes/bancos_cuentas/bancos",
