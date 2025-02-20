@@ -11,6 +11,7 @@ import { es } from "date-fns/locale"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { Button } from "react-day-picker"
 import { MoreVertical } from "lucide-react"
+import ActivityDropdownActions from "@/components/misc/ActivityDropdownActions"
 
 export const columns: ColumnDef<Activity>[] = [
   {
@@ -52,5 +53,16 @@ export const columns: ColumnDef<Activity>[] = [
         <p className="font-medium text-center ml-[2px]">{row.original.result}</p> // Ajuste de margen
       )
     }
+  },
+  {
+    id: "actions",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Acciones" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <ActivityDropdownActions id={row.original.id!} />
+      );
+    },
   },
 ]

@@ -12,6 +12,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { DailyReportForm } from '@/components/forms/DailyReportForm';
 
 
 
@@ -37,7 +38,7 @@ const DailyActivitiesPage = () => {
           Aquí puede registrar las actividades realizadas por la Jefatura de Desarrollo. <br />
         </p>
         
-        {/* <DataTable columns={columns} data={mockData.activityReports} /> */}
+        <DailyReportForm />
 
 
       </div>
