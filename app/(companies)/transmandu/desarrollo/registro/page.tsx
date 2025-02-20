@@ -20,7 +20,7 @@ const DailyActivitiesPage = () => {
 
 
   return (
-    <ContentLayout title='Actividades Diarias'>
+    <ContentLayout title='Registro de Actividades'>
       <div className='flex flex-col gap-y-2'>
         <Breadcrumb>
           <BreadcrumbList>
