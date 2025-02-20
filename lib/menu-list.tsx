@@ -392,7 +392,7 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               label: "Globales",
               active: pathname.includes("/ajustes/globales"),
               icon: Globe,
-              roles: ["SUPERUSER, JEFE_ALMACEN, ANALISTA_ALMACEN"],
+              roles: ["ANALISTA_ALMACEN", "JEFE_ALMACEN", "SUPERUSER"],
               submenus: [
                 {
                   href: "/ajustes/globales/unidades",
