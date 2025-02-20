@@ -1,26 +1,25 @@
-import { useDeletePilot } from "@/actions/sms/piloto/actions";
+import { useDeleteMitigationPlan } from "@/actions/sms/planes_de_mitigation/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { MitigationTable } from "@/types";
 import {
-  InformationSource,
-  MitigationTable,
-  Pilot,
-  VoluntaryReport,
-} from "@/types";
-import {
-  EyeIcon,
+  ClipboardList,
+  ClipboardPenLine,
+  FilePenLine,
   Loader2,
   MoreHorizontal,
+  Pencil,
+  Plus,
   Trash2,
-  ClipboardPenLine,
-  ClipboardList,
-  ClipboardPaste,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import CreateAnalysisForm from "../forms/CreateAnalysisForm";
+import CreateMitigationPlanForm from "../forms/CreateMitigationPlanForm";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -31,13 +30,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { useRouter } from "next/navigation";
-import { useDeleteInformationSource } from "@/actions/sms/tipos_fuente/actions";
-import { useDeleteVoluntaryReport } from "@/actions/sms/reporte_voluntario/actions";
-import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
-import CreateDangerIdentificationDialog from "../dialogs/CreateDangerIdentificationDialog";
-import CreateMitigationPlanForm from "../forms/CreateMitigationPlanForm";
-import CreateAnalysisForm from "../forms/CreateAnalysisForm";
+import CreateMitigationMeasureForm from "../forms/CreateMitigationMeasureForm";
 
 const MitigationTableDropdownActions = ({
   mitigationTable,
@@ -47,7 +40,7 @@ const MitigationTableDropdownActions = ({
   const [open, setOpen] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
 
-  const { deleteVoluntaryReport } = useDeleteVoluntaryReport();
+  const { deleteMitigationPlan } = useDeleteMitigationPlan();
 
   const [openCreateDangerIdentification, setOpenCreateDangerIdentification] =
     useState<boolean>(false);
@@ -55,14 +48,17 @@ const MitigationTableDropdownActions = ({
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [openCreatePlan, setOpenCreatePlan] = useState<boolean>(false);
   const [OpenCreateMeasure, setOpenCreateMeasure] = useState<boolean>(false);
+  const [openEditPlan, setOpenEditPlan] = useState<boolean>(false);
+  const [openEditAnalysis, setOpenEditAnalysis] = useState<boolean>(false);
 
   const [openCreateAnalysis, setOpenCreateAnalysis] = useState<boolean>(false);
 
   const router = useRouter();
 
   const handleDelete = async (id: number | string) => {
-    await deleteVoluntaryReport.mutateAsync(id);
-    setOpen(false);
+    console.log("plan id is : ", id);
+    await deleteMitigationPlan.mutateAsync(id);
+    setOpenDelete(false);
   };
   return (
     <>
@@ -79,27 +75,38 @@ const MitigationTableDropdownActions = ({
             align="center"
             className="flex gap-2 justify-center"
           >
-            <DialogTrigger asChild>
-              <DropdownMenuItem onClick={() => setOpenDelete(true)}>
-                <Trash2 className="size-5 text-red-500" />
-              </DropdownMenuItem>
-            </DialogTrigger>
-            {!mitigationTable.mitigation_plan && (
+            {mitigationTable.mitigation_plan && (
+              <DialogTrigger asChild>
+                <DropdownMenuItem onClick={() => setOpenDelete(true)}>
+                  <Trash2 className="size-5 text-red-500" />
+                </DropdownMenuItem>
+              </DialogTrigger>
+            )}
+
+            {!mitigationTable.mitigation_plan ? (
               <DropdownMenuItem onClick={() => setOpenCreatePlan(true)}>
                 <ClipboardList className="size-5" />
               </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem onClick={() => setOpenEditPlan(true)}>
+                <FilePenLine className="size-5" />
+              </DropdownMenuItem>
             )}
-            {mitigationTable.mitigation_plan?.id &&
-              mitigationTable.mitigation_plan.analysis == null && (
-                <DropdownMenuItem onClick={() => setOpenCreateAnalysis(true)}>
-                  <ClipboardPenLine className="size-5" />
-                </DropdownMenuItem>
-              )}
+
+            {mitigationTable.mitigation_plan?.id ? (
+              <DropdownMenuItem onClick={() => setOpenCreateAnalysis(true)}>
+                <ClipboardPenLine className="size-5" />
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem onClick={() => setOpenEditAnalysis(true)}>
+                <Pencil className="size-5" />
+              </DropdownMenuItem>
+            )}
 
             {mitigationTable.mitigation_plan?.id &&
               mitigationTable.analysis && (
                 <DropdownMenuItem onClick={() => setOpenCreateMeasure(true)}>
-                  <ClipboardPaste className="size-5" />
+                  <Plus className="size-5" />
                 </DropdownMenuItem>
               )}
 
@@ -135,11 +142,15 @@ const MitigationTableDropdownActions = ({
               </Button>
 
               <Button
-                disabled={deleteVoluntaryReport.isPending}
+                disabled={deleteMitigationPlan.isPending}
                 className="hover:bg-white hover:text-black hover:border hover:border-black transition-all"
-                onClick={() => handleDelete(mitigationTable.id)}
+                onClick={() =>
+                  mitigationTable.mitigation_plan?.id
+                    ? handleDelete(mitigationTable.mitigation_plan.id)
+                    : console.log("El id de mitigation_plan es undefined")
+                }
               >
-                {deleteVoluntaryReport.isPending ? (
+                {deleteMitigationPlan.isPending ? (
                   <Loader2 className="size-4 animate-spin" />
                 ) : (
                   <p>Confirmar</p>
@@ -187,10 +198,12 @@ const MitigationTableDropdownActions = ({
               <DialogDescription></DialogDescription>
             </DialogHeader>
 
-            <CreateMitigationPlanForm
-              onClose={() => setOpenCreateMeasure(false)}
-              id={mitigationTable.id}
-            />
+            {mitigationTable.mitigation_plan?.id && (
+              <CreateMitigationMeasureForm
+                onClose={() => setOpenCreateMeasure(false)}
+                id={mitigationTable.mitigation_plan.id} // Ahora es seguro usar .id directamente
+              />
+            )}
           </DialogContent>
         </Dialog>
       </Dialog>
