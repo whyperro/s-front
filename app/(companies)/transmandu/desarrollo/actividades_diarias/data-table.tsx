@@ -26,6 +26,8 @@ import {
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { DataTableFacetedFilter } from "@/components/tables/DataTableFacetedFilter"
+import { CreateBatchDialog } from "@/components/dialogs/CreateBatchDialog"
+import { WarehouseReportDialog } from "@/components/dialogs/WarehouseReportDialog"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -63,6 +65,10 @@ export function DataTable<TData, TValue>({
   return (
     <>
       <div className="flex items-center py-4">
+        <div className="flex gap-x-2 items-center">
+          <CreateBatchDialog />
+          <WarehouseReportDialog />
+        </div>
         <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-md border mb-4">
