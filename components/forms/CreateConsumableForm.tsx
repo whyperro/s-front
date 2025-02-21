@@ -196,9 +196,9 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
         certificate_vendor: values.certificate_vendor || initialData?.certifcate_vendor,
         status: "Stored"
       }
-      console.log(formattedValues)
-      // await confirmIncoming.mutateAsync(formattedValues)
-      // router.push("/hangar74/almacen/ingreso/en_recepcion")
+
+      await confirmIncoming.mutateAsync(formattedValues)
+      router.push("/hangar74/almacen/ingreso/en_recepcion")
     } else {
       createArticle.mutate(formattedValues);
     }
