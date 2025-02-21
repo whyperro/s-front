@@ -116,6 +116,7 @@ export const useConfirmIncomingArticle = () => {
         is_special?: boolean,
         status: string,
         caducate_date?: string,
+        quantity: string | number,
         fabrication_date?:string,
         calendar_date?: string,
         certificate_8130?: File | string,

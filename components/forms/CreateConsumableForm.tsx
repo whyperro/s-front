@@ -188,15 +188,17 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
       convertion_id: secondarySelected?.id,
     }
     if (isEditing) {
-      await confirmIncoming.mutateAsync({
+      const formattedValues = {
         ...values,
         id: initialData?.id,
         certificate_8130: values.certificate_8130 || initialData?.certifcate_8130,
         certificate_fabricant: values.certificate_fabricant || initialData?.certifcate_fabricant,
         certificate_vendor: values.certificate_vendor || initialData?.certifcate_vendor,
         status: "Stored"
-      })
-      router.push("/hangar74/almacen/ingreso/en_recepcion")
+      }
+      console.log(formattedValues)
+      // await confirmIncoming.mutateAsync(formattedValues)
+      // router.push("/hangar74/almacen/ingreso/en_recepcion")
     } else {
       createArticle.mutate(formattedValues);
     }
