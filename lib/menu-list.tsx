@@ -3,6 +3,7 @@ import {
   Building,
   CalendarCheck,
   ClipboardCopy,
+  ClipboardList,
   ClipboardPen,
   Globe,
   HandCoins,
@@ -110,6 +111,7 @@ export function getMenuList(
                     roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
                     active: pathname === "/transmandu/sms/estadisicas",
                   },
+                  
                 ],
               },
               {
@@ -125,6 +127,14 @@ export function getMenuList(
                 label: "Planes de Mitigacion",
                 icon: CalendarCheck,
                 active: pathname.includes("/planes_de_mitigacion"),
+                roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
+                submenus: [],
+              },
+              {
+                href: "/transmandu/sms/medidas_de_mitigation",
+                label: "Medidas de Mitigacion",
+                icon: ClipboardList,
+                active: pathname.includes("/medidas_de_mitigacion"),
                 roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
                 submenus: [],
               },
