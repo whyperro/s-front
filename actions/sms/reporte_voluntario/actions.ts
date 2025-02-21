@@ -59,7 +59,8 @@ export const useDeleteVoluntaryReport = () => {
       await axiosInstance.delete(`/transmandu/voluntary-reports/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["voluntary-reports"] });
+      queryClient.invalidateQueries({ queryKey: ["voluntary-reports",] });
+      queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
       toast.success("¡Eliminado!", {
         description: `¡El reporte ha sido eliminada correctamente!`,
       });
