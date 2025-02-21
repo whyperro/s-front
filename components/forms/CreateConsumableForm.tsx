@@ -175,10 +175,11 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
     if (secondarySelected && secondaryQuantity) {
       const quantity = (secondarySelected.convertion_rate * secondarySelected.quantity_unit) * secondaryQuantity
       form.setValue("quantity", quantity)
+      console.log(quantity)
     }
   }, [form, secondarySelected, secondaryQuantity])
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const formattedValues = {
       ...values,
       caducate_date: caducateDate && format(caducateDate, "yyyy-MM-dd"),
@@ -187,7 +188,7 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
       convertion_id: secondarySelected?.id,
     }
     if (isEditing) {
-      confirmIncoming.mutate({
+      await confirmIncoming.mutateAsync({
         ...values,
         id: initialData?.id,
         certificate_8130: values.certificate_8130 || initialData?.certifcate_8130,
