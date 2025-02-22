@@ -240,16 +240,16 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
                   label: "Ingreso de Articulo",
                   active: pathname === "/hangar74/almacen/ingreso/registrar_ingreso"
                 },
-                {
-                  href: "/hangar74/almacen/ingreso/en_transito",
-                  label: "Articulos en Tránsito",
-                  active: pathname === "/hangar74/almacen/ingreso/en_transito"
-                },
-                {
-                  href: "/hangar74/almacen/ingreso/en_recepcion",
-                  label: "Articulos en Recepción",
-                  active: pathname === "/hangar74/almacen/ingreso/en_recepcion"
-                },
+                // {
+                //   href: "/hangar74/almacen/ingreso/en_transito",
+                //   label: "Articulos en Tránsito",
+                //   active: pathname === "/hangar74/almacen/ingreso/en_transito"
+                // },
+                // {
+                //   href: "/hangar74/almacen/ingreso/en_recepcion",
+                //   label: "Articulos en Recepción",
+                //   active: pathname === "/hangar74/almacen/ingreso/en_recepcion"
+                // },
               ]
             },
 
