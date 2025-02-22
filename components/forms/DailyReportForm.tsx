@@ -7,18 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-// Simulación de una función que obtiene actividades de una base de datos (debes reemplazarla con una API real)
-const fetchActivitiesByDate = async (date: string) => {
-  // Simulación: Lista de actividades registradas en la base de datos
-  const activities = [
-    { activity_number: 1, date: "2025-02-20" },
-    { activity_number: 2, date: "2025-02-20" },
-    { activity_number: 3, date: "2025-02-20" }
-  ];
-  
-  return activities.filter(activity => activity.date === date);
-};
+import { Textarea } from "@/components/ui/textarea";
 
 const FormSchema = z.object({
   activity_number: z.string().min(1, "Requerido"),
@@ -42,22 +31,39 @@ export function DailyReportForm() {
     manual_date: false,
     date: new Date().toISOString().split("T")[0],
     start_time: "",
-    end_time: "",
   });
 
-  // Función para actualizar el número de actividad cuando cambia la fecha
   useEffect(() => {
-    const updateActivityNumber = async () => {
-      const activities = await fetchActivitiesByDate(activity.date);
-      const nextNumber = activities.length + 1;
-      setActivity(prev => ({ ...prev, activity_number: String(nextNumber) }));
+    const fetchActivityNumber = async () => {
+      try {
+        const response = await fetch(`/api/activities/count?date=${activity.date}`);
+        const data = await response.json();
+        setActivity(prev => ({ ...prev, activity_number: String(data.nextActivityNumber).padStart(3, "0") }));
+      } catch (error) {
+        console.error("Error obteniendo el número de actividad:", error);
+      }
     };
 
-    updateActivityNumber();
+    fetchActivityNumber();
   }, [activity.date]);
+
+  useEffect(() => {
+    if (!manualTime) {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, "0");
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+      setActivity(prev => ({ ...prev, start_time: `${hours}:${minutes}` }));
+    }
+  }, [manualTime]);
 
   const handleManualTimeChange = (checked: boolean) => {
     setManualTime(checked);
+    if (!checked) {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, "0");
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+      setActivity(prev => ({ ...prev, start_time: `${hours}:${minutes}` }));
+    }
   };
 
   const handleManualDateChange = (checked: boolean) => {
@@ -66,23 +72,21 @@ export function DailyReportForm() {
 
   const handleSubmit = (data: any) => {
     console.log("Enviando actividad:", data);
+    form.reset();
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
-        <div className="flex flex-col gap-4">
-          <FormItem>
+        {/* Línea superior */}
+        <div className="flex justify-between items-end w-full">
+          <FormItem className="w-1/3">
             <FormLabel>Analista</FormLabel>
             <FormControl>
-              <Input value={user?.first_name && user?.last_name || ""} disabled />
+              <Input value={`${user?.first_name || ""} ${user?.last_name || ""}`} disabled />
             </FormControl>
           </FormItem>
-          <div className="flex items-center space-x-2">
-            <Checkbox checked={manualDate} onCheckedChange={(checked) => handleManualDateChange(Boolean(checked))} />
-            <FormLabel>Ingresar fecha manualmente</FormLabel>
-          </div>
-          <FormItem>
+          <FormItem className="w-1/4">
             <FormLabel>Fecha</FormLabel>
             <FormControl>
               <Input 
@@ -93,43 +97,55 @@ export function DailyReportForm() {
               />
             </FormControl>
           </FormItem>
-          <div className="border p-4 rounded-md space-y-4">
-            <FormItem>
-              <FormLabel>Número de Actividad</FormLabel>
-              <FormControl>
-                <Input 
-                  placeholder="Ej: 001" 
-                  value={activity.activity_number} 
-                  disabled 
-                />
-              </FormControl>
-            </FormItem>
-            <FormItem>
-              <FormLabel>Descripción</FormLabel>
-              <FormControl>
-                <Input placeholder="Ej: Revisión de código..." value={activity.description} onChange={(e) => setActivity({ ...activity, description: e.target.value })} />
-              </FormControl>
-            </FormItem>
-            <FormItem className="flex items-center space-x-2">
-              <Checkbox checked={manualTime} onCheckedChange={(checked) => handleManualTimeChange(Boolean(checked))} />
-              <FormLabel>Ingresar hora manualmente</FormLabel>
-            </FormItem>
-            <FormItem>
-              <FormLabel>Hora de Inicio</FormLabel>
-              <FormControl>
-                <Input
-                  type="time"
-                  value={manualTime ? activity.start_time : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  disabled={!manualTime}
-                  onChange={(e) => setActivity({ ...activity, start_time: e.target.value })}
-                />
-              </FormControl>
-            </FormItem>
-          </div>
-          <Button type="submit">
-            Enviar actividad
-          </Button>
         </div>
+        <div className="flex items-center space-x-2">
+          <Checkbox checked={manualDate} onCheckedChange={(checked) => handleManualDateChange(Boolean(checked))} />
+          <FormLabel>Ingresar fecha manualmente</FormLabel>
+        </div>
+
+        {/* Sección de información */}
+        <div className="border p-4 rounded-md space-y-4">
+          <FormItem className="w-1/6">
+            <FormLabel>Número de Actividad</FormLabel>
+            <FormControl>
+              <Input 
+                placeholder="Ej: 001" 
+                value={activity.activity_number} 
+                disabled
+                className="w-16 text-center"
+              />
+            </FormControl>
+          </FormItem>
+          <FormItem>
+            <FormLabel>Descripción</FormLabel>
+            <FormControl>
+              <Textarea 
+                placeholder="Ej: Revisión de código..." 
+                value={activity.description} 
+                onChange={(e) => setActivity({ ...activity, description: e.target.value })}
+                className="h-24"
+              />
+            </FormControl>
+          </FormItem>
+          <FormItem className="flex items-center space-x-2">
+            <Checkbox checked={manualTime} onCheckedChange={(checked) => handleManualTimeChange(Boolean(checked))} />
+            <FormLabel>Ingresar hora manualmente</FormLabel>
+          </FormItem>
+          <FormItem className="w-1/6">
+            <FormLabel>Hora de Inicio</FormLabel>
+            <FormControl>
+              <Input
+                type="time"
+                value={activity.start_time}
+                disabled={!manualTime}
+                onChange={(e) => setActivity({ ...activity, start_time: e.target.value })}
+              />
+            </FormControl>
+          </FormItem>
+        </div>
+        <Button type="submit">
+          Enviar actividad
+        </Button>
       </form>
     </Form>
   );
