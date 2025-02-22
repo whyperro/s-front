@@ -523,7 +523,7 @@ const CreateComponentForm = ({ initialData, isEditing }: {
                 </FormItem>
               )}
             />
-            {
+            {/* {
               !isEditing && (
                 <FormField
                   control={form.control}
@@ -541,8 +541,8 @@ const CreateComponentForm = ({ initialData, isEditing }: {
                   )}
                 />
               )
-            }
-            {
+            } */}
+            {/* {
               isEditing && (
                 <FormField
                   control={form.control}
@@ -561,7 +561,23 @@ const CreateComponentForm = ({ initialData, isEditing }: {
                   )}
                 />
               )
-            }
+            } */}
+            <FormField
+              control={form.control}
+              name="zone"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Zona de Ubicacion</FormLabel>
+                  <FormControl>
+                    <Input placeholder="EJ: Pasillo 4, etc..." {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Identificador único del articulo.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="batches_id"

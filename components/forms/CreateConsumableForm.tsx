@@ -454,7 +454,7 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
                 </FormItem>
               )}
             />
-            {
+            {/* {
               isEditing && (
                 <FormField
                   control={form.control}
@@ -473,7 +473,23 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
                   )}
                 />
               )
-            }
+            } */}
+            <FormField
+              control={form.control}
+              name="zone"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Ubicación del Articulo</FormLabel>
+                  <FormControl>
+                    <Input placeholder="EJ: Pasillo 4, repisa 3..." {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Ubicación exacta del articulo.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="batches_id"
