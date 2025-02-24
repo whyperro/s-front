@@ -4,21 +4,19 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 
-import { Checkbox } from "@/components/ui/checkbox";
-import Link from "next/link";
-import { MitigationTable } from "@/types";
-import MitigationPlanPage from "./page";
 import MitigationTableDropdownActions from "@/components/misc/MitigationTableDropdownActions";
-import { useState } from "react";
-import MitigationMeasureList from "@/components/misc/MitigationMeasureList";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { MitigationTable } from "@/types";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 export const columns: ColumnDef<MitigationTable>[] = [
   {
@@ -87,30 +85,43 @@ export const columns: ColumnDef<MitigationTable>[] = [
     cell: ({ row }) => {
       const measures = row.original.mitigation_plan?.measures;
       const [openMeasures, setOpenMeasures] = useState(false);
+      const planId = row.original.mitigation_plan?.id;
 
       return (
         <>
           <div className="flex flex-col justify-center">
             {measures ? (
               <Dialog>
-                <DialogTrigger>Medidas</DialogTrigger>
+                <DialogTrigger className="font-semibold">Medidas</DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogDescription>
-                      Medidas de mitigacion asociadas al plan de mitigacion.
+                    <DialogDescription className="font-semibold text-black">
+                      Medidas de Mitigacion Asociadas al Plan
                     </DialogDescription>
                   </DialogHeader>
 
-                  <ul>
-                    {measures.map((measure) => (
-                      
-                      <li key={measure.id}>{measure.id}{") "} {measure.description}</li>
-                    ))}
-                  </ul>
+                  <div className="border rounded-lg p-4 shadow-md">
+                    <ul>
+                      {measures.map((measure, index) => (
+                        <li key={measure.id} className="mb-2">
+                          <span className="font-semibold"> {++index} ) </span>
+                          <span>{measure.description}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <Link
+                    href={`/transmandu/sms/planes_de_mitigacion/${planId}/medidas`}
+                  >
+                    <div className="flex justify-end mt-4">
+                      <Button className="w-1/3">Ver mas</Button>
+                    </div>
+                  </Link>
                 </DialogContent>
               </Dialog>
             ) : (
-              <p>Sin medidas disponible</p>
+              <div>Sin medidas disponible</div>
             )}
           </div>
         </>
