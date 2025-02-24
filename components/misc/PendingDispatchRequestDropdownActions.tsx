@@ -81,40 +81,37 @@ const PendingDispatchRequestDropdownActions
         employeeMutate(Number(selectedStation))
       }
     }, [selectedStation])
-
     const handleAprove = async (data: z.infer<typeof formSchema>) => {
       const newQty = request.batch.article_count - Number(request.batch.articles[0].quantity);
       const qtyToBuy = Math.max(request.batch.min_quantity - newQty + 1, 0);
-      console.log(newQty, qtyToBuy)
       const formattedData = {
         ...data,
         id: Number(request.id),
         status: "aprobado",
         approved_by: `${user?.first_name} ${user?.last_name}`
       }
-      const reqData = {
-        justification: `Restock por solicitud de salida de ${request.batch.name} - ${request.batch.articles[0].part_number}`,
-        requested_by: `${user?.first_name} ${user?.last_name}`,
-        created_by: user!.id,
-        company: selectedCompany!.split(" ").join("").toLowerCase(),
-        location_id: selectedStation!,
-        articles: [
-          {
-            batch: request.batch.id,
-            batch_name: request.batch.name,
-            batch_articles: [
-              {
-                quantity: qtyToBuy,
-                part_number: request.batch.articles[0].part_number,
-                unit: request.batch.articles[0].unit[0].id,
-              }
-            ]
-          }
-        ]
-      }
       await updateDispatchStatus.mutateAsync(formattedData);
-
       if (request.batch.category !== 'herramienta' && (newQty < request.batch.min_quantity)) {
+        const reqData = {
+          justification: `Restock por solicitud de salida de ${request.batch.name} - ${request.batch.articles[0].part_number}`,
+          requested_by: `${user?.first_name} ${user?.last_name}`,
+          created_by: user!.id,
+          company: selectedCompany!.split(" ").join("").toLowerCase(),
+          location_id: selectedStation!,
+          articles: [
+            {
+              batch: request.batch.id,
+              batch_name: request.batch.name,
+              batch_articles: [
+                {
+                  quantity: qtyToBuy,
+                  part_number: request.batch.articles[0].part_number,
+                  unit: request.batch.articles[0].unit[0].id,
+                }
+              ]
+            }
+          ]
+        }
         createRequisition.mutateAsync(reqData)
       }
       setOpen(false)

@@ -1,18 +1,10 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ClipboardCheck, IterationCw, MoreHorizontal, SquarePen, Trash2 } from "lucide-react"
 
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
 
+import { ReturnWarehouseDialog } from "@/components/dialogs/ReturnWarehouseDialog"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   Tooltip,
@@ -21,11 +13,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { DispachedArticles } from "@/hooks/almacen/useGetDispatchedArticles"
-import { cn } from "@/lib/utils"
-import Link from "next/link"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { ReturnWarehouseDialog } from "@/components/dialogs/ReturnWarehouseDialog"
+import Link from "next/link"
 
 
 export const columns: ColumnDef<DispachedArticles>[] = [
@@ -65,15 +55,13 @@ export const columns: ColumnDef<DispachedArticles>[] = [
     }
   },
   {
-    accessorKey: "part_number",
+    accessorKey: "batch_name",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Nro. de Parte" />
+      <DataTableColumnHeader column={column} title="Renglón" />
     ),
-    cell: ({ row }) => {
-      return (
-        <Link href={`/hangar74/almacen/inventario/gestion/${row.original.part_number}`} className="font-medium flex justify-center hover:scale-105 hover:text-blue-600 transition-all ease-in cursor-pointer duration-150">{row.original.part_number}</Link>
-      )
-    }
+    cell: ({ row }) => (
+      <p className="text-center font-medium italic">{row.original.batch_name}</p>
+    )
   },
   {
     accessorKey: "serial",
@@ -85,21 +73,23 @@ export const columns: ColumnDef<DispachedArticles>[] = [
     )
   },
   {
+    accessorKey: "part_number",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Nro. de Parte" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <p className="font-medium flex justify-center">{row.original.articles[0].part_number ?? "N/A"}</p>
+      )
+    }
+  },
+  {
     accessorKey: "justification",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Justificación" />
     ),
     cell: ({ row }) => (
       <p className="flex justify-center">{row.original.justification}</p>
-    )
-  },
-  {
-    accessorKey: "category",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Categoría" />
-    ),
-    cell: ({ row }) => (
-      <p className="text-center font-medium italic">{row.original.category.toUpperCase()}</p>
     )
   },
   {

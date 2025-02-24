@@ -4,13 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 
 export interface DispachedArticles {
   id: number,
-  part_number: string,
+  batch_name: string,
   serial: string,
   justification: string,
   category: string,
   date: string,
   work_order: WorkOrder,
   articles: {
+    part_number: string,
     id: number,
     serial: string,
     description: string,

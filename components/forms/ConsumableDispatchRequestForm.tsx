@@ -51,7 +51,7 @@ const FormSchema = z.object({
   status: z.string(),
   unit: z.enum(["litros", "mililitros"], {
     message: "Debe seleccionar una unidad.",
-  }), // Nuevo campo
+  }).optional(), // Nuevo campo
 })
 
 type FormSchemaType = z.infer<typeof FormSchema>
@@ -72,8 +72,6 @@ export function ConsumableDispatchForm({ onClose }: FormProps) {
   const [open, setOpen] = useState(false);
 
   const [quantity, setQuantity] = useState("");
-
-  const [openBatches, setOpenBatches] = useState(false);
 
   const [filteredBatches, setFilteredBatches] = useState<BatchesWithCountProp[]>([]);
 
@@ -114,36 +112,25 @@ export function ConsumableDispatchForm({ onClose }: FormProps) {
     }
   }, [batches]);
 
-
-  useEffect(() => {
-    const article = form.getValues("articles")
-
-  }, [form, quantity])
-
   useEffect(() => {
     const unit = form.watch("unit");
     const currentQuantity = parseFloat(quantity) || 0;
-    const article = form.getValues("articles")
-    if (unit === "mililitros") {
-      // Convertir mililitros a litros
-      const quantityInLiters = currentQuantity / 1000;
-      form.setValue(
-        "articles",
-        {
-          ...article,
-          quantity: quantityInLiters,
-        }
-      );
+    const article = form.getValues("articles");
+    if (articleSelected?.unit !== "unidades") {
+      const newQuantity = unit === "mililitros" ? currentQuantity / 1000 : currentQuantity;
+
+      form.setValue("articles", {
+        ...article,
+        quantity: newQuantity,
+      });
     } else {
-      form.setValue(
-        "articles",
-        {
-          ...article,
-          quantity: currentQuantity,
-        }
-      );
+      // Si es "unidades", no se realiza conversión
+      form.setValue("articles", {
+        ...article,
+        quantity: currentQuantity,
+      });
     }
-  }, [form.watch("unit"), quantity]); // Solo dependemos de la unidad, no de la cantidad
+  }, [form.watch("unit"), quantity]);
 
   const { setValue } = form;
 
@@ -157,12 +144,33 @@ export function ConsumableDispatchForm({ onClose }: FormProps) {
       user_id: user!.id
     }
     console.log(formattedData)
-    //await createDispatchRequest.mutateAsync(formattedData);
-    //onClose();
+    await createDispatchRequest.mutateAsync(formattedData);
+    onClose();
   }
 
   const handleArticleSelect = (id: number, serial: string | null, batch_id: number) => {
-    setValue('articles', { article_id: Number(id), serial: serial ? serial : null, quantity: 0, batch_id: Number(batch_id) })
+    const selectedArticle = filteredBatches
+      .flatMap((batch) => batch.articles)
+      .find((article) => article.id === id);
+
+    if (selectedArticle) {
+      // Actualizar el valor del campo "unit" en el formulario
+      if (selectedArticle.unit === "u") {
+        form.setValue("unit", undefined); // Ocultar el RadioGroup si es "unidades"
+      } else {
+        form.setValue("unit", "litros"); // Establecer un valor predeterminado si es "litros"
+      }
+
+      // Actualizar el estado del artículo seleccionado
+      setValue('articles', {
+        article_id: Number(id),
+        serial: serial ? serial : null,
+        quantity: 0,
+        batch_id: Number(batch_id),
+      });
+
+      setArticleSelected(selectedArticle);
+    }
   };
 
   return (
@@ -326,32 +334,36 @@ export function ConsumableDispatchForm({ onClose }: FormProps) {
                   placeholder="Ej: 1, 4, 6, etc..."
                 />
               </div>
-              <FormField
-                control={form.control}
-                name="unit"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Unidad</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex gap-4"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="litros" id="litros" />
-                          <Label htmlFor="litros">Litros</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="mililitros" id="mililitros" />
-                          <Label htmlFor="mililitros">Mililitros</Label>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {
+                articleSelected && articleSelected.unit === "L" && (
+                  <FormField
+                    control={form.control}
+                    name="unit"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Unidad</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="flex gap-4"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="litros" id="litros" />
+                              <Label htmlFor="litros">Litros</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="mililitros" id="mililitros" />
+                              <Label htmlFor="mililitros">Mililitros</Label>
+                            </div>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )
+              }
             </div>
           </div>
           <FormField

@@ -22,7 +22,7 @@ interface EchoEvent {
 export function Navbar({ title }: NavbarProps) {
 
   const { user } = useAuth();
-  // const echo = useEcho()
+  const echo = useEcho()
   // useEffect(() => {
   //   if (echo && user?.id) {
   //     const channel = echo.private(`dispatch-notification.${user.id}`).listen(
@@ -35,7 +35,6 @@ export function Navbar({ title }: NavbarProps) {
   //         }
   //       }
   //     );
-  //     console.log(channel)
   //     // Cleanup listener when the component unmounts or dependencies change
   //     return () => {
   //       channel.stopListening('NotificationHangar74Event');
