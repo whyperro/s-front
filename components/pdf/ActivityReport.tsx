@@ -12,11 +12,13 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#FFF",
   },
-  header: {
+  headerContainer: {
     textAlign: "center",
+    marginBottom: 10,
+  },
+  headerLine: {
     fontSize: 14,
     fontWeight: "bold",
-    marginBottom: 10,
   },
   row: {
     flexDirection: "row",
@@ -54,40 +56,58 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 9,
   },
-  rightAlign: {
+  dateContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     position: "absolute",
-    right: 50, // Moví la fecha más a la izquierda
+    right: 90, // FECHA se mantiene en su lugar
+  },
+  dateLabel: {
+    fontSize: 9,
+  },
+  dateText: {
+    fontSize: 12,
+    marginLeft: 40, // Movido más a la derecha
+    marginTop: -8,
   },
 });
 
 const ActivitiesReportPdf = ({ activities }: { activities: Activity[] }) => (
   <Document>
     <Page size="A4" orientation="landscape" style={styles.page}>
-      <Text style={styles.header}>REGISTRO DE ACTIVIDADES DIARIAS</Text>
+    <View style={styles.headerContainer}>
+        <Text style={styles.headerLine}>REGISTRO DE</Text>
+        <Text style={styles.headerLine}>ACTIVIDADES DIARIAS</Text>
+      </View>
       
       <View style={{ flexDirection: "row", marginBottom: 10 }}>
         <Text style={styles.label}>ANALISTA: </Text>
         <View style={styles.inputLine}></View>
         <Text style={[styles.label, { marginLeft: 20 }]}>FIRMA: </Text>
         <View style={styles.inputLine}></View>
-        <Text style={[styles.label, styles.rightAlign]}>FECHA: ____/____/____</Text>
+
+        {/* FECHA se mantiene en su posición, la línea se movió más a la derecha */}
+        <View style={styles.dateContainer}>
+          <Text style={styles.dateLabel}>FECHA:</Text>
+          <Text style={styles.dateText}>____/____/____</Text>
+        </View>
       </View>
 
+      {/* ENCABEZADO DE LA TABLA (Con la columna "Hora" reducida) */}
       <View style={[styles.row, styles.table, styles.tableHeader]}>
         <Text style={[styles.cell, { width: "5%" }]}>N°</Text>
-        <Text style={[styles.cell, { width: "30%" }]}>ACTIVIDAD</Text>
-        <Text style={[styles.cell, { width: "15%" }]}>INICIO</Text>
-        <Text style={[styles.cell, { width: "15%" }]}>FIN</Text>
-        <Text style={[styles.cell, { width: "35%" }]}>RESULTADO</Text>
+        <Text style={[styles.cell, { width: "40%" }]}>ACTIVIDAD</Text>
+        <Text style={[styles.cell, { width: "15%" }]}>HORA</Text>
+        <Text style={[styles.cell, { width: "40%" }]}>RESULTADO</Text>
       </View>
 
+      {/* FILAS DE LA TABLA */}
       {[...Array(10)].map((_, index) => (
         <View style={[styles.row, styles.table]} key={index}>
           <Text style={[styles.cell, { width: "5%" }]}>{index + 1}</Text>
-          <Text style={[styles.cell, { width: "30%" }]}></Text>
+          <Text style={[styles.cell, { width: "40%" }]}></Text>
           <Text style={[styles.cell, { width: "15%" }]}></Text>
-          <Text style={[styles.cell, { width: "15%" }]}></Text>
-          <Text style={[styles.cell, { width: "35%" }]}></Text>
+          <Text style={[styles.cell, { width: "40%" }]}></Text>
         </View>
       ))}
 
