@@ -1,16 +1,18 @@
+"use client"
+
 import axiosInstance from '@/lib/axios';
-import { Company } from '@/types';
+import { Client } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 
-const fetchCompanies = async (): Promise<Company[]> => {
-  const  {data}  = await axiosInstance.get('/company');
+const fetchClients = async (): Promise<Client[]> => {
+  const  {data}  = await axiosInstance.get('/transmandu/clients');
   return data;
 };
 
-export const useGetCompanies = () => {
-  return useQuery<Company[]>({
-    queryKey: ['companies'],
-    queryFn: fetchCompanies,
+export const useGetClients = () => {
+  return useQuery<Client[]>({
+    queryKey: ['clients'],
+    queryFn: fetchClients,
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
 };

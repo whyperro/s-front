@@ -78,6 +78,7 @@ export type Company = {
 
 export type Location = {
   id: number,
+  name: string,
   address: string,
   type: string,
   isMainBase: boolean,
@@ -173,9 +174,12 @@ export type Department = {
 }
 
 export type Client = {
-  id: number
+  id: number,
   name: string,
+  dni: string,
+  address: string,
   email: string,
+  phone: string,
 }
 
 export type JobTitle = {
@@ -188,6 +192,7 @@ export type JobTitle = {
 export type Aircraft = {
   id: number,
   client: Client,
+  location: Location,
   fabricant: string,
   brand: string,
   serial: string,
@@ -413,3 +418,35 @@ export type GeneralSalesReport = {
   purchase_order?: PurchaseOrder,
   quote_order?: Quote[],
 }[]
+
+export type Flights = {
+  id:number,
+  client: Client, 
+  route: Route,      
+  aircraft: Aircraft,  
+  date: string,
+  details: string,
+  fee: number,
+  total_amount: number,
+  type: "carga" | "pax" | "chart",
+  payed_amount: number,
+  debt_status: "pendiente" | "pagado",
+}
+
+export type Route = {
+  id:number,
+  from: string,
+  to: string,
+}
+
+export type FlightPayments = {
+  id: number,
+  bank_acount: string,
+  flights: Flights,
+  client: Client,
+  pay_method: string,
+  pay_amount: string,
+  payment_date: Date,
+  pay_description: string,
+}
+
