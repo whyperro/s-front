@@ -60,6 +60,7 @@ export function DailyActivitiesReportDialog() {
                   mode="single"
                   selected={selectedDate ?? undefined} // Si selectedDate es null, se pasa undefined
                   onSelect={(date) => setSelectedDate(date ?? null)} // Asegura que `null` se maneje correctamente
+                  disabled={(date) => date > new Date()} //Deshabilita Fechas futuras
                 />
                 </PopoverContent>
               </Popover>

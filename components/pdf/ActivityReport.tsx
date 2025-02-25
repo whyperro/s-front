@@ -14,23 +14,25 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   headerContainer: {
-    flexDirection: "row",
+    flexDirection: "row", // Mantiene la imagen y el título en la misma fila
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center", // Centra el contenido
     marginBottom: 10,
   },
   logo: {
-    width: 60, // Tamaño del logo
-    height: 60,
+    width: 50, // Ajusta según el tamaño del logo
+    height: 50,
     position: "absolute",
-    left: 0, // Ubicado en la esquina superior izquierda
+    left: 0, // Fijado en la esquina superior izquierda
   },
-  headerText: {
-    textAlign: "center",
+  titleContainer: {
+    flexDirection: "column", // Asegura que el texto esté en dos líneas
+    alignItems: "center", // Centra el texto
   },
-  headerLine: {
+  titleText: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: 900, // Extra negrita
+    textAlign: "center",
   },
   row: {
     flexDirection: "row",
@@ -91,12 +93,12 @@ const ActivitiesReportPdf = ({ activities }: { activities: Activity[] }) => (
       {/* HEADER CON LOGO Y TÍTULO */}
       <View style={styles.headerContainer}>
         {/* Logo en la esquina superior izquierda */}
-        <Image src="/ruta/del/logo.png" style={styles.logo} />
+        {/* <Image src="/ruta/del/logo.png" style={styles.logo} /> */}
         
         {/* Título en dos líneas */}
-        <View style={styles.headerText}>
-          <Text style={styles.headerLine}>REGISTRO DE</Text>
-          <Text style={styles.headerLine}>ACTIVIDADES DIARIAS</Text>
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>REGISTRO DE</Text>
+          <Text style={styles.titleText}>ACTIVIDADES DIARIAS</Text>
         </View>
       </View>
 

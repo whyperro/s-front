@@ -8,6 +8,9 @@ import { z } from "zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
+import { Calendar as DatePicker } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
 
 const FormSchema = z.object({
   activity_number: z.string().min(1, "Requerido"),
@@ -24,6 +27,7 @@ export function DailyReportForm() {
 
   const [manualTime, setManualTime] = useState(false);
   const [manualDate, setManualDate] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [activity, setActivity] = useState({
     activity_number: "",
     description: "",
@@ -89,12 +93,36 @@ export function DailyReportForm() {
           <FormItem className="w-1/4">
             <FormLabel>Fecha</FormLabel>
             <FormControl>
-              <Input 
-                type="date" 
-                value={activity.date} 
-                disabled={!manualDate} 
-                onChange={(e) => setActivity({ ...activity, date: e.target.value })}
-              />
+              {manualDate ? (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full text-left pl-2">
+                      {selectedDate ? format(selectedDate, "dd/MM/yyyy") : "Seleccionar fecha"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent align="center" className="w-auto p-0">
+                    <DatePicker
+                      mode="single"
+                      selected={selectedDate ?? undefined}
+                      onSelect={(date) => {
+                        if (date) {
+                          setSelectedDate(date);
+                          setActivity({ ...activity, date: date.toISOString().split("T")[0] });
+                        }
+                      }}
+                      disabled={(date) => date > new Date()} // Deshabilita fechas futuras
+                    />
+                  </PopoverContent>
+                </Popover>
+              ) : (
+                <Input 
+                  type="date" 
+                  value={activity.date} 
+                  disabled={!manualDate} 
+                  onChange={(e) => setActivity({ ...activity, date: e.target.value })}
+                  className="text-left pl-2 appearance-none"
+                />
+              )}
             </FormControl>
           </FormItem>
         </div>
