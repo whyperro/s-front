@@ -37,6 +37,39 @@ export const useCreateArticle = () => {
     }
 }
 
+export const useCreateDirectArticle = () => {
+
+  const queryClient = useQueryClient()
+
+  const createMutation = useMutation({
+      mutationKey: ["articles"],
+      mutationFn: async (data: ConsumableArticle | ComponentArticle | ToolArticle) => {
+          await axiosInstance.post('/hangar74/article', data,
+            {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            }
+          })
+        },
+      onSuccess: () => {
+          queryClient.invalidateQueries({queryKey: ['articles']})
+          toast.success("¡Creado!", {
+              description: `El articulo ha sido creado correctamente.`
+          })
+        },
+      onError: (error) => {
+          toast.error('Oops!', {
+            description: 'No se pudo crear el articulo...'
+          })
+          console.log(error)
+        },
+      }
+  )
+  return {
+    createArticle: createMutation,
+  }
+}
+
 export const useDeleteArticle = () => {
 
   const queryClient = useQueryClient()
@@ -116,6 +149,7 @@ export const useConfirmIncomingArticle = () => {
         is_special?: boolean,
         status: string,
         caducate_date?: string,
+        quantity?: string | number,
         fabrication_date?:string,
         calendar_date?: string,
         certificate_8130?: File | string,

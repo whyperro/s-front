@@ -100,7 +100,7 @@ export const columns: ColumnDef<BatchesWithCountProp>[] = [
     id: "actions",
     cell: ({ row }) => {
       return (
-        <BatchDropdownActions id={row.original.id} name={row.original.name} />
+        <BatchDropdownActions id={row.original.id} />
       )
     },
   },

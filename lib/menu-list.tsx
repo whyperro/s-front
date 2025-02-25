@@ -93,29 +93,29 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
           ]
         },
         {
-          groupLabel: "Admistración",
+          groupLabel: "Sistema",
           menus: [
             {
-              href: "/administracion/usuarios_permisos",
+              href: "/sistema/usuarios_permisos",
               label: "Usuarios Y Permisos",
-              active: pathname.includes("/administracion/usuarios_permisos"),
+              active: pathname.includes("/sistema/usuarios_permisos"),
               icon: User2,
               roles: ["ADMIN", "SUPERUSER"],
               submenus: [
                 {
-                  href: "/administracion/usuarios_permisos/usuarios",
+                  href: "/sistema/usuarios_permisos/usuarios",
                   label: "Administrar Usuarios",
-                  active: pathname === "/administracion/usuarios_permisos/usuarios",
+                  active: pathname === "/sistema/usuarios_permisos/usuarios",
                 },
                 {
-                  href: "/administracion/usuarios_permisos/roles",
+                  href: "/sistema/usuarios_permisos/roles",
                   label: "Administrar Roles",
-                  active: pathname === "/administracion/usuarios_permisos/roles"
+                  active: pathname === "/sistema/usuarios_permisos/roles"
                 },
                 {
-                  href: "/administracion/usuarios_permisos/permisos",
+                  href: "/sistema/usuarios_permisos/permisos",
                   label: "Administrar Permisos",
-                  active: pathname === "/administracion/usuarios_permisos/permisos"
+                  active: pathname === "/sistema/usuarios_permisos/permisos"
                 }
               ]
             }
@@ -250,16 +250,16 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
                   label: "Ingreso de Articulo",
                   active: pathname === "/hangar74/almacen/ingreso/registrar_ingreso"
                 },
-                {
-                  href: "/hangar74/almacen/ingreso/en_transito",
-                  label: "Articulos en Tránsito",
-                  active: pathname === "/hangar74/almacen/ingreso/en_transito"
-                },
-                {
-                  href: "/hangar74/almacen/ingreso/en_recepcion",
-                  label: "Articulos en Recepción",
-                  active: pathname === "/hangar74/almacen/ingreso/en_recepcion"
-                },
+                // {
+                //   href: "/hangar74/almacen/ingreso/en_transito",
+                //   label: "Articulos en Tránsito",
+                //   active: pathname === "/hangar74/almacen/ingreso/en_transito"
+                // },
+                // {
+                //   href: "/hangar74/almacen/ingreso/en_recepcion",
+                //   label: "Articulos en Recepción",
+                //   active: pathname === "/hangar74/almacen/ingreso/en_recepcion"
+                // },
               ]
             },
 
@@ -402,7 +402,7 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               label: "Globales",
               active: pathname.includes("/ajustes/globales"),
               icon: Globe,
-              roles: ["SUPERUSER"],
+              roles: ["ANALISTA_ALMACEN", "JEFE_ALMACEN", "SUPERUSER"],
               submenus: [
                 {
                   href: "/ajustes/globales/unidades",
@@ -453,48 +453,48 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
           ]
         },
         {
-          groupLabel: "Admistración",
+          groupLabel: "Sistema",
           menus: [
             {
-              href: "/administracion/usuarios_permisos",
-              label: "Usuarios Y Permisos",
-              active: pathname.includes("/administracion/usuarios_permisos"),
+              href: "/sistema/usuarios_permisos",
+              label: "Usuarios",
+              active: pathname.includes("/sistema/usuarios_permisos"),
               icon: User2,
               roles: ["SUPERUSER"],
               submenus: [
                 {
-                  href: "/administracion/usuarios_permisos/usuarios",
+                  href: "/sistema/usuarios_permisos/usuarios",
                   label: "Administrar Usuarios",
-                  active: pathname === ("/administracion/usuarios_permisos/usuarios"),
+                  active: pathname === ("/sistema/usuarios_permisos/usuarios"),
                 },
                 {
-                  href: "/administracion/usuarios_permisos/roles",
+                  href: "/sistema/usuarios_permisos/roles",
                   label: "Administrar  Roles",
-                  active: pathname === ("/administracion/usuarios_permisos/roles")
+                  active: pathname === ("/sistema/usuarios_permisos/roles")
                 },
                 {
-                  href: "/administracion/usuarios_permisos/permisos",
+                  href: "/sistema/usuarios_permisos/permisos",
                   label: "Administrar Permisos",
-                  active: pathname === ("/administracion/usuarios_permisos/permisos")
+                  active: pathname === ("/sistema/usuarios_permisos/permisos")
                 }
               ]
             },
             {
-              href: "/administracion/empresas",
+              href: "/sistema/empresas",
               label: "Empresas",
-              active: pathname.includes("/administracion/empresas"),
+              active: pathname.includes("/sistema/empresas"),
               icon: Building,
               roles: ["SUPERUSER"],
               submenus: [
                 {
-                  href: "/administracion/empresas/almacenes",
+                  href: "/sistema/empresas/almacenes",
                   label: "Administrar Almacenes",
-                  active: pathname === ("/administracion/empresas/almacenes"),
+                  active: pathname === ("/sistema/empresas/almacenes"),
                 },
                 {
-                  href: "/administracion/empresas/empleados",
+                  href: "/sistema/empresas/empleados",
                   label: "Administrar Empleados",
-                  active: pathname === ("/administracion/empresas/empleados")
+                  active: pathname === ("/sistema/empresas/empleados")
                 },
               ]
             },

@@ -140,7 +140,8 @@ const CreateToolForm = ({ initialData, isEditing }: {
     const formattedValues = {
       ...values,
       batches_id: Number(values.batches_id),
-      cost: values.cost && parseFloat(values.cost) || initialData?.cost,
+      cost: 0,
+      status: "Stored",
     }
     if (isEditing) {
       confirmIncoming.mutate({
@@ -305,7 +306,7 @@ const CreateToolForm = ({ initialData, isEditing }: {
                 </FormItem>
               )}
             />
-            {
+            {/* {
               !isEditing && (
                 <FormField
                   control={form.control}
@@ -323,8 +324,8 @@ const CreateToolForm = ({ initialData, isEditing }: {
                   )}
                 />
               )
-            }
-            {
+            } */}
+            {/* {
               isEditing && (
                 <FormField
                   control={form.control}
@@ -343,7 +344,23 @@ const CreateToolForm = ({ initialData, isEditing }: {
                   )}
                 />
               )
-            }
+            } */}
+            <FormField
+              control={form.control}
+              name="zone"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Zona de Ubicacion</FormLabel>
+                  <FormControl>
+                    <Input placeholder="EJ: Pasillo 4, etc..." {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Identificador único del articulo.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="is_special"

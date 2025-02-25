@@ -175,10 +175,11 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
     if (secondarySelected && secondaryQuantity) {
       const quantity = (secondarySelected.convertion_rate * secondarySelected.quantity_unit) * secondaryQuantity
       form.setValue("quantity", quantity)
+      console.log(quantity)
     }
   }, [form, secondarySelected, secondaryQuantity])
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const formattedValues = {
       ...values,
       caducate_date: caducateDate && format(caducateDate, "yyyy-MM-dd"),
@@ -187,14 +188,16 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
       convertion_id: secondarySelected?.id,
     }
     if (isEditing) {
-      confirmIncoming.mutate({
+      const formattedValues = {
         ...values,
         id: initialData?.id,
         certificate_8130: values.certificate_8130 || initialData?.certifcate_8130,
         certificate_fabricant: values.certificate_fabricant || initialData?.certifcate_fabricant,
         certificate_vendor: values.certificate_vendor || initialData?.certifcate_vendor,
         status: "Stored"
-      })
+      }
+
+      await confirmIncoming.mutateAsync(formattedValues)
       router.push("/hangar74/almacen/ingreso/en_recepcion")
     } else {
       createArticle.mutate(formattedValues);
@@ -451,7 +454,7 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
                 </FormItem>
               )}
             />
-            {
+            {/* {
               isEditing && (
                 <FormField
                   control={form.control}
@@ -470,7 +473,23 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
                   )}
                 />
               )
-            }
+            } */}
+            <FormField
+              control={form.control}
+              name="zone"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Ubicación del Articulo</FormLabel>
+                  <FormControl>
+                    <Input placeholder="EJ: Pasillo 4, repisa 3..." {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Ubicación exacta del articulo.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="batches_id"
