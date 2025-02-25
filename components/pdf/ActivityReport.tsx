@@ -5,6 +5,7 @@ import {
   Text,
   View,
   StyleSheet,
+  Image,
 } from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({
@@ -13,8 +14,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   headerContainer: {
-    textAlign: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 10,
+  },
+  logo: {
+    width: 60, // Tamaño del logo
+    height: 60,
+    position: "absolute",
+    left: 0, // Ubicado en la esquina superior izquierda
+  },
+  headerText: {
+    textAlign: "center",
   },
   headerLine: {
     fontSize: 14,
@@ -75,11 +87,20 @@ const styles = StyleSheet.create({
 const ActivitiesReportPdf = ({ activities }: { activities: Activity[] }) => (
   <Document>
     <Page size="A4" orientation="landscape" style={styles.page}>
-    <View style={styles.headerContainer}>
-        <Text style={styles.headerLine}>REGISTRO DE</Text>
-        <Text style={styles.headerLine}>ACTIVIDADES DIARIAS</Text>
-      </View>
       
+      {/* HEADER CON LOGO Y TÍTULO */}
+      <View style={styles.headerContainer}>
+        {/* Logo en la esquina superior izquierda */}
+        <Image src="/ruta/del/logo.png" style={styles.logo} />
+        
+        {/* Título en dos líneas */}
+        <View style={styles.headerText}>
+          <Text style={styles.headerLine}>REGISTRO DE</Text>
+          <Text style={styles.headerLine}>ACTIVIDADES DIARIAS</Text>
+        </View>
+      </View>
+
+      {/* INFORMACIÓN DEL ANALISTA, FIRMA Y FECHA */}
       <View style={{ flexDirection: "row", marginBottom: 10 }}>
         <Text style={styles.label}>ANALISTA: </Text>
         <View style={styles.inputLine}></View>
@@ -93,24 +114,24 @@ const ActivitiesReportPdf = ({ activities }: { activities: Activity[] }) => (
         </View>
       </View>
 
-      {/* ENCABEZADO DE LA TABLA (Con la columna "Hora" reducida) */}
+      {/* TABLA DE ACTIVIDADES */}
       <View style={[styles.row, styles.table, styles.tableHeader]}>
         <Text style={[styles.cell, { width: "5%" }]}>N°</Text>
         <Text style={[styles.cell, { width: "40%" }]}>ACTIVIDAD</Text>
-        <Text style={[styles.cell, { width: "15%" }]}>HORA</Text>
-        <Text style={[styles.cell, { width: "40%" }]}>RESULTADO</Text>
+        <Text style={[styles.cell, { width: "10%" }]}>HORA</Text>
+        <Text style={[styles.cell, { width: "45%" }]}>RESULTADO</Text>
       </View>
 
-      {/* FILAS DE LA TABLA */}
       {[...Array(10)].map((_, index) => (
         <View style={[styles.row, styles.table]} key={index}>
           <Text style={[styles.cell, { width: "5%" }]}>{index + 1}</Text>
           <Text style={[styles.cell, { width: "40%" }]}></Text>
-          <Text style={[styles.cell, { width: "15%" }]}></Text>
-          <Text style={[styles.cell, { width: "40%" }]}></Text>
+          <Text style={[styles.cell, { width: "10%" }]}></Text>
+          <Text style={[styles.cell, { width: "45%" }]}></Text>
         </View>
       ))}
 
+      {/* SECCIÓN DE OBSERVACIONES */}
       <Text style={[styles.footer, { marginTop: 20 }]}>OBSERVACIONES:</Text>
       <View style={{ borderWidth: 1, height: 50 }}></View>
     </Page>
