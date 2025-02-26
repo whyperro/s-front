@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Calendar as DatePicker } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
+import { useFetchActivityNumber } from "@/hooks/desarrollo/useGetActivityNumber";
 
 const FormSchema = z.object({
   activity_number: z.string().min(1, "Requerido"),
@@ -28,61 +29,61 @@ export function DailyReportForm() {
   const [manualTime, setManualTime] = useState(false);
   const [manualDate, setManualDate] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const [activity, setActivity] = useState({
+  const { mutate: getActivityNumber, data: activityNumber } = useFetchActivityNumber();
+  const [activity, setActivity] = useState(() => ({
     activity_number: "",
     description: "",
-    manual_start_time: false,
-    manual_date: false,
+    // manual_start_time: false,
+    // manual_date: false,
     date: new Date().toISOString().split("T")[0],
-    start_time: "",
-  });
+    start_time: getCurrentTime(),
+  }));
 
   useEffect(() => {
-    const fetchActivityNumber = async () => {
-      try {
-        const response = await fetch(`/api/activities/count?date=${activity.date}`);
-        const data = await response.json();
-        setActivity(prev => ({ ...prev, activity_number: String(data.nextActivityNumber).padStart(3, "0") }));
-      } catch (error) {
+    getActivityNumber(activity.date, {
+      onSuccess: (number) => {
+        setActivity(prev => ({
+          ...prev,
+          activity_number: number,
+        }));
+      },
+      onError: (error) => {
         console.error("Error obteniendo el número de actividad:", error);
-      }
-    };
-
-    fetchActivityNumber();
-  }, [activity.date]);
+      },
+    });
+  }, [activity.date, getActivityNumber]);
 
   useEffect(() => {
     if (!manualTime) {
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, "0");
-      const minutes = String(now.getMinutes()).padStart(2, "0");
-      setActivity(prev => ({ ...prev, start_time: `${hours}:${minutes}` }));
+      setActivity(prev => ({ ...prev, start_time: getCurrentTime() }));
     }
   }, [manualTime]);
 
-  const handleManualTimeChange = (checked: boolean) => {
-    setManualTime(checked);
-    if (!checked) {
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, "0");
-      const minutes = String(now.getMinutes()).padStart(2, "0");
-      setActivity(prev => ({ ...prev, start_time: `${hours}:${minutes}` }));
-    }
-  };
+  function getCurrentTime() {
+    const now = new Date();
+    return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+  }
 
-  const handleManualDateChange = (checked: boolean) => {
-    setManualDate(checked);
-  };
+  function handleManualTimeChange(checked: boolean) {
+    setManualTime(checked);
+    if (!checked) setActivity(prev => ({ ...prev, start_time: getCurrentTime() }));
+  }
 
   const handleSubmit = (data: any) => {
-    console.log("Enviando actividad:", data);
+    console.log("Enviando actividad:", {
+      activity_number: activity.activity_number,
+      description: activity.description,
+      start_time: activity.start_time,
+      // manual_start_time: manualTime,
+      // manual_date: manualDate,
+      date: activity.date,
+    });
     form.reset();
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
-        {/* Línea superior */}
         <div className="flex justify-between items-end w-full">
           <FormItem className="w-1/3">
             <FormLabel>Analista</FormLabel>
@@ -107,73 +108,56 @@ export function DailyReportForm() {
                       onSelect={(date) => {
                         if (date) {
                           setSelectedDate(date);
-                          setActivity({ ...activity, date: date.toISOString().split("T")[0] });
+                          setActivity(prev => ({ ...prev, date: date.toISOString().split("T")[0] }));
                         }
                       }}
-                      disabled={(date) => date > new Date()} // Deshabilita fechas futuras
+                      disabled={(date) => date > new Date()}
                     />
                   </PopoverContent>
                 </Popover>
               ) : (
-                <Input 
-                  type="date" 
-                  value={activity.date} 
-                  disabled={!manualDate} 
-                  onChange={(e) => setActivity({ ...activity, date: e.target.value })}
+                <Input
+                  type="date"
+                  value={activity.date}
+                  disabled={!manualDate}
+                  onChange={(e) => setActivity(prev => ({ ...prev, date: e.target.value }))}
                   className="text-left pl-2 appearance-none"
                 />
               )}
             </FormControl>
           </FormItem>
         </div>
+
         <div className="flex items-center space-x-2">
-          <Checkbox checked={manualDate} onCheckedChange={(checked) => handleManualDateChange(Boolean(checked))} />
+          <Checkbox checked={manualDate} onCheckedChange={(checked) => setManualDate(checked === true)} />
           <FormLabel>Ingresar fecha manualmente</FormLabel>
         </div>
 
-        {/* Sección de información */}
         <div className="border p-4 rounded-md space-y-4">
           <FormItem className="w-1/6">
             <FormLabel>Número de Actividad</FormLabel>
             <FormControl>
-              <Input 
-                placeholder="Ej: 001" 
-                value={activity.activity_number} 
-                disabled
-                className="w-16 text-center"
-              />
+              <Input placeholder="Ej: 001" value={activity.activity_number} disabled className="w-16 text-center" />
             </FormControl>
           </FormItem>
           <FormItem>
             <FormLabel>Descripción</FormLabel>
             <FormControl>
-              <Textarea 
-                placeholder="Ej: Revisión de código..." 
-                value={activity.description} 
-                onChange={(e) => setActivity({ ...activity, description: e.target.value })}
-                className="h-24"
-              />
+              <Textarea placeholder="Ej: Revisión de código..." value={activity.description} onChange={(e) => setActivity(prev => ({ ...prev, description: e.target.value }))} className="h-24" />
             </FormControl>
           </FormItem>
           <FormItem className="flex items-center space-x-2">
-            <Checkbox checked={manualTime} onCheckedChange={(checked) => handleManualTimeChange(Boolean(checked))} />
+            <Checkbox checked={manualTime} onCheckedChange={handleManualTimeChange} />
             <FormLabel>Ingresar hora manualmente</FormLabel>
           </FormItem>
           <FormItem className="w-1/6">
             <FormLabel>Hora de Inicio</FormLabel>
             <FormControl>
-              <Input
-                type="time"
-                value={activity.start_time}
-                disabled={!manualTime}
-                onChange={(e) => setActivity({ ...activity, start_time: e.target.value })}
-              />
+              <Input type="time" value={activity.start_time} disabled={!manualTime} onChange={(e) => setActivity(prev => ({ ...prev, start_time: e.target.value }))} />
             </FormControl>
           </FormItem>
         </div>
-        <Button type="submit">
-          Enviar actividad
-        </Button>
+        <Button type="submit" onClick={handleSubmit}>Enviar actividad</Button>
       </form>
     </Form>
   );

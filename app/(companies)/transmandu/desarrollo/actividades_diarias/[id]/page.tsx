@@ -33,7 +33,7 @@ const ActivityReportsByIdPage = ({ params }: { params: { id: string } }) => {
         </Breadcrumb>
         <h1 className='text-4xl font-bold text-center'>Actividades Diarias</h1>
         <p className='text-sm text-muted-foreground text-center  italic'>
-          Aquí puede observar todos las actividades realizadas por el Desarrollador: Joel. <br />Filtre y/o busque sí desea un dia en específico.
+          Aquí puede observar todos las actividades realizadas por el Desarrollador: Joel.
         </p>
 
         <DataTable columns={columns} data={mockData.activityReports.flatMap(report => report.activities)} />

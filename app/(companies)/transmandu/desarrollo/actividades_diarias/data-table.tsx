@@ -22,7 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useState } from "react"
 
 import { DailyActivitiesReportDialog } from "@/components/dialogs/ActivityReportDialog"
@@ -36,11 +36,10 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-
+  
   const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
-    []
-  )
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  
   const table = useReactTable({
     data,
     columns,
@@ -56,16 +55,13 @@ export function DataTable<TData, TValue>({
     }
   })
 
-  const router = useRouter();
-
-  const isFiltered = table.getState().columnFilters.length > 0
+  const pathname = usePathname()
+  const isDetailPage = /^\/transmandu\/desarrollo\/actividades_diarias\/\d+$/.test(pathname)
 
   return (
     <>
       <div className="flex items-center py-4">
-        <div className="flex gap-x-2 items-center">
-          <DailyActivitiesReportDialog />
-        </div>
+        {!isDetailPage && <DailyActivitiesReportDialog />}
         <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-md border mb-4">
@@ -73,28 +69,20 @@ export function DataTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  )
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
