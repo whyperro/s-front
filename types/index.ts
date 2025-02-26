@@ -416,15 +416,15 @@ export type GeneralSalesReport = {
 export type ActivityReports = {
   id: number,
   date: Date,
-  employee: Employee,
+  employee: User,
   activities: Activity[],
+  observations?: string,
 }
 
 export type Activity = {
   id: number,
-  initial_hour: string,  // Formato "HH:mm"
-  final_hour: string,    // Formato "HH:mm"
-  employee: Employee,
+  initial_hour: string,
+  final_hour: string,
   description: string,
-  result?: string | null,
+  result?: string,
 }
