@@ -22,8 +22,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import FollowUpControlTableDropdownActions from "@/components/misc/FollowUpControlDropdownActions";
+import FollowUpControlDropdownActions from "@/components/misc/FollowUpControlDropdownActions";
 
 export const columns: ColumnDef<FollowUpControl>[] = [
+  {
+    accessorKey: "id",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Control" />
+    ),
+    meta: { title: "Numero de Control" },
+    cell: ({ row }) => {
+      return (
+        <div className="flex justify-center">{row.original.id}</div>
+      );
+    },
+  },
   {
     accessorKey: "description",
     header: ({ column }) => (
@@ -55,10 +69,11 @@ export const columns: ColumnDef<FollowUpControl>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const MitigationTable = row.original;
+      const FollowUpControl = row.original;
       return (
-        <p></p>
-        // <MitigationTableDropdownActions mitigationTable={MitigationTable} />
+        <FollowUpControlDropdownActions
+          followUpControl={FollowUpControl}
+        />
       );
     },
   },
