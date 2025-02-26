@@ -20,6 +20,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import useCurrentPath from "@/hooks/sms/currentPath";
 
 export const columns: ColumnDef<MitigationMeasure>[] = [
   {
@@ -79,6 +80,8 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
     ),
     cell: ({ row }) => {
       const followUpControls = row.original.follow_up_control;
+      const measureId = row.original.id;
+      const currentPath = useCurrentPath();
       const [openControls, setOpenControls] = useState(false);
       return (
         <>
@@ -111,7 +114,7 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
                   </div>
 
                   <Link
-                    href={`/transmandu/sms/planes_de_mitigacion/${10}/medidas/${7}/controles_de_seguimiento`}
+                    href={`${currentPath}/${measureId}/controles_de_seguimiento`}
                   >
                     <div className="flex justify-end mt-4">
                       <Button className="w-1/3">Ver mas</Button>
@@ -120,9 +123,9 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
                 </DialogContent>
               </Dialog>
             ) : (
-              <p className="flex flex-col justify-center">
+              <div className="flex flex-col justify-center">
                 Sin Controles Disponibles
-              </p>
+              </div>
             )}
           </div>
         </>
@@ -132,7 +135,7 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const MitigationTable = row.original;
+      const MitigationMeasure = row.original;
       return (
         <p></p>
         // <MitigationTableDropdownActions mitigationTable={MitigationTable} />

@@ -10,11 +10,10 @@ import { useGetMeasureFollowUpControl } from "@/hooks/sms/useGetMeasureFollowUpC
 
 type Params = {
   plan_id: string;
-  medida_id: string; 
-}
+  medida_id: string;
+};
 
 const FollowUpControlPage = () => {
-
   const { plan_id, medida_id } = useParams<Params>();
 
   console.log(plan_id, medida_id);
@@ -22,9 +21,7 @@ const FollowUpControlPage = () => {
     data: mitigationControl,
     isLoading,
     isError,
-  } = useGetMeasureFollowUpControl(plan_id,medida_id);
-
-
+  } = useGetMeasureFollowUpControl(plan_id, medida_id);  
   return (
     <ContentLayout title="Medidas de Mitigacion">
       <div className="flex flex-col gap-y-2">
