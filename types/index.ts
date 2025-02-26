@@ -412,8 +412,9 @@ export type DangerIdentification = {
 
 export type FollowUpControl = {
   id: number;
-  date: string;
+  date: Date;
   description: string;
+  mitigation_measure_id: number;
 };
 
 export type MitigationMeasure = {
