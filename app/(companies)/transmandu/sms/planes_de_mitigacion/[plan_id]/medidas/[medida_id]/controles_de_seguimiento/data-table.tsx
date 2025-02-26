@@ -25,6 +25,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "react-day-picker";
 import { CreateObligatoryDialog } from "@/components/dialogs/CreateObligatoryDialog";
+import CreateFollowUpControl from "@/components/dialogs/CreateFollowUpControlDialog";
+import CreateFollowUpControlDialog from "@/components/dialogs/CreateFollowUpControlDialog";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -53,7 +55,7 @@ export function DataTable<TData, TValue>({
   });
 
   const router = useRouter();
-
+  
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
@@ -69,6 +71,7 @@ export function DataTable<TData, TValue>({
       </div>
 
       <div className="flex items-center py-4">
+         <CreateFollowUpControlDialog/>
         <DataTableViewOptions table={table} />
       </div>
 
