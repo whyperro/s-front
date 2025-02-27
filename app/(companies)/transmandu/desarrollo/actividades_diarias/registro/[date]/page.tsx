@@ -37,10 +37,7 @@ const DailyActivitiesPage = () => {
         <p className='text-sm text-muted-foreground text-center  italic'>
           Aquí puede registrar las actividades realizadas por la Jefatura de Desarrollo. <br />
         </p>
-        
         <DailyReportForm />
-
-
       </div>
     </ContentLayout>
   )

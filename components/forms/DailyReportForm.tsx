@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
@@ -8,13 +8,16 @@ import { z } from "zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
-import { Calendar as DatePicker } from "@/components/ui/calendar";
+import { Calendar, Calendar as DatePicker } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { useFetchActivityNumber } from "@/hooks/desarrollo/useGetActivityNumber";
+import { Label } from "../ui/label";
+import { cn } from "@/lib/utils";
+import { CalendarIcon } from "lucide-react";
+import { es } from "date-fns/locale";
 
 const FormSchema = z.object({
-  activity_number: z.string().min(1, "Requerido"),
   description: z.string().min(1, "Requerido"),
   start_time: z.string().optional(),
   manual_start_time: z.boolean().optional(),
@@ -24,8 +27,6 @@ const FormSchema = z.object({
 
 export function DailyReportForm() {
   const { user } = useAuth();
-  const form = useForm({ resolver: zodResolver(FormSchema) });
-
   const [manualTime, setManualTime] = useState(false);
   const [manualDate, setManualDate] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -38,6 +39,16 @@ export function DailyReportForm() {
     date: new Date().toISOString().split("T")[0],
     start_time: getCurrentTime(),
   }));
+
+  const form = useForm({
+    resolver: zodResolver(FormSchema), defaultValues: {
+      description: "",
+      start_time: getCurrentTime(),
+      manual_start_time: false,
+      manual_date: false,
+      date: new Date(),
+    }
+  });
 
   useEffect(() => {
     getActivityNumber(activity.date, {
@@ -69,63 +80,59 @@ export function DailyReportForm() {
     if (!checked) setActivity(prev => ({ ...prev, start_time: getCurrentTime() }));
   }
 
-  const handleSubmit = (data: any) => {
-    console.log("Enviando actividad:", {
-      activity_number: activity.activity_number,
-      description: activity.description,
-      start_time: activity.start_time,
-      // manual_start_time: manualTime,
-      // manual_date: manualDate,
-      date: activity.date,
-    });
-    form.reset();
+  const handleSubmit = (data: z.infer<typeof FormSchema>) => {
+    console.log(data)
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
-        <div className="flex justify-between items-end w-full">
-          <FormItem className="w-1/3">
-            <FormLabel>Analista</FormLabel>
-            <FormControl>
-              <Input value={`${user?.first_name || ""} ${user?.last_name || ""}`} disabled />
-            </FormControl>
-          </FormItem>
-          <FormItem className="w-1/4">
-            <FormLabel>Fecha</FormLabel>
-            <FormControl>
-              {manualDate ? (
+        <div className="flex items-center w-full gap-6">
+          <div className="flex flex-col space-y-3">
+            <Label>Analista</Label>
+            <Input value={`${user?.first_name || ""} ${user?.last_name || ""}`} disabled />
+          </div>
+          <FormField
+            control={form.control}
+            name="date"
+            render={({ field }) => (
+              <FormItem className="flex flex-col mt-1">
+                <FormLabel>Fecha</FormLabel>
                 <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full text-left pl-2">
-                      {selectedDate ? format(selectedDate, "dd/MM/yyyy") : "Seleccionar fecha"}
-                    </Button>
+                  <PopoverTrigger asChild disabled={!manualDate}>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP", { locale: es })
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent align="center" className="w-auto p-0">
-                    <DatePicker
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
                       mode="single"
-                      selected={selectedDate ?? undefined}
-                      onSelect={(date) => {
-                        if (date) {
-                          setSelectedDate(date);
-                          setActivity(prev => ({ ...prev, date: date.toISOString().split("T")[0] }));
-                        }
-                      }}
-                      disabled={(date) => date > new Date()}
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>
-              ) : (
-                <Input
-                  type="date"
-                  value={activity.date}
-                  disabled={!manualDate}
-                  onChange={(e) => setActivity(prev => ({ ...prev, date: e.target.value }))}
-                  className="text-left pl-2 appearance-none"
-                />
-              )}
-            </FormControl>
-          </FormItem>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <div className="flex items-center space-x-2">
@@ -140,12 +147,19 @@ export function DailyReportForm() {
               <Input placeholder="Ej: 001" value={activity.activity_number} disabled className="w-16 text-center" />
             </FormControl>
           </FormItem>
-          <FormItem>
-            <FormLabel>Descripción</FormLabel>
-            <FormControl>
-              <Textarea placeholder="Ej: Revisión de código..." value={activity.description} onChange={(e) => setActivity(prev => ({ ...prev, description: e.target.value }))} className="h-24" />
-            </FormControl>
-          </FormItem>
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Descripción de Actividad</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="shadcn" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormItem className="flex items-center space-x-2">
             <Checkbox checked={manualTime} onCheckedChange={handleManualTimeChange} />
             <FormLabel>Ingresar hora manualmente</FormLabel>
@@ -157,7 +171,7 @@ export function DailyReportForm() {
             </FormControl>
           </FormItem>
         </div>
-        <Button type="submit" onClick={handleSubmit}>Enviar actividad</Button>
+        <Button type="submit">Enviar actividad</Button>
       </form>
     </Form>
   );

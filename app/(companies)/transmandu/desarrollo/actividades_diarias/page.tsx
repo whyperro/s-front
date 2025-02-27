@@ -15,13 +15,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import mockData from './mock'; // Importando los datos de prueba
-
-
-
-
 const DailyActivitiesPage = () => {
-
-
   return (
     <ContentLayout title='Gestión de Actividades'>
       <div className='flex flex-col gap-y-2'>
@@ -40,10 +34,7 @@ const DailyActivitiesPage = () => {
         <p className='text-sm text-muted-foreground text-center  italic'>
           Aquí puede observar todos las actividades realizadas por la Jefatura de Desarrollo. <br />Filtre y/o busque sí desea un dia en específico.
         </p>
-        
         <DataTable columns={columns} data={mockData.activityReports} />
-
-
       </div>
     </ContentLayout>
   )

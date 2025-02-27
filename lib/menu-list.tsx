@@ -1,15 +1,16 @@
+"use client"
+
+import { useAuth } from "@/contexts/AuthContext";
+import { format } from "date-fns";
 import {
   Banknote,
-  BookOpen,
   Building,
   ClipboardCopy,
   Globe,
   HandCoins,
-  History,
   Landmark,
   LayoutGrid,
   LucideIcon,
-  NotebookPen,
   PackageOpen,
   PackagePlus,
   PackageSearch,
@@ -48,10 +49,11 @@ export type CompanyMenu = 'transmandu' | 'hangar 74';
 //TODO: Crear menus para cada empresa. Mismo array o diferente, ir probando.
 
 export function getMenuList(pathname: string, company: CompanyMenu, userRoles: string[]): Group[] {
+  const { user } = useAuth()
+  const date = format(new Date(), "yyyy-MM-dd");
   function hasAccess(menu: Menu): boolean {
     return menu.roles.length === 0 || menu.roles.some(role => userRoles.includes(role));
   }
-
   return (
     (company === 'transmandu'
       ? [
@@ -79,9 +81,9 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               roles: ["ANALISTA_PLANIFICACION", "JEFE_PLANIFICACION", "SUPERUSER"],
               submenus: [
                 {
-                  href: "/transmandu/desarrollo/registro",
+                  href: `/transmandu/desarrollo/actividades_diarias/registro/${date}/`,
                   label: "Registro de Actividades",
-                  active: pathname === "/transmandu/desarrollo/registro",
+                  active: pathname === `/transmandu/desarrollo/actividades_diarias/registro/${date}/`,
                 },
                 {
                   href: "/transmandu/desarrollo/actividades_diarias",
