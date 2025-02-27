@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import useCurrentPath from "@/hooks/sms/currentPath";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 export const columns: ColumnDef<MitigationMeasure>[] = [
   {
@@ -106,7 +108,11 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
                             {++index} ) {control.description}
                           </ul>
                           <ul className="text-sm text-gray-600">
-                            Fecha: {control.date}
+                            <p className="font-medium text-center">
+                                      {format(control.date, "PPP", {
+                                        locale: es,
+                                      })}
+                                    </p>
                           </ul>
                         </li>
                       ))}
