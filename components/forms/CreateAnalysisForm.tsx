@@ -40,20 +40,8 @@ import {
 import { useCreateAnalysis } from "@/actions/sms/analisis/actions";
 
 const FormSchema = z.object({
-  severity: z.enum([
-    "CATASTROFICO",
-    "PELIGROSO",
-    "GRAVE",
-    "LEVE",
-    "INSIGNIFICANTE",
-  ]),
-  probability: z.enum([
-    "FRECUENTE",
-    "OCASIONAL",
-    "IMPROBABLE",
-    "SUMAMENTE_IMPROBABLE",
-    "REMOTO",
-  ]),
+  severity: z.enum(["A", "B", "C", "D", "E"]),
+  probability: z.enum(["1", "2", "3", "4", "5"]),
 });
 
 type FormSchemaType = z.infer<typeof FormSchema>;
@@ -68,19 +56,19 @@ export default function CreateAnalysisForm({ onClose, id, name }: FormProps) {
   const { createAnalysis } = useCreateAnalysis();
 
   const SEVERITY = [
-    "CATASTROFICO",
-    "PELIGROSO",
-    "GRAVE",
-    "LEVE",
-    "INSIGNIFICANTE",
+    { name: "CATASTROFICO", value: "A" },
+    { name: "PELIGROSO", value: "B" },
+    { name: "GRAVE", value: "C" },
+    { name: "LEVE", value: "D" },
+    { name: "INSIGNIFICANTE", value: "E" },
   ];
 
   const PROBABILITY = [
-    "FRECUENTE",
-    "OCASIONAL",
-    "IMPROBABLE",
-    "SUMAMENTE_IMPROBABLE",
-    "REMOTO",
+    { name: "FRECUENTE", value: "5" },
+    { name: "OCASIONAL", value: "4" },
+    { name: "REMOTO", value: "3" },
+    { name: "IMPROBABLE", value: "2" },
+    { name: "EXTREMADAMENTE_IMPROBABLE", value: "1" },
   ];
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
@@ -92,7 +80,7 @@ export default function CreateAnalysisForm({ onClose, id, name }: FormProps) {
     if (name === "mitigacion") {
       const values = {
         ...data,
-        result: "result",
+        result: data.probability + data.severity,
         mitigation_plan_id: id,
       };
       console.log(values);
@@ -100,8 +88,8 @@ export default function CreateAnalysisForm({ onClose, id, name }: FormProps) {
     } else {
       const values = {
         ...data,
+        result: data.probability + data.severity,
         danger_identification_id: id,
-        result: "result",
       };
       console.log(values);
       await createAnalysis.mutateAsync(values);
@@ -119,31 +107,7 @@ export default function CreateAnalysisForm({ onClose, id, name }: FormProps) {
           Análisis del peligro
         </FormLabel>
 
-        <FormField
-          control={form.control}
-          name="severity"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Severidad del riesgo</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar severidad del peligro" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {SEVERITY.map((severity, index) => (
-                    <SelectItem key={index} value={severity}>
-                      {severity}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormDescription>Elegir la severidad del riesgo</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        
 
         <FormField
           control={form.control}
@@ -159,8 +123,8 @@ export default function CreateAnalysisForm({ onClose, id, name }: FormProps) {
                 </FormControl>
                 <SelectContent>
                   {PROBABILITY.map((probability, index) => (
-                    <SelectItem key={index} value={probability}>
-                      {probability}
+                    <SelectItem key={index} value={probability.value}>
+                      {probability.name} ({probability.value})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -168,6 +132,31 @@ export default function CreateAnalysisForm({ onClose, id, name }: FormProps) {
               <FormDescription>
                 Elegir la probabilidad del riesgo
               </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="severity"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Severidad del riesgo</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar severidad del peligro" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {SEVERITY.map((severity, index) => (
+                    <SelectItem key={index} value={severity.value}>
+                      {severity.name} ({severity.value})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>Elegir la severidad del riesgo</FormDescription>
               <FormMessage />
             </FormItem>
           )}
