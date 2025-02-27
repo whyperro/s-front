@@ -73,18 +73,18 @@ export const columns: ColumnDef<MitigationTable>[] = [
               <hr />
               <hr />
               {(() => {
-                const resultadoFinal = getResult(row.original.analysis.result);
-                if (resultadoFinal === "TOLERABLE") {
+                const riskIndex = getResult(row.original.analysis.result);
+                if (riskIndex === "TOLERABLE") {
                   return <div className="bg-yellow-400 p-4 rounded-lg">
                     <p className="text-white">TOLERABLE</p>
                   </div>;
-                } else if (resultadoFinal === "INTOLERABLE") {
+                } else if (riskIndex === "INTOLERABLE") {
                   return (
                     <div className="bg-red-600 p-4 rounded-lg">
                       <p className="text-white">INTOLERABLE</p>
                     </div>
                   );
-                } else if (resultadoFinal === "ACEPTABLE") {
+                } else if (riskIndex === "ACEPTABLE") {
                   return <div className="bg-green-500 p-4 rounded-lg">
                     <p className="text-white">ACEPTABLE</p>
                   </div>;
