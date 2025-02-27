@@ -150,7 +150,7 @@ export function DailyReportForm() {
               <FormItem>
                 <FormLabel>Descripción de Actividad</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Revision de" {...field} />
+                  <Textarea placeholder="Revision de codigo" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -160,7 +160,7 @@ export function DailyReportForm() {
             <Checkbox checked={manualTime} onCheckedChange={handleManualTimeChange} />
             <FormLabel>Ingresar hora manualmente</FormLabel>
           </FormItem>
-          <FormItem className="w-1/6">
+          <FormItem className="w-[110px]"> 
             <FormLabel>Hora de Inicio</FormLabel>
             <FormControl>
               <Input type="time" value={activity.start_time} disabled={!manualTime} onChange={(e) => setActivity(prev => ({ ...prev, start_time: e.target.value }))} />

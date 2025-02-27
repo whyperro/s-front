@@ -71,6 +71,17 @@ export const columns: ColumnDef<ActivityReports>[] = [
     }
   },
   {
+    accessorKey: "observations",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Observaciones" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <p className="font-medium text-center ml-[2px]">{row.original.observations}</p> // Ajuste de margen
+      )
+    }
+  },
+  {
     id: "actions",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Acciones" />

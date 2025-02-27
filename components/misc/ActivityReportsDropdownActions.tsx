@@ -6,14 +6,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { Eye, Printer, MoreHorizontal } from "lucide-react"
+import { Eye, Printer, MoreHorizontal, MessageSquare } from "lucide-react"
 import { useState } from "react"
 import { Button } from "../ui/button"
-import { Dialog } from "../ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogFooter } from "../ui/dialog"
+import { Input } from "../ui/input"
 import { useRouter } from "next/navigation"
 
 const ActivityReportsDropdownActions = ({ id }: { id: number }) => {
   const [open, setOpen] = useState<boolean>(false)
+  const [observation, setObservation] = useState<string>("")
+  const [isObservationOpen, setIsObservationOpen] = useState<boolean>(false)
   const router = useRouter()
 
   const handleView = () => {
@@ -26,8 +29,27 @@ const ActivityReportsDropdownActions = ({ id }: { id: number }) => {
     window.print()
   }
 
+  const handleSaveObservation = () => {
+    console.log("Observación guardada:", observation)
+    setIsObservationOpen(false)
+  }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <Dialog open={isObservationOpen} onOpenChange={setIsObservationOpen}>
+        <DialogContent>
+          <DialogHeader>Agregar Observación</DialogHeader>
+          <Input
+            value={observation}
+            onChange={(e) => setObservation(e.target.value)}
+            placeholder="Escribe tu observación aquí..."
+          />
+          <DialogFooter>
+            <Button onClick={handleSaveObservation}>Guardar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -42,9 +64,12 @@ const ActivityReportsDropdownActions = ({ id }: { id: number }) => {
           <DropdownMenuItem onClick={handlePrint} className="cursor-pointer">
             <Printer className="size-5" />
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsObservationOpen(true)} className="cursor-pointer">
+            <MessageSquare className="size-5" />
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </Dialog>
+    </>
   )
 }
 
