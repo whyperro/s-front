@@ -22,7 +22,7 @@ const FormSchema = z.object({
   start_time: z.string().optional(),
   manual_start_time: z.boolean().optional(),
   manual_date: z.boolean().optional(),
-  date: z.string().optional(),
+  date: z.date().optional(), // Solo acepta objetos Date
 });
 
 export function DailyReportForm() {
@@ -34,8 +34,6 @@ export function DailyReportForm() {
   const [activity, setActivity] = useState(() => ({
     activity_number: "",
     description: "",
-    // manual_start_time: false,
-    // manual_date: false,
     date: new Date().toISOString().split("T")[0],
     start_time: getCurrentTime(),
   }));
@@ -44,8 +42,6 @@ export function DailyReportForm() {
     resolver: zodResolver(FormSchema), defaultValues: {
       description: "",
       start_time: getCurrentTime(),
-      manual_start_time: false,
-      manual_date: false,
       date: new Date(),
     }
   });
@@ -154,7 +150,7 @@ export function DailyReportForm() {
               <FormItem>
                 <FormLabel>Descripción de Actividad</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="shadcn" {...field} />
+                  <Textarea placeholder="Revision de" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
