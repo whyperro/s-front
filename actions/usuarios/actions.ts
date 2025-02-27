@@ -36,3 +36,34 @@ export const useCreateUser = () => {
       createUser: createMutation,
     }
 }
+
+export const useUpdateUser = () => {
+  const queryClient = useQueryClient()
+  const createMutation = useMutation({
+      mutationFn: async (data: {
+        username: string,
+        email: string,
+        password: string,
+        id: string,
+      }) => {
+          await axiosInstance.put(`/user/${data.id}`, data)
+        },
+      onSuccess: () => {
+          queryClient.invalidateQueries({queryKey: ['users']})
+          queryClient.invalidateQueries({queryKey: ['user']})
+          toast.success("¡Actualizado!", {
+              description: `¡El usuario ha sido actualizado correctamente!`
+          })
+        },
+      onError: (e) => {
+          toast.error("Oops!", {
+            description: "¡Hubo un error al actualizar el usuario!"
+        })
+        },
+      }
+  )
+
+  return {
+    updateUser: createMutation,
+  }
+}

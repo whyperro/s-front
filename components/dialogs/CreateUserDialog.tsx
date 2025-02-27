@@ -3,13 +3,11 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from "@/components/ui/dialog"
 import { CreateUserForm } from "../forms/CreateUserForm"
-import { useState } from "react"
 
 export function CreateUserDialog() {
   return (

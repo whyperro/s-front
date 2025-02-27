@@ -19,6 +19,7 @@ import {
   Settings,
   SquarePen,
   User2,
+  UserRoundCog,
   Wrench
 } from "lucide-react";
 
@@ -418,7 +419,7 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
             },
             {
               href: "/ajustes/bancos_cuentas",
-              label: "Bancos y Cuentas",
+              label: "Bancos",
               active: pathname.includes("/bancos_cuentas"),
               icon: Landmark,
               roles: ["SUPERUSER"],
@@ -439,6 +440,14 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
                   active: pathname === ("/ajustes/bancos_cuentas/tarjetas"),
                 },
               ]
+            },
+            {
+              href: "/ajustes/cuenta",
+              label: "Cuenta",
+              active: pathname.includes("/bancos_cuentas"),
+              icon: UserRoundCog,
+              roles: [],
+              submenus: [],
             },
           ]
         },

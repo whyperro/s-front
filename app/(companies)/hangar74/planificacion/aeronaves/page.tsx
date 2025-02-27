@@ -22,7 +22,7 @@ const AircraftsPage = () => {
         <p className='text-muted-foreground italic text-sm'>Aquí puede llevar un registro de todas las aeronaves registradas en el sistema. <br />Puede crear o editar las aeronaves de ser necesarios.</p>
       </div>
       {
-        aircrafts && <DataTable columns={columns} data={aircrafts} />
+        aircrafts && <DataTable columns={columns} data={[]} />
       }
       {
         isError && <p className='text-muted-foreground italic text-center'>Ha ocurrido un error al cargar los datos...</p>
