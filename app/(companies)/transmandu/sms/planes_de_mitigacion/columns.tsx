@@ -26,8 +26,43 @@ export const columns: ColumnDef<MitigationTable>[] = [
     ),
     meta: { title: "Analisis" },
     cell: ({ row }) => {
+      function getResult(index: string) {
+        const INTOLERABLE: string[] = ["5A", "5B", "5C", "4A", "4B", "3A"];
+        const TOLERABLE: string[] = [
+          "5D",
+          "5E",
+          "4C",
+          "4D",
+          "4E",
+          "3B",
+          "3C",
+          "3D",
+          "2A",
+          "2B",
+          "2C",
+        ];
+        const ACCEPTABLE: string[] = [
+          "3E",
+          "2D",
+          "2E",
+          "1A",
+          "1B",
+          "1C",
+          "1D",
+          "1E",
+        ];
+
+        if (INTOLERABLE.includes(index)) {
+          return "INTOLERABLE";
+        } else if (TOLERABLE.includes(index)) {
+          return "TOLERABLE";
+        } else if (ACCEPTABLE.includes(index)) {
+          return "ACEPTABLE";
+        }
+      }
+
       return (
-        <div className="flex flex-col justify-center">
+        <div className="flex flex-col justify-center text-center">
           {row.original.analysis ? (
             <>
               <p>Probabilidad: {row.original.analysis.probability}</p>
@@ -36,10 +71,29 @@ export const columns: ColumnDef<MitigationTable>[] = [
               <hr />
               <p>Resultado: {row.original.analysis.result}</p>
               <hr />
+              <hr />
+              {(() => {
+                const resultadoFinal = getResult(row.original.analysis.result);
+                if (resultadoFinal === "TOLERABLE") {
+                  return <div className="bg-yellow-400 p-4 rounded-lg">
+                    <p className="text-white">TOLERABLE</p>
+                  </div>;
+                } else if (resultadoFinal === "INTOLERABLE") {
+                  return (
+                    <div className="bg-red-600 p-4 rounded-lg">
+                      <p className="text-white">INTOLERABLE</p>
+                    </div>
+                  );
+                } else if (resultadoFinal === "ACEPTABLE") {
+                  return <div className="bg-green-500 p-4 rounded-lg">
+                    <p className="text-white">ACEPTABLE</p>
+                  </div>;
+                } else {
+                  return null; // O un componente por defecto si lo deseas
+                }
+              })()}
             </>
-          ) : (
-            <p>Sin análisis disponible</p>
-          )}
+          ) : null}
         </div>
       );
     },
@@ -120,9 +174,7 @@ export const columns: ColumnDef<MitigationTable>[] = [
                   </Link>
                 </DialogContent>
               </Dialog>
-            ) : (
-              <div>Sin medidas disponible</div>
-            )}
+            ) : null}
           </div>
         </>
       );
