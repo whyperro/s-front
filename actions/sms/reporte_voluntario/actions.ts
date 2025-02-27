@@ -55,6 +55,7 @@ export const useDeleteVoluntaryReport = () => {
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
+    mutationKey: ["voluntary-reports"],
     mutationFn: async (id: number | string) => {
       await axiosInstance.delete(`/transmandu/voluntary-reports/${id}`);
     },
