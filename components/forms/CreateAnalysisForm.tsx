@@ -38,6 +38,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCreateAnalysis } from "@/actions/sms/analisis/actions";
+import RiskMatrix from "../misc/RiskMatrix";
 
 const FormSchema = z.object({
   severity: z.enum(["A", "B", "C", "D", "E"]),
@@ -107,8 +108,6 @@ export default function CreateAnalysisForm({ onClose, id, name }: FormProps) {
           Análisis del peligro
         </FormLabel>
 
-        
-
         <FormField
           control={form.control}
           name="probability"
@@ -161,6 +160,8 @@ export default function CreateAnalysisForm({ onClose, id, name }: FormProps) {
             </FormItem>
           )}
         />
+
+        <RiskMatrix></RiskMatrix>
         <div className="flex justify-between items-center gap-x-4">
           <Separator className="flex-1" />
           <p className="text-muted-foreground">SIGEAC</p>
