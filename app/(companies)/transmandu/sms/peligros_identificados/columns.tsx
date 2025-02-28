@@ -25,7 +25,11 @@ export const columns: ColumnDef<DangerIdentification>[] = [
   {
     accessorKey: "danger_location",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Localización del peligro" />
+      <DataTableColumnHeader
+        filter
+        column={column}
+        title="Localización del peligro"
+      />
     ),
     cell: ({ row }) => {
       return (
@@ -38,7 +42,11 @@ export const columns: ColumnDef<DangerIdentification>[] = [
   {
     accessorKey: "danger_area",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Area de identificacion" />
+      <DataTableColumnHeader
+        filter
+        column={column}
+        title="Area de identificacion"
+      />
     ),
     cell: ({ row }) => {
       return (
@@ -46,28 +54,7 @@ export const columns: ColumnDef<DangerIdentification>[] = [
       );
     },
   },
-  {
-    accessorKey: "description",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Descripcion del peligro" />
-    ),
-    cell: ({ row }) => (
-      <div className="flex justify-center">{row.original.description}</div>
-    ),
-  },
-  {
-    accessorKey: "possible_consequences",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Posibles consecuencias" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <p className="font-medium text-center">
-          {row.original.possible_consequences}
-        </p>
-      );
-    },
-  },
+
   {
     accessorKey: "consequence_to_evaluate",
     header: ({ column }) => (
@@ -108,23 +95,14 @@ export const columns: ColumnDef<DangerIdentification>[] = [
     },
   },
   {
-    accessorKey: "root_cause_analysis",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Analisis Causa-Raiz" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <p className="font-medium text-center">
-          {row.original.root_cause_analysis}
-        </p>
-      );
-    },
-  },
-  {
     id: "actions",
     cell: ({ row }) => {
       const dangerIdentification = row.original;
-      return <DangerIdentificationDropdownActions dangerIdentification={dangerIdentification} />;
+      return (
+        <DangerIdentificationDropdownActions
+          dangerIdentification={dangerIdentification}
+        />
+      );
     },
   },
 ];
