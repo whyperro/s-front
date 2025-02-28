@@ -11,20 +11,17 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-
-const DailyActivitiesPage = () => {
-
-import { DailyReportForm } from '@/components/forms/DailyReportForm';
-import { useCreateDailyReport} from '@/actions/desarrollo/actions';
+import { useCreateDailyReport } from '@/actions/desarrollo/actions';
 import { useGetDailyActivities } from '@/hooks/desarrollo/useGetDailyActivities';
+import { useParams } from 'next/navigation';
 
 const DailyActivitiesPage = () => {
+  const params: { date: string } = useParams()
   const [loading, setLoading] = useState(true);
   const [hasReport, setHasReport] = useState(false);
-
   const { createDailyReport } = useCreateDailyReport();
   const userId = '1'; // Debe obtenerse dinámicamente
-  const { data: report, isLoading } = useGetDailyActivities(userId); // Obtiene el reporte si existe
+  const { data: report, isLoading } = useGetDailyActivities(userId, params.date); // Obtiene el reporte si existe
 
   useEffect(() => {
     if (!isLoading) {
@@ -44,6 +41,7 @@ const DailyActivitiesPage = () => {
     });
   };
 
+  console.log(report)
 
   return (
     <ContentLayout title='Registro de Actividades'>
@@ -67,7 +65,7 @@ const DailyActivitiesPage = () => {
         {loading ? (
           <div className='flex justify-center'><Loader2 className='animate-spin' /></div>
         ) : hasReport ? (
-          <DailyReportForm />
+          <DailyReportForm activities_length={report!.activities.length} />
         ) : (
           <div className='flex justify-center'>
             <button onClick={handleAddReport} className='flex flex-col items-center gap-2 text-blue-500 hover:text-blue-700'>

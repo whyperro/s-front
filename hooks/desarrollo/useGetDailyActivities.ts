@@ -1,94 +1,30 @@
-import { Activity, Department, JobTitle, User } from "@/types";
+import { ActivityReport } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 
-// Datos estáticos simulados
-const mockActivities: Activity[] = [
-  {
+const fetchDailyActivities = async (userId: string | null, date: string): Promise<ActivityReport> => {
+  return {
     id: 1,
-    initial_hour: "08:00",
-    final_hour: "10:00",
-    employee: {
+    date: "2025-02-28",
+    user: {
       id: 1,
-      first_name: "Juan",
-      last_name: "Pérez",
-      company: "Empresa A",
-      dni: "12345678",
-      job_title: {
-        id: 1,
-        name: "Supervisor de Almacén",
-        description: "Encargado del almacén",
-        department: {
-          id: 1,
-          name: "Logística",
-          email: "logistica@empresa.com"
-        }
-      },
-      department: {
-        id: 1,
-        name: "Logística",
-        email: "logistica@empresa.com"
-      },
-      location: {
-        id: 1,
-        address: "Av. Principal 123",
-        type: "Sucursal",
-        isMainBase: false,
-        cod_iata: "XYZ",
-        companies: []
-      }
+      first_name: "John",
+      last_name: "Doe",
+      email: "example@test.com",
+      isActive: true,
+      username: "johndoe",
+      companies: [],
+      roles: [],
+      permissions: [],
     },
-    description: "Revisión de inventario",
-    result: "Todo en orden"
-  },
-  {
-    id: 2,
-    initial_hour: "10:30",
-    final_hour: "12:00",
-    employee: {
-      id: 2,
-      first_name: "María",
-      last_name: "García",
-      company: "Empresa B",
-      dni: "87654321",
-      job_title: {
-        id: 2,
-        name: "Coordinadora de Proveedores",
-        description: "Gestión de proveedores",
-        department: {
-          id: 2,
-          name: "Compras",
-          email: "compras@empresa.com"
-        }
-      },
-      department: {
-        id: 2,
-        name: "Compras",
-        email: "compras@empresa.com"
-      },
-      location: {
-        id: 2,
-        address: "Calle Secundaria 456",
-        type: "Oficina Central",
-        isMainBase: true,
-        cod_iata: "ABC",
-        companies: []
-      }
-    },
-    description: "Atención de proveedores",
-    result: "Pedido recibido"
-  }
-];
-
-/**
- * Función para obtener actividades filtradas por usuario.
- * @param userId ID del usuario (string o null).
- * @returns Lista de actividades filtradas.
- */
-const fetchDailyActivities = async (userId: string | null): Promise<Activity[]> => {
-  if (!userId) return [];
-
-  return mockActivities.filter(activity => activity.employee.id.toString() === userId);
+    activities: [{
+      id: 1,
+      initial_hour: "08:00",
+      final_hour: "12:00",
+      description: "Actividad de prueba",
+      result: "En progreso",
+    }]
+  };
 };
 
 /**
@@ -96,10 +32,10 @@ const fetchDailyActivities = async (userId: string | null): Promise<Activity[]> 
  * @param userId ID del usuario.
  * @returns Datos de las actividades y estado de carga.
  */
-export const useGetDailyActivities = (userId: string | null) => {
-  return useQuery<Activity[]>({
+export const useGetDailyActivities = (userId: string | null, date: string) => {
+  return useQuery<ActivityReport>({
     queryKey: ["dailyActivities", userId],
-    queryFn: () => fetchDailyActivities(userId),
+    queryFn: () => fetchDailyActivities(userId, date),
     enabled: !!userId, // Solo se ejecuta cuando hay un usuario seleccionado
   });
 };

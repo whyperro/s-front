@@ -25,7 +25,7 @@ const FormSchema = z.object({
   date: z.date().optional(), // Solo acepta objetos Date
 });
 
-export function DailyReportForm() {
+export function DailyReportForm({ activities_length }: { activities_length: number }) {
   const { user } = useAuth();
   const [manualTime, setManualTime] = useState(false);
   const [manualDate, setManualDate] = useState(false);
@@ -140,7 +140,7 @@ export function DailyReportForm() {
           <FormItem className="w-1/6">
             <FormLabel>Número de Actividad</FormLabel>
             <FormControl>
-              <Input placeholder="Ej: 001" value={activity.activity_number} disabled className="w-16 text-center" />
+              <Input value={activities_length + 1} disabled className="w-16 text-center" />
             </FormControl>
           </FormItem>
           <FormField
@@ -160,7 +160,7 @@ export function DailyReportForm() {
             <Checkbox checked={manualTime} onCheckedChange={handleManualTimeChange} />
             <FormLabel>Ingresar hora manualmente</FormLabel>
           </FormItem>
-          <FormItem className="w-[110px]"> 
+          <FormItem className="w-[110px]">
             <FormLabel>Hora de Inicio</FormLabel>
             <FormControl>
               <Input type="time" value={activity.start_time} disabled={!manualTime} onChange={(e) => setActivity(prev => ({ ...prev, start_time: e.target.value }))} />

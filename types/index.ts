@@ -413,10 +413,10 @@ export type GeneralSalesReport = {
   quote_order?: Quote[],
 }[]
 
-export type ActivityReports = {
+export type ActivityReport = {
   id: number,
-  date: Date,
-  employee: User,
+  date: string,
+  user: User,
   activities: Activity[],
   observations?: string,
 }
