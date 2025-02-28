@@ -17,14 +17,13 @@ import { useState } from "react";
 import ActivitiesReportPdf from "../pdf/ActivityReport";
 import { Calendar as DatePicker } from "@/components/ui/calendar"; // Asumiendo que tienes un componente DatePicker
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Input } from "@/components/ui/input";
 
 export function DailyActivitiesReportDialog() {
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const formattedDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : null;
-  const { data: activities, isLoading: reportLoading } = useGetDailyActivities(formattedDate); 
+  const { data: activities, isLoading: reportLoading } = useGetDailyActivities(formattedDate!); 
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -66,7 +65,7 @@ export function DailyActivitiesReportDialog() {
               </Popover>
             </div>
             {
-              activities && selectedDate && (
+              Array.isArray(activities) && selectedDate && (
                 <PDFDownloadLink
                   fileName={`reporte_actividades_${format(selectedDate, "dd-MM-yyyy")}.pdf`}
                   document={<ActivitiesReportPdf activities={activities} />}

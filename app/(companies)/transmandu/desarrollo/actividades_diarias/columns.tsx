@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
 
-import { Activity, ActivityReports } from "@/types"
+import { ActivityReport } from "@/types"
 import { format } from "date-fns"
 import { Checkbox } from "@radix-ui/react-checkbox"
 import { es } from "date-fns/locale"
@@ -14,7 +14,7 @@ import { MoreVertical } from "lucide-react"
 import ActivityReportsDropdownActions from "@/components/misc/ActivityReportsDropdownActions"
 
 
-export const columns: ColumnDef<ActivityReports>[] = [
+export const columns: ColumnDef<ActivityReport>[] = [
   // {
   //   id: "select",
   //   header: ({ table }) => (
@@ -49,13 +49,13 @@ export const columns: ColumnDef<ActivityReports>[] = [
     )
   },
   {
-    accessorKey: "employee",
+    accessorKey: "user",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Empleado Responsable" />
     ),
     cell: ({ row }) => {
       return (
-        <p className="font-medium text-center">{`${row.original.employee.first_name} ${row.original.employee.last_name}`}</p>
+        <p className="font-medium text-center">{`${row.original.user.first_name} ${row.original.user.last_name}`}</p>
       )
     }
   },

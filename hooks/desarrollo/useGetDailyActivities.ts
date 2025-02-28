@@ -1,40 +1,17 @@
+import axiosInstance from "@/lib/axios";
 import { ActivityReport } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 
-const fetchDailyActivities = async (date: string): Promise<ActivityReport> => {
-  return {
-    id: 1,
-    date: "2025-02-28",
-    user: {
-      id: 1,
-      first_name: "John",
-      last_name: "Doe",
-      email: "example@test.com",
-      isActive: true,
-      username: "johndoe",
-      companies: [],
-      roles: [],
-      permissions: [],
-    },
-    activities: [{
-      id: 1,
-      initial_hour: "08:00",
-      final_hour: "12:00",
-      description: "Actividad de prueba",
-      result: "En progreso",
-    }]
-  };
+const fetchDailyActivity = async (date: string): Promise<ActivityReport> => {
+  const {data} = await axiosInstance.get("/transmandu/daily-activities", {params: {date}});
+  return data;
 };
 
-/**
- * Hook para obtener las actividades diarias de un usuario.
- * @param userId ID del usuario.
- * @returns Datos de las actividades y estado de carga.
- */
-export const useGetDailyActivities = ( date: string) => {
+
+export const useGetDailyActivityReport = ( date: string) => {
   return useQuery<ActivityReport>({
-    queryKey: ["dailyActivities", ],
-    queryFn: () => fetchDailyActivities( date),
+    queryKey: ["daily-activity", ],
+    queryFn: () => fetchDailyActivity( date),
   });
 };

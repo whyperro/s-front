@@ -7,7 +7,36 @@ interface CreateActivitySchema {
     manual_start_time?: boolean;
 }
 
-export const useCreateActivity = () => {
+export const useCreateActivityReport = () => {
+    const queryClient = useQueryClient();
+
+    const createMutation = useMutation({
+        mutationFn: async ({date}: {date: string}) => {
+            await axiosInstance.post("/transmandu/activities", {
+                date,
+            });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["activities"] });
+            toast.success("¡Reporte creado!", {
+                description: "El reporte se ha creado correctamente."
+            });
+        },
+        onError: () => {
+            toast.error("Oops!", {
+                description: "Hubo un error al crear el reporte."
+            });
+        }
+    });
+
+    return {
+        createActivityReport: createMutation,
+    };
+};
+
+
+
+export const useRegisterActivity = () => {
     const queryClient = useQueryClient();
 
     const createMutation = useMutation({
@@ -28,6 +57,6 @@ export const useCreateActivity = () => {
     });
 
     return {
-        createActivity: createMutation,
+        registerActivity: createMutation,
     };
 };

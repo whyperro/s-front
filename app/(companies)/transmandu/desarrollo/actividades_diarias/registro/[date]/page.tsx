@@ -11,19 +11,18 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useCreateDailyReport } from '@/actions/desarrollo/actions';
-import { useGetDailyActivities } from '@/hooks/desarrollo/useGetDailyActivities';
+import { useGetDailyActivityReport } from '@/hooks/desarrollo/useGetDailyActivities';
 import { useParams } from 'next/navigation';
 import ConfirmCreateActivityReportDialog from '@/components/dialogs/CreateActivityReportDialog';
+import { useCreateActivityReport, useRegisterActivity } from '@/actions/desarrollo/reportes_diarios/actions';
 
 
 const DailyActivitiesPage = () => {
   const params: { date: string } = useParams();
   const [loading, setLoading] = useState(true);
   const [showDialog, setShowDialog] = useState(false);
-  const { createDailyReport } = useCreateDailyReport();
-  const userId = '1'; // Debe obtenerse dinámicamente
-  const { data: report, isLoading } = useGetDailyActivities( params.date);
+  const { data: report, isLoading } = useGetDailyActivityReport(params.date);
+  const {createActivityReport}  = useCreateActivityReport()
 
   useEffect(() => {
     if (!isLoading) {
@@ -34,14 +33,8 @@ const DailyActivitiesPage = () => {
     }
   }, [report, isLoading]);
 
-  const handleAddReport = () => {
-    const date = new Date().toISOString().split('T')[0];
-
-    createDailyReport.mutate({ date }, {
-      onSuccess: () => {
-        setShowDialog(false);
-      }
-    });
+  const handleCreateActivityReport = () => {
+    createActivityReport.mutate({date: params.date});
   };
 
   return (
@@ -63,11 +56,11 @@ const DailyActivitiesPage = () => {
           Aquí puede registrar las actividades realizadas por la Jefatura de Desarrollo.<br />
         </p>
         
-        {report ? <DailyReportForm activities_length={report.activities.length || 0} /> : (
+        {report ? <DailyReportForm activities_length={report.activities ? report.activities.length : 0} /> : (
           <ConfirmCreateActivityReportDialog 
             open={showDialog} 
             onClose={() => setShowDialog(false)} 
-            onConfirm={handleAddReport} 
+            onConfirm={handleCreateActivityReport} 
           />
         )}
       </div>
