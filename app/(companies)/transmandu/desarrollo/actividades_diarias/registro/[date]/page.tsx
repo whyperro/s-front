@@ -14,34 +14,35 @@ import {
 import { useCreateDailyReport } from '@/actions/desarrollo/actions';
 import { useGetDailyActivities } from '@/hooks/desarrollo/useGetDailyActivities';
 import { useParams } from 'next/navigation';
+import ConfirmCreateActivityReportDialog from '@/components/dialogs/CreateActivityReportDialog';
+
 
 const DailyActivitiesPage = () => {
-  const params: { date: string } = useParams()
+  const params: { date: string } = useParams();
   const [loading, setLoading] = useState(true);
-  const [hasReport, setHasReport] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
   const { createDailyReport } = useCreateDailyReport();
   const userId = '1'; // Debe obtenerse dinámicamente
-  const { data: report, isLoading } = useGetDailyActivities(userId, params.date); // Obtiene el reporte si existe
+  const { data: report, isLoading } = useGetDailyActivities( params.date);
 
   useEffect(() => {
     if (!isLoading) {
-      setHasReport(!!report); // Si hay datos, establece que existe un reporte
       setLoading(false);
+      if (!report) {
+        setShowDialog(true);
+      }
     }
   }, [report, isLoading]);
 
   const handleAddReport = () => {
-    const userId = 1; // Debe obtenerse dinámicamente
     const date = new Date().toISOString().split('T')[0];
 
-    createDailyReport.mutate({ userId, date }, {
+    createDailyReport.mutate({ date }, {
       onSuccess: () => {
-        setHasReport(true); // Actualiza el estado tras crear el reporte
+        setShowDialog(false);
       }
     });
   };
-
-  console.log(report)
 
   return (
     <ContentLayout title='Registro de Actividades'>
@@ -59,20 +60,15 @@ const DailyActivitiesPage = () => {
         </Breadcrumb>
         <h1 className='text-4xl font-bold text-center'>Registro de Actividades</h1>
         <p className='text-sm text-muted-foreground text-center italic'>
-          Aquí puede registrar las actividades realizadas por la Jefatura de Desarrollo. <br />
+          Aquí puede registrar las actividades realizadas por la Jefatura de Desarrollo.<br />
         </p>
-
-        {loading ? (
-          <div className='flex justify-center'><Loader2 className='animate-spin' /></div>
-        ) : hasReport ? (
-          <DailyReportForm activities_length={report!.activities.length} />
-        ) : (
-          <div className='flex justify-center'>
-            <button onClick={handleAddReport} className='flex flex-col items-center gap-2 text-blue-500 hover:text-blue-700'>
-              <PlusCircle size={48} />
-              <span>Agregar Registro</span>
-            </button>
-          </div>
+        
+        {report ? <DailyReportForm activities_length={report.activities.length || 0} /> : (
+          <ConfirmCreateActivityReportDialog 
+            open={showDialog} 
+            onClose={() => setShowDialog(false)} 
+            onConfirm={handleAddReport} 
+          />
         )}
       </div>
     </ContentLayout>

@@ -2,7 +2,7 @@ import { ActivityReport } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 
-const fetchDailyActivities = async (userId: string | null, date: string): Promise<ActivityReport> => {
+const fetchDailyActivities = async (date: string): Promise<ActivityReport> => {
   return {
     id: 1,
     date: "2025-02-28",
@@ -32,10 +32,9 @@ const fetchDailyActivities = async (userId: string | null, date: string): Promis
  * @param userId ID del usuario.
  * @returns Datos de las actividades y estado de carga.
  */
-export const useGetDailyActivities = (userId: string | null, date: string) => {
+export const useGetDailyActivities = ( date: string) => {
   return useQuery<ActivityReport>({
-    queryKey: ["dailyActivities", userId],
-    queryFn: () => fetchDailyActivities(userId, date),
-    enabled: !!userId, // Solo se ejecuta cuando hay un usuario seleccionado
+    queryKey: ["dailyActivities", ],
+    queryFn: () => fetchDailyActivities( date),
   });
 };
