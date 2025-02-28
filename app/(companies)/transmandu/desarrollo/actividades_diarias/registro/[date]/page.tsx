@@ -2,8 +2,7 @@
 
 import { ContentLayout } from '@/components/layout/ContentLayout';
 
-import { useCompanyStore } from '@/stores/CompanyStore';
-import { Loader2 } from 'lucide-react';
+import { DailyReportForm } from '@/components/forms/DailyReportForm';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,14 +10,8 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { DailyReportForm } from '@/components/forms/DailyReportForm';
-
-
-
+} from "@/components/ui/breadcrumb";
 const DailyActivitiesPage = () => {
-
-
   return (
     <ContentLayout title='Registro de Actividades'>
       <div className='flex flex-col gap-y-2'>
