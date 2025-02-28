@@ -392,10 +392,10 @@ export type VoluntaryReport = {
   description: string;
   possible_consequences: string;
   danger_identification_id: number;
-  first_name?: string;
-  last_name?: string;
-  phone?: string;
-  email?: string;
+  reporter_name?: string;
+  reporter_last_name?: string;
+  reporter_phone?: string;
+  reporter_email?: string;
 };
 
 export type DangerIdentification = {
