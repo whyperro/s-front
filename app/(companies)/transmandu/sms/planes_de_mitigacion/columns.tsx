@@ -65,19 +65,20 @@ export const columns: ColumnDef<MitigationTable>[] = [
         <div className="flex flex-col justify-center text-center">
           {row.original.analysis ? (
             <>
+              <hr />
               <p>Probabilidad: {row.original.analysis.probability}</p>
               <hr />
               <p>Severidad: {row.original.analysis.severity}</p>
               <hr />
               <p>Resultado: {row.original.analysis.result}</p>
-              <hr />
-              <hr />
               {(() => {
                 const riskIndex = getResult(row.original.analysis.result);
                 if (riskIndex === "TOLERABLE") {
-                  return <div className="bg-yellow-400 p-4 rounded-lg">
-                    <p className="text-white">TOLERABLE</p>
-                  </div>;
+                  return (
+                    <div className="bg-yellow-400 p-4 rounded-lg">
+                      <p className="text-white">TOLERABLE</p>
+                    </div>
+                  );
                 } else if (riskIndex === "INTOLERABLE") {
                   return (
                     <div className="bg-red-600 p-4 rounded-lg">
@@ -85,9 +86,11 @@ export const columns: ColumnDef<MitigationTable>[] = [
                     </div>
                   );
                 } else if (riskIndex === "ACEPTABLE") {
-                  return <div className="bg-green-500 p-4 rounded-lg">
-                    <p className="text-white">ACEPTABLE</p>
-                  </div>;
+                  return (
+                    <div className="bg-green-500 p-4 rounded-lg">
+                      <p className="text-white">ACEPTABLE</p>
+                    </div>
+                  );
                 } else {
                   return null; // O un componente por defecto si lo deseas
                 }
@@ -126,7 +129,7 @@ export const columns: ColumnDef<MitigationTable>[] = [
     cell: ({ row }) => {
       return (
         <p className="font-medium text-center">
-          {row.original.mitigation_plan?.description}
+          {row.original.mitigation_plan?.description ?? "N/A"}
         </p>
       );
     },
@@ -174,7 +177,9 @@ export const columns: ColumnDef<MitigationTable>[] = [
                   </Link>
                 </DialogContent>
               </Dialog>
-            ) : null}
+            ) : (
+              <p className="text-center">N/A</p>
+            )}
           </div>
         </>
       );
