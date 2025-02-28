@@ -53,15 +53,15 @@ const FormSchema = z.object({
   danger_area: z.string(),
   description: z.string(),
   possible_consequences: z.string(),
-  name: z.string().optional(),
-  last_name: z.string().optional(),
-  phone: z
+  reporter_name: z.string().optional(),
+  reporter_last_name: z.string().optional(),
+  reporter_phone: z
     .string()
     .regex(/^\d{11}$/, {
       message: "El número telefónico debe tener exactamente 11 dígitos",
     })
     .optional(),
-  email: z.string().email().optional(),
+    reporter_email: z.string().email().optional(),
 });
 
 type FormSchemaType = z.infer<typeof FormSchema>;
@@ -309,7 +309,7 @@ export function VoluntaryReportForm({ onClose }: FormProps) {
           <div className="grid grid-cols-2 gap-2">
             <FormField
               control={form.control}
-              name="name"
+              name="reporter_name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nombre</FormLabel>
@@ -323,7 +323,7 @@ export function VoluntaryReportForm({ onClose }: FormProps) {
 
             <FormField
               control={form.control}
-              name="last_name"
+              name="reporter_last_name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Apellido</FormLabel>
@@ -337,7 +337,7 @@ export function VoluntaryReportForm({ onClose }: FormProps) {
 
             <FormField
               control={form.control}
-              name="email"
+              name="reporter_email"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Correo electrónico</FormLabel>
@@ -351,7 +351,7 @@ export function VoluntaryReportForm({ onClose }: FormProps) {
 
             <FormField
               control={form.control}
-              name="phone"
+              name="reporter_phone"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Teléfono</FormLabel>
