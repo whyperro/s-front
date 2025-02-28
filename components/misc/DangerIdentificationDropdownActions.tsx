@@ -5,7 +5,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DangerIdentification, InformationSource, Pilot, VoluntaryReport } from "@/types";
+import {
+  DangerIdentification,
+  InformationSource,
+  Pilot,
+  VoluntaryReport,
+} from "@/types";
 import {
   EyeIcon,
   Loader2,
@@ -42,8 +47,7 @@ const DangerIdentificationDropdownActions = ({
 
   const { deleteDangerIdentification } = useDeleteDangerIdentification();
 
-  const [openCreateAnalysis, setOpenCreateAnalysis] =
-    useState<boolean>(false);
+  const [openCreateAnalysis, setOpenCreateAnalysis] = useState<boolean>(false);
 
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const router = useRouter();
@@ -74,13 +78,21 @@ const DangerIdentificationDropdownActions = ({
               </DropdownMenuItem>
             </DialogTrigger>
 
-
-            {dangerIdentification &&(<DropdownMenuItem
-              onClick={() => setOpenCreateAnalysis(true)}
+            <DropdownMenuItem
+              onClick={() => {
+                router.push(
+                  `/transmandu/sms/peligros_identificados/ver/${dangerIdentification.id}`
+                );
+              }}
             >
-              <ClipboardPenLine className="size-5" />
-            </DropdownMenuItem>)}
-            
+              <EyeIcon className="size-5" />
+            </DropdownMenuItem>
+
+            {dangerIdentification && (
+              <DropdownMenuItem onClick={() => setOpenCreateAnalysis(true)}>
+                <ClipboardPenLine className="size-5" />
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -91,7 +103,8 @@ const DangerIdentificationDropdownActions = ({
                 ¿Seguro que desea eliminar el reporte??
               </DialogTitle>
               <DialogDescription className="text-center p-2 mb-0 pb-0">
-                Esta acción es irreversible y estaría eliminando por completo la identificacion seleccionado.
+                Esta acción es irreversible y estaría eliminando por completo la
+                identificacion seleccionado.
               </DialogDescription>
             </DialogHeader>
 
@@ -119,10 +132,7 @@ const DangerIdentificationDropdownActions = ({
           </DialogContent>
         </Dialog>
 
-        <Dialog
-          open={openCreateAnalysis}
-          onOpenChange={setOpenCreateAnalysis}
-        >
+        <Dialog open={openCreateAnalysis} onOpenChange={setOpenCreateAnalysis}>
           <DialogContent className="flex flex-col max-w-2xl m-2">
             <DialogHeader>
               <DialogTitle></DialogTitle>
@@ -131,7 +141,8 @@ const DangerIdentificationDropdownActions = ({
 
             <CreateAnalysisForm
               onClose={() => setOpenCreateAnalysis(false)}
-              id={dangerIdentification.id} name={"identification"}
+              id={dangerIdentification.id}
+              name={"identification"}
             />
           </DialogContent>
         </Dialog>
