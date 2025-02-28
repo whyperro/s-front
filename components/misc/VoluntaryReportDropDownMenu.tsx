@@ -73,7 +73,7 @@ const VoluntaryReportDropdownActions = ({
 
             <DropdownMenuItem
               onClick={() => {
-                router.push(`/ajustes/globales/pilotos/${voluntaryReport.id}`);
+                router.push(`/transmandu/sms/reportes_voluntarios/ver/${voluntaryReport.id}`);
               }}
             >
               <EyeIcon className="size-5" />
