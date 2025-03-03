@@ -72,6 +72,10 @@ export type Company = {
   rif: string,
   cod_inac: string,
   fiscal_address: string,
+  phone_number: number,
+  alt_phone_number: number,
+  cod_iata: string,
+  cod_oaci: string,
   created_at: string,
   updated_at: string,
 }
@@ -84,6 +88,7 @@ export type Location = {
   isMainBase: boolean,
   cod_iata: string,
   companies: Company[],
+  
 }
 
 export type Warehouse = {
@@ -168,7 +173,11 @@ export type Request = {
 }
 
 export type Department = {
-  id: number
+  id: number,
+  address: string,
+  type: string,
+  is_main_base: string,
+  cod_iata: string,
   name: string,
   email: string,
 }
@@ -199,7 +208,7 @@ export type Aircraft = {
   acronym: string,
   flight_hours: number,
   cycles: number,
-  fabricant_date: string,
+  fabricant_date: Date,
   owner: string,
   aircraft_operator: string,
   type_engine: string,
@@ -427,10 +436,10 @@ export type Flights = {
   date: string,
   details: string,
   fee: number,
-  total_amount: number,
-  type: "carga" | "pax" | "chart",
+  total_amount: number, 
+  type: "CARGA" | "PAX" | "CHART",
   payed_amount: number,
-  debt_status: "pendiente" | "pagado",
+  debt_status: "PENDIENTE" | "PAGADO",
 }
 
 export type Route = {
@@ -441,12 +450,43 @@ export type Route = {
 
 export type FlightPayments = {
   id: number,
-  bank_acount: string,
-  flights: Flights,
+  bank_account: BankAccount,
+  flight: Flights,
   client: Client,
-  pay_method: string,
+  pay_method: "EFECTIVO" | "TARJETA" | "TRANSFERENCIA",
   pay_amount: string,
   payment_date: Date,
   pay_description: string,
 }
+
+//Gestión de Cajas 
+
+export type Cash = {
+  id: number,
+  name: string,
+  total_amount: string,
+  box_type: string,
+}
+
+export type JobTitles = {
+  id: number,
+  name: string,
+  description: string,
+}
+
+export type CashMovement = {
+  id: number,
+  responsible: Employee,
+  cash: Cash,
+  company: Company,
+  date: Date,
+  income_or_output: "INCOME" | "OUTPUT",
+  account: string,
+  category: string,
+  sub_category: string,
+  sub_category_details: string,
+  amount: number,
+  bank_account: BankAccount, 
+}
+
 

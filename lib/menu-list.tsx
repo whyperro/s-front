@@ -3,25 +3,24 @@ import {
   BookUser,
   Building,
   ClipboardCopy,
+  CreditCard,
   Globe,
   HandCoins,
   Landmark,
   LayoutGrid,
   LucideIcon,
+  Map,
   PackageOpen,
   PackagePlus,
   PackageSearch,
   Plane,
-  PlaneIcon,
   PlaneLanding,
   PlaneTakeoff,
   Receipt,
-  Route,
   ScrollText,
   Settings,
   SquarePen,
   User2,
-  Wallet,
   Wrench,
 } from "lucide-react";
 
@@ -78,15 +77,90 @@ export function getMenuList(
             ],
           },
           {
-            groupLabel: "Desarrollo",
+            groupLabel: "Administración",
             menus: [
               {
-                href: "/transmandu/desarrollo/actividades_diarias",
-                label: "Actividades Diarias",
+                href: "/transmandu/administracion/vuelos",
+                label: "Vuelos",
+                active: pathname.includes("/transmandu/administracion/vuelos"),
+                icon: PlaneTakeoff,
+                roles: [
+                  "ANALISTA_PLANIFICACION",
+                  "JEFE_PLANIFICACION",
+                  "SUPERUSER",
+                ],
+                submenus: [],
+              },
+              {
+                href: "/transmandu/administracion/pagos",
+                label: "Pagos",
+                active: pathname.includes("/transmandu/administracion/pagos"),
+                icon: CreditCard,
+                roles: [
+                  "ANALISTA_PLANIFICACION",
+                  "JEFE_PLANIFICACION",
+                  "SUPERUSER",
+                ],
+                submenus: [],
+              },
+              {
+                href: "/transmandu/administracion/gestion_vuelos",
+                label: "Gestion de Vuelos",
                 active: pathname.includes(
-                  "/transmandu/desarrollo/actividades_diarias"
+                  "/transmandu/administracion/gestion_vuelos"
                 ),
-                icon: SquarePen,
+                icon: BookUser,
+                roles: [
+                  "ANALISTA_PLANIFICACION",
+                  "JEFE_PLANIFICACION",
+                  "SUPERUSER",
+                ],
+                submenus: [
+                  {
+                    href: "/transmandu/administracion/gestion_vuelos/aviones",
+                    label: "Gestionar Aviones",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/gestion_vuelos/aviones",
+                  },
+                  {
+                    href: "/transmandu/administracion/gestion_vuelos/rutas",
+                    label: "Gestionar Rutas",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/gestion_vuelos/rutas",
+                  },
+                  {
+                    href: "/transmandu/administracion/gestion_vuelos/clientes",
+                    label: "Gestionar Clientes",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/gestion_vuelos/clientes",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            groupLabel: "Contabilidad",
+            menus: [
+              {
+                href: "/transmandu/contabilidad/cuentas",
+                label: "Cajas",
+                active: pathname.includes("/transmandu/contabilidad/cuentas"),
+                icon: Landmark,
+                roles: [
+                  "ANALISTA_PLANIFICACION",
+                  "JEFE_PLANIFICACION",
+                  "SUPERUSER",
+                ],
+                submenus: [],
+              },
+              {
+                href: "/transmandu/contabilidad/movimientos",
+                label: "Movimientos",
+                active: pathname.includes("/transmandu/contabilidad/movimientos"),
+                icon: Banknote,
                 roles: [
                   "ANALISTA_PLANIFICACION",
                   "JEFE_PLANIFICACION",

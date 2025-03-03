@@ -15,19 +15,23 @@ import { CreateAircraftForm } from "../forms/CreateAircraftForm"
 export function CreateAircraftDialog() {
   const [open, setOpen] = useState<boolean>(false);
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button onClick={() => setOpen(true)} variant={'outline'} className="flex items-center justify-center gap-2 h-8 border-dashed">Registrar Aeronave</Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-xl">
-        <DialogHeader>
-          <DialogTitle>Registro de Aeronave</DialogTitle>
-          <DialogDescription>
-            Registre una aeronave rellenado los datos.
-          </DialogDescription>
-        </DialogHeader>
-        <CreateAircraftForm onClose={() => setOpen(false)} />
-      </DialogContent>
-    </Dialog>
+   <Dialog open={open} onOpenChange={setOpen}>
+         <DialogTrigger asChild>
+           <Button
+             onClick={() => setOpen(true)}
+             variant={"outline"}
+             className="flex items-center justify-center gap-2 h-8 border-dashed"
+           >
+             Registrar Avión
+           </Button>
+         </DialogTrigger>
+         <DialogContent className="sm:max-w-[500px]">
+           <DialogHeader>
+             <DialogTitle>Crear Avión</DialogTitle>
+             <DialogDescription>Cree un nuevo avión.</DialogDescription>
+           </DialogHeader>
+           <CreateAircraftForm onClose={() => setOpen(false)} />
+         </DialogContent>
+       </Dialog>
   )
 }

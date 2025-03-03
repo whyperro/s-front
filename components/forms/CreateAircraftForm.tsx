@@ -1,74 +1,86 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Separator } from "../ui/separator"
-import { Textarea } from "../ui/textarea"
+import { useCreateAircraft } from "@/actions/administracion/aviones/actions";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useGetLocationsByCompanies } from "@/hooks/useGetLocationsByCompanies";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { es } from "date-fns/locale/es";
+import { CalendarIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Separator } from "../ui/separator";
+import { Textarea } from "../ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const FormSchema = z.object({
   fabricant: z.string(),
   brand: z.string(),
   serial: z.string(),
   acronym: z.string(),
-  flight_hours: z.string(),
-  cycles: z.string().optional(),
-  fabricant_date: z.string(),
+  fabricant_date: z.date({
+    required_error: "La fecha de vuelo es requerida",
+  }),
   owner: z.string(),
-  aircraft_operator: z.string(),
-  type_engine: z.string(),
-  number_engine: z.string(),
   comments: z.string(),
-  client_id: z.string(),                                                                                                                                                                                                          
   location_id: z.string(),
-})
+});
 
-type FormSchemaType = z.infer<typeof FormSchema>
+type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
-  onClose: () => void,
+  onClose: () => void;
 }
 
 export function CreateAircraftForm({ onClose }: FormProps) {
-
+  const { createAircraft } = useCreateAircraft();
+  const { data } = useGetLocationsByCompanies();
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-    },
-  })
+    defaultValues: {},
+  });
 
   const onSubmit = (data: FormSchemaType) => {
-    console.log(data)
-  }
+    console.log("submit");
+  };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-3">
-        <div className='flex gap-2 items-center justify-center'>
-          <FormField
-            control={form.control}
-            name="fabricant"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Fabricante</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ej: Boeing, etc..." {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="flex gap-2">
           <FormField
             control={form.control}
             name="serial"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Serial</FormLabel>
                 <FormControl>
-                  <Input placeholder="Empresa de mantenimiento..." {...field} />
+                  <Input
+                    placeholder="Ingrese el código del serial"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -79,91 +91,9 @@ export function CreateAircraftForm({ onClose }: FormProps) {
             name="acronym"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Acronimo</FormLabel>
+                <FormLabel>Matrícula</FormLabel>
                 <FormControl>
-                  <Input placeholder="Ej: J-#######" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="flex gap-2 items-center">
-          <FormField
-            control={form.control}
-            name="owner"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Dueño</FormLabel>
-                <FormControl>
-                  <Input placeholder="Empresa de mantenimiento..." {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="brand"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Marca</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ej: Av. Atlantico, Calle 804..." {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="client_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Cliente</FormLabel>
-                <FormControl>
-                  <Input placeholder="ABC123" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="flex gap-2 items-center">
-          <FormField
-            control={form.control}
-            name="fabricant_date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Fecha de Fabricación</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ej: +58424-2025399" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="flight_hours"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel >Horas de Vuelo</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ej: +58424-2025399" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="cycles"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Ciclos</FormLabel>
-                <FormControl>
-                  <Input placeholder="ABC123" {...field} />
+                  <Input placeholder="Ingrese la Matrícula" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -173,25 +103,12 @@ export function CreateAircraftForm({ onClose }: FormProps) {
         <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
-            name="type_engine"
+            name="brand"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tipo de Motor</FormLabel>
+                <FormLabel>Marca</FormLabel>
                 <FormControl>
-                  <Input placeholder="ABC123" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="number_engine"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Número de Motor</FormLabel>
-                <FormControl>
-                  <Input placeholder="ABC123" {...field} />
+                  <Input placeholder="Marca de la Aeronave" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -202,11 +119,100 @@ export function CreateAircraftForm({ onClose }: FormProps) {
             name="location_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Ubicación</FormLabel>
+                <FormLabel>Ubicacion</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Locación donde pertenecerá el avión" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {data &&
+                      data[0].locations.map((location) => (
+                        <SelectItem
+                          key={location.id}
+                          value={location.id.toString()}
+                        >
+                          {location.address}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <FormField
+          control={form.control}
+          name="owner"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Dueño</FormLabel>
+              <FormControl>
+                <Input placeholder="Nombre del dueño" {...field} />
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+        <div className="flex gap-2 items-center">
+          <FormField
+            control={form.control}
+            name="fabricant"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fabricante</FormLabel>
                 <FormControl>
-                  <Input placeholder="ABC123" {...field} />
+                  <Input placeholder="Ingrese el fabricante" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="fabricant_date"
+            render={({ field }) => (
+              <FormItem className="flex flex-col mt-2.5">
+                <FormLabel>Fecha de Fabricación</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP", {
+                            locale: es,
+                          })
+                        ) : (
+                          <span>Seleccione una fecha</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1999-04-27")
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -218,7 +224,7 @@ export function CreateAircraftForm({ onClose }: FormProps) {
             <FormItem>
               <FormLabel>Comentarios</FormLabel>
               <FormControl>
-                <Textarea placeholder="ABC123" {...field} />
+                <Textarea placeholder="Detalles/Comentarios" {...field} />
               </FormControl>
               <FormMessage className="text-xs" />
             </FormItem>
@@ -229,8 +235,10 @@ export function CreateAircraftForm({ onClose }: FormProps) {
           <p className="text-muted-foreground">SIGEAC</p>
           <Separator className="flex-1" />
         </div>
-        <Button>Registrar Aeronave</Button>
+        <Button type="submit" disabled={createAircraft.isPending}>
+          {createAircraft.isPending ? "Enviando..." : "Enviar"}
+        </Button>
       </form>
     </Form>
-  )
+  );
 }

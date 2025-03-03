@@ -11,7 +11,7 @@ const fetchFlights = async (): Promise<Flights[]> => {
 
 export const useGetFlights = () => {
   return useQuery<Flights[]>({
-    queryKey: ['Flights'],
+    queryKey: ['flights'],
     queryFn: fetchFlights,
     staleTime: 1000 * 60 * 5, // 5 minutos
   });

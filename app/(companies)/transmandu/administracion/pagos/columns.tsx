@@ -5,19 +5,35 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { FlightPayments } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
-import FlightDropdownActions from "@/components/misc/FlightDropdownActions";
+import FlightPaymentsDropdownActions from "@/components/misc/FlightPaymentsDropdownActions";
 
 export const columns: ColumnDef<FlightPayments>[] = [
   {
-    accessorKey: "bank_acount",
+    accessorKey: "payment_date",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Cuenta de Banco" />
+      <DataTableColumnHeader filter column={column} title="Fecha" />
     ),
-    meta: { title: "Cuenta de Banco" },
+    meta: { title: "Fecha" },
+    cell: ({ row }) => {
+      return (
+        <p>
+          {format(row.original.payment_date, "PPP", {
+            locale: es,
+          })}
+        </p>
+      );
+    },
+  },
+  {
+    accessorKey: "client",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Cliente" />
+    ),
+    meta: { title: "Cliente" },
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.bank_acount}
+          {row.original.client.name}
         </span>
       </div>
     ),
@@ -31,21 +47,7 @@ export const columns: ColumnDef<FlightPayments>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.flights.aircraft.serial}
-        </span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "client",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Cliente" />
-    ),
-    meta: { title: "Cliente" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.client.name}
+          {row.original.flight.details}
         </span>
       </div>
     ),
@@ -65,6 +67,20 @@ export const columns: ColumnDef<FlightPayments>[] = [
     ),
   },
   {
+    accessorKey: "bank_acount",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Cuenta de Banco" />
+    ),
+    meta: { title: "Cuenta de Banco" },
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <span className="text-muted-foreground italic">
+          {row.original.bank_account ? row.original.bank_account.name : "N/A"}
+        </span>
+      </div>
+    ),
+  },
+  {
     accessorKey: "pay_amount",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Monto Pagado" />
@@ -79,22 +95,13 @@ export const columns: ColumnDef<FlightPayments>[] = [
     ),
   },
   {
-    accessorKey: "payment_date",
-    header: "Fecha",
-    cell: ({ row }) => {
-      return (
-        <p>
-          {format(row.original.payment_date, "PPP", {
-            locale: es,
-          })}
-        </p>
-      );
-    },
-  },
-  {
     accessorKey: "pay_description",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Descripción de Pago" />
+      <DataTableColumnHeader
+        filter
+        column={column}
+        title="Descripción de Pago"
+      />
     ),
     meta: { title: "Descrición de Pago" },
     cell: ({ row }) => (
@@ -102,5 +109,12 @@ export const columns: ColumnDef<FlightPayments>[] = [
         {row.original.pay_description}
       </div>
     ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const id = row.original.id;
+      return <FlightPaymentsDropdownActions id={row.original.id.toString()} />;
+    },
   },
 ];

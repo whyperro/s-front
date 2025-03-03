@@ -2,10 +2,10 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
-import { Client } from "@/types";
-import ClientDropdownActions from "@/components/misc/ClientDropdownActions";
+import { Cash } from "@/types";
+import CashDropdownActions from "@/components/misc/CashDropdownActions";
 
-export const columns: ColumnDef<Client>[] = [
+export const columns: ColumnDef<Cash>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -13,35 +13,37 @@ export const columns: ColumnDef<Client>[] = [
     ),
     meta: { title: "Nombre" },
     cell: ({ row }) => (
-      <div className="flex justify-center font-bold">
-        {row.original.name}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "phone",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Nro. TLF" />
-    ),
-    meta: { title: "Nro. TLF" },
-    cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.phone}
+          {row.original.name}
         </span>
       </div>
     ),
   },
   {
-    accessorKey: "address",
+    accessorKey: "total_amount",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Ubicacion" />
+      <DataTableColumnHeader filter column={column} title="Total" />
     ),
-    meta: { title: "Ubicacion" },
+    meta: { title: "Total" },
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.address}
+          {row.original.total_amount}
+        </span>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "box_type",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Tipo de Caja" />
+    ),
+    meta: { title: "Tipo de Caja" },
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <span className="text-muted-foreground italic">
+          {row.original.box_type}
         </span>
       </div>
     ),
@@ -49,7 +51,8 @@ export const columns: ColumnDef<Client>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      return <ClientDropdownActions dni={row.original.dni} />;
+      const id = row.original.id;
+      return <CashDropdownActions id={row.original.id.toString()} />;
     },
   },
 ];

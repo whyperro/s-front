@@ -1,35 +1,36 @@
 "use client";
 
 import { ContentLayout } from "@/components/layout/ContentLayout";
-import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import { useGetRoute } from "@/hooks/administracion/useGetRoutes";
+import { columns } from "./columns";
+import { useGetClients } from "@/hooks/administracion/useGetClients";
 import LoadingPage from "@/components/misc/LoadingPage";
 
-const FehaPage = () => {
-  const { data, isLoading, isError } = useGetRoute();
+const ClientsPage = () => {
+  const { data, isLoading, isError } = useGetClients();
 
   if (isLoading) {
     return <LoadingPage />;
   }
 
   return (
-    <ContentLayout title="Rutas">
+    <ContentLayout title="Clientes">
       {" "}
-      <h1 className="text-5xl font-bold text-center mt-2">Control de Rutas</h1>
+      <h1 className="text-5xl font-bold text-center mt-2">
+        Control de Clientes
+      </h1>
       <p className="text-sm text-muted-foreground text-center italic mt-2">
-        Aquí puede llevar el control de las rutas registrados para las
-        aeronaves.
+        Aquí puede llevar el control de los proveedores registrados para las
+        diferentes compras.
       </p>
-      {/*<ClientDialog />*/}
       {data && <DataTable columns={columns} data={data} />}
       {isError && (
         <p className="text-muted-foreground text-sm italic text-center">
-          Ha ocurrido un error al cargar las rutas...
+          Ha ocurrido un error al cargar los clientes...
         </p>
       )}
     </ContentLayout>
   );
 };
 
-export default FehaPage;
+export default ClientsPage;

@@ -5,6 +5,7 @@ import { useGetFlightsPayments } from "@/hooks/administracion/useGetFlightsPayme
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import LoadingPage from "@/components/misc/LoadingPage";
+import { FlightPaymentsDialog } from "@/components/dialogs/CreateFlightPaymentsDialog";
 
 const FlightPaymentsPage = () => {
   const { data, isLoading, isError } = useGetFlightsPayments();
@@ -23,7 +24,6 @@ const FlightPaymentsPage = () => {
         Aquí puede llevar el control de los pagos de los vuelos que han sido
         registrados.
       </p>
-      {/*<FlightPaymentsDialog />*/}
       {data && <DataTable columns={columns} data={data} />}
       {isError && (
         <p className="text-muted-foreground text-sm italic text-center">

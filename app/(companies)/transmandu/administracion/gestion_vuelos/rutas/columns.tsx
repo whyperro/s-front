@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { Route } from "@/types";
+import RouteDropdownActions from "@/components/misc/RouteDropdownActions";
 
 export const columns: ColumnDef<Route>[] = [
   {
@@ -24,5 +25,12 @@ export const columns: ColumnDef<Route>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center font-bold">{row.original.to}</div>
     ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const id = row.original.id;
+      return <RouteDropdownActions id={row.original.id.toString()} />;
+    },
   },
 ];

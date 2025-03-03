@@ -1,37 +1,36 @@
 "use client";
 
 import { ContentLayout } from "@/components/layout/ContentLayout";
-import { DataTable } from "./data-table";
+import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
 import { columns } from "./columns";
-import { useGetClients } from "@/hooks/administracion/useGetClients";
+import { DataTable } from "./data-table";
 import LoadingPage from "@/components/misc/LoadingPage";
+import { CreateAircraftDialog } from "@/components/dialogs/CreateAircraftDialog";
 
-const ClientsPage = () => {
-  const { data, isLoading, isError } = useGetClients();
+const AircraftPage = () => {
+  const { data, isLoading, isError } = useGetAircrafts();
 
   if (isLoading) {
     return <LoadingPage />;
   }
 
   return (
-    <ContentLayout title="Clientes">
+    <ContentLayout title="Aviones">
       {" "}
       <h1 className="text-5xl font-bold text-center mt-2">
-        Control de Clientes
+        Control de Aviones
       </h1>
       <p className="text-sm text-muted-foreground text-center italic mt-2">
-        Aquí puede llevar el control de los proveedores registrados para las
-        diferentes compras.
+        Aqui puede llevar el control de los aviones
       </p>
-      {/*<ClientDialog />*/}
       {data && <DataTable columns={columns} data={data} />}
       {isError && (
         <p className="text-muted-foreground text-sm italic text-center">
-          Ha ocurrido un error al cargar los clientes...
+          Ha ocurrido un error al cargar los aviones...
         </p>
       )}
     </ContentLayout>
   );
 };
 
-export default ClientsPage;
+export default AircraftPage;

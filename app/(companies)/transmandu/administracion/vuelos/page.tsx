@@ -5,6 +5,7 @@ import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { useGetFlights } from "@/hooks/administracion/useGetFlights";
 import LoadingPage from "@/components/misc/LoadingPage";
+import { CreateFlightDialog } from "@/components/dialogs/CreateFlightDialog";
 
 const FlightPage = () => {
   const { data, isLoading, isError } = useGetFlights();
@@ -20,7 +21,6 @@ const FlightPage = () => {
       <p className="text-sm text-muted-foreground text-center italic mt-2">
         Aquí puede llevar el control de los vuelos registrados.
       </p>
-      {/*<FlightDialog />*/}
       {data && <DataTable columns={columns} data={data} />}
       {isError && (
         <p className="text-muted-foreground text-sm italic text-center">
