@@ -428,7 +428,7 @@ export type GeneralSalesReport = {
   quote_order?: Quote[],
 }[]
 
-export type Flights = {
+export type Flight = {
   id:number,
   client: Client, 
   route: Route,      
@@ -451,7 +451,7 @@ export type Route = {
 export type FlightPayments = {
   id: number,
   bank_account: BankAccount,
-  flight: Flights,
+  flight: Flight,
   client: Client,
   pay_method: "EFECTIVO" | "TARJETA" | "TRANSFERENCIA",
   pay_amount: string,

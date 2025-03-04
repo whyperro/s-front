@@ -91,6 +91,15 @@ export function FlightForm({ onClose }: FormProps) {
   });
 
   useEffect(() => {
+    const total = Number(form.watch("total_amount"));
+    const payed = Number(form.watch("payed_amount"));
+    if (payed > total) {
+      form.setValue("payed_amount", total.toString());
+    }
+    console.log(total, payed);
+  }, [form]);
+
+  useEffect(() => {
     let newAmount = 0;
     const fee = parseFloat(form.watch("fee"));
     if (Number(kg) >= 0) {
@@ -322,6 +331,10 @@ export function FlightForm({ onClose }: FormProps) {
                 <FormLabel>Precio a Cobrar</FormLabel>
                 <FormControl>
                   <AmountInput
+                    disabled={
+                      form.watch("type") === "CARGA" ||
+                      form.watch("type") === "PAX"
+                    } // Deshabilitar si es CARGA o PAX
                     defaultValue="0"
                     {...field}
                     onChange={(e) => {
@@ -333,12 +346,6 @@ export function FlightForm({ onClose }: FormProps) {
                 <FormMessage />
               </FormItem>
             )}
-            rules={{
-              validate: (value) => {
-                const amount = parseFloat(value);
-                return amount >= 0 || "El monto total no puede ser negativo";
-              },
-            }}
           />
         </div>
         <div className="flex gap-2 items-center justify-center">
@@ -386,12 +393,10 @@ export function FlightForm({ onClose }: FormProps) {
               )}
               rules={{
                 validate: (value) => {
-                  const totalAmount = parseFloat(
-                    form.getValues("total_amount")
-                  );
+                  const totalAmount = parseFloat(form.watch("total_amount"));
                   const payedAmount = parseFloat(value);
                   return (
-                    payedAmount <= totalAmount ||
+                    payedAmount <= totalAmount &&
                     "El monto pagado no puede ser mayor que el monto total"
                   );
                 },

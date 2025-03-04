@@ -2,12 +2,12 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
-import { Flights } from "@/types";
+import { Flight } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import FlightDropdownActions from "@/components/misc/FlightDropdownActions";
 
-export const columns: ColumnDef<Flights>[] = [
+export const columns: ColumnDef<Flight>[] = [
   {
     accessorKey: "date",
     header: ({ column }) => (
@@ -150,7 +150,7 @@ export const columns: ColumnDef<Flights>[] = [
     id: "actions",
     cell: ({ row }) => {
       const id = row.original.id;
-      return <FlightDropdownActions id={row.original.id.toString()} />;
+      return <FlightDropdownActions flight={row.original} />;
     },
   },
 ];

@@ -19,8 +19,9 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { FlightPaymentsModifiedForm } from "../forms/CreateFlightPaymentsModifiedForm";
+import { Flight } from "@/types";
 
-const FlightDropdownActions = ({ id }: { id: string }) => {
+const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [openPayment, setOpenPayment] = useState<boolean>(false);
   const router = useRouter(); //mouseket herramienta misteriosa
@@ -40,13 +41,16 @@ const FlightDropdownActions = ({ id }: { id: string }) => {
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="center"
-          className="flex gap-2 justify-center"
-        >
-          <DropdownMenuItem onClick={() => setOpenPayment(true)}>
-            <HandCoins className="size-5 text-green-500" />
-          </DropdownMenuItem>
+        <DropdownMenuContent align="center" className="flex gap-2 justify-center">
+          {flight.debt_status === "PAGADO" ? (
+            <DropdownMenuItem disabled>
+              <span className="text-green-500">Pagado</span>
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem onClick={() => setOpenPayment(true)}>
+              <HandCoins className="size-5 text-green-500" />
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
@@ -75,7 +79,7 @@ const FlightDropdownActions = ({ id }: { id: string }) => {
             <Button
               disabled={deleteFlight.isPending}
               className="hover:bg-white hover:text-black hover:border hover:border-black transition-all"
-              onClick={() => handleDelete(id)}
+              onClick={() => handleDelete(flight.id)}
             >
               {deleteFlight.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
@@ -92,11 +96,12 @@ const FlightDropdownActions = ({ id }: { id: string }) => {
           <DialogHeader className="text-center font-bold">
             Registrar Pago
           </DialogHeader>
-          <FlightPaymentsModifiedForm onClose={() => setOpenPayment(false)} />
+          <FlightPaymentsModifiedForm flight={flight} onClose={() => setOpenPayment(false)} />
         </DialogContent>
       </Dialog>
     </>
   );
+
 };
 
 export default FlightDropdownActions;

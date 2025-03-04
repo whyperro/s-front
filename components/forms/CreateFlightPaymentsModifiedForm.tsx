@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import { useGetClients } from "@/hooks/administracion/useGetClients";
 import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
+import { Flight } from "@/types";
 
 const formSchema = z.object({
   bank_acount_id: z.string().optional(),
@@ -46,25 +47,32 @@ const formSchema = z.object({
 
 interface FormProps {
   onClose: () => void;
+  flight: Flight;
 }
 
-export function FlightPaymentsModifiedForm({ onClose }: FormProps) {
+export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
   const { createFlightPayments } = useCreateFlightPayments();
   const {
-      data: clients,
-      isLoading: isClientsLoading,
-      isError: isClientsError,
-    } = useGetClients();
+    data: clients,
+    isLoading: isClientsLoading,
+    isError: isClientsError,
+  } = useGetClients();
   const {
-    data: aircrafts, isLoading: isAircraftLoading, isError: isAircraftError,
-  } = useGetAircrafts(); 
-    const form = useForm<z.infer<typeof formSchema>>({
-      resolver: zodResolver(formSchema),
-      defaultValues: {},
-    });
-
+    data: aircrafts,
+    isLoading: isAircraftLoading,
+    isError: isAircraftError,
+  } = useGetAircrafts();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {},
+  });
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createFlightPayments.mutateAsync(values);
+    const formattedValues = {
+      ...values,
+      client_id: flight.client.id,
+      flight_id: flight.id,
+    };
+    await createFlightPayments.mutateAsync(formattedValues);
     onClose();
   }
   return (
@@ -98,22 +106,24 @@ export function FlightPaymentsModifiedForm({ onClose }: FormProps) {
               </FormItem>
             )}
           />
-          {
-            form.watch("pay_method") !== "EFECTIVO" && (
+          {form.watch("pay_method") !== "EFECTIVO" && (
             <FormField
-            control={form.control}
-            name="bank_acount_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Cuenta de Banco</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ingrese la cuenta de banco " {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />)
-          }
+              control={form.control}
+              name="bank_acount_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cuenta de Banco</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Ingrese la cuenta de banco "
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
         <FormField
           control={form.control}
