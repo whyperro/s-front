@@ -392,6 +392,7 @@ export type VoluntaryReport = {
   description: string;
   possible_consequences: string;
   danger_identification_id: number;
+  status: string;
   reporter_name?: string;
   reporter_last_name?: string;
   reporter_phone?: string;
@@ -457,4 +458,15 @@ export type MitigationTable = {
   information_source_id: number;
   analysis: Analysis;
   mitigation_plan: MitigationPlan | null;
+};
+
+export type ReportsByArea = {
+  name: string;
+  reports_number: string;
+};
+
+export type ReportingStats = {
+  totalReports: number;
+  open: number;
+  closed: number;
 };
