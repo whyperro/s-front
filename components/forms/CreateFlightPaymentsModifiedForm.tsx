@@ -33,11 +33,13 @@ import {
 } from "@/components/ui/select";
 import { useGetClients } from "@/hooks/administracion/useGetClients";
 import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
+import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
+import { Loader2 } from "lucide-react";
 import { Flight } from "@/types";
 
 const formSchema = z.object({
   bank_acount_id: z.string().optional(),
-  pay_method: z.enum(["EFECTIVO", "TARJETA", "TRANSFERENCIA"]),
+  pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"]),
   pay_amount: z.string(),
   payment_date: z.date({
     required_error: "La fecha de vuelo es requerida",
@@ -62,6 +64,7 @@ export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
     isLoading: isAircraftLoading,
     isError: isAircraftError,
   } = useGetAircrafts();
+  const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
@@ -94,13 +97,12 @@ export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleccione el tipo de vuelo" />
+                      <SelectValue placeholder="Seleccione método de pago" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="EFECTIVO">Efectivo</SelectItem>
                     <SelectItem value="TRANSFERENCIA">Transferencia</SelectItem>
-                    <SelectItem value="TARJETA">Tarjeta</SelectItem>
                   </SelectContent>
                 </Select>
               </FormItem>
@@ -113,12 +115,33 @@ export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cuenta de Banco</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Ingrese la cuenta de banco "
-                      {...field}
-                    />
-                  </FormControl>
+                  <Select
+                    disabled={isAccLoading}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={
+                            isAccLoading ? (
+                              <Loader2 className="animate-spin" />
+                            ) : (
+                              "Seleccione el tipo..."
+                            )
+                          }
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {accounts &&
+                        accounts.map((acc) => (
+                          <SelectItem value={acc.id.toString()} key={acc.id}>
+                            {acc.name} 
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

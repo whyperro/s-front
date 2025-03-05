@@ -231,9 +231,9 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             name="account"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tipo de Gasto</FormLabel>
+                <FormLabel>Cuenta</FormLabel>
                 <FormControl>
-                  <Input placeholder="Ingrese el tipo de gasto" {...field} />
+                  <Input placeholder="Ingrese la cuenta" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -336,7 +336,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
           name="bank_account"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Cuenta</FormLabel>
+              <FormLabel>Cuenta de Banco</FormLabel>
               <Select
                 disabled={isAccLoading}
                 onValueChange={field.onChange}
@@ -349,7 +349,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                         isAccLoading ? (
                           <Loader2 className="animate-spin" />
                         ) : (
-                          "Seleccione un tipo..."
+                          "Seleccione una cuenta..."
                         )
                       }
                     />

@@ -43,25 +43,35 @@ const formSchema = z.object({
   route_id: z.string(),
   aircraft_id: z.string(),
   date: z.date({
-    required_error: "La fecha de vuelo es requerida",
+  required_error: "La fecha de vuelo es requerida",
   }),
   details: z.string(),
   fee: z.string(),
   type: z.enum(["CARGA", "PAX", "CHART"]),
   debt_status: z.enum(["PENDIENTE", "PAGADO"]),
   total_amount: z
-    .string()
-    .min(1, "El monto total es requerido")
-    .refine((value) => !isNaN(parseFloat(value)) && parseFloat(value) >= 0, {
-      message: "El monto total no puede ser negativo",
-    }),
+  .string()
+  .min(1, "El monto total es requerido")
+  .refine((value) => !isNaN(parseFloat(value)) && parseFloat(value) >= 0, {
+  message: "El monto total no puede ser negativo",
+  }),
   payed_amount: z
-    .string()
-    .min(1, "El monto pagado es requerido")
-    .refine((value) => !isNaN(parseFloat(value)) && parseFloat(value) >= 0, {
-      message: "El monto pagado no puede ser negativo",
-    }),
-});
+  .string()
+  .min(1, "El monto pagado es requerido")
+  .refine((value) => !isNaN(parseFloat(value)) && parseFloat(value) >= 0, {
+  message: "El monto pagado no puede ser negativo",
+  }),
+  }).refine(
+  (data) => {
+  const totalAmount = parseFloat(data.total_amount);
+  const payedAmount = parseFloat(data.payed_amount);
+  return payedAmount <= totalAmount;
+  },
+  {
+  message: "El monto pagado no puede ser mayor que el precio a cobrar",
+  path: ["payed_amount"], // Esto indica que el error se mostrará en el campo payed_amount
+  }
+  );
 
 interface FormProps {
   onClose: () => void;
@@ -391,16 +401,6 @@ export function FlightForm({ onClose }: FormProps) {
                   <FormMessage />
                 </FormItem>
               )}
-              rules={{
-                validate: (value) => {
-                  const totalAmount = parseFloat(form.watch("total_amount"));
-                  const payedAmount = parseFloat(value);
-                  return (
-                    payedAmount <= totalAmount &&
-                    "El monto pagado no puede ser mayor que el monto total"
-                  );
-                },
-              }}
             />
           )}
         </div>

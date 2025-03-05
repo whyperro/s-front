@@ -448,30 +448,22 @@ export type Route = {
   to: string,
 }
 
-export type FlightPayments = {
+export type FlightPayment = {
   id: number,
   bank_account: BankAccount,
   flight: Flight,
   client: Client,
-  pay_method: "EFECTIVO" | "TARJETA" | "TRANSFERENCIA",
+  pay_method: "EFECTIVO" | "TRANSFERENCIA",
   pay_amount: string,
   payment_date: Date,
   pay_description: string,
 }
-
-//Gestión de Cajas 
 
 export type Cash = {
   id: number,
   name: string,
   total_amount: string,
   box_type: string,
-}
-
-export type JobTitles = {
-  id: number,
-  name: string,
-  description: string,
 }
 
 export type CashMovement = {
