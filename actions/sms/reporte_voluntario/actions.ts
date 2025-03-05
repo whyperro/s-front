@@ -15,6 +15,7 @@ interface VoluntaryReportData {
   danger_area: string;
   description: string;
   possible_consequences: string;
+  status: string;
   name?: string;
   last_name?: string;
   phone?: string;
