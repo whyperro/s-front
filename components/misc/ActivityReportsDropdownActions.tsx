@@ -13,15 +13,14 @@ import { Dialog, DialogContent, DialogHeader, DialogFooter } from "../ui/dialog"
 import { Input } from "../ui/input"
 import { useRouter } from "next/navigation"
 
-const ActivityReportsDropdownActions = ({ id }: { id: number }) => {
+const ActivityReportsDropdownActions = ({ id, date }: { id: number, date: string }) => {
   const [open, setOpen] = useState<boolean>(false)
   const [observation, setObservation] = useState<string>("")
   const [isObservationOpen, setIsObservationOpen] = useState<boolean>(false)
   const router = useRouter()
 
   const handleView = () => {
-    console.log("Visualizando reporte con ID:", id)
-    router.push(`/transmandu/desarrollo/actividades_diarias/${id}`)
+    router.push(`/transmandu/desarrollo/actividades_diarias/${date}/${id}`)
   }
 
   const handlePrint = () => {

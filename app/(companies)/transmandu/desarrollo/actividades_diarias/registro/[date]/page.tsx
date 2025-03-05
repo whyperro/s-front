@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { ContentLayout } from '@/components/layout/ContentLayout';
 import { DailyReportForm } from '@/components/forms/DailyReportForm';
 import { Loader2, PlusCircle } from 'lucide-react';
@@ -14,10 +15,11 @@ import {
 import { useGetDailyActivityReport } from '@/hooks/desarrollo/useGetDailyActivities';
 import { useParams } from 'next/navigation';
 import ConfirmCreateActivityReportDialog from '@/components/dialogs/CreateActivityReportDialog';
-import { useCreateActivityReport, useRegisterActivity } from '@/actions/desarrollo/reportes_diarios/actions';
+import { useCreateActivityReport } from '@/actions/desarrollo/reportes_diarios/actions';
 
 
 const DailyActivitiesPage = () => {
+  const router = useRouter();
   const params: { date: string } = useParams();
   const [loading, setLoading] = useState(true);
   const [showDialog, setShowDialog] = useState(false);

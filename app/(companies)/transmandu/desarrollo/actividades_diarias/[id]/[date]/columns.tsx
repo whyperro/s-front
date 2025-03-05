@@ -26,7 +26,7 @@ export const columns: ColumnDef<Activity>[] = [
     }
   },
   {
-    accessorKey: "initial_hour",
+    accessorKey: "start_hour",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Hora de Inicio" />
     ),

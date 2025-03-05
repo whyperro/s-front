@@ -9,21 +9,22 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
-import { useGetDailyActivities } from "@/hooks/desarrollo/useGetDailyActivities";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { Calendar } from "lucide-react";
 import { useState } from "react";
 import ActivitiesReportPdf from "../pdf/ActivityReport";
-import { Calendar as DatePicker } from "@/components/ui/calendar"; // Asumiendo que tienes un componente DatePicker
+import { Calendar as DatePicker } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useGetDailyActivityReport } from "@/hooks/desarrollo/useGetDailyActivities";
+
 
 export function DailyActivitiesReportDialog() {
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const formattedDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : null;
-  const { data: activities, isLoading: reportLoading } = useGetDailyActivities(formattedDate!); 
+  const { data: activities, isLoading: reportLoading } = useGetDailyActivityReport(formattedDate!); 
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

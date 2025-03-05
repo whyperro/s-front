@@ -52,7 +52,8 @@ export function DailyReportForm({ activities_length, report_id }: { activities_l
     }
     console.log(formattedData)
     await registerActivity.mutateAsync(formattedData);
-    router.refresh()
+    // router.refresh()
+    window.location.reload();
   };
 
   return (
