@@ -42,23 +42,8 @@ export const columns: ColumnDef<VoluntaryReport>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex justify-center">
-            {row.original.report_number ?? "N/A"}
+          {row.original.report_number ?? "N/A"}
         </div>
-      );
-    },
-  },
-  {
-    accessorKey: "incident_date",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Fecha del Incidente" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <p className="font-medium text-center">
-          {format(row.original.report_date, "PPP", {
-            locale: es,
-          })}
-        </p>
       );
     },
   },
@@ -80,7 +65,11 @@ export const columns: ColumnDef<VoluntaryReport>[] = [
   {
     accessorKey: "danger_area",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Area de identificacion" />
+      <DataTableColumnHeader
+        filter
+        column={column}
+        title="Area de identificacion"
+      />
     ),
     cell: ({ row }) => {
       return (
@@ -91,7 +80,11 @@ export const columns: ColumnDef<VoluntaryReport>[] = [
   {
     accessorKey: "danger_location",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Localización del peligro" />
+      <DataTableColumnHeader
+        filter
+        column={column}
+        title="Localización del peligro"
+      />
     ),
     cell: ({ row }) => {
       return (
@@ -101,7 +94,6 @@ export const columns: ColumnDef<VoluntaryReport>[] = [
       );
     },
   },
-
   {
     accessorKey: "description",
     header: ({ column }) => (
@@ -112,10 +104,27 @@ export const columns: ColumnDef<VoluntaryReport>[] = [
     ),
   },
   {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Estado del Reporte" />
+    ),
+    cell: ({ row }) => (
+      <div
+        className={`flex justify-center rounded-full ${
+          row.original.status === "CLOSED" ? "bg-green-500" : "bg-red-600"
+        }`}
+      >
+        {row.original.status}
+      </div>
+    ),
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const voluntaryReport = row.original;
-      return <VoluntaryReportDropdownActions voluntaryReport={voluntaryReport} />;
+      return (
+        <VoluntaryReportDropdownActions voluntaryReport={voluntaryReport} />
+      );
     },
   },
 ];
