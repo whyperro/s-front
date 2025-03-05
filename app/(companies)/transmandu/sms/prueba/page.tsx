@@ -1,120 +1,105 @@
 "use client";
 
 import { ContentLayout } from "@/components/layout/ContentLayout";
-import React, { PureComponent } from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  TooltipProps,
-} from "recharts";
+import { useGetVoluntaryReportsCountedByArea } from "@/hooks/sms/useGetVoluntaryReportsCountedByArea";
+import { ReportsByArea } from "@/types";
+import { Tooltip } from "@radix-ui/react-tooltip";
+import React, { PureComponent, useState } from "react";
+import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
 
-interface DataPoint {
-  name: string;
-  uv: number;
-  reports: number;
-  amt: number;
-}
-
-const data: DataPoint[] = [
-  {
-    name: "NATURAL",
-    uv: 4000,
-    reports: 24,
-    amt: 2400,
-  },
-  {
-    name: "TECNICO",
-    uv: 3000,
-    reports: 13,
-    amt: 2210,
-  },
-  {
-    name: "HUMANO",
-    uv: 2000,
-    reports: 8,
-    amt: 2290,
-  },
-  {
-    name: "ORGANIZACIONAL",
-    uv: 2780,
-    reports: 9,
-    amt: 2000,
-  },
+const COLORS: string[] = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#ED1C1C",
+  "#CE33FF",
 ];
 
-const getIntroOfPage = (label: string): string => {
-  if (label === "ORGANIZACIONAL") {
-    return "Peligros de tipo organizacional";
-  }
-  if (label === "TECNICO") {
-    return "Peligros de tipo tecnico";
-  }
-  if (label === "NATURAL") {
-    return "Peligros de tipo natural";
-  }
-  if (label === "HUMANO") {
-    return "Peligros de tipo humano";
-  }
-
-  return "";
-};
-
-interface CustomTooltipProps extends TooltipProps<number, string> {}
-
-const CustomTooltip: React.FC<CustomTooltipProps> = ({
-  active,
-  payload,
-  label,
-}) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="custom-tooltip">
-        <p className="label">{`${label} : ${payload[0].value}`}</p>
-        <p className="intro">{getIntroOfPage(label)}</p>
-        <p className="desc">Anything you want can be displayed here.</p>
-      </div>
-    );
-  }
-
-  return null;
-};
-
-interface ExampleProps {}
-
-export default class Example extends PureComponent<ExampleProps> {
-  static demoUrl =
-    "https://codesandbox.io/p/sandbox/tooltip-with-customized-content-vgl956";
-
-  render() {
-    return (
-      <ContentLayout title="Reportes Segun el Tipo">
-        <ResponsiveContainer width="60%" height="60% " aspect={2}>
-        <BarChart
-          width={500}
-          height={300}
-          data={data}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend />
-          <Bar dataKey="reports" name={"Numero de reporte segun su tipo"} barSize={20} fill="#57ff36" />
-        </BarChart>
-      </ResponsiveContainer>
-      </ContentLayout>
-    );
-  }
+interface CustomizedLabelProps {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  percent: number;
+  index: number;
+  payload: ReportsByArea;
 }
+
+const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  percent,
+  index,
+  payload,
+}: CustomizedLabelProps) => {
+  const radius = outerRadius * 1.2;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="white"
+      textAnchor={x > cx ? "start" : "end"}
+      dominantBaseline="bottom"
+      fontSize="20px" // Ajusta el tamaño de la fuente
+      fontFamily="Arial" // Ajusta la fuente
+    >
+      <tspan x={x} dy="-1em">{`${(percent * 100).toFixed(0)}%`}</tspan>
+      <tspan x={x} dy="1em">{`${payload.name}`}</tspan>
+    </text>
+  );
+};
+
+const Stats = () => {
+  const {
+    data: statsData,
+    isLoading: isLoadingStats,
+    isError: isErrorStats,
+  } = useGetVoluntaryReportsCountedByArea("2023");
+
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const onPieEnter = (_: void, index: number) => {
+    setActiveIndex(index);
+    console.log(activeIndex);
+  };
+  return (
+    <ContentLayout title="Reportes: Identificados vs Gestionados">
+      <ResponsiveContainer width="100%" height="100%" aspect={2}>
+        <PieChart width={400} height={400}>
+          {statsData ? (
+            <Pie
+              data={statsData}
+              cx="50%"
+              cy="50%"
+              labelLine={true}
+              label={renderCustomizedLabel}
+              outerRadius={140}
+              fill="#8884d8"
+              dataKey="reports_number"
+              activeIndex={activeIndex}
+              onMouseEnter={onPieEnter}
+            >
+              {statsData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+              <Tooltip/>
+            </Pie>
+          ) : (
+            <p>No hay datos para mostrar..</p>
+          )}
+        </PieChart>
+      </ResponsiveContainer>
+    </ContentLayout>
+  );
+};
+export default Stats;
