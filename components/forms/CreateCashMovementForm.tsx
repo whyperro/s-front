@@ -28,7 +28,6 @@ import { useGetCash } from "@/hooks/contabilidad/useGetCash";
 import { useGetEmployeesByCompany } from "@/hooks/contabilidad/useGetEmployees";
 import { useGetCompanies } from "@/hooks/useGetCompanies";
 import { cn } from "@/lib/utils";
-import { Employee } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
@@ -38,12 +37,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 import { Loader2 } from "lucide-react";
-import Cash from "@/app/(companies)/transmandu/contabilidad/cuentas/page";
 
 const formSchema = z.object({
   responsible: z.string(),
   cash: z.string(),
-  company_id: z.string(),
+  company: z.string(),
   date: z.date(),
   income_or_output: z.enum(["INCOME", "OUTPUT"]),
   account: z.string(),
@@ -75,13 +73,13 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
-  const company_id = form.watch("company_id");
+  const company = form.watch("company");
   useEffect(() => {
-    if (company_id) {
-      console.log("dentro de if de ue");
-      mutate(form.watch("company_id"));
+    if (company) {
+      //AQUI
+      mutate(form.watch("company"));
     }
-  }, [form, mutate, company_id]);
+  }, [form, mutate, company]);
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await createCashMovement.mutateAsync(values);
     onClose();
@@ -139,7 +137,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
           />
           <FormField
             control={form.control}
-            name="company_id"
+            name="company"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Empresa</FormLabel>
@@ -150,7 +148,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleccione una empresa" />
+                      <SelectValue placeholder="Seleccione" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -158,7 +156,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                       companies.map((company) => (
                         <SelectItem
                           key={company.id}
-                          value={company.id.toString()}
+                          value={company.name.toLowerCase().split(" ").join("")}
                         >
                           {company.name}
                         </SelectItem>
@@ -183,7 +181,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleccione el tipo de transacción" />
+                      <SelectValue placeholder="Ingreso/Egreso" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -194,8 +192,6 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
               </FormItem>
             )}
           />
-        </div>
-        <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
             name="cash"
@@ -209,7 +205,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleccione el tipo de caja" />
+                      <SelectValue placeholder="Seleccione la caja" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -225,7 +221,8 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
               </FormItem>
             )}
           />
-
+        </div>
+        <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
             name="account"
@@ -239,8 +236,6 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
               </FormItem>
             )}
           />
-        </div>
-        <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
             name="category"
@@ -248,15 +243,14 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
               <FormItem>
                 <FormLabel>Categoría</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Ingrese el tipo de categoría"
-                    {...field}
-                  />
+                  <Input placeholder="Ingrese la categoría" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+        </div>
+        <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
             name="sub_category"
@@ -264,10 +258,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
               <FormItem>
                 <FormLabel>Subcategoría</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Ingrese el tipo de subcategoría"
-                    {...field}
-                  />
+                  <Input placeholder="Ingrese la subcategoría" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -278,9 +269,9 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             name="sub_category_details"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Detalles de Sub Categoría</FormLabel>
+                <FormLabel>Detalles</FormLabel>
                 <FormControl>
-                  <Input placeholder="Ingrese el detalle" {...field} />
+                  <Input placeholder="Ingrese los detalles" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -308,13 +299,13 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
               <FormItem>
                 <FormLabel>Responsable</FormLabel>
                 <Select
-                  disabled={isEmployeesPending || !form.watch("company_id")}
+                  disabled={isEmployeesPending || !form.watch("company")}
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleccione un responsable" />
+                      <SelectValue placeholder="Seleccione" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>

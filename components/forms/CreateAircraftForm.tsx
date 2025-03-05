@@ -63,7 +63,7 @@ export function CreateAircraftForm({ onClose }: FormProps) {
   });
 
   const onSubmit = (data: FormSchemaType) => {
-    console.log("submit");
+    createAircraft.mutate(data);
   };
 
   return (

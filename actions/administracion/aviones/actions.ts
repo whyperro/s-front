@@ -12,7 +12,7 @@ export const useCreateAircraft = () => {
         onSuccess: () => {
             queryAircraft.invalidateQueries({queryKey: ['aircrafts']})
             toast("¡Creado!", {
-                description: `¡El vuelo se ha creado correctamente!`
+                description: `¡La aeronave se ha creado correctamente!`
             })
           },
         onError: (error) => {
@@ -40,7 +40,7 @@ export const useDeleteAircraft = () => {
 
           queryAircraft.invalidateQueries({queryKey: ['aircrafts']})
           toast.success("¡Eliminado!", {
-              description: `¡El avión ha sido eliminado correctamente!`
+              description: `¡La aeronave ha sido eliminado correctamente!`
           })
         },
       onError: (e) => {

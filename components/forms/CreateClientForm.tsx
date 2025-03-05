@@ -25,11 +25,11 @@ const formSchema = z.object({
   dni: z.string().min(7, {
     message: "Debes tener al menos 7 numeros .",
   }),
-  name: z.string().max(40).min(2, {
+  name: z.string().max(40).regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras").min(2, {
     message: "El nombre debe tener al menos 2 caracteres y maximo 40.",
   }),
   phone: z.string().min(10, "El número de tlf debe tener al menos 10 digitos")
-  .max(15, "El número de telefono debe tener hasta maximo 15 digitos").regex(phoneRegex, "Invalid Phone Number"),
+  .max(15, "El número de telefono debe tener hasta maximo 15 digitos").regex(phoneRegex, "Número de telefono invalido"),
   email: z.string().email({
     message: "Debe ser un email válido.",
   }),
@@ -63,7 +63,7 @@ export function CreateClientForm({ onClose }: FormProps) {
             <FormItem>
               <FormLabel>DNI</FormLabel>
               <FormControl>
-                <Input placeholder="Ingresa Cedula o Rif" {...field} />
+                <Input placeholder="Ej: V-12345678" {...field} />
               </FormControl>
               <FormMessage className="text-xs"/>
             </FormItem>
@@ -90,8 +90,7 @@ export function CreateClientForm({ onClose }: FormProps) {
             <FormItem>
               <FormLabel>Teléfono</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
+                <Input                  
                   placeholder="Ej: +58 424-7000001"
                   {...field}
                 />

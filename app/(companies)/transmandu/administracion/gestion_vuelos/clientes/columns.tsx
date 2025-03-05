@@ -1,9 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { Client } from "@/types";
 import ClientDropdownActions from "@/components/misc/ClientDropdownActions";
+import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 
 export const columns: ColumnDef<Client>[] = [
   {
