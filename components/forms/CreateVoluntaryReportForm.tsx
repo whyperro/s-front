@@ -85,7 +85,11 @@ export function VoluntaryReportForm({ onClose }: FormProps) {
   });
 
   const onSubmit = async (data: FormSchemaType) => {
-    await createVoluntaryReport.mutateAsync(data);
+    const value = {
+      ...data,
+      status: "OPEN",
+    }
+    await createVoluntaryReport.mutateAsync(value);
     onClose();
   };
 
