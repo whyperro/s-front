@@ -77,7 +77,7 @@ const CompanySelect = () => {
         <SelectContent defaultValue={''}>
           {userLoading && <Loader2 className="size-4 animate-spin" />}
           {user && user.companies && user?.companies.map((c: Company) => (
-            <SelectItem value={c.name.toLowerCase()} key={c.name}>{c.name}</SelectItem>
+            <SelectItem value={c.name.toLowerCase()} key={c.id}>{c.name}</SelectItem>
           ))}
         </SelectContent>
       </Select>

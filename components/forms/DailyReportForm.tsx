@@ -1,83 +1,58 @@
+import { useRegisterActivity } from "@/actions/desarrollo/reportes_diarios/actions";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Checkbox } from "@/components/ui/checkbox";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Textarea } from "@/components/ui/textarea";
-import { Calendar, Calendar as DatePicker } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format } from "date-fns";
-import { useFetchActivityNumber } from "@/hooks/desarrollo/useGetActivityNumber";
 import { Label } from "../ui/label";
-import { cn } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
-import { es } from "date-fns/locale";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   description: z.string().min(1, "Requerido"),
-  start_time: z.string().optional(),
-  manual_start_time: z.boolean().optional(),
+  start_hour: z.string().optional(),
+  manual_start_hour: z.boolean().optional(),
   manual_date: z.boolean().optional(),
   date: z.date().optional(), // Solo acepta objetos Date
 });
 
-export function DailyReportForm({ activities_length }: { activities_length: number }) {
+function getCurrentTime() {
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+}
+
+export function DailyReportForm({ activities_length, report_id }: { activities_length: number, report_id: string | number }) {
   const { user } = useAuth();
+  const { registerActivity } = useRegisterActivity()
   const [manualTime, setManualTime] = useState(false);
   const [manualDate, setManualDate] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const { mutate: getActivityNumber, data: activityNumber } = useFetchActivityNumber();
-  const [activity, setActivity] = useState(() => ({
-    activity_number: "",
-    description: "",
-    date: new Date().toISOString().split("T")[0],
-    start_time: getCurrentTime(),
-  }));
-
+  const router = useRouter()
   const form = useForm({
     resolver: zodResolver(FormSchema), defaultValues: {
       description: "",
-      start_time: getCurrentTime(),
+      start_hour: getCurrentTime(),
       date: new Date(),
     }
   });
 
-  useEffect(() => {
-    getActivityNumber(activity.date, {
-      onSuccess: (number) => {
-        setActivity(prev => ({
-          ...prev,
-          activity_number: number,
-        }));
-      },
-      onError: (error) => {
-        console.error("Error obteniendo el número de actividad:", error);
-      },
-    });
-  }, [activity.date, getActivityNumber]);
-
-  useEffect(() => {
-    if (!manualTime) {
-      setActivity(prev => ({ ...prev, start_time: getCurrentTime() }));
+  const handleSubmit = async (data: z.infer<typeof FormSchema>) => {
+    const formattedData = {
+      ...data,
+      activity_report_id: report_id,
     }
-  }, [manualTime]);
-
-  function getCurrentTime() {
-    const now = new Date();
-    return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-  }
-
-  function handleManualTimeChange(checked: boolean) {
-    setManualTime(checked);
-    if (!checked) setActivity(prev => ({ ...prev, start_time: getCurrentTime() }));
-  }
-
-  const handleSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log(data)
+    console.log(formattedData)
+    await registerActivity.mutateAsync(formattedData);
+    router.refresh()
   };
 
   return (
@@ -157,13 +132,13 @@ export function DailyReportForm({ activities_length }: { activities_length: numb
             )}
           />
           <FormItem className="flex items-center space-x-2">
-            <Checkbox checked={manualTime} onCheckedChange={handleManualTimeChange} />
+            <Checkbox checked={manualTime} />
             <FormLabel>Ingresar hora manualmente</FormLabel>
           </FormItem>
           <FormItem className="w-[110px]">
             <FormLabel>Hora de Inicio</FormLabel>
             <FormControl>
-              <Input type="time" value={activity.start_time} disabled={!manualTime} onChange={(e) => setActivity(prev => ({ ...prev, start_time: e.target.value }))} />
+              <Input type="time" disabled={!manualTime} onChange={(e) => form.setValue("start_hour", e.target.value)} />
             </FormControl>
           </FormItem>
         </div>

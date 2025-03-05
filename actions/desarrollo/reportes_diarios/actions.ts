@@ -12,7 +12,7 @@ export const useCreateActivityReport = () => {
 
     const createMutation = useMutation({
         mutationFn: async ({date}: {date: string}) => {
-            await axiosInstance.post("/transmandu/activities", {
+            await axiosInstance.post("/transmandu/activity-report", {
                 date,
             });
         },
@@ -34,14 +34,12 @@ export const useCreateActivityReport = () => {
     };
 };
 
-
-
 export const useRegisterActivity = () => {
     const queryClient = useQueryClient();
 
     const createMutation = useMutation({
         mutationFn: async (data: CreateActivitySchema) => {
-            await axiosInstance.post("/api/transmandu/activities", data);
+            await axiosInstance.post("/transmandu/activity", data);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["activities"] });

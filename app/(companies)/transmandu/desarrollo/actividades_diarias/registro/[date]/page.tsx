@@ -22,7 +22,7 @@ const DailyActivitiesPage = () => {
   const [loading, setLoading] = useState(true);
   const [showDialog, setShowDialog] = useState(false);
   const { data: report, isLoading } = useGetDailyActivityReport(params.date);
-  const {createActivityReport}  = useCreateActivityReport()
+  const { createActivityReport } = useCreateActivityReport()
 
   useEffect(() => {
     if (!isLoading) {
@@ -34,7 +34,7 @@ const DailyActivitiesPage = () => {
   }, [report, isLoading]);
 
   const handleCreateActivityReport = () => {
-    createActivityReport.mutate({date: params.date});
+    createActivityReport.mutate({ date: params.date });
   };
 
   return (
@@ -55,14 +55,15 @@ const DailyActivitiesPage = () => {
         <p className='text-sm text-muted-foreground text-center italic'>
           Aquí puede registrar las actividades realizadas por la Jefatura de Desarrollo.<br />
         </p>
-        
-        {report ? <DailyReportForm activities_length={report.activities ? report.activities.length : 0} /> : (
-          <ConfirmCreateActivityReportDialog 
-            open={showDialog} 
-            onClose={() => setShowDialog(false)} 
-            onConfirm={handleCreateActivityReport} 
+
+        {report ? <DailyReportForm report_id={report.id} activities_length={report.activities ? report.activities.length : 0} /> : (
+          <ConfirmCreateActivityReportDialog
+            open={showDialog}
+            onClose={() => setShowDialog(false)}
+            onConfirm={handleCreateActivityReport}
           />
         )}
+
       </div>
     </ContentLayout>
   );
