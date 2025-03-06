@@ -91,7 +91,7 @@ export function CreateClientForm({ onClose }: FormProps) {
               <FormLabel>Teléfono</FormLabel>
               <FormControl>
                 <Input                  
-                  placeholder="Ej: +58 424-7000001"
+                  placeholder="Ej: +584247000001"
                   {...field}
                 />
               </FormControl>

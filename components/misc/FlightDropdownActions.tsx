@@ -4,7 +4,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { HandCoins, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
+import {
+  EyeIcon,
+  HandCoins,
+  Loader2,
+  MoreHorizontal,
+  Trash2,
+} from "lucide-react";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -24,7 +30,7 @@ import { Flight } from "@/types";
 const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [openPayment, setOpenPayment] = useState<boolean>(false);
-  const router = useRouter(); //mouseket herramienta misteriosa
+  const router = useRouter();
   const { deleteFlight } = useDeleteFlight();
 
   const handleDelete = async (id: number | string) => {
@@ -41,7 +47,10 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="center" className="flex gap-2 justify-center">
+        <DropdownMenuContent
+          align="center"
+          className="flex gap-2 justify-center"
+        >
           {flight.debt_status === "PAGADO" ? (
             <DropdownMenuItem disabled>
               <span className="text-green-500">Pagado</span>
@@ -53,6 +62,13 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
           )}
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash2 className="size-5 text-red-500" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              router.push(`/administracion/vuelos/${flight}`);
+            }}
+          >
+            <EyeIcon className="size-5" />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -96,12 +112,14 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
           <DialogHeader className="text-center font-bold">
             Registrar Pago
           </DialogHeader>
-          <FlightPaymentsModifiedForm flight={flight} onClose={() => setOpenPayment(false)} />
+          <FlightPaymentsModifiedForm
+            flight={flight}
+            onClose={() => setOpenPayment(false)}
+          />
         </DialogContent>
       </Dialog>
     </>
   );
-
 };
 
 export default FlightDropdownActions;

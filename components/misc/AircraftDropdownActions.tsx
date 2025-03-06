@@ -1,11 +1,12 @@
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu";
-  import { Loader2, MoreHorizontal, Trash2 } from "lucide-react";
-  import { useState } from "react";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { useDeleteAircraft } from "@/actions/administracion/aviones/actions";
 import {
@@ -17,37 +18,45 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-  
+
 const AircraftDropdownActions = ({ id }: { id: string }) => {
   const [open, setOpen] = useState<boolean>(false);
-
+  const [openAircraft, setOpenAircraft] = useState<boolean>(false);
+  const router = useRouter();
   const { deleteAircraft } = useDeleteAircraft();
 
   const handleDelete = async (id: number | string) => {
     await deleteAircraft.mutateAsync(id);
     setOpen(false);
-  }
+  };
 
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Abrir menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="center"
-            className="flex gap-2 justify-center"
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Abrir menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="center"
+          className="flex gap-2 justify-center"
+        >
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <Trash2 className="size-5 text-red-500" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              router.push(`/administracion/gestion_vuelos/aviones/${id}`);
+            }}
           >
-            <DialogTrigger asChild>
-              <DropdownMenuItem>
-                <Trash2 className="size-5 text-red-500" />
-              </DropdownMenuItem>
-            </DialogTrigger>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            <EyeIcon className="size-5" />
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center">
@@ -80,7 +89,16 @@ const AircraftDropdownActions = ({ id }: { id: string }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    );
-  };
-  
-  export default AircraftDropdownActions; 
+
+      <Dialog open={openAircraft} onOpenChange={setOpenAircraft}>
+        <DialogContent>
+          <DialogHeader className="text-center font-bold">
+            Resumen de Pago
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
+export default AircraftDropdownActions;

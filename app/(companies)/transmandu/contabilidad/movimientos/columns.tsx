@@ -173,7 +173,12 @@ export const columns: ColumnDef<CashMovement>[] = [
     id: "actions",
     cell: ({ row }) => {
       const id = row.original.id;
-      return <CashMovementDropdownActions id={row.original.id.toString()} />;
+      return (
+        <CashMovementDropdownActions
+          movement={row.original}
+          id={row.original.id.toString()}
+        />
+      );
     },
   },
 ];
