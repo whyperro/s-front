@@ -20,7 +20,7 @@ const ActivityReportsDropdownActions = ({ id, date }: { id: number, date: string
   const router = useRouter()
 
   const handleView = () => {
-    router.push(`/transmandu/desarrollo/actividades_diarias/${date}/${id}`)
+    router.push(`/transmandu/desarrollo/actividades_diarias/${id}/`)
   }
 
   const handlePrint = () => {
@@ -48,7 +48,7 @@ const ActivityReportsDropdownActions = ({ id, date }: { id: number, date: string
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">

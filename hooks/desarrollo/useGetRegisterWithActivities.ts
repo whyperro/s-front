@@ -9,7 +9,7 @@ const fetchRegisterWithActivities = async (): Promise<ActivityReport[]> => {
 
 export const useGetRegisterWithActivities = () => {
   return useQuery<ActivityReport[], Error>({
-    queryKey: ["activityReports"],
+    queryKey: ["activity-reports"],
     queryFn: fetchRegisterWithActivities,
     staleTime: 1000 * 60 * 5, // Caché de 5 minutos
   });

@@ -13,8 +13,10 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Checkbox } from "../ui/checkbox"
+import { useUpdateFinalHour } from "@/actions/desarrollo/reportes_diarios/actions"
 
-const ActivityDropdownActions = ({ id }: { id: number }) => {
+const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boolean }) => {
+  const { updateFinalHour } = useUpdateFinalHour()
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [endTime, setEndTime] = useState("")
   const [result, setResult] = useState("")
@@ -28,9 +30,13 @@ const ActivityDropdownActions = ({ id }: { id: number }) => {
     }
   }, [dialogOpen, manualEndTime])
 
-  const handleConfirm = () => {
-    console.log(`ID: ${id}, Hora de Finalización: ${endTime}, Resultado: ${result}`)
-    setDialogOpen(false) // Cierra el diálogo al confirmar
+  const handleConfirm = async () => {
+    const data = {
+      final_hour: endTime,
+      result: result,
+      id: id.toString(),
+    }
+    await updateFinalHour.mutateAsync(data)
   }
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +56,7 @@ const ActivityDropdownActions = ({ id }: { id: number }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="center" className="flex flex-col gap-2">
-          <DropdownMenuItem onClick={() => setDialogOpen(true)} className="cursor-pointer">
+          <DropdownMenuItem disabled={finished} onClick={() => setDialogOpen(true)} className="cursor-pointer">
             <Clock className="size-5 mr-2" /> Finalizar Actividad
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -89,7 +95,9 @@ const ActivityDropdownActions = ({ id }: { id: number }) => {
         </div>
         <DialogFooter>
           <Button variant="secondary" onClick={() => setDialogOpen(false)}>Cancelar</Button>
-          <Button onClick={handleConfirm}>Confirmar</Button>
+          <Button disabled={
+            updateFinalHour.isPending
+          } onClick={handleConfirm}>Confirmar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

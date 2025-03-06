@@ -36,10 +36,10 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  
+
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  
+
   const table = useReactTable({
     data,
     columns,
@@ -60,10 +60,10 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex items-center py-4">
+      {/* <div className="flex items-center py-4">
         {!isDetailPage && <DailyActivitiesReportDialog />}
         <DataTableViewOptions table={table} />
-      </div>
+      </div> */}
       <div className="rounded-md border mb-4">
         <Table>
           <TableHeader>

@@ -58,3 +58,32 @@ export const useRegisterActivity = () => {
         registerActivity: createMutation,
     };
 };
+
+export const useUpdateFinalHour = () => {
+    const queryClient = useQueryClient();
+
+    const createMutation = useMutation({
+        mutationFn: async (data: {
+            final_hour: string;
+            id: string;
+            result: string,
+        }) => {
+            await axiosInstance.put(`/transmandu/update-activity/${data.id}` , data);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["activities"] });
+            toast.success("¡Actividad creada!", {
+                description: "La actividad se ha actualizado correctamente."
+            });
+        },
+        onError: () => {
+            toast.error("Oops!", {
+                description: "Hubo un error al actualizar la actividad."
+            });
+        }
+    });
+
+    return {
+        updateFinalHour: createMutation,
+    };
+};

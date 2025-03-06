@@ -423,7 +423,7 @@ export type ActivityReport = {
 
 export type Activity = {
   id: number,
-  initial_hour: string,
+  start_hour: string,
   final_hour: string,
   description: string,
   result?: string,

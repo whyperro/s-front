@@ -2,17 +2,15 @@ import axiosInstance from "@/lib/axios";
 import { ActivityReport } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
-const fetchUserActivity = async (date: string): Promise<ActivityReport> => {
-  const { data } = await axiosInstance.get("/transmandu/user-activity", { params: { date } });
-  return data;
+const fetchUserActivity = async (id: string): Promise<ActivityReport> => {
+  const { data } = await axiosInstance.get("/transmandu/user-activity", { params: { id } });
+  return data[0];
 };
 
-export const useGetUserActivity = (date: string) => {
+export const useGetUserActivity = (id: string) => {
   return useQuery<ActivityReport>({
-    queryKey: ["daily-activity", date], 
-    queryFn: async () => {
-      const data = await fetchUserActivity(date);
-      return data;
-    },
+    queryKey: ["daily-activity", id],
+    queryFn: () => fetchUserActivity(id),
+    enabled: !!id,
   });
 };

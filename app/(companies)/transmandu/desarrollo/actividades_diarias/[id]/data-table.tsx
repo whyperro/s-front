@@ -53,11 +53,6 @@ export function DataTable<TData, TValue>({
       columnFilters
     }
   })
-
-  const router = useRouter();
-
-  const isFiltered = table.getState().columnFilters.length > 0
-
   return (
     <>
       <div className="flex items-center py-4">

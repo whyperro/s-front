@@ -14,12 +14,17 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useGetRegisterWithActivities } from "@/hooks/desarrollo/useGetRegisterWithActivities";
+import LoadingPage from "@/components/misc/LoadingPage";
 
 const DailyActivitiesPage = () => {
   const {
-    data: activityreport,
-    isError,
+    data: activity_report,
+    isLoading
   } = useGetRegisterWithActivities();
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
 
   return (
     <ContentLayout title="Gestión de Actividades">
@@ -38,12 +43,12 @@ const DailyActivitiesPage = () => {
           </BreadcrumbList>
         </Breadcrumb>
         <h1 className="text-4xl font-bold text-center">Actividades Diarias</h1>
-        <p className="text-sm text-muted-foreground text-center italic">
+        <p className="text-sm text-muted-foreground text-center italic mb-6">
           Aquí puede observar todos las actividades realizadas por la Jefatura
           de Desarrollo. <br />
           Filtre y/o busque sí desea un dia en específico.
         </p>
-        {activityreport && <DataTable columns={columns} data={activityreport} />}
+        {activity_report && <DataTable columns={columns} data={activity_report} />}
       </div>
     </ContentLayout>
   );
