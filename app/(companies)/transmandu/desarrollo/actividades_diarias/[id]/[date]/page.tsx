@@ -10,6 +10,7 @@ import { DataTable } from './data-table';
 const ActivityReportsByIdPage = ({ params }: { params: { id: string; date: string } }) => {
   const { data: activitiesReport } = useGetUserActivity(params.date);
 
+
   return (
     <ContentLayout title='Actividades Diarias'>
       <div className='flex flex-col gap-y-2'>

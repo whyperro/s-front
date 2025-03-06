@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const fetchUserActivity = async (date: string): Promise<ActivityReport> => {
   const { data } = await axiosInstance.get("/transmandu/user-activity", { params: { date } });
-  return data.data.activities;
+  return data;
 };
 
 export const useGetUserActivity = (date: string) => {
