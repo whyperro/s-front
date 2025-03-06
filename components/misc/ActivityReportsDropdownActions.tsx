@@ -1,37 +1,41 @@
-'use client'
-
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
-import { Eye, Printer, MoreHorizontal, MessageSquare } from "lucide-react"
-import { useState } from "react"
-import { Button } from "../ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogFooter } from "../ui/dialog"
-import { Input } from "../ui/input"
-import { useRouter } from "next/navigation"
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Eye, Printer, MoreHorizontal, MessageSquare } from "lucide-react";
+import { useState } from "react";
+import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+} from "../ui/dialog";
+import { Input } from "../ui/input";
+import { useRouter } from "next/navigation";
+import ActivitiesReportPdf from "../pdf/ActivityReport";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { useGetUserActivity } from "@/hooks/desarrollo/useGetUserActivities";
+import { ActivityReport, Activity } from "@/types"; // Importa correctamente los tipos
 
-const ActivityReportsDropdownActions = ({ id, date }: { id: number, date: string }) => {
-  const [open, setOpen] = useState<boolean>(false)
-  const [observation, setObservation] = useState<string>("")
-  const [isObservationOpen, setIsObservationOpen] = useState<boolean>(false)
-  const router = useRouter()
+const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
+  const { data: report, isLoading } = useGetUserActivity(id);
+  const [open, setOpen] = useState<boolean>(false);
+  const [observation, setObservation] = useState<string>(""); 
+  const [isObservationOpen, setIsObservationOpen] = useState<boolean>(false);
+  const router = useRouter();
 
   const handleView = () => {
-    router.push(`/transmandu/desarrollo/actividades_diarias/${id}/`)
-  }
+    router.push(`/transmandu/desarrollo/actividades_diarias/${id}/`);
+  };
 
-  const handlePrint = () => {
-    console.log("Imprimiendo reporte con ID:", id)
-    window.print()
-  }
+  // Aseguramos que report sea un arreglo de tipo ActivityReport[]
+  const activities: ActivityReport[] = report ? (Array.isArray(report) ? report : [report]) : [];
 
-  const handleSaveObservation = () => {
-    console.log("Observación guardada:", observation)
-    setIsObservationOpen(false)
-  }
+  // Extraemos todas las actividades dentro de los reportes
+  const allActivities: Activity[] = activities.flatMap((activityReport) => activityReport.activities);
 
   return (
     <>
@@ -44,7 +48,7 @@ const ActivityReportsDropdownActions = ({ id, date }: { id: number, date: string
             placeholder="Escribe tu observación aquí..."
           />
           <DialogFooter>
-            <Button onClick={handleSaveObservation}>Guardar</Button>
+            <Button onClick={() => setIsObservationOpen(false)}>Guardar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -56,20 +60,34 @@ const ActivityReportsDropdownActions = ({ id, date }: { id: number, date: string
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="center" className="flex gap-2 justify-center">
+        <DropdownMenuContent
+          align="center"
+          className="flex gap-2 justify-center"
+        >
           <DropdownMenuItem onClick={handleView} className="cursor-pointer">
             <Eye className="size-5" />
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handlePrint} className="cursor-pointer">
-            <Printer className="size-5" />
+          <DropdownMenuItem className="cursor-pointer">
+            <PDFDownloadLink
+              fileName={`reporte_actividades_${activities[0]?.date}.pdf`}
+              document={
+                <ActivitiesReportPdf activities={activities} />
+              }
+              className="flex items-center gap-2"
+            >
+              <Printer className="size-5" />
+            </PDFDownloadLink>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsObservationOpen(true)} className="cursor-pointer">
+          <DropdownMenuItem
+            onClick={() => setIsObservationOpen(true)}
+            className="cursor-pointer"
+          >
             <MessageSquare className="size-5" />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </>
-  )
-}
+  );
+};
 
-export default ActivityReportsDropdownActions
+export default ActivityReportsDropdownActions;

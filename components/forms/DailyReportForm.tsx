@@ -2,9 +2,20 @@ import { useRegisterActivity } from "@/actions/desarrollo/reportes_diarios/actio
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
@@ -28,29 +39,38 @@ const FormSchema = z.object({
 
 function getCurrentTime() {
   const now = new Date();
-  return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+  return `${String(now.getHours()).padStart(2, "0")}:${String(
+    now.getMinutes()
+  ).padStart(2, "0")}`;
 }
 
-export function DailyReportForm({ activities_length, report_id }: { activities_length: number, report_id: string | number }) {
+export function DailyReportForm({
+  activities_length,
+  report_id,
+}: {
+  activities_length: number;
+  report_id: string | number;
+}) {
   const { user } = useAuth();
-  const { registerActivity } = useRegisterActivity()
+  const { registerActivity } = useRegisterActivity();
   const [manualTime, setManualTime] = useState(false);
   const [manualDate, setManualDate] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
   const form = useForm({
-    resolver: zodResolver(FormSchema), defaultValues: {
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
       description: "",
       start_hour: getCurrentTime(),
       date: new Date(),
-    }
+    },
   });
 
   const handleSubmit = async (data: z.infer<typeof FormSchema>) => {
     const formattedData = {
       ...data,
       activity_report_id: report_id,
-    }
-    console.log(formattedData)
+    };
+    console.log(formattedData);
     await registerActivity.mutateAsync(formattedData);
     // router.refresh()
     window.location.reload();
@@ -58,11 +78,17 @@ export function DailyReportForm({ activities_length, report_id }: { activities_l
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="flex flex-col gap-4"
+      >
         <div className="flex items-center w-full gap-6">
           <div className="flex flex-col space-y-3">
             <Label>Analista</Label>
-            <Input value={`${user?.first_name || ""} ${user?.last_name || ""}`} disabled />
+            <Input
+              value={`${user?.first_name || ""} ${user?.last_name || ""}`}
+              disabled
+            />
           </div>
           <FormField
             control={form.control}
@@ -108,7 +134,10 @@ export function DailyReportForm({ activities_length, report_id }: { activities_l
         </div>
 
         <div className="flex items-center space-x-2">
-          <Checkbox checked={manualDate} onCheckedChange={(checked) => setManualDate(checked === true)} />
+          <Checkbox
+            checked={manualDate}
+            onCheckedChange={(checked) => setManualDate(checked === true)}
+          />
           <FormLabel>Ingresar fecha manualmente</FormLabel>
         </div>
 
@@ -116,7 +145,11 @@ export function DailyReportForm({ activities_length, report_id }: { activities_l
           <FormItem className="w-1/6">
             <FormLabel>Número de Actividad</FormLabel>
             <FormControl>
-              <Input value={activities_length + 1} disabled className="w-16 text-center" />
+              <Input
+                value={activities_length + 1}
+                disabled
+                className="w-16 text-center"
+              />
             </FormControl>
           </FormItem>
           <FormField
@@ -139,11 +172,17 @@ export function DailyReportForm({ activities_length, report_id }: { activities_l
           <FormItem className="w-[110px]">
             <FormLabel>Hora de Inicio</FormLabel>
             <FormControl>
-              <Input type="time" disabled={!manualTime} onChange={(e) => form.setValue("start_hour", e.target.value)} />
+              <Input
+                type="time"
+                disabled={!manualTime}
+                onChange={(e) => form.setValue("start_hour", e.target.value)}
+              />
             </FormControl>
           </FormItem>
         </div>
-        <Button type="submit">Enviar actividad</Button>
+        <Button type="submit" disabled={activities_length + 1 === 10}>
+          Enviar actividad
+        </Button>
       </form>
     </Form>
   );

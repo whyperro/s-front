@@ -19,13 +19,14 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
   const { updateFinalHour } = useUpdateFinalHour()
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [endTime, setEndTime] = useState("")
+
   const [result, setResult] = useState("")
   const [manualEndTime, setManualEndTime] = useState(false)
 
   useEffect(() => {
     if (!manualEndTime) {
       const now = new Date()
-      const formattedTime = now.toTimeString().slice(0, 5) // Formato HH:MM
+      const formattedTime = now.toTimeString().slice(0, 5)
       setEndTime(formattedTime)
     }
   }, [dialogOpen, manualEndTime])
@@ -36,7 +37,12 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
       result: result,
       id: id.toString(),
     }
+
     await updateFinalHour.mutateAsync(data)
+
+    setTimeout(() => {
+      window.location.reload()
+    }, 1500)
   }
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,9 +101,7 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
         </div>
         <DialogFooter>
           <Button variant="secondary" onClick={() => setDialogOpen(false)}>Cancelar</Button>
-          <Button disabled={
-            updateFinalHour.isPending
-          } onClick={handleConfirm}>Confirmar</Button>
+          <Button disabled={updateFinalHour.isPending} onClick={handleConfirm}>Confirmar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

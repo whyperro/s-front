@@ -1,4 +1,4 @@
-import { Activity } from "@/types";
+import { ActivityReport } from "@/types";
 import {
   Document,
   Page,
@@ -7,6 +7,13 @@ import {
   StyleSheet,
   Image,
 } from "@react-pdf/renderer";
+
+const formatDate = (date: Date) => {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Los meses en JS comienzan desde 0
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
 
 const styles = StyleSheet.create({
   page: {
@@ -70,6 +77,9 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 9,
   },
+  name: {
+    fontSize: 10,
+  },
   dateContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -80,21 +90,24 @@ const styles = StyleSheet.create({
     fontSize: 9,
   },
   dateText: {
-    fontSize: 12,
+    fontSize: 10,
     marginLeft: 40, // Movido más a la derecha
     marginTop: -8,
   },
 });
 
-const ActivitiesReportPdf = ({ activities }: { activities: Activity[] }) => (
+const ActivitiesReportPdf = ({
+  activities,
+}: {
+  activities: ActivityReport[];
+}) => (
   <Document>
     <Page size="A4" orientation="landscape" style={styles.page}>
-      
       {/* HEADER CON LOGO Y TÍTULO */}
       <View style={styles.headerContainer}>
         {/* Logo en la esquina superior izquierda */}
         {/* <Image src="/ruta/del/logo.png" style={styles.logo} /> */}
-        
+
         {/* Título en dos líneas */}
         <View style={styles.titleContainer}>
           <Text style={styles.titleText}>REGISTRO DE</Text>
@@ -104,15 +117,27 @@ const ActivitiesReportPdf = ({ activities }: { activities: Activity[] }) => (
 
       {/* INFORMACIÓN DEL ANALISTA, FIRMA Y FECHA */}
       <View style={{ flexDirection: "row", marginBottom: 10 }}>
-        <Text style={styles.label}>ANALISTA: </Text>
-        <View style={styles.inputLine}></View>
+        <Text style={styles.label}>ANALISTA:</Text>
+        <View style={{ width: "15%" }}>
+          <View
+            style={{
+              borderBottomWidth: 1,
+              borderBottomColor: "#000",
+              marginHorizontal: 0,
+            }}
+          >
+            <Text style={[ styles.name, { paddingHorizontal: 10 }]}>
+              {activities[0].user?.first_name} {activities[0].user?.last_name}
+            </Text>
+          </View>
+        </View>
         <Text style={[styles.label, { marginLeft: 20 }]}>FIRMA: </Text>
         <View style={styles.inputLine}></View>
 
         {/* FECHA se mantiene en su posición, la línea se movió más a la derecha */}
         <View style={styles.dateContainer}>
           <Text style={styles.dateLabel}>FECHA:</Text>
-          <Text style={styles.dateText}>____/____/____</Text>
+          <Text style={styles.dateText}>{activities[0].date}</Text>
         </View>
       </View>
 
@@ -124,12 +149,27 @@ const ActivitiesReportPdf = ({ activities }: { activities: Activity[] }) => (
         <Text style={[styles.cell, { width: "45%" }]}>RESULTADO</Text>
       </View>
 
-      {[...Array(10)].map((_, index) => (
-        <View style={[styles.row, styles.table]} key={index}>
-          <Text style={[styles.cell, { width: "5%" }]}>{index + 1}</Text>
-          <Text style={[styles.cell, { width: "40%" }]}></Text>
-          <Text style={[styles.cell, { width: "10%" }]}></Text>
-          <Text style={[styles.cell, { width: "45%" }]}></Text>
+      {/* Iterar sobre cada ActivityReport y sus actividades */}
+      {activities.map((activityReport, reportIndex) => (
+        <View key={activityReport.id}>
+          {activityReport.activities.map((activity, activityIndex) => (
+            <View style={[styles.row, styles.table]} key={activity.id}>
+              <Text style={[styles.cell, { width: "5%" }]}>
+                {reportIndex * activityReport.activities.length +
+                  activityIndex +
+                  1}
+              </Text>
+              <Text style={[styles.cell, { width: "40%" }]}>
+                {activity.description}
+              </Text>
+              <Text style={[styles.cell, { width: "10%" }]}>
+                {activity.start_hour} - {activity.final_hour}
+              </Text>
+              <Text style={[styles.cell, { width: "45%" }]}>
+                {activity.result || "N/A"}
+              </Text>
+            </View>
+          ))}
         </View>
       ))}
 
