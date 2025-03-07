@@ -27,7 +27,14 @@ const DailyActivitiesPage = () => {
   }, [isLoading, report]);
 
   const handleCreateActivityReport = () => {
-    createActivityReport.mutate({ date: params.date });
+    createActivityReport.mutate(
+      { date: params.date },
+      {
+        onSuccess: () => {
+          router.refresh();
+        }
+      }
+    );
   };
 
   return (
