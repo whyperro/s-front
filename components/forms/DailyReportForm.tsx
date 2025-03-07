@@ -198,7 +198,6 @@ export function DailyReportForm({
             )}
           />
         </div>
-
         <Button type="submit" disabled={activities_length + 1 === 10}>
           Enviar actividad
         </Button>
