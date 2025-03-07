@@ -466,7 +466,7 @@ export type ReportsByArea = {
 };
 
 export type ReportingStats = {
-  totalReports: number;
-  open: number;
-  closed: number;
+  total_reports: number;
+  open_reports: number;
+  closed_reports: number;
 };
