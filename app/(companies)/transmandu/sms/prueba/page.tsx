@@ -1,105 +1,73 @@
-"use client";
+import React from "react";
+import {
+  BarChart,
+  Bar,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  LegendProps,
+} from "recharts";
 
-import { ContentLayout } from "@/components/layout/ContentLayout";
-import { useGetVoluntaryReportsCountedByArea } from "@/hooks/sms/useGetVoluntaryReportsCountedByArea";
-import { ReportsByArea } from "@/types";
-import { Tooltip } from "@radix-ui/react-tooltip";
-import React, { PureComponent, useState } from "react";
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
-
-const COLORS: string[] = [
-  "#0088FE",
-  "#00C49F",
-  "#FFBB28",
-  "#ED1C1C",
-  "#CE33FF",
-];
-
-interface CustomizedLabelProps {
-  cx: number;
-  cy: number;
-  midAngle: number;
-  innerRadius: number;
-  outerRadius: number;
-  percent: number;
-  index: number;
-  payload: ReportsByArea;
+// Definición de la interfaz para los datos
+interface DataPoint {
+  name: string;
+  reports: number;
 }
 
-const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({
-  cx,
-  cy,
-  midAngle,
-  innerRadius,
-  outerRadius,
-  percent,
-  index,
-  payload,
-}: CustomizedLabelProps) => {
-  const radius = outerRadius * 1.2;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+// Definición de la interfaz para las props del componente
+interface DynamicBarChartProps {
+  data: DataPoint[];
+}
 
+// Array de colores para las barras
+const colors: string[] = [
+  "#8884d8",
+  "#82ca9d",
+  "#ffc658",
+  "#a8328a",
+  "#32a89d",
+  "#d88488",
+  "#ca829d",
+  "#c6ff58",
+  "#328aa8",
+  "#9da832",
+];
+
+// Formateador de la leyenda para darle estilo a "AAA"
+const renderLegendText = (value: string) => {
+  return <span style={{ fontWeight: "bold" }}></span>;
+};
+
+const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
   return (
-    <text
-      x={x}
-      y={y}
-      fill="white"
-      textAnchor={x > cx ? "start" : "end"}
-      dominantBaseline="bottom"
-      fontSize="20px" // Ajusta el tamaño de la fuente
-      fontFamily="Arial" // Ajusta la fuente
-    >
-      <tspan x={x} dy="-1em">{`${(percent * 100).toFixed(0)}%`}</tspan>
-      <tspan x={x} dy="1em">{`${payload.name}`}</tspan>
-    </text>
+    <BarChart width={730} height={250} data={data}>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="name" />
+      <YAxis />
+      <Tooltip />
+      <Legend formatter={renderLegendText} iconSize={0} />
+      <Bar dataKey="reports" fill="#8884d8" name="Numero de Reportes">
+        {data.map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+        ))}
+      </Bar>
+    </BarChart>
   );
 };
 
-const Stats = () => {
-  const {
-    data: statsData,
-    isLoading: isLoadingStats,
-    isError: isErrorStats,
-  } = useGetVoluntaryReportsCountedByArea("2023");
+// Ejemplo de uso
+const Example = () => {
+  const data: DataPoint[] = [
+    { name: "ORGANIZACIONAL", reports: 24 },
+    { name: "TECNICO", reports: 23 },
+    { name: "HUMANO", reports: 98 },
+    { name: "AMBIENTAL", reports: 39 },
+  ];
 
-  const [activeIndex, setActiveIndex] = useState<number>(0);
-  const onPieEnter = (_: void, index: number) => {
-    setActiveIndex(index);
-    console.log(activeIndex);
-  };
-  return (
-    <ContentLayout title="Reportes: Identificados vs Gestionados">
-      <ResponsiveContainer width="100%" height="100%" aspect={2}>
-        <PieChart width={400} height={400}>
-          {statsData ? (
-            <Pie
-              data={statsData}
-              cx="50%"
-              cy="50%"
-              labelLine={true}
-              label={renderCustomizedLabel}
-              outerRadius={140}
-              fill="#8884d8"
-              dataKey="reports_number"
-              activeIndex={activeIndex}
-              onMouseEnter={onPieEnter}
-            >
-              {statsData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-              <Tooltip/>
-            </Pie>
-          ) : (
-            <p>No hay datos para mostrar..</p>
-          )}
-        </PieChart>
-      </ResponsiveContainer>
-    </ContentLayout>
-  );
+  return <DynamicBarChart data={data} />;
 };
-export default Stats;
+
+export default Example;

@@ -1,32 +1,14 @@
 "use client";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { format, parseISO, subDays } from "date-fns";
-import { useState } from "react";
-import { DateRange } from "react-day-picker";
-import { Check, ChevronDown, ChevronsUpDown } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import { Button } from "@/components/ui/button";
-import { PopoverClose } from "@radix-ui/react-popover";
-import { es } from "date-fns/locale";
-import { cn, formatDateRange } from "@/lib/utils";
-import qs from "query-string";
+import BarChartComponent from "@/components/charts/BarChartComponent";
+import PieChartComponent from "@/components/charts/PieChartComponent";
 import { ContentLayout } from "@/components/layout/ContentLayout";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { FormControl } from "@/components/ui/form";
 import DataFilter from "@/components/misc/DataFilter";
+import { useGetVoluntaryReportsCountedByArea } from "@/hooks/sms/useGetVoluntaryReportsCountedByArea";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import Example from "../prueba/page";
+import { Loader2 } from "lucide-react";
+import { useGetVoluntaryReportingStatsByYear } from "@/hooks/sms/useGetVoluntaryReportingStatisticsByYear";
 
 const languages = [
   { label: "English", value: "en" },
@@ -77,11 +59,72 @@ const DateFilter = () => {
         "comparación del número de informes con respecto a cada área específica",
     },
   ];
+
+  interface Params {
+    from?: string;
+    to?: string;
+    [key: string]: string | undefined; // Permite otros parámetros
+  }
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const [params, setParams] = useState<Params>({});
+
+  useEffect(() => {
+    const newParams: Params = {};
+    searchParams.forEach((value, key) => {
+      newParams[key] = value;
+    });
+
+    const fromValue = newParams.from;
+    const toValue = newParams.to;
+
+    console.log("Valor de from:", fromValue);
+    console.log("Valor de to:", toValue);
+
+    setParams(newParams);
+  }, [searchParams, pathname]);
+
+  const {
+    data: barChartData,
+    isLoading: isLoadingBarChart,
+    isError: isErrorBarChart,
+  } = useGetVoluntaryReportingStatsByYear("2023-01-01", "2023-12-31");
+
+  const {
+    data: pieCharData,
+    isLoading: isLoadingPieCharData,
+    isError: isErrorPieCharData,
+  } = useGetVoluntaryReportsCountedByArea("2023-01-01", "2023-12-31");
+
   return (
     <>
       <ContentLayout title="Gráficos Estadísticos de los Reportes">
-        <div>
+        <div className="flex justify-center items-center">
           <DataFilter />
+        </div>
+
+        <div className="flex-col justify-center items-center gpa-2">
+          {isLoadingBarChart && (
+            <div className="flex w-full h-full justify-center items-center">
+              <Loader2 className="size-24 animate-spin mt-48" />
+            </div>
+          )}
+          {barChartData && (
+            <BarChartComponent
+              data={barChartData}
+              title="Peligros Identificados"
+            />
+          )}
+
+          <Example></Example>
+        </div>
+        <div className="flex-col justify-center items-center gpa-2">
+          {isLoadingPieCharData && (
+            <div className="flex w-full h-full justify-center items-center">
+              <Loader2 className="size-24 animate-spin mt-48" />
+            </div>
+          )}
+          {pieCharData && <PieChartComponent data={pieCharData} />}
         </div>
       </ContentLayout>
     </>
