@@ -11,7 +11,7 @@ export const useCreateActivityReport = () => {
     const queryClient = useQueryClient();
 
     const createMutation = useMutation({
-        mutationFn: async ({date}: {date: string}) => {
+        mutationFn: async ({date}: {date: string} ) => {
             await axiosInstance.post("/transmandu/activity-report", {
                 date,
             });

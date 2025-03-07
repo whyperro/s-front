@@ -17,7 +17,7 @@ import { useGetRegisterWithActivities } from "@/hooks/desarrollo/useGetRegisterW
 import LoadingPage from "@/components/misc/LoadingPage";
 
 const DailyActivitiesPage = () => {
-  const { data: activity_report, isLoading  } = useGetRegisterWithActivities();
+  const { data: activity_report, isLoading } = useGetRegisterWithActivities();
 
   if (isLoading) {
     return <LoadingPage />;
@@ -32,6 +32,10 @@ const DailyActivitiesPage = () => {
               <BreadcrumbLink href="/transmandu/dashboard">
                 Inicio
               </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              Desarrollo
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>

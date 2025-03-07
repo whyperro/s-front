@@ -77,7 +77,6 @@ export const columns: ColumnDef<ActivityReport>[] = [
       return (
         <ActivityReportsDropdownActions
           id={row.original.id!.toString()}
-          // date={row.original.date}
         />
       );
     },

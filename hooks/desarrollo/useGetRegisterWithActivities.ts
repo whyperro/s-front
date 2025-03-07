@@ -1,9 +1,9 @@
-import axios from "@/lib/axios";
+import axiosInstance from "@/lib/axios";
 import { ActivityReport } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 const fetchRegisterWithActivities = async (): Promise<ActivityReport[]> => {
-  const { data } = await axios.get(`/transmandu/activity-report`);
+  const { data } = await axiosInstance.get(`/transmandu/activity-report`);
   return data;
 };
 

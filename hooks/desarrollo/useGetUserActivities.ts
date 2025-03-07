@@ -3,7 +3,7 @@ import { ActivityReport } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 const fetchUserActivity = async (id: string): Promise<ActivityReport> => {
-  const { data } = await axiosInstance.get("/transmandu/user-activity", { params: { id } });
+  const { data } = await axiosInstance.get(`/transmandu/activity-report/${id}`);
   return data[0];
 };
 

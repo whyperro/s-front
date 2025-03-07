@@ -8,23 +8,20 @@ import { useGetDailyActivityReport } from '@/hooks/desarrollo/useGetDailyActivit
 import { useParams } from 'next/navigation';
 import ConfirmCreateActivityReportDialog from '@/components/dialogs/CreateActivityReportDialog';
 import { useCreateActivityReport } from '@/actions/desarrollo/reportes_diarios/actions';
+import { useAuth } from '@/contexts/AuthContext';
+import LoadingPage from '@/components/misc/LoadingPage';
 
 const DailyActivitiesPage = () => {
+  const { user, loading } = useAuth()
   const router = useRouter();
   const params = useParams<{ date: string }>();
   const [showDialog, setShowDialog] = useState(false);
-  const { data: report, isLoading } = useGetDailyActivityReport(params.date);
   const { createActivityReport } = useCreateActivityReport();
+  const { data: report, isLoading: isReportLoading } = useGetDailyActivityReport({ date: params.date, user_id: user?.id.toString() ?? null });
 
-  useEffect(() => {
-    if (!isLoading) {
-      if (report) {
-        setShowDialog(false);
-      } else {
-        setShowDialog(true);
-      }
-    }
-  }, [isLoading, report]);
+  if (isReportLoading || loading) {
+    return <LoadingPage />
+  }
 
   const handleCreateActivityReport = () => {
     createActivityReport.mutate(
@@ -44,6 +41,10 @@ const DailyActivitiesPage = () => {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/transmandu/dashboard">Inicio</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Desarrollo</BreadcrumbPage>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>

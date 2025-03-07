@@ -2,14 +2,9 @@
 
 import { UserNav } from "@/components/layout/UserNav";
 import { SheetMenu } from "@/components/sidebar/SheetMenu";
+import { User } from "@/types";
 import CompanySelect from "../selects/CompanySelect";
 import { ThemeToggler } from "./ThemeToggler";
-import { useAuth } from "@/contexts/AuthContext";
-import { useEffect } from "react";
-import useEcho from '@/hooks/echo/useEcho';
-import { User } from "@/types";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
 
 interface NavbarProps {
   title: string;

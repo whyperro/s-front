@@ -2,10 +2,9 @@ import { ActivityReport } from "@/types";
 import {
   Document,
   Page,
-  Text,
-  View,
   StyleSheet,
-  Image,
+  Text,
+  View
 } from "@react-pdf/renderer";
 
 const formatDate = (date: Date) => {
@@ -97,9 +96,9 @@ const styles = StyleSheet.create({
 });
 
 const ActivitiesReportPdf = ({
-  activities,
+  report,
 }: {
-  activities: ActivityReport[];
+  report: ActivityReport;
 }) => (
   <Document>
     <Page size="A4" orientation="landscape" style={styles.page}>
@@ -126,8 +125,8 @@ const ActivitiesReportPdf = ({
               marginHorizontal: 0,
             }}
           >
-            <Text style={[ styles.name, { paddingHorizontal: 10 }]}>
-              {activities[0].user?.first_name} {activities[0].user?.last_name}
+            <Text style={[styles.name, { paddingHorizontal: 10 }]}>
+              {report.user?.first_name} {report.user?.last_name}
             </Text>
           </View>
         </View>
@@ -137,7 +136,7 @@ const ActivitiesReportPdf = ({
         {/* FECHA se mantiene en su posición, la línea se movió más a la derecha */}
         <View style={styles.dateContainer}>
           <Text style={styles.dateLabel}>FECHA:</Text>
-          <Text style={styles.dateText}>{activities[0].date}</Text>
+          <Text style={styles.dateText}>{report.date}</Text>
         </View>
       </View>
 
@@ -150,28 +149,26 @@ const ActivitiesReportPdf = ({
       </View>
 
       {/* Iterar sobre cada ActivityReport y sus actividades */}
-      {activities.map((activityReport, reportIndex) => (
-        <View key={activityReport.id}>
-          {activityReport.activities.map((activity, activityIndex) => (
-            <View style={[styles.row, styles.table]} key={activity.id}>
-              <Text style={[styles.cell, { width: "5%" }]}>
-                {reportIndex * activityReport.activities.length +
-                  activityIndex +
-                  1}
-              </Text>
-              <Text style={[styles.cell, { width: "40%" }]}>
-                {activity.description}
-              </Text>
-              <Text style={[styles.cell, { width: "10%" }]}>
-                {activity.start_hour} - {activity.final_hour}
-              </Text>
-              <Text style={[styles.cell, { width: "45%" }]}>
-                {activity.result || "N/A"}
-              </Text>
-            </View>
-          ))}
-        </View>
-      ))}
+
+      <View>
+        {report.activities.map((activity, activityIndex) => (
+          <View style={[styles.row, styles.table]} key={activity.id}>
+            <Text style={[styles.cell, { width: "5%" }]}>
+              {activityIndex + 1}
+            </Text>
+            <Text style={[styles.cell, { width: "40%" }]}>
+              {activity.description}
+            </Text>
+            <Text style={[styles.cell, { width: "10%" }]}>
+              {activity.start_hour} - {activity.final_hour}
+            </Text>
+            <Text style={[styles.cell, { width: "45%" }]}>
+              {activity.result || "N/A"}
+            </Text>
+          </View>
+        ))}
+      </View>
+
 
       {/* SECCIÓN DE OBSERVACIONES */}
       <Text style={[styles.footer, { marginTop: 20 }]}>OBSERVACIONES:</Text>

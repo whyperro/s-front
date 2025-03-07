@@ -1,19 +1,19 @@
 'use client'
 
+import { useUpdateFinalHour } from "@/actions/desarrollo/reportes_diarios/actions"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Clock } from "lucide-react"
-import { useState, useEffect } from "react"
+import { Clock, MoreHorizontal } from "lucide-react"
+import { useEffect, useState } from "react"
 import { Button } from "../ui/button"
+import { Checkbox } from "../ui/checkbox"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-import { Checkbox } from "../ui/checkbox"
-import { useUpdateFinalHour } from "@/actions/desarrollo/reportes_diarios/actions"
 
 const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boolean }) => {
   const { updateFinalHour } = useUpdateFinalHour()
