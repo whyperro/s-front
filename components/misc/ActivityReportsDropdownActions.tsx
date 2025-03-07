@@ -19,23 +19,23 @@ import ActivitiesReportPdf from "../pdf/ActivityReport";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { useGetUserActivity } from "@/hooks/desarrollo/useGetUserActivities";
 import { ActivityReport, Activity } from "@/types"; // Importa correctamente los tipos
+import { useAuth } from "@/contexts/AuthContext";
 
 const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
   const { data: report, isLoading } = useGetUserActivity(id);
+  const {user} = useAuth();
   const [open, setOpen] = useState<boolean>(false);
   const [observation, setObservation] = useState<string>(""); 
   const [isObservationOpen, setIsObservationOpen] = useState<boolean>(false);
   const router = useRouter();
-
   const handleView = () => {
     router.push(`/transmandu/desarrollo/actividades_diarias/${id}/`);
   };
 
   // Aseguramos que report sea un arreglo de tipo ActivityReport[]
   const activities: ActivityReport[] = report ? (Array.isArray(report) ? report : [report]) : [];
-
+  const userRoles = user?.roles?.map((role) => role.name) || [] ;
   // Extraemos todas las actividades dentro de los reportes
-  const allActivities: Activity[] = activities.flatMap((activityReport) => activityReport.activities);
 
   return (
     <>
@@ -54,7 +54,7 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
       </Dialog>
 
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger disabled={(report?.user.id !== user?.id) && !userRoles.includes("SUPERUSER")}  asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Abrir menú</span>
             <MoreHorizontal className="h-4 w-4" />
@@ -67,7 +67,7 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
           <DropdownMenuItem onClick={handleView} className="cursor-pointer">
             <Eye className="size-5" />
           </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
+          <DropdownMenuItem disabled={isLoading} className="cursor-pointer">
             <PDFDownloadLink
               fileName={`reporte_actividades_${activities[0]?.date}.pdf`}
               document={
