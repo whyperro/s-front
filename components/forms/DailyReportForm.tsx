@@ -24,7 +24,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Label } from "../ui/label";
@@ -34,7 +34,7 @@ const FormSchema = z.object({
   start_hour: z.string().optional(),
   manual_start_hour: z.boolean().optional(),
   manual_date: z.boolean().optional(),
-  date: z.date().optional(), // Solo acepta objetos Date
+  date: z.date().optional(),
 });
 
 function getCurrentTime() {
@@ -56,6 +56,7 @@ export function DailyReportForm({
   const [manualTime, setManualTime] = useState(false);
   const [manualDate, setManualDate] = useState(false);
   const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -65,6 +66,12 @@ export function DailyReportForm({
     },
   });
 
+  useEffect(() => {
+    if (!manualTime) {
+      form.setValue("start_hour", getCurrentTime());
+    }
+  }, [manualTime, form]);
+
   const handleSubmit = async (data: z.infer<typeof FormSchema>) => {
     const formattedData = {
       ...data,
@@ -72,7 +79,6 @@ export function DailyReportForm({
     };
     console.log(formattedData);
     await registerActivity.mutateAsync(formattedData);
-    // router.refresh()
     window.location.reload();
   };
 
@@ -159,27 +165,40 @@ export function DailyReportForm({
               <FormItem>
                 <FormLabel>Descripción de Actividad</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Revision de codigo" {...field} />
+                  <Textarea placeholder="Revisión de código" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+          
           <FormItem className="flex items-center space-x-2">
-            <Checkbox checked={manualTime} />
+            <Checkbox
+              checked={manualTime}
+              onCheckedChange={(checked) => setManualTime(checked === true)}
+            />
             <FormLabel>Ingresar hora manualmente</FormLabel>
           </FormItem>
-          <FormItem className="w-[110px]">
-            <FormLabel>Hora de Inicio</FormLabel>
-            <FormControl>
-              <Input
-                type="time"
-                disabled={!manualTime}
-                onChange={(e) => form.setValue("start_hour", e.target.value)}
-              />
-            </FormControl>
-          </FormItem>
+
+          <FormField
+            control={form.control}
+            name="start_hour"
+            render={({ field }) => (
+              <FormItem className="w-[110px]">
+                <FormLabel>Hora de Inicio</FormLabel>
+                <FormControl>
+                  <Input
+                    type="time"
+                    disabled={!manualTime}
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.value)}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
         </div>
+
         <Button type="submit" disabled={activities_length + 1 === 10}>
           Enviar actividad
         </Button>
