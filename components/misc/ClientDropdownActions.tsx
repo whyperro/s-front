@@ -29,6 +29,11 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
     await deleteClient.mutateAsync(id);
     setOpen(false);
   };
+
+  const handleViewDetails = () => {
+    setOpenClient(true);
+  };
+
   return (
     <>
       <DropdownMenu>
@@ -42,16 +47,17 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           align="center"
           className="flex gap-2 justify-center"
         >
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash2 className="size-5 text-red-500" />
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleViewDetails}>
+            <EyeIcon className="size-5" />
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
               router.push(`/administracion/gestion_vuelos/clientes/${id}`); //segun la query deberia ser aircrafts
             }}
-          >
-            <EyeIcon className="size-5" />
-          </DropdownMenuItem>
+          ></DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -93,7 +99,6 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           <DialogHeader className="text-center font-bold">
             Resumen del Cliente
           </DialogHeader>
-          
         </DialogContent>
       </Dialog>
     </>

@@ -8,6 +8,8 @@ import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
+import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById";
 import { useDeleteAircraft } from "@/actions/administracion/aviones/actions";
 import {
   Dialog,
@@ -24,10 +26,15 @@ const AircraftDropdownActions = ({ id }: { id: string }) => {
   const [openAircraft, setOpenAircraft] = useState<boolean>(false);
   const router = useRouter();
   const { deleteAircraft } = useDeleteAircraft();
+  const { data: aircraftDeatils, isLoading } = useGetAircraftById(id);
 
   const handleDelete = async (id: number | string) => {
     await deleteAircraft.mutateAsync(id);
     setOpen(false);
+  };
+
+  const handleViewDetails = () => {
+    setOpenAircraft(true);
   };
 
   return (
@@ -46,13 +53,14 @@ const AircraftDropdownActions = ({ id }: { id: string }) => {
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleViewDetails}>
+            <EyeIcon className="size-5" />
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
               router.push(`/administracion/gestion_vuelos/aviones/${id}`);
             }}
-          >
-            <EyeIcon className="size-5" />
-          </DropdownMenuItem>
+          ></DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
