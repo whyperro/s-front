@@ -8,15 +8,14 @@ import { useEffect } from 'react';
 import { columns } from './columns';
 import { DataTable } from './data-table';
 
-const OrdenesTrabajoPage = () => {
+const WorkOrdersPage = () => {
 
   const { selectedStation } = useCompanyStore();
 
-  const { mutate, data: work_orders, isPending, isError } = useGetWorkOrders();
+  const { mutate, data: work_orders, isPending } = useGetWorkOrders();
 
   useEffect(() => {
     if (selectedStation) {
-
       mutate(Number(selectedStation))
     }
   },
@@ -36,18 +35,10 @@ const OrdenesTrabajoPage = () => {
             </div>
           )
         }
-        {
-          work_orders && (
-            <DataTable columns={columns} data={work_orders} />
-
-          )
-        }
-        {
-          isError && <p className='text-sm text-muted-foreground'>Ha ocurrido un error al cargar los lotes...</p>
-        }
+        <DataTable columns={columns} data={[]} />
       </div>
     </ContentLayout>
   )
 }
 
-export default OrdenesTrabajoPage
+export default WorkOrdersPage

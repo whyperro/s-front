@@ -173,6 +173,7 @@ export function DailyReportForm({
             <FormLabel>Hora de Inicio</FormLabel>
             <FormControl>
               <Input
+                defaultValue={getCurrentTime()}
                 type="time"
                 disabled={!manualTime}
                 onChange={(e) => form.setValue("start_hour", e.target.value)}
@@ -180,8 +181,8 @@ export function DailyReportForm({
             </FormControl>
           </FormItem>
         </div>
-        <Button type="submit" disabled={activities_length + 1 === 10}>
-          Enviar actividad
+        <Button type="submit" disabled={(activities_length + 1 === 10) || registerActivity.isPending}>
+          Registrar Actividad
         </Button>
       </form>
     </Form>
