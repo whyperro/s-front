@@ -76,8 +76,8 @@ export const columns: ColumnDef<ActivityReport>[] = [
     cell: ({ row }) => {
       return (
         <ActivityReportsDropdownActions
-          id={row.original.id!}
-          date={row.original.date}
+          id={row.original.id!.toString()}
+          // date={row.original.date}
         />
       );
     },

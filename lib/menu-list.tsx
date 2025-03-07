@@ -49,7 +49,6 @@ export type CompanyMenu = 'transmandu' | 'hangar 74';
 //TODO: Crear menus para cada empresa. Mismo array o diferente, ir probando.
 
 export function getMenuList(pathname: string, company: CompanyMenu, userRoles: string[]): Group[] {
-  const { user } = useAuth()
   const date = format(new Date(), "yyyy-MM-dd");
   function hasAccess(menu: Menu): boolean {
     return menu.roles.length === 0 || menu.roles.some(role => userRoles.includes(role));
