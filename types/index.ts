@@ -1,4 +1,3 @@
-import { z } from "zod";
 
 export type Role = {
     id: number,
@@ -413,3 +412,19 @@ export type GeneralSalesReport = {
   purchase_order?: PurchaseOrder,
   quote_order?: Quote[],
 }[]
+
+export type ActivityReport = {
+  id: number,
+  date: string,
+  user: User,
+  activities: Activity[],
+  observations?: string,
+}
+
+export type Activity = {
+  id: number,
+  start_hour: string,
+  final_hour: string,
+  description: string,
+  result?: string,
+}

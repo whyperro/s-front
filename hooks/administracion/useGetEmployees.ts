@@ -10,5 +10,5 @@ const fetchEmployeesByCompany = async (company_id: number): Promise<Employee[]> 
 export const useGetEmployeesByCompany = () => {
   return useMutation<Employee[], Error, number>({
     mutationFn: fetchEmployeesByCompany,
-  });
-};
+  })
+}
