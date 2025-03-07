@@ -38,39 +38,41 @@ import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
 import { Label } from "../ui/label";
 import { useEffect, useState } from "react";
 
-const formSchema = z.object({
-  client_id: z.string(),
-  route_id: z.string(),
-  aircraft_id: z.string(),
-  date: z.date({
-  required_error: "La fecha de vuelo es requerida",
-  }),
-  details: z.string(),
-  fee: z.string(),
-  type: z.enum(["CARGA", "PAX", "CHART"]),
-  debt_status: z.enum(["PENDIENTE", "PAGADO"]),
-  total_amount: z
-  .string()
-  .min(1, "El monto total es requerido")
-  .refine((value) => !isNaN(parseFloat(value)) && parseFloat(value) >= 0, {
-  message: "El monto total no puede ser negativo",
-  }),
-  payed_amount: z
-  .string()
-  .min(1, "El monto pagado es requerido")
-  .refine((value) => !isNaN(parseFloat(value)) && parseFloat(value) >= 0, {
-  message: "El monto pagado no puede ser negativo",
-  }),
-  }).refine(
-  (data) => {
-  const totalAmount = parseFloat(data.total_amount);
-  const payedAmount = parseFloat(data.payed_amount);
-  return payedAmount <= totalAmount;
-  },
-  {
-  message: "El monto pagado no puede ser mayor que el precio a cobrar",
-  path: ["payed_amount"], // Esto indica que el error se mostrará en el campo payed_amount
-  }
+const formSchema = z
+  .object({
+    client_id: z.string(),
+    route_id: z.string(),
+    aircraft_id: z.string(),
+    date: z.date({
+      required_error: "La fecha de vuelo es requerida",
+    }),
+    details: z.string(),
+    fee: z.string(),
+    type: z.enum(["CARGA", "PAX", "CHART"]),
+    debt_status: z.enum(["PENDIENTE", "PAGADO"]),
+    total_amount: z
+      .string()
+      .min(1, "El monto total es requerido")
+      .refine((value) => !isNaN(parseFloat(value)) && parseFloat(value) >= 0, {
+        message: "El monto total no puede ser negativo",
+      }),
+    payed_amount: z
+      .string()
+      .min(1, "El monto pagado es requerido")
+      .refine((value) => !isNaN(parseFloat(value)) && parseFloat(value) >= 0, {
+        message: "El monto pagado no puede ser negativo",
+      }),
+  })
+  .refine(
+    (data) => {
+      const totalAmount = parseFloat(data.total_amount);
+      const payedAmount = parseFloat(data.payed_amount);
+      return payedAmount <= totalAmount;
+    },
+    {
+      message: "El monto pagado no puede ser mayor que el precio a cobrar",
+      path: ["payed_amount"], // Esto indica que el error se mostrará en el campo payed_amount
+    }
   );
 
 interface FormProps {
@@ -304,20 +306,6 @@ export function FlightForm({ onClose }: FormProps) {
               </FormItem>
             )}
           />
-          {(form.watch("type") === "CARGA" || form.watch("type") === "PAX") && (
-            <div className="space-y-2">
-              <Label>
-                {form.watch("type") === "CARGA" ? "KG" : " # Pasajeros"}
-              </Label>
-              <Input
-                defaultValue={"0"}
-                onChange={(e) => setKg(e.target.value)}
-                type="number"
-              />
-            </div>
-          )}
-        </div>
-        <div className="flex gap-2 items-center justify-center">
           {form.watch("type") !== "CHART" && (
             <FormField
               control={form.control}
@@ -332,6 +320,20 @@ export function FlightForm({ onClose }: FormProps) {
                 </FormItem>
               )}
             />
+          )}
+        </div>
+        <div className="flex gap-2 items-center justify-center">
+          {(form.watch("type") === "CARGA" || form.watch("type") === "PAX") && (
+            <div className="space-y-2">
+              <Label>
+                {form.watch("type") === "CARGA" ? "KG" : " # Pasajeros"}
+              </Label>
+              <Input
+                defaultValue={"0"}
+                onChange={(e) => setKg(e.target.value)}
+                type="number"
+              />
+            </div>
           )}
           <FormField
             control={form.control}

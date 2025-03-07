@@ -36,9 +36,9 @@ import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
 
 const formSchema = z.object({
   bank_acount_id: z.string().optional(),
-  flight_id: z.string(),  
+  flight_id: z.string(),
   client_id: z.string(),
-  pay_method: z.enum(["EFECTIVO", "TARJETA", "TRANSFERENCIA"]),
+  pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"]),
   pay_amount: z.string(),
   payment_date: z.date({
     required_error: "La fecha de vuelo es requerida",
@@ -53,17 +53,19 @@ interface FormProps {
 export function FlightPaymentsForm({ onClose }: FormProps) {
   const { createFlightPayments } = useCreateFlightPayments();
   const {
-      data: clients,
-      isLoading: isClientsLoading,
-      isError: isClientsError,
-    } = useGetClients();
+    data: clients,
+    isLoading: isClientsLoading,
+    isError: isClientsError,
+  } = useGetClients();
   const {
-    data: aircrafts, isLoading: isAircraftLoading, isError: isAircraftError,
-  } = useGetAircrafts(); 
-    const form = useForm<z.infer<typeof formSchema>>({
-      resolver: zodResolver(formSchema),
-      defaultValues: {},
-    });
+    data: aircrafts,
+    isLoading: isAircraftLoading,
+    isError: isAircraftError,
+  } = useGetAircrafts();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {},
+  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await createFlightPayments.mutateAsync(values);
@@ -76,64 +78,70 @@ export function FlightPaymentsForm({ onClose }: FormProps) {
         className="flex flex-col space-y-3"
       >
         <div className="flex gap-2 items-center justify-center">
-        <FormField
-          control={form.control}
-          name="client_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cliente</FormLabel>
-              <Select
-                disabled={isClientsLoading}
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccione un Cliente" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {clients &&
-                    clients.map((client) => (
-                      <SelectItem key={client.id} value={client.id.toString()}>
-                        {client.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
           <FormField
-          control={form.control}
-          name="flight_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Vuelo</FormLabel>
-              <Select
-                disabled={isAircraftLoading}
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccione un Vuelo" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {aircrafts &&
-                    aircrafts.map((aircraft) => (
-                      <SelectItem key={aircraft.id} value={aircraft.id.toString()}>
-                        {aircraft.acronym}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            control={form.control}
+            name="client_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cliente</FormLabel>
+                <Select
+                  disabled={isClientsLoading}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione un Cliente" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {clients &&
+                      clients.map((client) => (
+                        <SelectItem
+                          key={client.id}
+                          value={client.id.toString()}
+                        >
+                          {client.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="flight_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Vuelo</FormLabel>
+                <Select
+                  disabled={isAircraftLoading}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione un Vuelo" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {aircrafts &&
+                      aircrafts.map((aircraft) => (
+                        <SelectItem
+                          key={aircraft.id}
+                          value={aircraft.id.toString()}
+                        >
+                          {aircraft.acronym}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
         <div className="flex gap-2 items-center justify-center">
           <FormField
@@ -154,28 +162,29 @@ export function FlightPaymentsForm({ onClose }: FormProps) {
                   <SelectContent>
                     <SelectItem value="EFECTIVO">Efectivo</SelectItem>
                     <SelectItem value="TRANSFERENCIA">Transferencia</SelectItem>
-                    <SelectItem value="TARJETA">Tarjeta</SelectItem>
                   </SelectContent>
                 </Select>
               </FormItem>
             )}
           />
-          {
-            form.watch("pay_method") !== "EFECTIVO" && (
+          {form.watch("pay_method") !== "EFECTIVO" && (
             <FormField
-            control={form.control}
-            name="bank_acount_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Cuenta de Banco</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ingrese la cuenta de banco " {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />)
-          }
+              control={form.control}
+              name="bank_acount_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cuenta de Banco</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Ingrese la cuenta de banco "
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
         <FormField
           control={form.control}

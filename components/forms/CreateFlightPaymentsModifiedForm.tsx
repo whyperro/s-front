@@ -38,7 +38,7 @@ import { Loader2 } from "lucide-react";
 import { Flight } from "@/types";
 
 const formSchema = z.object({
-  bank_acount_id: z.string().optional(),
+  bank_account_id: z.string().optional(),
   pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"]),
   pay_amount: z.string(),
   payment_date: z.date({
@@ -111,7 +111,7 @@ export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
           {form.watch("pay_method") !== "EFECTIVO" && (
             <FormField
               control={form.control}
-              name="bank_acount_id"
+              name="bank_account_id"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cuenta de Banco</FormLabel>

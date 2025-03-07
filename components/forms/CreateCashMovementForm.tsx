@@ -37,11 +37,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 import { Loader2 } from "lucide-react";
+import { Company } from "@/types";
 
 const formSchema = z.object({
-  responsible: z.string(),
-  cash: z.string(),
-  company: z.string(),
+  responsible_id: z.string(),
+  cash_id: z.string(),
+  company_id: z.string(),
   date: z.date(),
   income_or_output: z.enum(["INCOME", "OUTPUT"]),
   account: z.string(),
@@ -49,7 +50,7 @@ const formSchema = z.object({
   sub_category: z.string(),
   sub_category_details: z.string(),
   amount: z.string(),
-  bank_account: z.string({
+  bank_account_id: z.string({
     message: "Debe elegir una cuenta.",
   }),
 });
@@ -73,11 +74,15 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
-  const company = form.watch("company");
+  const company = form.watch("company_id");
   useEffect(() => {
     if (company) {
-      //AQUI
-      mutate(form.watch("company"));
+      const company_name = companies!
+        .find((c) => c.id.toString() === company)!
+        .name.split(" ")
+        .join("")
+        .toLowerCase();
+      mutate(company_name);
     }
   }, [form, mutate, company]);
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -137,7 +142,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
           />
           <FormField
             control={form.control}
-            name="company"
+            name="company_id"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Empresa</FormLabel>
@@ -156,7 +161,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                       companies.map((company) => (
                         <SelectItem
                           key={company.id}
-                          value={company.name.toLowerCase().split(" ").join("")}
+                          value={company.id.toString()}
                         >
                           {company.name}
                         </SelectItem>
@@ -194,7 +199,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
           />
           <FormField
             control={form.control}
-            name="cash"
+            name="cash_id"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Caja</FormLabel>
@@ -211,7 +216,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                   <SelectContent>
                     {cashes &&
                       cashes.map((cash) => (
-                        <SelectItem key={cash.id} value={cash.name}>
+                        <SelectItem key={cash.id} value={cash.id.toString()}>
                           {cash.name}
                         </SelectItem>
                       ))}
@@ -294,12 +299,12 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
           />
           <FormField
             control={form.control}
-            name="responsible"
+            name="responsible_id"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Responsable</FormLabel>
                 <Select
-                  disabled={isEmployeesPending || !form.watch("company")}
+                  disabled={isEmployeesPending || !form.watch("company_id")}
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
@@ -324,7 +329,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
         </div>
         <FormField
           control={form.control}
-          name="bank_account"
+          name="bank_account_id"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Cuenta de Banco</FormLabel>

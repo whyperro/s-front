@@ -1,9 +1,13 @@
+import { useDeleteFlight } from "@/actions/administracion/vuelos/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Flight } from "@/types";
+import { format } from "date-fns";
+import { es, id } from "date-fns/locale";
 import {
   EyeIcon,
   HandCoins,
@@ -11,10 +15,10 @@ import {
   MoreHorizontal,
   Trash2,
 } from "lucide-react";
-import { Button } from "../ui/button";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useDeleteFlight } from "@/actions/administracion/vuelos/actions";
+import { useState } from "react";
+import { FlightPaymentsModifiedForm } from "../forms/CreateFlightPaymentsModifiedForm";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -22,20 +26,23 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
-import { FlightPaymentsModifiedForm } from "../forms/CreateFlightPaymentsModifiedForm";
-import { Flight } from "@/types";
+import { Separator } from "../ui/separator";
 
 const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [openPayment, setOpenPayment] = useState<boolean>(false);
+  const [openFlight, setOpenFlight] = useState<boolean>(false);
   const router = useRouter();
   const { deleteFlight } = useDeleteFlight();
 
   const handleDelete = async (id: number | string) => {
     await deleteFlight.mutateAsync(id);
     setOpen(false);
+  };
+
+  const handleViewDetails = () => {
+    setOpenFlight(true);
   };
 
   return (
@@ -63,13 +70,14 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleViewDetails}>
+            <EyeIcon className="size-5" />
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
               router.push(`/administracion/vuelos/${flight}`);
             }}
-          >
-            <EyeIcon className="size-5" />
-          </DropdownMenuItem>
+          ></DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -116,6 +124,109 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
             flight={flight}
             onClose={() => setOpenPayment(false)}
           />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={openFlight} onOpenChange={setOpenFlight}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="text-center font-bold">
+            Resumen de Vuelo
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Fecha
+              </h3>
+              <p className="text-lg font-semibold">
+                {format(flight.date, "PPP", { locale: es })}
+              </p>
+              <Separator />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Cliente
+              </h3>
+              <p className="text-lg font-semibold">{flight.client.name}</p>
+              <Separator />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Ruta
+              </h3>
+              <p className="text-lg font-semibold">{flight.route.id}</p>
+              <Separator />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Avión
+              </h3>
+              <p className="text-lg font-semibold">{flight.aircraft.acronym}</p>
+              <Separator />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Tipo
+              </h3>
+              <p className="text-lg font-semibold">{flight.type}</p>
+              <Separator />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Tasa
+              </h3>
+              <p className="text-lg font-semibold">{flight.fee}</p>
+              <Separator />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Costo
+              </h3>
+              <p className="text-lg font-semibold">{flight.payed_amount}</p>
+              <Separator />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Total Pagado
+              </h3>
+              <p className="text-lg font-semibold">{flight.total_amount}</p>
+              <Separator />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Estado Actual
+              </h3>
+              <p className="text-lg font-semibold">{flight.debt_status}</p>
+              <Separator />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Detalles
+              </h3>
+              <p className="text-lg font-semibold">{flight.details}</p>
+              <Separator />
+            </div>
+          </div>
+
+          <DialogFooter className="sm:justify-center">
+            <Button
+              variant="outline"
+              onClick={() =>
+                router.push(`/administracion/gestion_vuelos/vuelos/${id}`)
+              }
+            >
+              Ver detalles completos
+            </Button>
+            <Button onClick={() => setOpenFlight(false)}>Cerrar</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

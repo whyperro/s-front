@@ -67,7 +67,7 @@ export const columns: ColumnDef<FlightPayment>[] = [
     ),
   },
   {
-    accessorKey: "bank_acount",
+    accessorKey: "bank_account",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Cuenta de Banco" />
     ),

@@ -20,13 +20,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 const AircraftDropdownActions = ({ id }: { id: string }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [openAircraft, setOpenAircraft] = useState<boolean>(false);
   const router = useRouter();
   const { deleteAircraft } = useDeleteAircraft();
-  const { data: aircraftDeatils, isLoading } = useGetAircraftById(id);
+  const { data: aircraftDetails, isLoading } = useGetAircraftById(id);
 
   const handleDelete = async (id: number | string) => {
     await deleteAircraft.mutateAsync(id);
@@ -99,10 +101,111 @@ const AircraftDropdownActions = ({ id }: { id: string }) => {
       </Dialog>
 
       <Dialog open={openAircraft} onOpenChange={setOpenAircraft}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader className="text-center font-bold">
-            Resumen de Pago
+            Resumen de Avión
           </DialogHeader>
+          {isLoading ? (
+            <div className="flex justify-center py-4">
+              <Loader2 className="h-6 w-6 animate-spin" />
+            </div>
+          ) : aircraftDetails ? (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Serial
+                </h3>
+                <p className="text-lg font-semibold">
+                  {aircraftDetails.serial}
+                </p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Matricula
+                </h3>
+                <p className="text-lg font-semibold">
+                  {aircraftDetails.acronym}
+                </p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Marca
+                </h3>
+                <p className="text-lg font-semibold">{aircraftDetails.brand}</p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+               <h3 className="text-sm font-medium text-muted-foreground">
+                 Ubicación
+               </h3>
+               <p className="text-lg font-semibold">
+                 {aircraftDetails.location.address}
+               </p>
+               <Separator />
+             </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Dueño
+                </h3>
+                <p className="text-lg font-semibold">{aircraftDetails.owner}</p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Fabricante
+                </h3>
+                <p className="text-lg font-semibold">
+                  {aircraftDetails.fabricant}
+                </p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Fecha de Fabricación
+                </h3>
+                <p className="text-lg font-semibold">
+                  {format(aircraftDetails.fabricant_date, "PPP", {
+                    locale: es,
+                  })}
+                </p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Comentarios
+                </h3>
+                <p className="text-lg font-semibold">
+                  {aircraftDetails.comments}
+                </p>
+                <Separator />
+              </div>
+            </div>
+          ) : (
+            <p className="text-center text-muted-foreground">
+              No se pudo cargar la información del avión.
+            </p>
+          )}
+
+          <DialogFooter className="sm:justify-center">
+            <Button
+              variant="outline"
+              onClick={() =>
+                router.push(`/administracion/gestion_vuelos/aviones/${id}`)
+              }
+            >
+              Ver detalles completos
+            </Button>
+            <Button onClick={() => setOpenAircraft(false)}>Cerrar</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

@@ -8,6 +8,8 @@ import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
+import { useGetClientById } from "@/hooks/administracion/useGetClientsById";
 import { useDeleteClient } from "@/actions/administracion/clientes/actions";
 import {
   Dialog,
@@ -24,6 +26,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
   const [openClient, setOpenClient] = useState<boolean>(false);
   const router = useRouter();
   const { deleteClient } = useDeleteClient();
+  const { data: clientDetails, isLoading } = useGetClientById(id);
 
   const handleDelete = async (id: number | string) => {
     await deleteClient.mutateAsync(id);
@@ -95,10 +98,65 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
         </DialogContent>
       </Dialog>
       <Dialog open={openClient} onOpenChange={setOpenClient}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader className="text-center font-bold">
             Resumen del Cliente
           </DialogHeader>
+          {isLoading ? (
+            <div className="flex justify-center py-4">
+              <Loader2 className="h-6 w-6 animate-spin" />
+            </div>
+          ) : clientDetails ? (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Nombre
+                </h3>
+                <p className="text-lg font-semibold">{clientDetails.name}</p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Cedula / RIF
+                </h3>
+                <p className="text-lg font-semibold">{clientDetails.dni}</p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Número de Teléfono
+                </h3>
+                <p className="text-lg font-semibold">{clientDetails.phone}</p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Ubicación
+                </h3>
+                <p className="text-lg font-semibold">{clientDetails.address}</p>
+                <Separator />
+              </div>
+            </div>
+          ) : (
+            <p className="text-center text-muted-foreground">
+              No se pudo cargar la información del cliente.
+            </p>
+          )}
+
+          <DialogFooter className="sm:justify-center">
+            <Button
+              variant="outline"
+              onClick={() =>
+                router.push(`/administracion/gestion_vuelos/clientes/${id}`)
+              }
+            >
+              Ver detalles completos
+            </Button>
+            <Button onClick={() => setOpenClient(false)}>Cerrar</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
