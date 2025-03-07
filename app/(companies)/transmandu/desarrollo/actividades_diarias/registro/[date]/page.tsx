@@ -28,7 +28,7 @@ const DailyActivitiesPage = () => {
       { date: params.date },
       {
         onSuccess: () => {
-          router.refresh();
+          window.location.reload();
         }
       }
     );
