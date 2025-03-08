@@ -61,7 +61,7 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
-  id: string | number;
+  id: number;
   onClose: () => void;
 }
 // { onClose }: FormProps

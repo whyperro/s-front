@@ -110,8 +110,8 @@ export const columns: ColumnDef<VoluntaryReport>[] = [
     ),
     cell: ({ row }) => (
       <div
-        className={`flex justify-center rounded-full ${
-          row.original.status === "CLOSED" ? "bg-green-500" : "bg-red-600"
+        className={`flex justify-center items-center rounded-full h-10 text-center font-bold font-sans ${
+          row.original.status === "CERRADO" ? "bg-green-500" : "bg-red-600"
         }`}
       >
         {row.original.status}

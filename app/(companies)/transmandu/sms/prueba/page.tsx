@@ -1,3 +1,4 @@
+import { DangerIdentificationsByType } from "@/types";
 import React from "react";
 import {
   BarChart,
@@ -10,24 +11,18 @@ import {
   Legend,
   LegendProps,
 } from "recharts";
-
-// Definición de la interfaz para los datos
-interface DataPoint {
-  name: string;
-  reports: number;
-}
-
 // Definición de la interfaz para las props del componente
 interface DynamicBarChartProps {
-  data: DataPoint[];
+  data: DangerIdentificationsByType[];
 }
 
 // Array de colores para las barras
 const colors: string[] = [
-  "#8884d8",
-  "#82ca9d",
-  "#ffc658",
-  "#a8328a",
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#ED1C1C",
+  "#CE33FF",
   "#32a89d",
   "#d88488",
   "#ca829d",
@@ -41,7 +36,7 @@ const renderLegendText = (value: string) => {
   return <span style={{ fontWeight: "bold" }}></span>;
 };
 
-const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
+const DynamicBarChart = ({ data }: DynamicBarChartProps) => {
   return (
     <BarChart width={730} height={250} data={data}>
       <CartesianGrid strokeDasharray="3 3" />
@@ -49,7 +44,7 @@ const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
       <YAxis />
       <Tooltip />
       <Legend formatter={renderLegendText} iconSize={0} />
-      <Bar dataKey="reports" fill="#8884d8" name="Numero de Reportes">
+      <Bar dataKey="identifications_number" fill="#8884d8" name="Numero de Reportes Segun su Tipo">
         {data.map((entry, index) => (
           <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
         ))}
@@ -58,16 +53,4 @@ const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
   );
 };
 
-// Ejemplo de uso
-const Example = () => {
-  const data: DataPoint[] = [
-    { name: "ORGANIZACIONAL", reports: 24 },
-    { name: "TECNICO", reports: 23 },
-    { name: "HUMANO", reports: 98 },
-    { name: "AMBIENTAL", reports: 39 },
-  ];
-
-  return <DynamicBarChart data={data} />;
-};
-
-export default Example;
+export default DynamicBarChart;

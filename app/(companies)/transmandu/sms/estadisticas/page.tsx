@@ -3,12 +3,13 @@ import BarChartComponent from "@/components/charts/BarChartComponent";
 import PieChartComponent from "@/components/charts/PieChartComponent";
 import { ContentLayout } from "@/components/layout/ContentLayout";
 import DataFilter from "@/components/misc/DataFilter";
-import { useGetVoluntaryReportsCountedByArea } from "@/hooks/sms/useGetVoluntaryReportsCountedByArea";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import Example from "../prueba/page";
-import { Loader2 } from "lucide-react";
+import { useGetDangerIdentificationsCountedByType } from "@/hooks/sms/useGetDangerIdentificationsCountedByType";
 import { useGetVoluntaryReportingStatsByYear } from "@/hooks/sms/useGetVoluntaryReportingStatisticsByYear";
+import { useGetVoluntaryReportsCountedByArea } from "@/hooks/sms/useGetVoluntaryReportsCountedByArea";
+import { Loader2 } from "lucide-react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import DynamicBarChart from "../prueba/page";
 
 const languages = [
   { label: "English", value: "en" },
@@ -69,6 +70,7 @@ const DateFilter = () => {
   const pathname = usePathname();
   const [params, setParams] = useState<Params>({});
 
+  // Asigna parametros cuando cambia el Pathname o el SearchParams
   useEffect(() => {
     const newParams: Params = {};
     searchParams.forEach((value, key) => {
@@ -84,17 +86,43 @@ const DateFilter = () => {
     setParams(newParams);
   }, [searchParams, pathname]);
 
+  // Para extraer las estadisticas de reportes dado unos rangos de fecha, desde hasta
   const {
     data: barChartData,
     isLoading: isLoadingBarChart,
     isError: isErrorBarChart,
-  } = useGetVoluntaryReportingStatsByYear("2023-01-01", "2023-12-31");
+    refetch: refetchBarChart,
+  } = useGetVoluntaryReportingStatsByYear(
+    params.from || "2023-01-01",
+    params.to || "2023-12-31"
+  );
 
+  // Para extraer el numero de reportes por area dado unos rangos de fecha, desde hasta
   const {
     data: pieCharData,
     isLoading: isLoadingPieCharData,
     isError: isErrorPieCharData,
-  } = useGetVoluntaryReportsCountedByArea("2023-01-01", "2023-12-31");
+    refetch: refetchPieChart,
+  } = useGetVoluntaryReportsCountedByArea(
+    params.from || "2023-01-01",
+    params.to || "2023-12-31"
+  );
+
+
+  const {
+    data: dynamicData,
+    isLoading: isLoadingDynamicData,
+    isError: isErrorDynamicData,
+    refetch: refetchDynamicChart,
+  } = useGetDangerIdentificationsCountedByType(
+    params.from || "2023-01-01",
+    params.to || "2023-12-31"
+  );
+
+  useEffect(() => {
+    refetchBarChart();
+    refetchPieChart();
+  }, [params.from, params.to, refetchBarChart, refetchPieChart]);
 
   return (
     <>
@@ -116,7 +144,6 @@ const DateFilter = () => {
             />
           )}
 
-          <Example></Example>
         </div>
         <div className="flex-col justify-center items-center gpa-2">
           {isLoadingPieCharData && (
@@ -125,6 +152,15 @@ const DateFilter = () => {
             </div>
           )}
           {pieCharData && <PieChartComponent data={pieCharData} />}
+        </div>
+
+        <div className="flex-col justify-center items-center gpa-2">
+          {isLoadingDynamicData && (
+            <div className="flex w-full h-full justify-center items-center">
+              <Loader2 className="size-24 animate-spin mt-48" />
+            </div>
+          )}
+          {dynamicData && <DynamicBarChart data={dynamicData} />}
         </div>
       </ContentLayout>
     </>
