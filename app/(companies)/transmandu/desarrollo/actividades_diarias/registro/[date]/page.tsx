@@ -12,15 +12,21 @@ import { useAuth } from '@/contexts/AuthContext';
 import LoadingPage from '@/components/misc/LoadingPage';
 
 const DailyActivitiesPage = () => {
-  const { user, loading } = useAuth()
+  const { user, loading } = useAuth();
   const router = useRouter();
   const params = useParams<{ date: string }>();
   const [showDialog, setShowDialog] = useState(false);
   const { createActivityReport } = useCreateActivityReport();
-  const { data: report, isLoading: isReportLoading } = useGetDailyActivityReport({ date: params.date, user_id: user?.id.toString() ?? null });
+  const { data: report, isLoading: isReportLoading } = useGetDailyActivityReport({ date: params.date, user_id: user?.id?.toString() ?? null });
+
+  useEffect(() => {
+    if (!isReportLoading && !report) {
+      setShowDialog(true);
+    }
+  }, [report, isReportLoading]);
 
   if (isReportLoading || loading) {
-    return <LoadingPage />
+    return <LoadingPage />;
   }
 
   const handleCreateActivityReport = () => {
