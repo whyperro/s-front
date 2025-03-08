@@ -62,12 +62,10 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
           <DropdownMenuItem onClick={handleView} className="cursor-pointer">
             <Eye className="size-5" />
           </DropdownMenuItem>
-          <DropdownMenuItem disabled={isReportLoading} className="cursor-pointer">
+          <DropdownMenuItem disabled={isReportLoading} className="cursor-pointer" asChild>
             <PDFDownloadLink
-              fileName={`reporte_actividades.pdf`}
-              document={
-                <ActivitiesReportPdf report={report!} />
-              }
+              fileName="reporte_actividades.pdf"
+              document={<ActivitiesReportPdf report={report!} />}
               className="flex items-center gap-2"
             >
               <Printer className="size-5" />

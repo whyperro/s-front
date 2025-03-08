@@ -1,6 +1,7 @@
 import { ActivityReport } from "@/types";
 import {
   Document,
+  Image,
   Page,
   StyleSheet,
   Text,
@@ -20,24 +21,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   headerContainer: {
-    flexDirection: "row", // Mantiene la imagen y el título en la misma fila
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center", // Centra el contenido
+    justifyContent: "center",
     marginBottom: 10,
   },
   logo: {
-    width: 50, // Ajusta según el tamaño del logo
-    height: 50,
+    width: 35,
+    height: 35,
     position: "absolute",
-    left: 0, // Fijado en la esquina superior izquierda
+    left: 0,
   },
   titleContainer: {
-    flexDirection: "column", // Asegura que el texto esté en dos líneas
-    alignItems: "center", // Centra el texto
+    flexDirection: "column",
+    alignItems: "center",
   },
   titleText: {
     fontSize: 14,
-    fontWeight: 900, // Extra negrita
+    fontWeight: 900,
     textAlign: "center",
   },
   row: {
@@ -83,14 +84,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     position: "absolute",
-    right: 90, // FECHA se mantiene en su lugar
+    right: 90,
   },
   dateLabel: {
     fontSize: 9,
   },
   dateText: {
     fontSize: 10,
-    marginLeft: 40, // Movido más a la derecha
+    marginLeft: 40,
     marginTop: -8,
   },
 });
@@ -106,7 +107,7 @@ const ActivitiesReportPdf = ({
       <View style={styles.headerContainer}>
         {/* Logo en la esquina superior izquierda */}
         {/* <Image src="/ruta/del/logo.png" style={styles.logo} /> */}
-
+        <Image src="/LOGO_TRD.png" style={styles.logo} />
         {/* Título en dos líneas */}
         <View style={styles.titleContainer}>
           <Text style={styles.titleText}>REGISTRO DE</Text>
@@ -149,7 +150,6 @@ const ActivitiesReportPdf = ({
       </View>
 
       {/* Iterar sobre cada ActivityReport y sus actividades */}
-
       <View>
         {report.activities.map((activity, activityIndex) => (
           <View style={[styles.row, styles.table]} key={activity.id}>
