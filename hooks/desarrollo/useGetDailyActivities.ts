@@ -13,6 +13,7 @@ export const useGetDailyActivityReport = ({date, user_id}: {date: string, user_i
   return useQuery<ActivityReport>({
     queryKey: ["daily-activity", ],
     queryFn: () => fetchDailyActivity({date, user_id}),
-    enabled: !!user_id
+    enabled: !!user_id,
+    retry: 2,
   });
 };
