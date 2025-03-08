@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -171,7 +171,7 @@ export function DailyReportForm({
               </FormItem>
             )}
           />
-          
+
           <FormItem className="flex items-center space-x-2">
             <Checkbox
               checked={manualTime}
@@ -198,8 +198,8 @@ export function DailyReportForm({
             )}
           />
         </div>
-        <Button type="submit" disabled={activities_length + 1 === 10}>
-          Enviar actividad
+        <Button type="submit" disabled={registerActivity.isPending}>
+          {registerActivity.isPending ? <Loader2 className="animate-spin size-4" /> : "Registrar"}
         </Button>
       </form>
     </Form>
