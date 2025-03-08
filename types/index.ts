@@ -382,7 +382,7 @@ export type ObligatoryReport = {
 };
 
 export type VoluntaryReport = {
-  id: string;
+  id: number;
   report_number: string;
   information_source: InformationSource;
   report_date: Date;
@@ -400,7 +400,7 @@ export type VoluntaryReport = {
 };
 
 export type DangerIdentification = {
-  id: string;
+  id: number;
   danger: string;
   danger_location: string;
   danger_area: string;
@@ -463,6 +463,11 @@ export type MitigationTable = {
 export type ReportsByArea = {
   name: string;
   reports_number: string;
+};
+
+export type DangerIdentificationsByType = {
+  name: string;
+  identifications_number: string;
 };
 
 export type ReportingStats = {
