@@ -9,7 +9,7 @@ const fetchUserActivity = async (id: string): Promise<ActivityReport> => {
 
 export const useGetUserActivity = (id: string) => {
   return useQuery<ActivityReport>({
-    queryKey: ["daily-activity", id],
+    queryKey: ["daily-activity"],
     queryFn: () => fetchUserActivity(id),
     enabled: !!id,
   });

@@ -27,7 +27,7 @@ const DailyActivitiesPage = () => {
   useEffect(() => {
     if (activity_report && user) {
       const reports = activity_report.filter((r) => r.user.id === user.id);
-      if ((user.username === 'jmorillo' || user.username === 'aanton')) {
+      if ((user.username === 'JMORILLO' || user.username === 'AANTON')) {
         setFilteredReport(activity_report);
         return;
       }

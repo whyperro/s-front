@@ -83,12 +83,12 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
                 {
                   href: `/transmandu/desarrollo/actividades_diarias/registro/${date}/`,
                   label: "Registro de Actividades",
-                  active: pathname === `/transmandu/desarrollo/actividades_diarias/registro/${date}/`,
+                  active: pathname === `/transmandu/desarrollo/actividades_diarias/registro/`,
                 },
                 {
                   href: "/transmandu/desarrollo/actividades_diarias",
                   label: "Gestion de Actividades",
-                  active: pathname.includes("/transmandu/desarrollo/actividades_diarias"),
+                  active: pathname === `/transmandu/desarrollo/actividades_diarias/`,
                 },
               ]
             },

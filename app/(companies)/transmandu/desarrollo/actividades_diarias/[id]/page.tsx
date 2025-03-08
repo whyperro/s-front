@@ -18,7 +18,6 @@ const ActivityReportsByIdPage = ({ params }: { params: { id: string } }) => {
   if (isLoading) {
     return <LoadingPage />
   }
-  console.log(report?.user.id, user?.id)
   return (
     <ContentLayout title='Actividades Diarias'>
       <div className='flex flex-col gap-y-2'>

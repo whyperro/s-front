@@ -37,12 +37,8 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
       result: result,
       id: id.toString(),
     }
-
     await updateFinalHour.mutateAsync(data)
-
-    setTimeout(() => {
-      window.location.reload()
-    }, 1500)
+    setDialogOpen(false)
   }
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
