@@ -17,14 +17,15 @@ import ActivitiesReportPdf from "../pdf/ActivityReport";
 import { Calendar as DatePicker } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useGetDailyActivityReport } from "@/hooks/desarrollo/useGetDailyActivities";
+import { useAuth } from "@/contexts/AuthContext";
 
 
 export function DailyActivitiesReportDialog() {
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
-  const formattedDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : null;
-  const { data: activities, isLoading: reportLoading } = useGetDailyActivityReport(formattedDate!); 
+  const { user } = useAuth()
+  const formattedDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd");
+  const { data: report, isLoading: reportLoading } = useGetDailyActivityReport({ date: formattedDate, user_id: user?.id.toString() ?? null });
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -56,20 +57,20 @@ export function DailyActivitiesReportDialog() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent align="center" className="w-auto p-0">
-                <DatePicker
-                  mode="single"
-                  selected={selectedDate ?? undefined} // Si selectedDate es null, se pasa undefined
-                  onSelect={(date) => setSelectedDate(date ?? null)} // Asegura que `null` se maneje correctamente
-                  disabled={(date) => date > new Date()} //Deshabilita Fechas futuras
-                />
+                  <DatePicker
+                    mode="single"
+                    selected={selectedDate ?? undefined} // Si selectedDate es null, se pasa undefined
+                    onSelect={(date) => setSelectedDate(date ?? null)} // Asegura que `null` se maneje correctamente
+                    disabled={(date) => date > new Date()} //Deshabilita Fechas futuras
+                  />
                 </PopoverContent>
               </Popover>
             </div>
             {
-              Array.isArray(activities) && selectedDate && (
+              report && selectedDate && (
                 <PDFDownloadLink
                   fileName={`reporte_actividades_${format(selectedDate, "dd-MM-yyyy")}.pdf`}
-                  document={<ActivitiesReportPdf activities={activities} />}
+                  document={<ActivitiesReportPdf report={report} />}
                 >
                   <Button disabled={reportLoading} className="mt-2">Descargar Reporte</Button>
                 </PDFDownloadLink>
