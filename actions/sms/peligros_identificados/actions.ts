@@ -38,6 +38,7 @@ export const useCreateDangerIdentification = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
+      queryClient.invalidateQueries({ queryKey: ["voluntary-reports"] });
       toast.success("¡Creado!", {
         description: ` La identificacion de peligro ha sido creado correctamente.`,
       });
