@@ -38,23 +38,41 @@ import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
 import { Label } from "../ui/label";
 import { useEffect, useState } from "react";
 
-const formSchema = z
-  .object({
-    client_id: z.string(),
-    route_id: z.string(),
-    aircraft_id: z.string(),
+const formSchema = z.object({
+    client_id: z.string({
+      message: "Debe elegir un cliente.",
+    }),
+    route_id: z.string({
+      message: "Debe elegir una ruta.",
+    }),
+    aircraft_id: z.string({
+      message: "Debe elegir un avión.",
+    }),
     date: z.date({
       required_error: "La fecha de vuelo es requerida",
     }),
-    details: z.string(),
-    fee: z.string(),
-    type: z.enum(["CARGA", "PAX", "CHART"]),
-    debt_status: z.enum(["PENDIENTE", "PAGADO"]),
+    details: z.string().min(3, {
+      message: "Los detalles deben tener al menos 3 caracteres.",
+    }).max(30, {
+      message: "Los detalles tiene un máximo 30 caracteres.",
+    }),
+    fee: z.string().min(1, "La tasa es requerida").refine((val) => {
+      const number = parseFloat(val);
+      return !isNaN(number) && number > 0;
+    }, {
+      message: "La tasa debe ser mayor a cero.",
+    }),
+    type: z.enum(["CARGA", "PAX", "CHART"], {
+      message: "Debe elegir un tipo de vuelo.",
+    }),
+    debt_status: z.enum(["PENDIENTE", "PAGADO"], {
+      message: "Debe elegir un estado de vuelo.",
+    }),
     total_amount: z
       .string()
       .min(1, "El monto total es requerido")
       .refine((value) => !isNaN(parseFloat(value)) && parseFloat(value) >= 0, {
-        message: "El monto total no puede ser negativo",
+        message: "El monto total debe ser mayor que cero",
       }),
     payed_amount: z
       .string()

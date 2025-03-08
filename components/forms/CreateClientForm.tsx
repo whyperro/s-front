@@ -23,7 +23,7 @@ const phoneRegex = new RegExp(
 
 const formSchema = z.object({
   dni: z.string().min(7, {
-    message: "Debes tener al menos 7 numeros .",
+    message: "El número de identificación debe tener el formato adecuado.",
   }),
   name: z.string().max(40).regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras").min(2, {
     message: "El nombre debe tener al menos 2 caracteres y maximo 40.",
@@ -33,7 +33,11 @@ const formSchema = z.object({
   email: z.string().email({
     message: "Debe ser un email válido.",
   }),
-  address: z.string().min(2).max(100),
+  address: z.string().min(2, {
+    message: "La dirección debe tener al menos 2 caracteres.",
+  }).max(30, {
+    message: "La dirección tiene un máximo 30 caracteres.",
+  }),
 });
 
 interface FormProps {

@@ -17,8 +17,16 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const formSchema = z.object({
-  from: z.string().min(3).max(20).regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras y números"),
-  to: z.string().min(3).max(20).regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras y números"),
+  from: z.string().min(3, {
+    message: "El nombre del lugar debe tener al menos 3 caracteres.",
+  }).max(30, {
+    message: "El nombre del lugar tiene un máximo 30 caracteres.",
+  }).regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras y números"),
+  to: z.string().min(3, {
+    message: "El nombre del lugar debe tener al menos 3 caracteres.",
+  }).max(30, {
+    message: "El nombre del lugar tiene un máximo 30 caracteres.",
+  }).regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras y números"),
 });
 
 interface FormProps {

@@ -40,18 +40,48 @@ import { Loader2 } from "lucide-react";
 import { Company } from "@/types";
 
 const formSchema = z.object({
-  responsible_id: z.string(),
-  cash_id: z.string(),
-  company_id: z.string(),
-  date: z.date(),
+  responsible_id: z.string({
+    message: "Debe elegir un responsable.",
+  }),
+  cash_id: z.string({
+    message: "Debe elegir una caja.",
+  }),
+  company_id: z.string({
+    message: "Debe elegir una compañía.",
+  }),
+  date: z.date({
+    required_error: "La fecha es requerida",
+  }),
   income_or_output: z.enum(["INCOME", "OUTPUT"]),
-  account: z.string(),
-  category: z.string(),
-  sub_category: z.string(),
-  sub_category_details: z.string(),
-  amount: z.string(),
+  account: z.string().min(2, {
+    message: "La cuenta debe tener al menos 2 caracteres.",
+  }).max(30, {
+    message: "La cuenta tiene un máximo 30 caracteres.",
+  }),
+  category: z.string().min(2, {
+    message: "La categoría debe tener al menos 2 caracteres.",
+  }).max(30, {
+    message: "La categoría tiene un máximo 30 caracteres.",
+  }),
+  sub_category: z.string().min(2, {
+    message: "La sub categoría debe tener al menos 2 caracteres.",
+  }).max(30, {
+    message: "La sub categoría tiene un máximo 30 caracteres.",
+  }),
+  sub_category_details: z.string().min(2, {
+    message: "El detalle de la sub categoría debe tener al menos 2 caracteres.",
+  }).max(30, {
+    message: "El detalle de la sub categoría tiene un máximo 30 caracteres.",
+  }),
+  amount: z.string().refine((val) => {
+    // Convertir el valor a número y verificar que sea positivo
+    const number = parseFloat(val);
+    return !isNaN(number) && number > 0;
+  }, {
+    message: "El monto debe ser mayor a cero.",
+  }),
   bank_account_id: z.string({
-    message: "Debe elegir una cuenta.",
+    message: "Debe elegir una cuenta de banco.",
   }),
 });
 

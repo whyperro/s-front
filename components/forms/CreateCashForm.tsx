@@ -17,9 +17,23 @@ import { z } from "zod";
 import { Cash } from "@/types"
 
 const formSchema = z.object({
-  name: z.string().min(1).max(20),
-  total_amount: z.string(),
-  box_type: z.string(),
+  name: z.string().regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras").min(2, {
+    message: "El nombre debe tener al menos 2 caracteres.",
+  }).max(30, {
+    message: "El nombre tiene un máximo 30 caracteres.",
+  }),
+  total_amount: z.string().refine((val) => {
+    // Convertir el valor a número y verificar que sea positivo
+    const number = parseFloat(val);
+    return !isNaN(number) && number >= 0;
+  }, {
+    message: "El monto total debe ser un número positivo.",
+  }),
+  box_type: z.string().min(2, {
+    message: "El tipo de caja debe tener al menos 2 caracteres.",
+  }).max(30, {
+    message: "El tipo de caja tiene un máximo 30 caracteres.",
+  }),
 });
 
 interface FormProps {

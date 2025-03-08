@@ -38,13 +38,27 @@ import { Loader2 } from "lucide-react";
 import { Flight } from "@/types";
 
 const formSchema = z.object({
-  bank_account_id: z.string().optional(),
-  pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"]),
-  pay_amount: z.string(),
+  bank_account_id: z.string({
+    message: "Debe elegir una cuenta de banco.",
+  }).optional(),
+  pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"], {
+    message: "Debe elegir un método de pago.",
+  }),
+  pay_amount: z.string().refine((val) => {
+    // Convertir el valor a número y verificar que sea positivo
+    const number = parseFloat(val);
+    return !isNaN(number) && number >= 0;
+  }, {
+    message: "La cantidad pagada debe ser mayor a cero.",
+  }),
   payment_date: z.date({
     required_error: "La fecha de vuelo es requerida",
   }),
-  pay_description: z.string(),
+  pay_description: z.string().min(3, {
+    message: "Los detalles del pago deben tener al menos 3 caracteres.",
+  }).max(30, {
+    message: "Los detalles del pago tiene un máximo 30 caracteres.",
+  }),
 });
 
 interface FormProps {

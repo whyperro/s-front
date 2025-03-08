@@ -35,15 +35,27 @@ import { useGetClients } from "@/hooks/administracion/useGetClients";
 import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
 
 const formSchema = z.object({
-  bank_acount_id: z.string().optional(),
-  flight_id: z.string(),
-  client_id: z.string(),
-  pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"]),
+  bank_acount_id: z.string({
+    message: "Debe elegir una cuenta de banco.",
+  }).optional(),
+  flight_id: z.string({
+    message: "Debe elegir un vuelo.",
+  }),
+  client_id: z.string({
+    message: "Debe elegir un cliente.",
+  }),
+  pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"], {
+    message: "Debe elegir un método de pago.",
+  }),
   pay_amount: z.string(),
   payment_date: z.date({
     required_error: "La fecha de vuelo es requerida",
   }),
-  pay_description: z.string(),
+  pay_description: z.string().min(3, {
+    message: "Los detalles del pago deben tener al menos 3 caracteres.",
+  }).max(30, {
+    message: "Los detalles del pago tiene un máximo 30 caracteres.",
+  }),
 });
 
 interface FormProps {
