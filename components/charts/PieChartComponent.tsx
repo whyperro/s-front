@@ -32,6 +32,7 @@ interface PieChartComponentProps {
 }
 
 const PieChartComponent = ({ data }: PieChartComponentProps) => {
+  console.log("PieChartComponent",data);
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const { theme } = useTheme();
   const renderCustomizedLabel = ({

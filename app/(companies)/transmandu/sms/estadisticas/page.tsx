@@ -93,8 +93,8 @@ const DateFilter = () => {
     isError: isErrorBarChart,
     refetch: refetchBarChart,
   } = useGetVoluntaryReportingStatsByYear(
-    params.from || "2023-01-01",
-    params.to || "2023-12-31"
+    params.from || "2025-03-01",
+    params.to || "2025-03-07"
   );
 
   // Para extraer el numero de reportes por area dado unos rangos de fecha, desde hasta
@@ -104,10 +104,9 @@ const DateFilter = () => {
     isError: isErrorPieCharData,
     refetch: refetchPieChart,
   } = useGetVoluntaryReportsCountedByArea(
-    params.from || "2023-01-01",
-    params.to || "2023-12-31"
+    params.from || "2025-03-01",
+    params.to || "2025-03-07"
   );
-
 
   const {
     data: dynamicData,
@@ -115,14 +114,21 @@ const DateFilter = () => {
     isError: isErrorDynamicData,
     refetch: refetchDynamicChart,
   } = useGetDangerIdentificationsCountedByType(
-    params.from || "2023-01-01",
-    params.to || "2023-12-31"
+    params.from || "2025-03-01",
+    params.to || "2025-03-07"
   );
 
   useEffect(() => {
     refetchBarChart();
     refetchPieChart();
-  }, [params.from, params.to, refetchBarChart, refetchPieChart]);
+    refetchDynamicChart();
+  }, [
+    params.from,
+    params.to,
+    refetchBarChart,
+    refetchPieChart,
+    refetchDynamicChart,
+  ]);
 
   return (
     <>
@@ -143,7 +149,6 @@ const DateFilter = () => {
               title="Peligros Identificados"
             />
           )}
-
         </div>
         <div className="flex-col justify-center items-center gpa-2">
           {isLoadingPieCharData && (

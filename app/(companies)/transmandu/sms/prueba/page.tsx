@@ -37,11 +37,12 @@ const renderLegendText = (value: string) => {
 };
 
 const DynamicBarChart = ({ data }: DynamicBarChartProps) => {
+  console.log("DYNAMICBARCHART",data);
   return (
     <BarChart width={730} height={250} data={data}>
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="name" />
-      <YAxis />
+      <YAxis domain={[0, 'dataMax']} allowDecimals={false}/>
       <Tooltip />
       <Legend formatter={renderLegendText} iconSize={0} />
       <Bar dataKey="identifications_number" fill="#8884d8" name="Numero de Reportes Segun su Tipo">

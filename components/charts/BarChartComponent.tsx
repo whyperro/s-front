@@ -34,6 +34,8 @@ const
 
 
 BarChartComponent = ({ data, title }: BarChartProps) => {
+  console.log("BarChartComponent",data);
+
   const values: StatsDataByYear[] = data
     ? [
         {
