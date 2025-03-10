@@ -180,19 +180,6 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
             },
           ]
         },
-        {
-          groupLabel: "Cuenta",
-          menus: [
-            {
-              href: "/cuenta",
-              label: "Ajuste de Cuenta",
-              active: pathname.includes("/cuenta"),
-              icon: Settings,
-              roles: [],
-              submenus: []
-            }
-          ]
-        }
       ]
       : [
         {

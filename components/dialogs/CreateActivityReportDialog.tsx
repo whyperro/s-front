@@ -8,17 +8,17 @@ interface ConfirmCreateActivityReportDialogProps {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  loading: boolean;
 }
 
-const ConfirmCreateActivityReportDialog: React.FC<ConfirmCreateActivityReportDialogProps> = ({ open, onClose, onConfirm }) => {
-  const {createActivityReport} = useCreateActivityReport();
+const ConfirmCreateActivityReportDialog: React.FC<ConfirmCreateActivityReportDialogProps> = ({ open, onClose, onConfirm, loading }) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <p>No se encontró un registro de actividades para esta fecha. ¿Desea crear uno?</p>
         <div className='flex justify-center gap-2'>
-        <Button variant="default" onClick={onConfirm}>Crear</Button>
-      </div>
+          <Button disabled={loading} variant="default" onClick={onConfirm}>Crear</Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
