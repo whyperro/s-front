@@ -4,6 +4,7 @@ import {
   ConsumableArticle,
   DispatchRequest,
   Request,
+  VoluntaryReport,
 } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -20,6 +21,22 @@ interface VoluntaryReportData {
   last_name?: string;
   phone?: string;
   email?: string;
+}
+interface UpdateVoluntaryReportData {
+  id: number;
+  report_number: string;
+  report_date: Date;
+  identification_date: Date;
+  danger_location: string;
+  danger_area: string;
+  description: string;
+  possible_consequences: string;
+  danger_identification_id: number;
+  status: string;
+  reporter_name?: string;
+  reporter_last_name?: string;
+  reporter_phone?: string;
+  reporter_email?: string;
 }
 
 export const useCreateVoluntaryReport = () => {
@@ -51,7 +68,6 @@ export const useCreateVoluntaryReport = () => {
   };
 };
 
-
 export const useDeleteVoluntaryReport = () => {
   const queryClient = useQueryClient();
 
@@ -61,8 +77,8 @@ export const useDeleteVoluntaryReport = () => {
       await axiosInstance.delete(`/transmandu/voluntary-reports/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["voluntary-reports",] });
       queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
+      queryClient.invalidateQueries({ queryKey: ["voluntary-reports"] });
       toast.success("¡Eliminado!", {
         description: `¡El reporte ha sido eliminada correctamente!`,
       });
@@ -79,3 +95,31 @@ export const useDeleteVoluntaryReport = () => {
   };
 };
 
+export const useUpdateVoluntaryReport = () => {
+  const queryClient = useQueryClient();
+
+  const updateVoluntaryReportMutation = useMutation({
+    mutationKey: ["voluntary-reports"],
+    mutationFn: async (data: UpdateVoluntaryReportData) => {
+      await axiosInstance.patch(
+        `/transmandu/voluntary-reports/${data.id}`,
+        data
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["voluntary-reports"] });
+      toast.success("¡Actualizado!", {
+        description: `El reporte voluntario ha sido actualizado correctamente.`,
+      });
+    },
+    onError: (error) => {
+      toast.error("Oops!", {
+        description: "No se pudo actualizar el reporte voluntario...",
+      });
+      console.log(error);
+    },
+  });
+  return {
+    updateVoluntaryReport: updateVoluntaryReportMutation,
+  };
+};
