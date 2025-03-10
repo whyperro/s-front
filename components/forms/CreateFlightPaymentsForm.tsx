@@ -35,7 +35,7 @@ import { useGetClients } from "@/hooks/administracion/useGetClients";
 import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
 
 const formSchema = z.object({
-  bank_acount_id: z.string({
+  bank_account_id: z.string({
     message: "Debe elegir una cuenta de banco.",
   }).optional(),
   flight_id: z.string({
@@ -182,7 +182,7 @@ export function FlightPaymentsForm({ onClose }: FormProps) {
           {form.watch("pay_method") !== "EFECTIVO" && (
             <FormField
               control={form.control}
-              name="bank_acount_id"
+              name="bank_account_id"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cuenta de Banco</FormLabel>

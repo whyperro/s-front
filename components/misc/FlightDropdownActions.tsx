@@ -155,7 +155,7 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
               <h3 className="text-sm font-medium text-muted-foreground">
                 Ruta
               </h3>
-              <p className="text-lg font-semibold">{flight.route.id}</p>
+              <p className="text-lg font-semibold">{flight.route.from}-{flight.route.to}</p>
               <Separator />
             </div>
 
@@ -187,7 +187,7 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
               <h3 className="text-sm font-medium text-muted-foreground">
                 Costo
               </h3>
-              <p className="text-lg font-semibold">{flight.payed_amount}</p>
+              <p className="text-lg font-semibold">{flight.total_amount}</p>
               <Separator />
             </div>
 
@@ -195,7 +195,7 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
               <h3 className="text-sm font-medium text-muted-foreground">
                 Total Pagado
               </h3>
-              <p className="text-lg font-semibold">{flight.total_amount}</p>
+              <p className="text-lg font-semibold">{flight.payed_amount}</p>
               <Separator />
             </div>
 

@@ -38,27 +38,34 @@ import { Loader2 } from "lucide-react";
 import { Flight } from "@/types";
 
 const formSchema = z.object({
-  bank_account_id: z.string({
-    message: "Debe elegir una cuenta de banco.",
-  }).optional(),
+  bank_account_id: z
+    .string({
+      message: "Debe elegir una cuenta de banco.",
+    }),
   pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"], {
     message: "Debe elegir un método de pago.",
   }),
-  pay_amount: z.string().refine((val) => {
-    // Convertir el valor a número y verificar que sea positivo
-    const number = parseFloat(val);
-    return !isNaN(number) && number >= 0;
-  }, {
-    message: "La cantidad pagada debe ser mayor a cero.",
-  }),
+  pay_amount: z.string().refine(
+    (val) => {
+      // Convertir el valor a número y verificar que sea positivo
+      const number = parseFloat(val);
+      return !isNaN(number) && number >= 0;
+    },
+    {
+      message: "La cantidad pagada debe ser mayor a cero.",
+    }
+  ),
   payment_date: z.date({
     required_error: "La fecha de vuelo es requerida",
   }),
-  pay_description: z.string().min(3, {
-    message: "Los detalles del pago deben tener al menos 3 caracteres.",
-  }).max(30, {
-    message: "Los detalles del pago tiene un máximo 30 caracteres.",
-  }),
+  pay_description: z
+    .string()
+    .min(3, {
+      message: "Los detalles del pago deben tener al menos 3 caracteres.",
+    })
+    .max(30, {
+      message: "Los detalles del pago tiene un máximo 30 caracteres.",
+    }),
 });
 
 interface FormProps {
@@ -151,7 +158,7 @@ export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
                       {accounts &&
                         accounts.map((acc) => (
                           <SelectItem value={acc.id.toString()} key={acc.id}>
-                            {acc.name} 
+                            {acc.name}
                           </SelectItem>
                         ))}
                     </SelectContent>

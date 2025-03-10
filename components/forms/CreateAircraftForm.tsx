@@ -98,11 +98,11 @@ export function CreateAircraftForm({ onClose }: FormProps) {
             control={form.control}
             name="serial"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem>
                 <FormLabel>Serial</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Ingrese el código del serial"
+                    placeholder="Ingrese el código"
                     {...field}
                   />
                 </FormControl>
@@ -150,7 +150,7 @@ export function CreateAircraftForm({ onClose }: FormProps) {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Locación donde pertenecerá el avión" />
+                      <SelectValue placeholder="Locación a donde pertenecerá" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
