@@ -32,6 +32,12 @@ const ShowVoluntaryReport = () => {
           <div className="w-full max-w-2xl space-y-4">
             <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
               <p className="text-lg font-medium text-gray-700">
+                <span className="font-semibold">Número del Reporte:</span>{" "}
+                {voluntaryReport.report_number}
+              </p>
+            </div>
+            <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
+              <p className="text-lg font-medium text-gray-700">
                 <span className="font-semibold">Fecha del Reporte: </span>
                 {format(voluntaryReport.report_date, "PPP", {
                   locale: es,
@@ -41,17 +47,10 @@ const ShowVoluntaryReport = () => {
 
             <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
               <p className="text-lg font-medium text-gray-700">
-                <span className="font-semibold">Fecha del Reporte: </span>
+                <span className="font-semibold">Fecha de Identificacion: </span>
                 {format(voluntaryReport.identification_date, "PPP", {
                   locale: es,
                 })}
-              </p>
-            </div>
-
-            <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
-              <p className="text-lg font-medium text-gray-700">
-                <span className="font-semibold">Número del Reporte:</span>{" "}
-                {voluntaryReport.report_number}
               </p>
             </div>
             <div className="flex bg-gray-100 justify-between items-center p-4 rounded-lg">
@@ -89,7 +88,7 @@ const ShowVoluntaryReport = () => {
             ) : (
               <div className="bg-gray-100 p-4 rounded-lg">
                 <p className="text-xl font-semibold text-center text-gray-800 mb-2">
-                  Datos de Quien Reporta
+                  Reportado Por:
                 </p>
                 <p className="text-lg text-gray-700">
                   <span className="font-semibold">Nombre:</span>{" "}
