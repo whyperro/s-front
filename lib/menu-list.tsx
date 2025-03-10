@@ -78,7 +78,7 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               label: "Actividades",
               active: pathname.includes("/transmandu/desarrollo"),
               icon: SquarePen,
-              roles: ["ANALISTA_PLANIFICACION", "JEFE_PLANIFICACION", "SUPERUSER"],
+              roles: ["ANALISTA_DESARROLLO", "JEFE_DESARROLLO", "SUPERUSER"],
               submenus: [
                 {
                   href: `/transmandu/desarrollo/actividades_diarias/registro/${date}/`,
@@ -189,11 +189,11 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
           ]
         },
         {
-          groupLabel: "Settings",
+          groupLabel: "Cuenta",
           menus: [
             {
               href: "/cuenta",
-              label: "Cuenta",
+              label: "Ajuste de Cuenta",
               active: pathname.includes("/cuenta"),
               icon: Settings,
               roles: [],
