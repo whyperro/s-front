@@ -408,6 +408,7 @@ export type DangerIdentification = {
   consequence_to_evaluate: string;
   root_cause_analysis: string;
   information_source: InformationSource;
+  analyses: Analysis;
 };
 
 export type FollowUpControl = {
@@ -474,3 +475,9 @@ export type ReportingStats = {
   open_reports: number;
   closed_reports: number;
 };
+
+
+export type pieChartData = {
+  name: string;
+  value: number;
+}
