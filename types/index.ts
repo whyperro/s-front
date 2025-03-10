@@ -348,7 +348,7 @@ export type PurchaseOrder = {
 
 export type Pilot = {
   id: number;
-  dni: number;
+  dni: string;
   first_name: string;
   last_name: string;
   license_number: string;
@@ -384,7 +384,6 @@ export type ObligatoryReport = {
 export type VoluntaryReport = {
   id: number;
   report_number: string;
-  information_source: InformationSource;
   report_date: Date;
   identification_date: Date;
   danger_location: string;
