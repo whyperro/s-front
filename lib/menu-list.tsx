@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
 import {
   Banknote,
+  BookUser,
   Building,
   ClipboardCopy,
   Globe,
@@ -430,6 +431,14 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
                   active: pathname === ("/ajustes/bancos_cuentas/tarjetas"),
                 },
               ]
+            },
+            {
+              href: "/ajustes/clientes",
+              label: "Clientes",
+              active: pathname.includes("/clientes"),
+              icon: BookUser,
+              roles: ["SUPERUSER"],
+              submenus: []
             },
             {
               href: "/ajustes/cuenta",
