@@ -3,6 +3,7 @@ import {
   ComponentArticle,
   ConsumableArticle,
   DispatchRequest,
+  Pilot,
   Request,
 } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -70,3 +71,31 @@ export const useDeletePilot = () => {
     deletePilot: deleteMutation,
   };
 };
+
+export const useUpdatePilot = () => {
+
+  const queryClient = useQueryClient()
+
+  const updatePilotMutation = useMutation({
+      mutationKey: ["pilots"],
+      mutationFn: async (data: Pilot) => {
+          await axiosInstance.put(`/transmandu/pilots/${data.id}`, data)
+        },
+      onSuccess: () => {
+          queryClient.invalidateQueries({queryKey: ['pilots']})
+          toast.success("¡Actualizado!", {
+              description: `El piloto ha sido actualizada correctamente.`
+          })
+        },
+      onError: (error) => {
+          toast.error('Oops!', {
+            description: 'No se pudo actualizar el piloto...'
+          })
+          console.log(error)
+        },
+      }
+  )
+  return {
+    updatePilot: updatePilotMutation,
+  }
+}
