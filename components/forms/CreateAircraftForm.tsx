@@ -36,39 +36,61 @@ import {
 } from "@/components/ui/select";
 
 const FormSchema = z.object({
-  fabricant: z.string().min(2, {
-    message: "El fabricante debe tener al menos 2 caracteres.",
-  }).max(30, {
-    message: "El fabricante tiene un máximo 30 caracteres.",
-  }),
-  brand: z.string().min(2, {
-    message: "La marca debe tener al menos 2 caracteres alfanuméricos.",
-  }).max(30, {
-    message: "La marca tiene un máximo 20 caracteres alfanuméricos.",
-  }),
-  serial: z.string().min(2, {
-    message: "El serial debe tener al menos 2 números.",
-  }).max(30, {
-    message: "El serial tiene un máximo 8 números.",
-  }),
-  acronym: z.string().min(2, {
-    message: "La matrícula debe tener al menos 2 caracteres alfanuméricos.",
-  }).max(8, {
-    message: "La matricula tiene un máximo 8 caracteres alfanuméricos.",
-  }),
+  fabricant: z
+    .string()
+    .min(2, {
+      message: "El fabricante debe tener al menos 2 caracteres.",
+    })
+    .max(30, {
+      message: "El fabricante tiene un máximo 30 caracteres.",
+    }),
+  brand: z
+    .string()
+    .min(2, {
+      message: "La marca debe tener al menos 2 caracteres alfanuméricos.",
+    })
+    .max(30, {
+      message: "La marca tiene un máximo 20 caracteres alfanuméricos.",
+    }),
+  serial: z
+    .string()
+    .min(2, {
+      message: "El serial debe tener al menos 2 números.",
+    })
+    .max(30, {
+      message: "El serial tiene un máximo 8 números.",
+    }),
+  acronym: z
+    .string()
+    .min(2, {
+      message: "La matrícula debe tener al menos 2 caracteres alfanuméricos.",
+    })
+    .max(8, {
+      message: "La matricula tiene un máximo 8 caracteres alfanuméricos.",
+    }),
   fabricant_date: z.date({
     required_error: "La fecha de vuelo es requerida",
   }),
-  owner: z.string().regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras").min(2, {
-    message: "El dueño debe tener al menos 2 caracteres.",
-  }).max(30, {
-    message: "El dueño tiene un máximo 30 caracteres.",
-  }),
-  comments: z.string().min(2, {
-    message: "El comentario debe tener al menos 2 caracteres.",
-  }).max(50, {
-    message: "El comentario tiene un máximo 50 caracteres.",
-  }),
+  owner: z
+    .string()
+    .regex(
+      /^[a-zA-Z0-9\s]+$/,
+      "No se permiten caracteres especiales, solo letras"
+    )
+    .min(2, {
+      message: "El dueño debe tener al menos 2 caracteres.",
+    })
+    .max(30, {
+      message: "El dueño tiene un máximo 30 caracteres.",
+    }),
+  comments: z
+    .string()
+    .min(2, {
+      message: "El comentario debe tener al menos 2 caracteres.",
+    })
+    .max(100, {
+      message: "El comentario tiene un máximo 100 caracteres.",
+    }),
   location_id: z.string(),
 });
 
@@ -101,10 +123,7 @@ export function CreateAircraftForm({ onClose }: FormProps) {
               <FormItem>
                 <FormLabel>Serial</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Ingrese el código"
-                    {...field}
-                  />
+                  <Input placeholder="Ingrese el código" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
