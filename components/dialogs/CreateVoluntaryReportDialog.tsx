@@ -1,6 +1,5 @@
 "use client";
 
-import { VoluntaryReportForm } from "@/components/forms/CreateVoluntaryReportForm";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -12,6 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { CreateVoluntaryReportForm } from "../forms/CreateVoluntaryReportForm";
 
 export default function CreateVoluntaryReportDialog() {
   const [open, setOpen] = useState(false);
@@ -34,7 +34,7 @@ export default function CreateVoluntaryReportDialog() {
               <DialogTitle></DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
-            <VoluntaryReportForm onClose={() => setOpen(false)} />
+            <CreateVoluntaryReportForm onClose={() => setOpen(false)} />
           </DialogContent>
         </Dialog>
       </Card>
