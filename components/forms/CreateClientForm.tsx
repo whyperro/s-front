@@ -35,8 +35,8 @@ const formSchema = z.object({
   }),
   address: z.string().min(2, {
     message: "La dirección debe tener al menos 2 caracteres.",
-  }).max(30, {
-    message: "La dirección tiene un máximo 30 caracteres.",
+  }).max(100, {
+    message: "La dirección tiene un máximo 100 caracteres.",
   }),
 });
 

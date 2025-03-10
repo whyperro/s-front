@@ -53,8 +53,8 @@ const formSchema = z.object({
   }),
   pay_description: z.string().min(3, {
     message: "Los detalles del pago deben tener al menos 3 caracteres.",
-  }).max(30, {
-    message: "Los detalles del pago tiene un máximo 30 caracteres.",
+  }).max(100, {
+    message: "Los detalles del pago tiene un máximo 100 caracteres.",
   }),
 });
 

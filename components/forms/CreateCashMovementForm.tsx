@@ -55,23 +55,23 @@ const formSchema = z.object({
   income_or_output: z.enum(["INCOME", "OUTPUT"]),
   account: z.string().min(2, {
     message: "La cuenta debe tener al menos 2 caracteres.",
-  }).max(30, {
-    message: "La cuenta tiene un máximo 30 caracteres.",
+  }).max(100, {
+    message: "La cuenta tiene un máximo 100 caracteres.",
   }),
   category: z.string().min(2, {
     message: "La categoría debe tener al menos 2 caracteres.",
-  }).max(30, {
-    message: "La categoría tiene un máximo 30 caracteres.",
+  }).max(100, {
+    message: "La categoría tiene un máximo 100 caracteres.",
   }),
   sub_category: z.string().min(2, {
     message: "La sub categoría debe tener al menos 2 caracteres.",
-  }).max(30, {
-    message: "La sub categoría tiene un máximo 30 caracteres.",
+  }).max(100, {
+    message: "La sub categoría tiene un máximo 100 caracteres.",
   }),
   sub_category_details: z.string().min(2, {
     message: "El detalle de la sub categoría debe tener al menos 2 caracteres.",
-  }).max(30, {
-    message: "El detalle de la sub categoría tiene un máximo 30 caracteres.",
+  }).max(100, {
+    message: "El detalle de la sub categoría tiene un máximo 100 caracteres.",
   }),
   amount: z.string().refine((val) => {
     // Convertir el valor a número y verificar que sea positivo

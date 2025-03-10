@@ -53,8 +53,8 @@ const formSchema = z.object({
     }),
     details: z.string().min(3, {
       message: "Los detalles deben tener al menos 3 caracteres.",
-    }).max(30, {
-      message: "Los detalles tiene un máximo 30 caracteres.",
+    }).max(100, {
+      message: "Los detalles tiene un máximo 100 caracteres.",
     }),
     fee: z.string().min(1, "La tasa es requerida").refine((val) => {
       const number = parseFloat(val);
