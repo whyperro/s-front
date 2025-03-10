@@ -61,16 +61,15 @@ const FormSchema = z
       .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" })
       .optional(),
 
-    incident_time: z.date().refine((date) => !isNaN(date.getTime()), {
-      message: "Debe ser una fecha válida",
-    }),
+    incident_time: z
+      .date()
+      .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
+    flight_time: z
+      .date()
+      .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
 
     pilot_id: z.string(),
     copilot_id: z.string(),
-
-    flight_time: z.date().refine((date) => !isNaN(date.getTime()), {
-      message: "Debe ser una hora válida",
-    }),
 
     aircraft_acronym: z.string().min(3),
     aircraft_model: z.string().min(3),
@@ -138,6 +137,12 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
 
   const onSubmit = async (data: FormSchemaType) => {
     console.log(data);
+    const hora = data.incident_time;
+    if (hora) {
+      console.log(format(hora, "HH:mm:ss"));
+    } else {
+      console.log("Hora no definida"); // O un valor predeterminado
+    }
     await createObligatoryReport.mutateAsync(data);
     onClose();
   };

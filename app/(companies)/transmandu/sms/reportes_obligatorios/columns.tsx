@@ -83,10 +83,9 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
     cell: ({ row }) => {
       return (
         <p className="font-medium text-center">
-          {format(row.original.incident_date, "HH:mm", {
-            locale: es,
-          })}
-        </p>
+          {row.original.incident_time && format(row.original.incident_time, "H")}
+          Im here waiting
+\        </p>
       );
     },
   },
