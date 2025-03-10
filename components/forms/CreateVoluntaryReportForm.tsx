@@ -35,10 +35,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "../ui/label";
-import { useCreateVoluntaryReport } from "@/actions/sms/reporte_voluntario/actions";
+import {
+  useCreateVoluntaryReport,
+  useUpdateVoluntaryReport,
+} from "@/actions/sms/reporte_voluntario/actions";
+import { VoluntaryReport } from "@/types";
 
 const FormSchema = z.object({
   identification_date: z
@@ -48,11 +52,12 @@ const FormSchema = z.object({
     .date()
     .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
 
-  report_number:z.string(),
+  report_number: z.string(),
   danger_location: z.string(),
   danger_area: z.string(),
   description: z.string(),
   possible_consequences: z.string(),
+
   reporter_name: z.string().optional(),
   reporter_last_name: z.string().optional(),
   reporter_phone: z
@@ -61,35 +66,75 @@ const FormSchema = z.object({
       message: "El número telefónico debe tener exactamente 11 dígitos",
     })
     .optional(),
-    reporter_email: z.string().email().optional(),
+  reporter_email: z.string().email().optional(),
 });
 
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
   onClose: () => void;
+  initialData?: VoluntaryReport;
+  isEditing?: boolean;
 }
 // { onClose }: FormProps
 // lo de arriba va en prop
-export function VoluntaryReportForm({ onClose }: FormProps) {
+export function CreateVoluntaryReportForm({
+  onClose,
+  isEditing,
+  initialData,
+}: FormProps) {
   const { createVoluntaryReport } = useCreateVoluntaryReport();
-
+  const { updateVoluntaryReport } = useUpdateVoluntaryReport();
   const [isAnonymous, setIsAnonymous] = useState(false);
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      report_date: new Date(),
-      identification_date: new Date(),
+      report_number: initialData?.report_number || "",
+      danger_area: initialData?.danger_area || "",
+      danger_location: initialData?.danger_location || "",
+      description: initialData?.description || "",
+      possible_consequences: initialData?.possible_consequences || "",
+      identification_date: initialData?.identification_date
+        ? new Date(initialData.identification_date)
+        : new Date(),
+      report_date: initialData?.report_date
+        ? new Date(initialData.report_date)
+        : new Date(),
+      reporter_email: initialData?.reporter_email,
+      reporter_last_name: initialData?.reporter_last_name,
+      reporter_name: initialData?.reporter_name,
+      reporter_phone: initialData?.reporter_phone,
     },
   });
 
   const onSubmit = async (data: FormSchemaType) => {
-    const value = {
-      ...data,
-      status: "OPEN",
+    console.log("valor de is anonymous", isAnonymous);
+    if (isAnonymous) {
+      delete data.reporter_name;
+      delete data.reporter_last_name;
+      delete data.reporter_email;
+      delete data.reporter_phone;
     }
-    await createVoluntaryReport.mutateAsync(value);
+    console.log("Data post is anonymous",data);
+    if (initialData && isEditing) {
+      const value = {
+        ...data,
+        status: initialData.status,
+        id: initialData.id,
+        danger_identification_id: initialData?.danger_identification_id,
+      };
+      console.log("this is the value", value);
+      await updateVoluntaryReport.mutateAsync(value);
+    } else {
+      const value = {
+        ...data,
+        status: "ABIERTO",
+      };
+      console.log("this is the value", value);
+      await createVoluntaryReport.mutateAsync(value);
+    }
+
     onClose();
   };
 
@@ -100,7 +145,7 @@ export function VoluntaryReportForm({ onClose }: FormProps) {
         className="flex flex-col space-y-3"
       >
         <FormLabel className="text-lg text-center">
-          Formulario de identificación de peligro
+          Formulario de Reporte Voluntario
         </FormLabel>
         <div className="flex gap-2 items-center justify-center  ">
           <FormField
@@ -205,7 +250,6 @@ export function VoluntaryReportForm({ onClose }: FormProps) {
             </FormItem>
           )}
         />
-        
 
         <div className="flex gap-2 items-center justify-center">
           <FormField
@@ -302,6 +346,7 @@ export function VoluntaryReportForm({ onClose }: FormProps) {
               // Asegurarse de que el valor sea un booleano
               if (typeof checked === "boolean") {
                 setIsAnonymous(checked);
+                console.log(checked);
               }
             }}
             value={isAnonymous.toString()} // Convertimos el booleano a string
