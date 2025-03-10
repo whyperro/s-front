@@ -25,7 +25,7 @@ interface ObligatoryReportData {
 export const useCreateObligatoryReport = () => {
   const queryClient = useQueryClient();
   const createMutation = useMutation({
-    mutationKey: ["obligatory_reports"],
+    mutationKey: ["obligatory-reports"],
     mutationFn: async (data: ObligatoryReportData) => {
       await axiosInstance.post("/transmandu/obligatory-reports", data, {
         headers: {
@@ -34,7 +34,7 @@ export const useCreateObligatoryReport = () => {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["obligatory_reports"] });
+      queryClient.invalidateQueries({ queryKey: ["obligatory-reports"] });
       toast.success("¡Creado!", {
         description: ` El reporte obligatorio ha sido creado correctamente.`,
       });
