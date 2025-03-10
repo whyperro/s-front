@@ -9,6 +9,8 @@ import { MitigationTable } from "@/types";
 import {
   ClipboardList,
   ClipboardPenLine,
+  Eye,
+  EyeIcon,
   FilePenLine,
   Loader2,
   MoreHorizontal,
@@ -87,24 +89,26 @@ const MitigationTableDropdownActions = ({
               <DropdownMenuItem onClick={() => setOpenCreatePlan(true)}>
                 <ClipboardList className="size-5" />
               </DropdownMenuItem>
-            ) : (
+            ) : mitigationTable.mitigation_plan &&
+              !mitigationTable.mitigation_plan.analysis ? (
               <DropdownMenuItem onClick={() => setOpenEditPlan(true)}>
                 <FilePenLine className="size-5" />
               </DropdownMenuItem>
-            )}
+            ) : null}
 
-            {mitigationTable.mitigation_plan?.id ? (
+            {mitigationTable.mitigation_plan?.id &&
+            mitigationTable.mitigation_plan?.analysis === null ? (
               <DropdownMenuItem onClick={() => setOpenCreateAnalysis(true)}>
                 <ClipboardPenLine className="size-5" />
               </DropdownMenuItem>
-            ) : (
+            ) : mitigationTable.mitigation_plan?.analysis ? (
               <DropdownMenuItem onClick={() => setOpenEditAnalysis(true)}>
                 <Pencil className="size-5" />
               </DropdownMenuItem>
-            )}
+            ) : null}
 
             {mitigationTable.mitigation_plan?.id &&
-              mitigationTable.analysis && (
+              mitigationTable.mitigation_plan?.analysis === null && (
                 <DropdownMenuItem onClick={() => setOpenCreateMeasure(true)}>
                   <Plus className="size-5" />
                 </DropdownMenuItem>

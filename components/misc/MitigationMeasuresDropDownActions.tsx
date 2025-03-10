@@ -5,18 +5,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  DangerIdentification,
-  InformationSource,
-  Pilot,
-  VoluntaryReport,
-} from "@/types";
+import { InformationSource, MitigationMeasure, Pilot, VoluntaryReport } from "@/types";
 import {
   EyeIcon,
   Loader2,
   MoreHorizontal,
   Trash2,
   ClipboardPenLine,
+  ClipboardPen,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
@@ -34,29 +30,30 @@ import { useDeleteInformationSource } from "@/actions/sms/tipos_fuente/actions";
 import { useDeleteVoluntaryReport } from "@/actions/sms/reporte_voluntario/actions";
 import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
 import CreateDangerIdentificationDialog from "../dialogs/CreateDangerIdentificationDialog";
-import CreateAnalysisForm from "../forms/CreateAnalysisForm";
-import { useDeleteDangerIdentification } from "@/actions/sms/peligros_identificados/actions";
+import CreateVoluntaryReportDialog from "../dialogs/CreateVoluntaryReportDialog";
+import { CreateVoluntaryReportForm } from "../forms/CreateVoluntaryReportForm";
+import CreateFollowUpControlForm from "../forms/CreateFollowUpControlForm";
 
-const DangerIdentificationDropdownActions = ({
-  dangerIdentification,
+const MitigationMeasureDropdownActions = ({
+  mitigationMeasure,
 }: {
-  dangerIdentification: DangerIdentification;
+  mitigationMeasure: MitigationMeasure;
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
 
-  const { deleteDangerIdentification } = useDeleteDangerIdentification();
+  const { deleteVoluntaryReport } = useDeleteVoluntaryReport();
 
-  const [openCreateAnalysis, setOpenCreateAnalysis] = useState<boolean>(false);
+  const [openCreateDangerIdentification, setOpenCreateDangerIdentification] =
+    useState<boolean>(false);
 
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const router = useRouter();
 
   const handleDelete = async (id: number | string) => {
-    await deleteDangerIdentification.mutateAsync(dangerIdentification.id);
+    await deleteVoluntaryReport.mutateAsync(id);
     setOpen(false);
   };
-
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -72,6 +69,10 @@ const DangerIdentificationDropdownActions = ({
             align="center"
             className="flex gap-2 justify-center"
           >
+            <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+              <ClipboardPen className="size-5" />
+            </DropdownMenuItem>
+
             <DialogTrigger asChild>
               <DropdownMenuItem onClick={() => setOpenDelete(true)}>
                 <Trash2 className="size-5 text-red-500" />
@@ -81,15 +82,17 @@ const DangerIdentificationDropdownActions = ({
             <DropdownMenuItem
               onClick={() => {
                 router.push(
-                  `/transmandu/sms/peligros_identificados/ver/${dangerIdentification.id}`
+                  `/transmandu/sms/reportes_voluntarios/ver/${mitigationMeasure.id}`
                 );
               }}
             >
               <EyeIcon className="size-5" />
             </DropdownMenuItem>
 
-            {dangerIdentification && dangerIdentification.analyses &&(
-              <DropdownMenuItem onClick={() => setOpenCreateAnalysis(true)}>
+            {!mitigationMeasure.follow_up_control && (
+              <DropdownMenuItem
+                onClick={() => setOpenCreateDangerIdentification(true)}
+              >
                 <ClipboardPenLine className="size-5" />
               </DropdownMenuItem>
             )}
@@ -103,8 +106,8 @@ const DangerIdentificationDropdownActions = ({
                 ¿Seguro que desea eliminar el reporte??
               </DialogTitle>
               <DialogDescription className="text-center p-2 mb-0 pb-0">
-                Esta acción es irreversible y estaría eliminando por completo la
-                identificacion seleccionado.
+                Esta acción es irreversible y estaría eliminando por completo el
+                reporte seleccionado.
               </DialogDescription>
             </DialogHeader>
 
@@ -118,11 +121,11 @@ const DangerIdentificationDropdownActions = ({
               </Button>
 
               <Button
-                disabled={deleteDangerIdentification.isPending}
+                disabled={deleteVoluntaryReport.isPending}
                 className="hover:bg-white hover:text-black hover:border hover:border-black transition-all"
-                onClick={() => handleDelete(dangerIdentification.id)}
+                onClick={() => handleDelete(mitigationMeasure.id)}
               >
-                {deleteDangerIdentification.isPending ? (
+                {deleteVoluntaryReport.isPending ? (
                   <Loader2 className="size-4 animate-spin" />
                 ) : (
                   <p>Confirmar</p>
@@ -132,18 +135,30 @@ const DangerIdentificationDropdownActions = ({
           </DialogContent>
         </Dialog>
 
-        <Dialog open={openCreateAnalysis} onOpenChange={setOpenCreateAnalysis}>
+        <Dialog
+          open={openCreateDangerIdentification}
+          onOpenChange={setOpenCreateDangerIdentification}
+        >
           <DialogContent className="flex flex-col max-w-2xl m-2">
             <DialogHeader>
               <DialogTitle></DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
 
-            <CreateAnalysisForm
-              onClose={() => setOpenCreateAnalysis(false)}
-              id={dangerIdentification.id}
-              name={"identification"}
+            <CreateFollowUpControlForm
+              onClose={() => setOpenCreateDangerIdentification(false)}
             />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+          <DialogContent className="flex flex-col max-w-2xl m-2">
+            <DialogHeader>
+              <DialogTitle className="text-center"></DialogTitle>
+              <CreateFollowUpControlForm
+                onClose={() => setOpenEdit(false)}
+              />
+            </DialogHeader>
           </DialogContent>
         </Dialog>
       </Dialog>
@@ -151,4 +166,4 @@ const DangerIdentificationDropdownActions = ({
   );
 };
 
-export default DangerIdentificationDropdownActions;
+export default MitigationMeasureDropdownActions;

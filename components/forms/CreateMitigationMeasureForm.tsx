@@ -165,7 +165,8 @@ export default function CreateMitigationMeasureForm({
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
+                        date < new Date("2019-01-01") ||
+                        date > new Date(new Date().getFullYear(), 12, 31)
                       }
                       initialFocus
                       locale={es}
