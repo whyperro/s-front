@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 
 
 const fetcVoluntaryReportById = async (id: string | number) => {
-  const {data} = await axiosInstance.get(`transmandu/voluntary-report/${id}`);
+  const {data} = await axiosInstance.get(`transmandu/voluntary-reports/${id}`);
   return data;
 };
 

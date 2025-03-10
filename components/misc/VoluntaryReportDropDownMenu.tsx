@@ -12,6 +12,7 @@ import {
   MoreHorizontal,
   Trash2,
   ClipboardPenLine,
+  ClipboardPen,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
@@ -29,6 +30,8 @@ import { useDeleteInformationSource } from "@/actions/sms/tipos_fuente/actions";
 import { useDeleteVoluntaryReport } from "@/actions/sms/reporte_voluntario/actions";
 import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
 import CreateDangerIdentificationDialog from "../dialogs/CreateDangerIdentificationDialog";
+import CreateVoluntaryReportDialog from "../dialogs/CreateVoluntaryReportDialog";
+import { CreateVoluntaryReportForm } from "../forms/CreateVoluntaryReportForm";
 
 const VoluntaryReportDropdownActions = ({
   voluntaryReport,
@@ -65,6 +68,10 @@ const VoluntaryReportDropdownActions = ({
             align="center"
             className="flex gap-2 justify-center"
           >
+            <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+              <ClipboardPen className="size-5" />
+            </DropdownMenuItem>
+
             <DialogTrigger asChild>
               <DropdownMenuItem onClick={() => setOpenDelete(true)}>
                 <Trash2 className="size-5 text-red-500" />
@@ -73,18 +80,21 @@ const VoluntaryReportDropdownActions = ({
 
             <DropdownMenuItem
               onClick={() => {
-                router.push(`/transmandu/sms/reportes_voluntarios/ver/${voluntaryReport.id}`);
+                router.push(
+                  `/transmandu/sms/reportes_voluntarios/ver/${voluntaryReport.id}`
+                );
               }}
             >
               <EyeIcon className="size-5" />
             </DropdownMenuItem>
 
-            {!voluntaryReport.danger_identification_id && (<DropdownMenuItem
-              onClick={() => setOpenCreateDangerIdentification(true)}
-            >
-              <ClipboardPenLine className="size-5" />
-            </DropdownMenuItem>)}
-
+            {!voluntaryReport.danger_identification_id && (
+              <DropdownMenuItem
+                onClick={() => setOpenCreateDangerIdentification(true)}
+              >
+                <ClipboardPenLine className="size-5" />
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -141,6 +151,18 @@ const VoluntaryReportDropdownActions = ({
           </DialogContent>
         </Dialog>
 
+        <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+          <DialogContent className="flex flex-col max-w-2xl m-2">
+            <DialogHeader>
+              <DialogTitle className="text-center"></DialogTitle>
+              <CreateVoluntaryReportForm
+                initialData={voluntaryReport}
+                isEditing={true}
+                onClose={() => setOpenEdit(false)}
+              />
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </Dialog>
     </>
   );
