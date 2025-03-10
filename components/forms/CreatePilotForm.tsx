@@ -2,12 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,8 @@ import { Loader2 } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
 
-import { useCreatePilot } from "@/actions/sms/piloto/actions";
+import { useCreatePilot, useUpdatePilot } from "@/actions/sms/piloto/actions";
+import { Pilot } from "@/types";
 
 const FormSchema = z.object({
   dni: z.string(),
@@ -34,19 +35,43 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
   onClose: () => void;
+  initialData?: Pilot;
+  isEditing?: boolean;
 }
 // { onClose }: FormProps
 // lo de arriba va en prop
-export function CreatePilotForm({ onClose }: FormProps) {
+export function CreatePilotForm({
+  onClose,
+  initialData,
+  isEditing,
+}: FormProps) {
   const { createPilot } = useCreatePilot();
+  const { updatePilot } = useUpdatePilot();
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {},
+    defaultValues: {
+      first_name: initialData?.first_name || "",
+      last_name: initialData?.last_name || "",
+      dni: initialData?.dni || "",
+      license_number: initialData?.license_number || "",
+      email: initialData?.email || "",
+      phone: initialData?.phone || "",
+    },
   });
 
   const onSubmit = async (data: FormSchemaType) => {
-    await createPilot.mutateAsync(data);
+    if (isEditing && initialData) {
+      const formattedData = {
+        ...data,
+        id: initialData.id,
+      };
+      console.log("formattedData is the next one ", formattedData);
+      await updatePilot.mutateAsync(formattedData);
+    } else {
+      await createPilot.mutateAsync(data);
+    }
+
     onClose();
   };
 
