@@ -6,7 +6,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Pilot } from "@/types";
-import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
+import {
+  ClipboardPen,
+  EyeIcon,
+  Loader2,
+  MoreHorizontal,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import {
@@ -19,10 +25,11 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { useRouter } from "next/navigation";
+import { CreatePilotForm } from "../forms/CreatePilotForm";
 
 const PilotDropdownActions = ({ pilot }: { pilot: Pilot }) => {
   const [open, setOpen] = useState<boolean>(false);
-
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
   const { deletePilot } = useDeletePilot();
 
   const router = useRouter();
@@ -31,6 +38,7 @@ const PilotDropdownActions = ({ pilot }: { pilot: Pilot }) => {
     await deletePilot.mutateAsync(id);
     setOpen(false);
   };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DropdownMenu>
@@ -57,6 +65,9 @@ const PilotDropdownActions = ({ pilot }: { pilot: Pilot }) => {
             }}
           >
             <EyeIcon className="size-5" />
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+            <ClipboardPen className="size-5" />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -94,6 +105,19 @@ const PilotDropdownActions = ({ pilot }: { pilot: Pilot }) => {
           </Button>
         </DialogFooter>
       </DialogContent>
+
+      <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-center">Edicion de Piloto</DialogTitle>
+            <CreatePilotForm
+              initialData={pilot}
+              isEditing={true}
+              onClose={() => setOpenEdit(false)}
+            />
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 };
