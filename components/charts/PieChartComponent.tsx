@@ -1,7 +1,7 @@
 "use client";
 
 import { ContentLayout } from "@/components/layout/ContentLayout";
-import { ReportsByArea } from "@/types";
+import { pieChartData, ReportsByArea } from "@/types";
 import { Tooltip } from "@radix-ui/react-tooltip";
 import { useTheme } from "next-themes";
 import { useState } from "react";
@@ -13,6 +13,7 @@ const COLORS: string[] = [
   "#FFBB28",
   "#ED1C1C",
   "#CE33FF",
+  "#FF2886"
 ];
 
 interface CustomizedLabelProps {
@@ -27,8 +28,10 @@ interface CustomizedLabelProps {
 }
 
 const RADIAN = Math.PI / 180;
+
+
 interface PieChartComponentProps {
-  data: ReportsByArea[];
+  data: pieChartData[];
 }
 
 const PieChartComponent = ({ data }: PieChartComponentProps) => {
@@ -81,7 +84,7 @@ const PieChartComponent = ({ data }: PieChartComponentProps) => {
             label={renderCustomizedLabel}
             outerRadius={120}
             fill="#8884d8"
-            dataKey="reports_number"
+            dataKey="value"
             activeIndex={activeIndex}
             onMouseEnter={onPieEnter}
           >
