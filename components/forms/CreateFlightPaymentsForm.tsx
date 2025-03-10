@@ -35,9 +35,7 @@ import { useGetClients } from "@/hooks/administracion/useGetClients";
 import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
 
 const formSchema = z.object({
-  bank_account_id: z.string({
-    message: "Debe elegir una cuenta de banco.",
-  }).optional(),
+  bank_account_id: z.string().optional(),
   flight_id: z.string({
     message: "Debe elegir un vuelo.",
   }),
@@ -51,11 +49,14 @@ const formSchema = z.object({
   payment_date: z.date({
     required_error: "La fecha de vuelo es requerida",
   }),
-  pay_description: z.string().min(3, {
-    message: "Los detalles del pago deben tener al menos 3 caracteres.",
-  }).max(100, {
-    message: "Los detalles del pago tiene un máximo 100 caracteres.",
-  }),
+  pay_description: z
+    .string()
+    .min(3, {
+      message: "Los detalles del pago deben tener al menos 3 caracteres.",
+    })
+    .max(100, {
+      message: "Los detalles del pago tiene un máximo 100 caracteres.",
+    }),
 });
 
 interface FormProps {
@@ -64,11 +65,7 @@ interface FormProps {
 
 export function FlightPaymentsForm({ onClose }: FormProps) {
   const { createFlightPayments } = useCreateFlightPayments();
-  const {
-    data: clients,
-    isLoading: isClientsLoading,
-    isError: isClientsError,
-  } = useGetClients();
+  const { data: clients, isLoading: isClientsLoading } = useGetClients();
   const {
     data: aircrafts,
     isLoading: isAircraftLoading,

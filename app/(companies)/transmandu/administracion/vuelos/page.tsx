@@ -6,6 +6,7 @@ import { columns } from "./columns";
 import { useGetFlights } from "@/hooks/administracion/useGetFlights";
 import LoadingPage from "@/components/misc/LoadingPage";
 import { CreateFlightDialog } from "@/components/dialogs/CreateFlightDialog";
+import DateFilter from "@/components/misc/DateFilter";
 
 const FlightPage = () => {
   const { data, isLoading, isError } = useGetFlights();
@@ -21,6 +22,7 @@ const FlightPage = () => {
       <p className="text-sm text-muted-foreground text-center italic mt-2">
         Aquí puede llevar el control de los vuelos registrados.
       </p>
+      <DateFilter />
       {data && <DataTable columns={columns} data={data} />}
       {isError && (
         <p className="text-muted-foreground text-sm italic text-center">

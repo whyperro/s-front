@@ -37,36 +37,51 @@ import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 import { Loader2 } from "lucide-react";
 import { Flight } from "@/types";
 
-const formSchema = z.object({
-  bank_account_id: z
-    .string({
-      message: "Debe elegir una cuenta de banco.",
+const formSchema = z
+  .object({
+    bank_account_id: z
+      .string({
+        message: "Debe elegir una cuenta de banco.",
+      })
+      .optional(), // Por defecto es opcional
+    pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"], {
+      message: "Debe elegir un método de pago.",
     }),
-  pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"], {
-    message: "Debe elegir un método de pago.",
-  }),
-  pay_amount: z.string().refine(
-    (val) => {
-      // Convertir el valor a número y verificar que sea positivo
-      const number = parseFloat(val);
-      return !isNaN(number) && number >= 0;
+    pay_amount: z.string().refine(
+      (val) => {
+        // Convertir el valor a número y verificar que sea positivo
+        const number = parseFloat(val);
+        return !isNaN(number) && number >= 0;
+      },
+      {
+        message: "La cantidad pagada debe ser mayor a cero.",
+      }
+    ),
+    payment_date: z.date({
+      required_error: "La fecha de vuelo es requerida",
+    }),
+    pay_description: z
+      .string()
+      .min(3, {
+        message: "Los detalles del pago deben tener al menos 3 caracteres.",
+      })
+      .max(100, {
+        message: "Los detalles del pago tiene un máximo 100 caracteres.",
+      }),
+  })
+  .refine(
+    (data) => {
+      // Si el método de pago es "TRANSFERENCIA", entonces `bank_account_id` es obligatorio
+      if (data.pay_method === "TRANSFERENCIA" && !data.bank_account_id) {
+        return false;
+      }
+      return true;
     },
     {
-      message: "La cantidad pagada debe ser mayor a cero.",
+      message: "La cuenta de banco es requerida para transferencias.",
+      path: ["bank_account_id"], // Especifica el campo al que se aplica el error
     }
-  ),
-  payment_date: z.date({
-    required_error: "La fecha de vuelo es requerida",
-  }),
-  pay_description: z
-    .string()
-    .min(3, {
-      message: "Los detalles del pago deben tener al menos 3 caracteres.",
-    })
-    .max(100, {
-      message: "Los detalles del pago tiene un máximo 100 caracteres.",
-    }),
-});
+  );
 
 interface FormProps {
   onClose: () => void;
@@ -75,16 +90,6 @@ interface FormProps {
 
 export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
   const { createFlightPayments } = useCreateFlightPayments();
-  const {
-    data: clients,
-    isLoading: isClientsLoading,
-    isError: isClientsError,
-  } = useGetClients();
-  const {
-    data: aircrafts,
-    isLoading: isAircraftLoading,
-    isError: isAircraftError,
-  } = useGetAircrafts();
   const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

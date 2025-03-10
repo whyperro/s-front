@@ -6,6 +6,7 @@ import { Flight } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import FlightDropdownActions from "@/components/misc/FlightDropdownActions";
+import Link from "next/link";
 
 export const columns: ColumnDef<Flight>[] = [
   {
@@ -31,11 +32,13 @@ export const columns: ColumnDef<Flight>[] = [
     ),
     meta: { title: "Cliente" },
     cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
+      <Link
+        href={`/transmandu/administracion/gestion_vuelos/clientes/${row.original.client.dni}`}
+      >
+        <span className="cursor-pointer hover:scale-110 transition-all">
           {row.original.client.name}
         </span>
-      </div>
+      </Link>
     ),
   },
   {
