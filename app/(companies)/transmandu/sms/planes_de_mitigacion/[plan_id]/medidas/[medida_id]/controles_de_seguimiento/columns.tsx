@@ -43,7 +43,7 @@ export const columns: ColumnDef<FollowUpControl>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Descripcion" />
     ),
-    meta: { title: "Descripcion" },
+    meta: { title: "Control de Segumiento" },
     cell: ({ row }) => {
       return (
         <div className="flex justify-center">{row.original.description}</div>

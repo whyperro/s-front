@@ -88,9 +88,13 @@ export const columns: ColumnDef<DangerIdentification>[] = [
     ),
     cell: ({ row }) => {
       return (
-        <p className="font-medium text-center">
-          {row.original.information_source.type}
-        </p>
+        <div
+        className={`flex justify-center items-center rounded-full h-10 text-center font-bold font-sans ${
+          row.original.information_source.type === "PROACTIVO" ? "bg-green-500" : "bg-red-600"
+        }`}
+      >
+        {row.original.information_source.type}
+      </div>
       );
     },
   },

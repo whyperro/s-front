@@ -23,7 +23,7 @@ const FollowUpControlPage = () => {
     isError,
   } = useGetMeasureFollowUpControl(plan_id, medida_id);  
   return (
-    <ContentLayout title="Medidas de Mitigacion">
+    <ContentLayout title="Controles de seguimiento">
       <div className="flex flex-col gap-y-2">
         {isLoading && (
           <div className="flex w-full h-full justify-center items-center">
@@ -35,7 +35,7 @@ const FollowUpControlPage = () => {
         )}
         {isError && (
           <p className="text-sm text-muted-foreground">
-            Ha ocurrido un error al cargar las medidas de mitigacion...
+            Ha ocurrido un error al cargar los controles de seguimiento...
           </p>
         )}
       </div>

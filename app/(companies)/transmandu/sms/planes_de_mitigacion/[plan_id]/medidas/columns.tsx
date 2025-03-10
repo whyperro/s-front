@@ -23,17 +23,22 @@ import { Button } from "@/components/ui/button";
 import useCurrentPath from "@/hooks/sms/currentPath";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import MitigationMeasureDropdownActions from "@/components/misc/MitigationMeasuresDropDownActions";
 
 export const columns: ColumnDef<MitigationMeasure>[] = [
   {
     accessorKey: "description",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Descripcion" />
+      <DataTableColumnHeader
+        filter
+        column={column}
+        title="Descripcion de la Medida"
+      />
     ),
-    meta: { title: "Descripcion" },
+    meta: { title: "Descripcion de la Medida" },
     cell: ({ row }) => {
       return (
-        <div className="flex flex-col justify-center">
+        <div className="flex flex-col justify-center text-center">
           {row.original.description}
         </div>
       );
@@ -45,10 +50,10 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
       <DataTableColumnHeader
         filter
         column={column}
-        title="Encargado de Implmentacion"
+        title="Encargado de Implementacion"
       />
     ),
-    meta: { title: "Encargado de Implementacioon" },
+    meta: { title: "Encargado de Implementacion" },
     cell: ({ row }) => {
       return (
         <div className="flex justify-center">
@@ -66,7 +71,7 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
         title="Supervisor de Implemetacion"
       />
     ),
-    meta: { title: "Supervisor de Implemetancion" },
+    meta: { title: "Supervisor de Implementacion" },
     cell: ({ row }) => {
       return (
         <p className="font-medium text-center">
@@ -87,7 +92,7 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
       const [openControls, setOpenControls] = useState(false);
       return (
         <>
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col justify-center h-10 bg-blue-300 rounded-full">
             {followUpControls.length ? (
               <Dialog>
                 <DialogTrigger className="font-semibold">
@@ -95,7 +100,7 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogDescription className="font-semibold text-black">
+                    <DialogDescription className="font-semibold text-blac">
                       Controles de Seguimiento de las Medidas
                     </DialogDescription>
                   </DialogHeader>
@@ -108,11 +113,11 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
                             {++index} ) {control.description}
                           </ul>
                           <ul className="text-sm text-gray-600">
-                            <p className="font-medium text-center">
-                                      {format(control.date, "PPP", {
-                                        locale: es,
-                                      })}
-                                    </p>
+                            <p className="font-medium text-left">
+                              {format(control.date, "PPP", {
+                                locale: es,
+                              })}
+                            </p>
                           </ul>
                         </li>
                       ))}
@@ -129,7 +134,7 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
                 </DialogContent>
               </Dialog>
             ) : (
-              <div className="flex flex-col justify-center">
+              <div className="flex flex-col justify-center text-center">
                 Sin Controles Disponibles
               </div>
             )}
@@ -143,8 +148,9 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
     cell: ({ row }) => {
       const MitigationMeasure = row.original;
       return (
-        <p></p>
-        // <MitigationTableDropdownActions mitigationTable={MitigationTable} />
+        <MitigationMeasureDropdownActions
+          mitigationMeasure={MitigationMeasure}
+        />
       );
     },
   },
