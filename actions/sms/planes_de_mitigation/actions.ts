@@ -29,6 +29,7 @@ export const useCreateMitigationPlan = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mitigation-plans"] });
+      queryClient.invalidateQueries({ queryKey: ["analysis"] });
       toast.success("¡Creado!", {
         description: ` El plan de mitigacion ha sido creado correctamente.`,
       });

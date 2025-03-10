@@ -16,7 +16,6 @@ export const useCreateMitigationMeasure = () => {
   const createMutation = useMutation({
     mutationKey: ["mitigation-measures"],
     mutationFn: async (data: MitigationMeasureData) => {
-      console.log("id del plan dem itigacion = ",data);
       await axiosInstance.post("/transmandu/mitigation-measures", data, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -25,6 +24,7 @@ export const useCreateMitigationMeasure = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mitigation-measures"] });
+      queryClient.invalidateQueries({ queryKey: ["analysis"] });
       toast.success("¡Creado!", {
         description: ` La medida de mitigacion se ha creado correctamente.`,
       });
