@@ -6,12 +6,11 @@ import { toast } from "sonner";
 interface ObligatoryReportData {
   report_code: string;
   report_date: Date;
-  incident_time: Date;
-  flight_time: Date;
-
+  incident_date: Date;
+  incident_time: string;
+  flight_time: string;
   pilot_id: string;
   copilot_id: string;
-
   aircraft_acronym: string;
   aircraft_model: string;
   flight_number: string;
