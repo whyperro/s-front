@@ -11,7 +11,7 @@ import LoadingPage from "@/components/misc/LoadingPage";
 
 const ObligatoryReportsPage = () => {
   const { data, isLoading, isError } = useGetObligatoryReports();
-  
+  console.log("Obligatory report data :",data);
   if (isLoading) {
     return <LoadingPage />;
   }

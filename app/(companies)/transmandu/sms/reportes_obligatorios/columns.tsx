@@ -6,7 +6,7 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { ObligatoryReport } from "@/types";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { es } from "date-fns/locale";
 import Link from "next/link";
 
@@ -81,12 +81,10 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
       <DataTableColumnHeader column={column} title="Hora del suceso" />
     ),
     cell: ({ row }) => {
-      return (
-        <p className="font-medium text-center">
-          {row.original.incident_time && format(row.original.incident_time, "H")}
-          Im here waiting
-\        </p>
-      );
+      const timeString = row.original.incident_time.toString();
+      const parsedTime = parse(timeString, "HH:mm:ss", new Date());
+      const incident_time = format(parsedTime, "HH:mm");
+      return <p className="font-medium text-center">{incident_time} </p>;
     },
   },
   {
@@ -117,21 +115,7 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
       );
     },
   },
-  {
-    accessorKey: "flight_time",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Hora de vuelo" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <p className="font-medium text-center">
-          {format(row.original.flight_time, "HH:mm", {
-            locale: es,
-          })}
-        </p>
-      );
-    },
-  },
+
   {
     accessorKey: "aircraft_acronym",
     header: ({ column }) => (
@@ -146,6 +130,18 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
           {row.original.aircraft_acronym}
         </p>
       );
+    },
+  },
+  {
+    accessorKey: "flight_time",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Hora del suceso" />
+    ),
+    cell: ({ row }) => {
+      const timeString = row.original.flight_time.toString();
+      const parsedTime = parse(timeString, "HH:mm:ss", new Date());
+      const flight_time = format(parsedTime, "HH:mm");
+      return <p className="font-medium text-center">{flight_time} </p>;
     },
   },
   {

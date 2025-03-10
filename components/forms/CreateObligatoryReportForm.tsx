@@ -58,8 +58,7 @@ const FormSchema = z
 
     incident_date: z
       .date()
-      .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" })
-      .optional(),
+      .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
 
     incident_time: z
       .date()
@@ -136,14 +135,24 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
   });
 
   const onSubmit = async (data: FormSchemaType) => {
-    console.log(data);
-    const hora = data.incident_time;
-    if (hora) {
-      console.log(format(hora, "HH:mm:ss"));
-    } else {
-      console.log("Hora no definida"); // O un valor predeterminado
-    }
-    await createObligatoryReport.mutateAsync(data);
+    const value = {
+      report_code: data.report_code,
+      incident_date: data.incident_date,
+      report_date: data.report_date,
+      incident_time: format(data.incident_time, "HH:mm:ss"),
+      flight_time: format(data.flight_time, "HH:mm:ss"),
+      pilot_id: data.pilot_id,
+      copilot_id: data.pilot_id,
+      aircraft_acronym: data.aircraft_acronym,
+      aircraft_model: data.aircraft_model,
+      flight_number: data.flight_number,
+      flight_origin: data.flight_origin,
+      flight_destiny: data.flight_destiny,
+      flight_alt_destiny: data.flight_alt_destiny,
+      incidents: data.incidents,
+      other_incidents: data.other_incidents,
+    };
+    await createObligatoryReport.mutateAsync(value);
     onClose();
   };
 
