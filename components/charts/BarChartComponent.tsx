@@ -24,18 +24,11 @@ interface BarChartProps {
   title: string;
 }
 
-const 
-
-
-
-
-
-
-
-
-BarChartComponent = ({ data, title }: BarChartProps) => {
-  console.log("BarChartComponent",data);
-
+const BarChartComponent = ({ data, title }: BarChartProps) => {
+  console.log("BarChartComponent", data);
+  if (data.closed_reports == 0 && data.open_reports == 0) {
+    return <p className="text-lg text-muted-foreground">No hay datos para mostrar acerca de "{title}"</p>
+  }
   const values: StatsDataByYear[] = data
     ? [
         {

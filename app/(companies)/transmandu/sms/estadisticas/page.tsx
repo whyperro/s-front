@@ -10,6 +10,9 @@ import { Loader2 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import DynamicBarChart from "../prueba/page";
+import HorizontalForm from "@/components/forms/HorizontalForm";
+import { FormLabel } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 
 const languages = [
   { label: "English", value: "en" },
@@ -23,7 +26,7 @@ const languages = [
   { label: "Chinese", value: "zh" },
 ] as const;
 
-const DateFilter = () => {
+const Statistics = () => {
   const [selectedGraphic, setSelectedGraphic] = useState("");
   const labels = [
     {
@@ -134,7 +137,10 @@ const DateFilter = () => {
     <>
       <ContentLayout title="Gráficos Estadísticos de los Reportes">
         <div className="flex justify-center items-center">
-          <DataFilter />
+          <div className="flex flex-col">
+            <Label className=" text-lg font-semibold">Seleccionar Fecha:</Label>
+            <DataFilter />
+          </div>
         </div>
 
         <div className="flex-col justify-center items-center gpa-2">
@@ -143,11 +149,18 @@ const DateFilter = () => {
               <Loader2 className="size-24 animate-spin mt-48" />
             </div>
           )}
+
           {barChartData && (
             <BarChartComponent
               data={barChartData}
               title="Peligros Identificados"
             />
+          )}
+
+          {isErrorBarChart && (
+            <p className="text-sm text-muted-foreground">
+              Ha ocurrido un error al cargar las...
+            </p>
           )}
         </div>
         <div className="flex-col justify-center items-center gpa-2">
@@ -156,7 +169,13 @@ const DateFilter = () => {
               <Loader2 className="size-24 animate-spin mt-48" />
             </div>
           )}
-          {pieCharData && <PieChartComponent data={pieCharData} />}
+          {pieCharData && pieCharData.length > 0 ? (
+            <PieChartComponent data={pieCharData} />
+          ) : (
+            <p className="text-lg text-muted-foreground">
+              No hay datos para mostrar.
+            </p>
+          )}
         </div>
 
         <div className="flex-col justify-center items-center gpa-2">
@@ -165,11 +184,17 @@ const DateFilter = () => {
               <Loader2 className="size-24 animate-spin mt-48" />
             </div>
           )}
-          {dynamicData && <DynamicBarChart data={dynamicData} />}
+          {dynamicData && dynamicData.length > 0 ? (
+            <DynamicBarChart data={dynamicData} />
+          ) : (
+            <p className="text-lg text-muted-foreground">
+              No hay datos para mostrar.
+            </p>
+          )}
         </div>
       </ContentLayout>
     </>
   );
 };
 
-export default DateFilter;
+export default Statistics;
