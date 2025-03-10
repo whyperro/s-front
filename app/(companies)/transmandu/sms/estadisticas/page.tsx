@@ -13,6 +13,7 @@ import DynamicBarChart from "../prueba/page";
 import HorizontalForm from "@/components/forms/HorizontalForm";
 import { FormLabel } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
+import { useGetRiskCountByDateRange } from "@/hooks/sms/useGetRiskByDateRange";
 
 const languages = [
   { label: "English", value: "en" },
@@ -74,6 +75,18 @@ const Statistics = () => {
   const [params, setParams] = useState<Params>({});
 
   // Asigna parametros cuando cambia el Pathname o el SearchParams
+
+
+  const {
+    data: riskData,
+    isLoading: isLoadingRisk,
+    isError: isErrorRisk,
+    refetch: refetchRisk,
+  } = useGetRiskCountByDateRange(
+    params.from || "2025-03-01",
+    params.to || "2025-03-10"
+  );
+
   useEffect(() => {
     const newParams: Params = {};
     searchParams.forEach((value, key) => {
@@ -97,7 +110,7 @@ const Statistics = () => {
     refetch: refetchBarChart,
   } = useGetVoluntaryReportingStatsByYear(
     params.from || "2025-03-01",
-    params.to || "2025-03-07"
+    params.to || "2025-03-10"
   );
 
   // Para extraer el numero de reportes por area dado unos rangos de fecha, desde hasta
@@ -108,7 +121,7 @@ const Statistics = () => {
     refetch: refetchPieChart,
   } = useGetVoluntaryReportsCountedByArea(
     params.from || "2025-03-01",
-    params.to || "2025-03-07"
+    params.to || "2025-03-10"
   );
 
   const {
@@ -118,19 +131,21 @@ const Statistics = () => {
     refetch: refetchDynamicChart,
   } = useGetDangerIdentificationsCountedByType(
     params.from || "2025-03-01",
-    params.to || "2025-03-07"
+    params.to || "2025-03-10"
   );
 
   useEffect(() => {
     refetchBarChart();
     refetchPieChart();
     refetchDynamicChart();
+    refetchRisk();
   }, [
     params.from,
     params.to,
     refetchBarChart,
     refetchPieChart,
     refetchDynamicChart,
+    refetchRisk,
   ]);
 
   return (
@@ -192,6 +207,24 @@ const Statistics = () => {
             </p>
           )}
         </div>
+
+
+        <div className="flex-col justify-center items-center gpa-2">
+          {isLoadingRisk && (
+            <div className="flex w-full h-full justify-center items-center">
+              <Loader2 className="size-24 animate-spin mt-48" />
+            </div>
+          )}
+          {riskData && riskData.length > 0 ? (
+            <PieChartComponent data={riskData} />
+          ) : (
+            <p className="text-lg text-muted-foreground">
+              No hay datos para mostrar.
+            </p>
+          )}
+        </div>
+
+
       </ContentLayout>
     </>
   );
