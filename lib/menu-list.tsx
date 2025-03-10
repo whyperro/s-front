@@ -171,14 +171,6 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               ]
             },
             {
-              href: "/ajustes/cuentas_bancos",
-              label: "Cuentas y Bancos",
-              active: pathname.includes("/ajustes"),
-              icon: Banknote,
-              roles: [],
-              submenus: []
-            },
-            {
               href: "/hangar74/cuenta",
               label: "Cuenta",
               active: pathname.includes("/cuenta"),
