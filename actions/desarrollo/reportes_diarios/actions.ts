@@ -17,6 +17,7 @@ export const useCreateActivityReport = () => {
             });
         },
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["user-activity"] });
             queryClient.invalidateQueries({ queryKey: ["activities"] });
             toast.success("¡Reporte creado!", {
                 description: "El reporte se ha creado correctamente."
@@ -43,6 +44,7 @@ export const useRegisterActivity = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["activities"] });
+            queryClient.invalidateQueries({ queryKey: ["user-activity"] });
             toast.success("¡Actividad creada!", {
                 description: "La actividad se ha registrado correctamente."
             });
@@ -71,7 +73,7 @@ export const useUpdateFinalHour = () => {
             await axiosInstance.put(`/transmandu/update-activity/${data.id}` , data);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["daily-activity"] });
+            queryClient.invalidateQueries({ queryKey: ["user-activity"] });
             queryClient.invalidateQueries({ queryKey: ["activities"] });
             toast.success("¡Actividad creada!", {
                 description: "La actividad se ha actualizado correctamente."

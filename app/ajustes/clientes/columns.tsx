@@ -2,11 +2,11 @@
 
 import WarehouseDropdownActions from "@/components/misc/WarehouseDropdownActions"
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
-import { Client } from "@/types"
+import { MaintenanceClient } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
 import Link from "next/link"
 
-export const columns: ColumnDef<Client>[] = [
+export const columns: ColumnDef<MaintenanceClient>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (

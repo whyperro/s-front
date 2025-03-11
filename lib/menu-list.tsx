@@ -172,15 +172,16 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               ]
             },
             {
-              href: "/hangar74/cuenta",
+              href: "/ajustes/cuenta",
               label: "Cuenta",
-              active: pathname.includes("/cuenta"),
-              icon: Settings,
+              active: pathname.includes("/bancos_cuentas"),
+              icon: UserRoundCog,
               roles: [],
-              submenus: []
+              submenus: [],
             },
           ]
         },
+
       ]
       : [
         {
@@ -371,6 +372,11 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
                   href: "/hangar74/planificacion/aeronaves",
                   label: "Gestión de Aeronaves",
                   active: pathname === "/hangar74/planificacion/aeronaves"
+                },
+                {
+                  href: "/hangar74/planificacion/aeronaves/partes",
+                  label: "Gestión de Partes",
+                  active: pathname === "/hangar74/planificacion/aeronaves/partes"
                 },
               ]
             }

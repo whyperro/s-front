@@ -27,11 +27,6 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
   const [observation, setObservation] = useState<string>("");
   const [isObservationOpen, setIsObservationOpen] = useState<boolean>(false);
   const router = useRouter();
-  const handleView = () => {
-    router.push(`/transmandu/desarrollo/actividades_diarias/${id}/`);
-  };
-  const userRoles = user?.roles?.map((role) => role.name) || [];
-  console.log(report)
   return (
     <>
       <Dialog open={isObservationOpen} onOpenChange={setIsObservationOpen}>
@@ -59,7 +54,8 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
           align="center"
           className="flex gap-2 justify-center"
         >
-          <DropdownMenuItem onClick={handleView} className="cursor-pointer">
+          <DropdownMenuItem onClick={() => router.push(`/transmandu/desarrollo/actividades_diarias/${id}/`)
+          } className="cursor-pointer">
             <Eye className="size-5" />
           </DropdownMenuItem>
           <DropdownMenuItem disabled={isReportLoading} className="cursor-pointer">
@@ -80,7 +76,7 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
             <MessageSquare className="size-5" />
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu >
     </>
   );
 };
