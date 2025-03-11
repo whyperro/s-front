@@ -16,13 +16,14 @@ import { toast } from "sonner";
 interface FollowDescriptionData {
   description: string;
   date: Date;
-  mitigation_measure_id: number;
+  mitigation_measure_id: number | string;
 }
 
 interface updateFolllowUpControlData {
-  id: string;
+  id: number;
   description: string;
   date: Date;
+  mitigation_measure_id: string | number;
 }
 
 export const useCreateFollowUpControl = () => {
@@ -64,7 +65,7 @@ export const useDeleteFollowUpControl = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["follow-up-controls"] });
-
+      
       toast.success("¡Eliminado!", {
         description: `¡El control de seguimiento ha sido eliminada correctamente!`,
       });
