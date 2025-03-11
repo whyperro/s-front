@@ -481,3 +481,9 @@ export type pieChartData = {
   name: string;
   value: number;
 }
+
+export type Areas = {
+  id: number
+  name: string;
+  
+}

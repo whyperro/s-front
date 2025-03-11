@@ -89,8 +89,7 @@ export function getMenuList(
                     href: "/transmandu/sms/prueba",
                     label: "prueba",
                     roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
-                    active:
-                      pathname === "/transmandu/sms/prueba",
+                    active: pathname === "/transmandu/sms/prueba",
                   },
                   {
                     href: "/transmandu/sms/reportes_voluntarios",
@@ -111,7 +110,6 @@ export function getMenuList(
                     roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
                     active: pathname === "/transmandu/sms/estadisicas",
                   },
-                  
                 ],
               },
               {
@@ -194,6 +192,11 @@ export function getMenuList(
                     label: "Fuentes de Información",
                     active:
                       pathname === "/ajustes/globales/fuentes_informacion",
+                  },
+                  {
+                    href: "/ajustes/globales/areas",
+                    label: "Areas",
+                    active: pathname === "/ajustes/globales/areas",
                   },
                 ],
               },
