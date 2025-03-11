@@ -1,6 +1,5 @@
 "use client";
 
-import { VoluntaryReportForm } from "@/components/forms/CreateVoluntaryReportForm";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -13,8 +12,15 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import CreateFollowUpControlForm from "../forms/CreateFollowUpControlForm";
+import { useParams } from "next/navigation";
 
 export default function CreateFollowUpControlDialog() {
+  const { plan_id, medida_id } = useParams<{
+    plan_id: string;
+    medida_id: string;
+  }>();
+  console.log("PLAN ID",plan_id);
+  console.log("MEASURE ID",medida_id);
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -35,7 +41,12 @@ export default function CreateFollowUpControlDialog() {
               <DialogTitle></DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
-            <CreateFollowUpControlForm onClose={() => setOpen(false)} />
+            {medida_id && (
+              <CreateFollowUpControlForm
+                onClose={() => setOpen(false)}
+                id={medida_id}
+              />
+            )}
           </DialogContent>
         </Dialog>
       </Card>

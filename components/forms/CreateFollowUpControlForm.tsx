@@ -54,15 +54,18 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
-  id: number;
+  id: number | string;
   onClose: () => void;
 }
 
 export default function CreateFollowUpControlForm({ onClose, id }: FormProps) {
-  const { plan_id, medida_id } = useParams<Params>();
+  const { plan_id, medida_id } = useParams<{
+    plan_id: string;
+    medida_id: string;
+  }>();
   const { createFollowUpControl } = useCreateFollowUpControl();
-  console.log("PLAN ID", plan_id);
-  console.log("MEDIDA ID", medida_id);
+  //console.log("PLAN ID", plan_id);
+  //console.log("MEDIDA ID", medida_id);
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: { date: new Date() },
