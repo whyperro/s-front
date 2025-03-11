@@ -102,7 +102,7 @@ const ActivitiesReportPdf = ({
   report: ActivityReport;
 }) => (
   <Document>
-    <Page size="A4" orientation="landscape" style={styles.page}>
+    <Page size="LETTER" orientation="landscape" style={styles.page}>
       {/* HEADER CON LOGO Y TÍTULO */}
       <View style={styles.headerContainer}>
         {/* Logo en la esquina superior izquierda */}

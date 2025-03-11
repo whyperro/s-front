@@ -71,6 +71,7 @@ export const useUpdateFinalHour = () => {
             await axiosInstance.put(`/transmandu/update-activity/${data.id}` , data);
         },
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["daily-activity"] });
             queryClient.invalidateQueries({ queryKey: ["activities"] });
             toast.success("¡Actividad creada!", {
                 description: "La actividad se ha actualizado correctamente."

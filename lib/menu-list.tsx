@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
 import {
   Banknote,
+  BookUser,
   Building,
   ClipboardCopy,
   Globe,
@@ -78,17 +79,17 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               label: "Actividades",
               active: pathname.includes("/transmandu/desarrollo"),
               icon: SquarePen,
-              roles: ["ANALISTA_PLANIFICACION", "JEFE_PLANIFICACION", "SUPERUSER"],
+              roles: ["ANALISTA_DESARROLLO", "JEFE_DESARROLLO", "SUPERUSER"],
               submenus: [
                 {
                   href: `/transmandu/desarrollo/actividades_diarias/registro/${date}/`,
                   label: "Registro de Actividades",
-                  active: pathname === `/transmandu/desarrollo/actividades_diarias/registro/${date}/`,
+                  active: pathname === `/transmandu/desarrollo/actividades_diarias/registro/`,
                 },
                 {
                   href: "/transmandu/desarrollo/actividades_diarias",
                   label: "Gestion de Actividades",
-                  active: pathname.includes("/transmandu/desarrollo/actividades_diarias"),
+                  active: pathname === `/transmandu/desarrollo/actividades_diarias/`,
                 },
               ]
             },
@@ -171,14 +172,6 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               ]
             },
             {
-              href: "/ajustes/cuentas_bancos",
-              label: "Cuentas y Bancos",
-              active: pathname.includes("/ajustes"),
-              icon: Banknote,
-              roles: [],
-              submenus: []
-            },
-            {
               href: "/hangar74/cuenta",
               label: "Cuenta",
               active: pathname.includes("/cuenta"),
@@ -188,19 +181,6 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
             },
           ]
         },
-        {
-          groupLabel: "Settings",
-          menus: [
-            {
-              href: "/cuenta",
-              label: "Cuenta",
-              active: pathname.includes("/cuenta"),
-              icon: Settings,
-              roles: [],
-              submenus: []
-            }
-          ]
-        }
       ]
       : [
         {
@@ -451,6 +431,14 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
                   active: pathname === ("/ajustes/bancos_cuentas/tarjetas"),
                 },
               ]
+            },
+            {
+              href: "/ajustes/clientes",
+              label: "Clientes",
+              active: pathname.includes("/clientes"),
+              icon: BookUser,
+              roles: ["SUPERUSER"],
+              submenus: []
             },
             {
               href: "/ajustes/cuenta",

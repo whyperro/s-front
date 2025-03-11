@@ -15,11 +15,27 @@ import {
 } from "@/components/ui/breadcrumb";
 import { useGetRegisterWithActivities } from "@/hooks/desarrollo/useGetRegisterWithActivities";
 import LoadingPage from "@/components/misc/LoadingPage";
+import { useEffect, useState } from "react";
+import { ActivityReport } from "@/types";
+import { useAuth } from "@/contexts/AuthContext";
 
 const DailyActivitiesPage = () => {
   const { data: activity_report, isLoading } = useGetRegisterWithActivities();
+  const { user, loading } = useAuth()
+  const [filteredReport, setFilteredReport] = useState<ActivityReport[]>([]);
 
-  if (isLoading) {
+  useEffect(() => {
+    if (activity_report && user) {
+      const reports = activity_report.filter((r) => r.user.id === user.id);
+      if ((user.username === 'JMORILLO' || user.username === 'AANTON')) {
+        setFilteredReport(activity_report);
+        return;
+      }
+      setFilteredReport(reports);
+    }
+  }, [user, activity_report]);
+
+  if (isLoading || loading) {
     return <LoadingPage />;
   }
 
@@ -49,7 +65,7 @@ const DailyActivitiesPage = () => {
           de Desarrollo. <br />
           Filtre y/o busque sí desea un dia en específico.
         </p>
-        {activity_report && <DataTable columns={columns} data={activity_report} />}
+        {activity_report && <DataTable columns={columns} data={filteredReport} />}
       </div>
     </ContentLayout>
   );

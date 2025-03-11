@@ -70,6 +70,7 @@ const DailyActivitiesPage = () => {
             open={showDialog}
             onClose={() => setShowDialog(false)}
             onConfirm={handleCreateActivityReport}
+            loading={createActivityReport.isPending}
           />
         )}
       </div>
