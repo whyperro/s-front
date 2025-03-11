@@ -12,7 +12,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 
-import { CreateMaintenanceAircraftDialog } from "@/components/dialogs/CreateAircraftDialog"
+import { CreateMaintenanceAircraftDialog } from "@/components/dialogs/CreateMaintenanceAircraftDialog"
 import { DataTablePagination } from "@/components/tables/DataTablePagination"
 import { DataTableViewOptions } from "@/components/tables/DataTableViewOptions"
 import {
