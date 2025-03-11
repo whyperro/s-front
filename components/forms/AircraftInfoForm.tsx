@@ -329,7 +329,7 @@ export function AircraftInfoForm({ onNext, onBack, initialData }: AircraftInfoFo
                   <SelectContent>
                     {
                       locations?.map((location) => (
-                        <SelectItem value={location.id.toString()}>{location.address} - {location.type}</SelectItem>
+                        <SelectItem key={location.id} value={location.id.toString()}>{location.address} - {location.type}</SelectItem>
                       ))
                     }
                   </SelectContent>

@@ -11,8 +11,6 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table"
-
-import { CreateMaintenanceAircraftDialog } from "@/components/dialogs/CreateMaintenanceAircraftDialog"
 import { DataTablePagination } from "@/components/tables/DataTablePagination"
 import { DataTableViewOptions } from "@/components/tables/DataTableViewOptions"
 import {
@@ -25,6 +23,7 @@ import {
 } from "@/components/ui/table"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { CreateMaintenanceAircraftDialog } from "@/components/dialogs/CreateMaintenanceAircraftDialog"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
