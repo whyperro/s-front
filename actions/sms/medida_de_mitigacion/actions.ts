@@ -11,6 +11,14 @@ interface MitigationMeasureData {
   mitigation_plan_id: number | string;
 }
 
+interface UpdateMitigationMeasureData {
+  id: string | number;
+  description: string;
+  implementation_supervisor: string;
+  implementation_responsible: string;
+  estimated_date: Date;
+  execution_date: Date;
+}
 export const useCreateMitigationMeasure = () => {
   const queryClient = useQueryClient();
   const createMutation = useMutation({
@@ -63,5 +71,34 @@ export const useDeleteMitigationMeasure = () => {
 
   return {
     deleteMitigationMeasure: deleteMutation,
+  };
+};
+
+export const useUpdateMitigationMeasure = () => {
+  const queryClient = useQueryClient();
+
+  const updateMitigationMeasureMutation = useMutation({
+    mutationKey: ["mitigation-measures"],
+    mutationFn: async (data: UpdateMitigationMeasureData) => {
+      await axiosInstance.put(
+        `/transmandu/mitigation-measures/${data.id}`,
+        data
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mitigation-measures"] });
+      toast.success("¡Actualizado!", {
+        description: `La medida de mitigacion ha sido actualizada correctamente.`,
+      });
+    },
+    onError: (error) => {
+      toast.error("Oops!", {
+        description: "No se pudo actualizar la medida de mitigacion...",
+      });
+      console.log(error);
+    },
+  });
+  return {
+    updateMitigationMeasure: updateMitigationMeasureMutation,
   };
 };
