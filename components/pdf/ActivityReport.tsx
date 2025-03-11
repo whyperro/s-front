@@ -107,7 +107,7 @@ const ActivitiesReportPdf = ({
       <View style={styles.headerContainer}>
         {/* Logo en la esquina superior izquierda */}
         {/* <Image src="/ruta/del/logo.png" style={styles.logo} /> */}
-        <Image src="/LOGO_TRD.png" style={styles.logo} />
+        {/* <Image src="/LOGO_TRD.png" style={styles.logo} /> */}
         {/* Título en dos líneas */}
         <View style={styles.titleContainer}>
           <Text style={styles.titleText}>REGISTRO DE</Text>
