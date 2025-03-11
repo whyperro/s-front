@@ -18,7 +18,7 @@ export const useGetMeasureFollowUpControl = (
 ) => {
   return useQuery<FollowUpControl[]>({
     // El id pertenece al plan del cual se van a extraer las medidas de mitigacion
-    queryKey: ["follow-up-controls"],
+    queryKey: ["mitigation-measures", plan_id],
     queryFn: () => fetchMeasureFollowUpControl(plan_id, measure_id),
     staleTime: 1000 * 60 * 5, // 5 minutos
   });

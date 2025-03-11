@@ -29,11 +29,12 @@ import { cn } from "@/lib/utils";
 import { format, min } from "date-fns";
 
 import { Separator } from "@radix-ui/react-select";
-import { useCreateMitigationPlan } from "@/actions/sms/planes_de_mitigation/actions";
+import { useCreateMitigationPlan, useUpdateMitigationPlan } from "@/actions/sms/planes_de_mitigation/actions";
+import { MitigationPlan } from "@/types";
 
 const FormSchema = z.object({
   description: z.string().min(5),
-  responsible: z.string().min(5),
+  responsible: z.string().min(3),
   start_date: z
     .date()
     .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
@@ -44,22 +45,46 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 interface FormProps {
   onClose: () => void;
   id: number;
+  isEditing?: boolean;
+  initialData?: MitigationPlan;
 }
 
-export default function CreateMitigationPlanForm({ onClose ,id}: FormProps) {
+export default function CreateMitigationPlanForm({
+  onClose,
+  id,
+  initialData,
+  isEditing,
+}: FormProps) {
+
+
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {},
+    defaultValues: {
+      description: initialData?.description,
+      responsible: initialData?.responsible,
+      start_date: initialData?.start_date
+        ? new Date(initialData?.start_date)
+        : new Date(),
+    },
   });
 
-  const {createMitigationPlan} = useCreateMitigationPlan();
+  const { createMitigationPlan } = useCreateMitigationPlan();
+  const { updateMitigationPlan } = useUpdateMitigationPlan();
 
   const onSubmit = async (data: FormSchemaType) => {
-    await createMitigationPlan.mutateAsync({
-      ...data,
-      danger_identification_id: id,
-    });
-    console.log(data);
+    if (isEditing && initialData) {
+      const value = {
+        ...data,
+        id: initialData.id,
+      };
+      await updateMitigationPlan.mutateAsync(value);
+    } else {
+      await createMitigationPlan.mutateAsync({
+        ...data,
+        danger_identification_id: id,
+      });
+      console.log(data);
+    }
     onClose();
   };
 
@@ -133,7 +158,8 @@ export default function CreateMitigationPlanForm({ onClose ,id}: FormProps) {
                     selected={field.value}
                     onSelect={field.onChange}
                     disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
+                      date < new Date("2019-01-01") ||
+                      date > new Date(new Date().getFullYear(), 12, 31)
                     }
                     initialFocus
                     locale={es}

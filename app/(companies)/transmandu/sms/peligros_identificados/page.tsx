@@ -9,6 +9,7 @@ import { useGetDangerIdentifications } from "@/hooks/sms/useGetDangerIdentificat
 const DangerIdentificationsPage = () => {
   const { data, isLoading, isError } = useGetDangerIdentifications();
 
+  console.log("identification data aaaa aaa ",data);
   if (isLoading) {
     return <LoadingPage />;
   }

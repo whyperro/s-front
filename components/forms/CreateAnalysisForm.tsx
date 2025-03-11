@@ -37,12 +37,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCreateAnalysis } from "@/actions/sms/analisis/actions";
+import {
+  useCreateAnalysis,
+  useUpdateAnalyses,
+} from "@/actions/sms/analisis/actions";
 import RiskMatrix from "../misc/RiskMatrix";
+import { Analysis } from "@/types";
 
 const FormSchema = z.object({
-  severity: z.enum(["A", "B", "C", "D", "E"]),
-  probability: z.enum(["1", "2", "3", "4", "5"]),
+  severity: z.string(),
+  probability: z.string(),
 });
 
 type FormSchemaType = z.infer<typeof FormSchema>;
@@ -51,11 +55,19 @@ interface FormProps {
   id: string | number;
   name: string;
   onClose: () => void;
+  initialData?: Analysis;
+  isEditing?: boolean;
 }
 
-export default function CreateAnalysisForm({ onClose, id, name }: FormProps) {
+export default function CreateAnalysisForm({
+  onClose,
+  id,
+  name,
+  isEditing,
+  initialData,
+}: FormProps) {
   const { createAnalysis } = useCreateAnalysis();
-
+  const { updateAnalyses } = useUpdateAnalyses();
   const SEVERITY = [
     { name: "CATASTROFICO", value: "A" },
     { name: "PELIGROSO", value: "B" },
@@ -73,28 +85,43 @@ export default function CreateAnalysisForm({ onClose, id, name }: FormProps) {
   ];
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {},
+    defaultValues: initialData
+      ? {
+          probability: initialData.probability,
+          severity: initialData.severity,
+        }
+      : {},
   });
 
   const onSubmit = async (data: FormSchemaType) => {
-    id = id.toString();
-    if (name === "mitigacion") {
-      const values = {
+    if (isEditing && initialData) {
+      const value = {
         ...data,
+        id: initialData.id,
         result: data.probability + data.severity,
-        mitigation_plan_id: id,
       };
-      console.log(values);
-      await createAnalysis.mutateAsync(values);
+      await updateAnalyses.mutateAsync(value);
     } else {
-      const values = {
-        ...data,
-        result: data.probability + data.severity,
-        danger_identification_id: id,
-      };
-      console.log(values);
-      await createAnalysis.mutateAsync(values);
+      id = id.toString();
+      if (name === "mitigacion") {
+        const values = {
+          ...data,
+          result: data.probability + data.severity,
+          mitigation_plan_id: id,
+        };
+        console.log(values);
+        await createAnalysis.mutateAsync(values);
+      } else {
+        const values = {
+          ...data,
+          result: data.probability + data.severity,
+          danger_identification_id: id,
+        };
+        console.log(values);
+        await createAnalysis.mutateAsync(values);
+      }
     }
+
     onClose();
   };
 

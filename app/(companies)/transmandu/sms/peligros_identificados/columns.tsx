@@ -11,8 +11,18 @@ import { es } from "date-fns/locale";
 import Link from "next/link";
 import VoluntaryReportDropdownActions from "@/components/misc/VoluntaryReportDropDownMenu";
 import DangerIdentificationDropdownActions from "@/components/misc/DangerIdentificationDropdownActions";
+import { Row } from "react-day-picker";
 
 export const columns: ColumnDef<DangerIdentification>[] = [
+  {
+    accessorKey: "id",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="ID" />
+    ),
+    cell: ({ row }) => {
+      return <div className="flex justify-center">{row.original.id}</div>;
+    },
+  },
   {
     accessorKey: "danger",
     header: ({ column }) => (
@@ -89,12 +99,31 @@ export const columns: ColumnDef<DangerIdentification>[] = [
     cell: ({ row }) => {
       return (
         <div
-        className={`flex justify-center items-center rounded-full h-10 text-center font-bold font-sans ${
-          row.original.information_source.type === "PROACTIVO" ? "bg-green-500" : "bg-red-600"
-        }`}
-      >
-        {row.original.information_source.type}
-      </div>
+          className={`flex justify-center items-center rounded-full h-10 text-center font-bold font-sans ${
+            row.original.information_source.type === "PROACTIVO"
+              ? "bg-green-500"
+              : "bg-red-600"
+          }`}
+        >
+          {row.original.information_source.type}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "analyses",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Analisis" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div>
+          {row.original.analysis ? (
+            <p>{row.original.analysis.result}</p>
+          ) : (
+            "N/A"
+          )}
+        </div>
       );
     },
   },

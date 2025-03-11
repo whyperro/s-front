@@ -49,9 +49,9 @@ const MitigationTableDropdownActions = ({
 
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [openCreatePlan, setOpenCreatePlan] = useState<boolean>(false);
-  const [OpenCreateMeasure, setOpenCreateMeasure] = useState<boolean>(false);
+  const [openCreateMeasure, setOpenCreateMeasure] = useState<boolean>(false);
   const [openEditPlan, setOpenEditPlan] = useState<boolean>(false);
-  const [openEditAnalysis, setOpenEditAnalysis] = useState<boolean>(false);
+  const [openEditAnalyses, setOpenEditAnalyses] = useState<boolean>(false);
 
   const [openCreateAnalysis, setOpenCreateAnalysis] = useState<boolean>(false);
 
@@ -77,14 +77,6 @@ const MitigationTableDropdownActions = ({
             align="center"
             className="flex gap-2 justify-center"
           >
-            {mitigationTable.mitigation_plan && (
-              <DialogTrigger asChild>
-                <DropdownMenuItem onClick={() => setOpenDelete(true)}>
-                  <Trash2 className="size-5 text-red-500" />
-                </DropdownMenuItem>
-              </DialogTrigger>
-            )}
-
             {!mitigationTable.mitigation_plan ? (
               <DropdownMenuItem onClick={() => setOpenCreatePlan(true)}>
                 <ClipboardList className="size-5" />
@@ -96,13 +88,22 @@ const MitigationTableDropdownActions = ({
               </DropdownMenuItem>
             ) : null}
 
+            {mitigationTable.mitigation_plan && (
+              <DialogTrigger asChild>
+                <DropdownMenuItem onClick={() => setOpenDelete(true)}>
+                  <Trash2 className="size-5 text-red-500" />
+                </DropdownMenuItem>
+              </DialogTrigger>
+            )}
+
             {mitigationTable.mitigation_plan?.id &&
-            mitigationTable.mitigation_plan?.analysis === null ? (
+            mitigationTable.mitigation_plan?.analysis === null &&
+            mitigationTable.mitigation_plan.measures.length > 0 ? (
               <DropdownMenuItem onClick={() => setOpenCreateAnalysis(true)}>
                 <ClipboardPenLine className="size-5" />
               </DropdownMenuItem>
             ) : mitigationTable.mitigation_plan?.analysis ? (
-              <DropdownMenuItem onClick={() => setOpenEditAnalysis(true)}>
+              <DropdownMenuItem onClick={() => setOpenEditAnalyses(true)}>
                 <Pencil className="size-5" />
               </DropdownMenuItem>
             ) : null}
@@ -128,11 +129,11 @@ const MitigationTableDropdownActions = ({
           <DialogContent>
             <DialogHeader>
               <DialogTitle className="text-center">
-                ¿Seguro que desea eliminar el reporte??
+                ¿Seguro que desea eliminar el plan de mitigacion??
               </DialogTitle>
               <DialogDescription className="text-center p-2 mb-0 pb-0">
                 Esta acción es irreversible y estaría eliminando por completo el
-                reporte seleccionado.
+                plan de mitigacion seleccionado.
               </DialogDescription>
             </DialogHeader>
 
@@ -195,7 +196,26 @@ const MitigationTableDropdownActions = ({
           </DialogContent>
         </Dialog>
 
-        <Dialog open={OpenCreateMeasure} onOpenChange={setOpenCreateMeasure}>
+        <Dialog open={openEditAnalyses} onOpenChange={setOpenEditAnalyses}>
+          <DialogContent className="flex flex-col max-w-2xl m-2">
+            <DialogHeader>
+              <DialogTitle></DialogTitle>
+              <DialogDescription></DialogDescription>
+            </DialogHeader>
+
+            {mitigationTable.mitigation_plan?.id !== undefined ? (
+              <CreateAnalysisForm
+                initialData={mitigationTable.mitigation_plan.analysis}
+                isEditing={true}
+                onClose={() => setOpenEditAnalyses(false)}
+                id={mitigationTable.mitigation_plan?.id}
+                name="mitigacion"
+              />
+            ) : null}
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={openCreateMeasure} onOpenChange={setOpenCreateMeasure}>
           <DialogContent className="flex flex-col max-w-2xl m-2">
             <DialogHeader>
               <DialogTitle></DialogTitle>
@@ -205,6 +225,24 @@ const MitigationTableDropdownActions = ({
             {mitigationTable.mitigation_plan?.id && (
               <CreateMitigationMeasureForm
                 onClose={() => setOpenCreateMeasure(false)}
+                id={mitigationTable.mitigation_plan.id} // Ahora es seguro usar .id directamente
+              />
+            )}
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={openEditPlan} onOpenChange={setOpenEditPlan}>
+          <DialogContent className="flex flex-col max-w-2xl m-2">
+            <DialogHeader>
+              <DialogTitle></DialogTitle>
+              <DialogDescription></DialogDescription>
+            </DialogHeader>
+
+            {mitigationTable.mitigation_plan?.id && (
+              <CreateMitigationPlanForm
+                isEditing={true}
+                initialData={mitigationTable.mitigation_plan}
+                onClose={() => setOpenEditPlan(false)}
                 id={mitigationTable.mitigation_plan.id} // Ahora es seguro usar .id directamente
               />
             )}

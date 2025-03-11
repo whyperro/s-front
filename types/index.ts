@@ -408,7 +408,7 @@ export type DangerIdentification = {
   consequence_to_evaluate: string;
   root_cause_analysis: string;
   information_source: InformationSource;
-  analyses: Analysis;
+  analysis: Analysis;
 };
 
 export type FollowUpControl = {

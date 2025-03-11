@@ -1,4 +1,5 @@
 import axiosInstance from "@/lib/axios";
+import { Analysis } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -15,7 +16,7 @@ export const useCreateAnalysis = () => {
   const createMutation = useMutation({
     mutationKey: ["analysis"],
     mutationFn: async (data: AnalysisData) => {
-      await axiosInstance.post('/transmandu/analysis', data, {
+      await axiosInstance.post("/transmandu/analysis", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -23,6 +24,7 @@ export const useCreateAnalysis = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["analysis"] });
+      queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
       toast.success("¡Creado!", {
         description: ` El análisis ha sido creado correctamente.`,
       });
@@ -38,9 +40,6 @@ export const useCreateAnalysis = () => {
     createAnalysis: createMutation,
   };
 };
-
-
-
 
 export const useDeleteAnalysis = () => {
   const queryClient = useQueryClient();
@@ -64,5 +63,32 @@ export const useDeleteAnalysis = () => {
 
   return {
     deleteAnalysis: deleteMutation,
+  };
+};
+
+export const useUpdateAnalyses = () => {
+  const queryClient = useQueryClient();
+
+  const updateAnalysesMutation = useMutation({
+    mutationKey: ["analysis"],
+    mutationFn: async (data: Analysis) => {
+      await axiosInstance.put(`/transmandu/analysis/${data.id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["analysis"] });
+      queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
+      toast.success("¡Actualizado!", {
+        description: `El analisis ha sido actualizada correctamente.`,
+      });
+    },
+    onError: (error) => {
+      toast.error("Oops!", {
+        description: "No se pudo actualizar el analisis...",
+      });
+      console.log(error);
+    },
+  });
+  return {
+    updateAnalyses: updateAnalysesMutation,
   };
 };

@@ -53,8 +53,8 @@ const DangerIdentificationDropdownActions = ({
   const router = useRouter();
 
   const handleDelete = async (id: number | string) => {
-    await deleteDangerIdentification.mutateAsync(dangerIdentification.id);
-    setOpen(false);
+    await deleteDangerIdentification.mutateAsync(id);
+    setOpenDelete(false);
   };
 
   return (
@@ -88,8 +88,14 @@ const DangerIdentificationDropdownActions = ({
               <EyeIcon className="size-5" />
             </DropdownMenuItem>
 
-            {dangerIdentification && dangerIdentification.analyses &&(
+            {dangerIdentification && dangerIdentification.analysis === null && (
               <DropdownMenuItem onClick={() => setOpenCreateAnalysis(true)}>
+                <ClipboardPenLine className="size-5" />
+              </DropdownMenuItem>
+            )}
+
+            {dangerIdentification && dangerIdentification.analysis && (
+              <DropdownMenuItem onClick={() => setOpenEdit(true)}>
                 <ClipboardPenLine className="size-5" />
               </DropdownMenuItem>
             )}
@@ -143,6 +149,23 @@ const DangerIdentificationDropdownActions = ({
               onClose={() => setOpenCreateAnalysis(false)}
               id={dangerIdentification.id}
               name={"identification"}
+            />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+          <DialogContent className="flex flex-col max-w-2xl m-2">
+            <DialogHeader>
+              <DialogTitle></DialogTitle>
+              <DialogDescription></DialogDescription>
+            </DialogHeader>
+
+            <CreateAnalysisForm
+              onClose={() => setOpenEdit(false)}
+              id={dangerIdentification.id}
+              name={"identification"}
+              isEditing={true}
+              initialData={dangerIdentification.analysis}
             />
           </DialogContent>
         </Dialog>

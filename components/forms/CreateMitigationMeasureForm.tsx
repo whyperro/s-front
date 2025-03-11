@@ -47,7 +47,7 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
   onClose: () => void;
-  id: number;
+  id: number | string;
 }
 
 export default function CreateMitigationMeasureForm({

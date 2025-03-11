@@ -17,11 +17,10 @@ interface FollowDescriptionData {
   description: string;
   date: Date;
   mitigation_measure_id: number;
-  mitigation_plan_id: number;
 }
 
 interface updateFolllowUpControlData {
-  id:   string;
+  id: string;
   description: string;
   date: Date;
 }
@@ -40,6 +39,7 @@ export const useCreateFollowUpControl = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["follow-up-controls"] });
+      queryClient.invalidateQueries({ queryKey: ["mitigation-measures"] });
       toast.success("¡Creado!", {
         description: `El cotrol de seguimiento ha sido creado correctamente.`,
       });
@@ -82,29 +82,30 @@ export const useDeleteFollowUpControl = () => {
 };
 
 export const useUpdateFollowUpControl = () => {
-
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const updateFollowUpControlMutation = useMutation({
-      mutationKey: ["follow-up-controls"],
-      mutationFn: async (data: updateFolllowUpControlData) => {
-          await axiosInstance.put(`/transmandu/follow-up-controls/${data.id}`, data)
-        },
-      onSuccess: () => {
-          queryClient.invalidateQueries({queryKey: ['follow-up-controls']})
-          toast.success("¡Actualizado!", {
-              description: `El control ha sido actualizado correctamente.`
-          })
-        },
-      onError: (error) => {
-          toast.error('Oops!', {
-            description: 'No se pudo actualizar el control de seguimiento...'
-          })
-          console.log(error)
-        },
-      }
-  )
+    mutationKey: ["follow-up-controls"],
+    mutationFn: async (data: updateFolllowUpControlData) => {
+      await axiosInstance.put(
+        `/transmandu/follow-up-controls/${data.id}`,
+        data
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["follow-up-controls"] });
+      toast.success("¡Actualizado!", {
+        description: `El control ha sido actualizado correctamente.`,
+      });
+    },
+    onError: (error) => {
+      toast.error("Oops!", {
+        description: "No se pudo actualizar el control de seguimiento...",
+      });
+      console.log(error);
+    },
+  });
   return {
     updateFollowUpControl: updateFollowUpControlMutation,
-  }
-}
+  };
+};

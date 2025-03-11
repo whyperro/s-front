@@ -67,6 +67,7 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
     accessorKey: "implementation_supervisor",
     header: ({ column }) => (
       <DataTableColumnHeader
+        filter
         column={column}
         title="Supervisor de Implemetacion"
       />

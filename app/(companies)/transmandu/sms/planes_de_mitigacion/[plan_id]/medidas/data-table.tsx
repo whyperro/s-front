@@ -25,6 +25,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "react-day-picker";
 import { CreateObligatoryDialog } from "@/components/dialogs/CreateObligatoryDialog";
+import CreateVoluntaryReportDialog from "@/components/dialogs/CreateVoluntaryReportDialog";
+import CreateMitigationMeasureDialog from "@/components/dialogs/CreateMitigationMeasureDialog";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -69,6 +71,7 @@ export function DataTable<TData, TValue>({
       </div>
 
       <div className="flex items-center py-4">
+        <CreateMitigationMeasureDialog />
         <DataTableViewOptions table={table} />
       </div>
 

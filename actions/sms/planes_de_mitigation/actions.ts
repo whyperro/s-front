@@ -4,6 +4,7 @@ import {
   ConsumableArticle,
   DispatchRequest,
   InformationSource,
+  MitigationPlan,
   Request,
 } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +17,12 @@ interface MitigationPlanData {
   danger_identification_id: number;
 }
 
+interface UpdateMitigationPlanData {
+  id:number;
+  description: string;
+  responsible: string;
+  start_date: Date;
+}
 export const useCreateMitigationPlan = () => {
   const queryClient = useQueryClient();
   const createMutation = useMutation({
@@ -55,6 +62,7 @@ export const useDeleteMitigationPlan = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mitigation-plans"] });
+      queryClient.invalidateQueries({ queryKey: ["analysis"] });
       toast.success("¡Eliminado!", {
         description: `¡El plan de mitigacion ha sido eliminada correctamente!`,
       });
@@ -70,3 +78,32 @@ export const useDeleteMitigationPlan = () => {
     deleteMitigationPlan: deleteMutation,
   };
 };
+
+
+export const useUpdateMitigationPlan = () => {
+
+  const queryClient = useQueryClient()
+
+  const updateMitigationPlanMutation = useMutation({
+      mutationKey: ["mitigation-plans"],
+      mutationFn: async (data: UpdateMitigationPlanData) => {
+          await axiosInstance.put(`/transmandu/mitigation-plans/${data.id}`, data)
+        },
+      onSuccess: () => {
+          queryClient.invalidateQueries({queryKey: ['analysis']})
+          toast.success("¡Actualizado!", {
+              description: `El plan de mitigacion ha sido actualizada correctamente.`
+          })
+        },
+      onError: (error) => {
+          toast.error('Oops!', {
+            description: 'No se pudo actualizar el plan de mitigacion...'
+          })
+          console.log(error)
+        },
+      }
+  )
+  return {
+    updateMitigationPlan: updateMitigationPlanMutation,
+  }
+}

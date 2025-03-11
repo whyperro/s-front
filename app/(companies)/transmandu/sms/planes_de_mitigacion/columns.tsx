@@ -66,19 +66,19 @@ export const columns: ColumnDef<MitigationTable>[] = [
                 const riskIndex = getResult(row.original.analysis.result);
                 if (riskIndex === "TOLERABLE") {
                   return (
-                    <div className="bg-yellow-400 p-4 rounded-lg">
+                    <div className="bg-yellow-400 p-4 rounded-lg font-semibold">
                       <p className="text-white">TOLERABLE</p>
                     </div>
                   );
                 } else if (riskIndex === "INTOLERABLE") {
                   return (
-                    <div className="bg-red-600 p-4 rounded-lg">
+                    <div className="bg-red-600 p-4 rounded-lg font-semibold">
                       <p className="text-white">INTOLERABLE</p>
                     </div>
                   );
                 } else if (riskIndex === "ACEPTABLE") {
                   return (
-                    <div className="bg-green-500 p-4 rounded-lg">
+                    <div className="bg-green-500 p-4 rounded-lg font-semibold">
                       <p className="text-white">ACEPTABLE</p>
                     </div>
                   );
@@ -140,7 +140,7 @@ export const columns: ColumnDef<MitigationTable>[] = [
           <div className="flex flex-col justify-center">
             {measures ? (
               <Dialog>
-                <DialogTrigger className="flex justify-center items-center rounded-full h-10 text-center bg-blue-400 font-semibold">
+                <DialogTrigger className="flex justify-center items-center rounded-full  h-10 text-center bg-cyan-500 font-semibold hover:bg-blue-300 transition-colors duration-200">
                   Medidas
                 </DialogTrigger>
                 <DialogContent>
@@ -229,7 +229,9 @@ export const columns: ColumnDef<MitigationTable>[] = [
                 }
               })()}
             </>
-          ) :  <p className="text-center">N/A</p>}
+          ) : (
+            <p className="text-center">N/A</p>
+          )}
         </div>
       );
     },

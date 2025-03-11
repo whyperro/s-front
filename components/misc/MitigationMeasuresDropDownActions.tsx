@@ -5,7 +5,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { InformationSource, MitigationMeasure, Pilot, VoluntaryReport } from "@/types";
+import {
+  InformationSource,
+  MitigationMeasure,
+  Pilot,
+  VoluntaryReport,
+} from "@/types";
 import {
   EyeIcon,
   Loader2,
@@ -13,6 +18,7 @@ import {
   Trash2,
   ClipboardPenLine,
   ClipboardPen,
+  Plus,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
@@ -33,6 +39,9 @@ import CreateDangerIdentificationDialog from "../dialogs/CreateDangerIdentificat
 import CreateVoluntaryReportDialog from "../dialogs/CreateVoluntaryReportDialog";
 import { CreateVoluntaryReportForm } from "../forms/CreateVoluntaryReportForm";
 import CreateFollowUpControlForm from "../forms/CreateFollowUpControlForm";
+import { useDeleteMitigationMeasure } from "@/actions/sms/medida_de_mitigacion/actions";
+import CreateMitigationMeasureDialog from "../dialogs/CreateMitigationMeasureDialog";
+import CreateMitigationMeasureForm from "../forms/CreateMitigationMeasureForm";
 
 const MitigationMeasureDropdownActions = ({
   mitigationMeasure,
@@ -42,17 +51,19 @@ const MitigationMeasureDropdownActions = ({
   const [open, setOpen] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
 
-  const { deleteVoluntaryReport } = useDeleteVoluntaryReport();
+  const { deleteMitigationMeasure } = useDeleteMitigationMeasure();
 
   const [openCreateDangerIdentification, setOpenCreateDangerIdentification] =
     useState<boolean>(false);
 
+  const [openCreateFollowUpControl, setOpenCreateFollowUpControl] =
+    useState<boolean>(false);
+
   const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const router = useRouter();
 
   const handleDelete = async (id: number | string) => {
-    await deleteVoluntaryReport.mutateAsync(id);
-    setOpen(false);
+    await deleteMitigationMeasure.mutateAsync(id);
+    setOpenDelete(false);
   };
   return (
     <>
@@ -69,25 +80,19 @@ const MitigationMeasureDropdownActions = ({
             align="center"
             className="flex gap-2 justify-center"
           >
-            <DropdownMenuItem onClick={() => setOpenEdit(true)}>
-              <ClipboardPen className="size-5" />
-            </DropdownMenuItem>
-
             <DialogTrigger asChild>
               <DropdownMenuItem onClick={() => setOpenDelete(true)}>
                 <Trash2 className="size-5 text-red-500" />
               </DropdownMenuItem>
             </DialogTrigger>
 
-            <DropdownMenuItem
-              onClick={() => {
-                router.push(
-                  `/transmandu/sms/reportes_voluntarios/ver/${mitigationMeasure.id}`
-                );
-              }}
-            >
-              <EyeIcon className="size-5" />
-            </DropdownMenuItem>
+            <DialogTrigger asChild>
+              <DropdownMenuItem
+                onClick={() => setOpenCreateFollowUpControl(true)}
+              >
+                <Plus className="size-5 text-black" />
+              </DropdownMenuItem>
+            </DialogTrigger>
 
             {!mitigationMeasure.follow_up_control && (
               <DropdownMenuItem
@@ -103,11 +108,11 @@ const MitigationMeasureDropdownActions = ({
           <DialogContent>
             <DialogHeader>
               <DialogTitle className="text-center">
-                ¿Seguro que desea eliminar el reporte??
+                ¿Seguro que desea eliminar el control de seguimiento??
               </DialogTitle>
               <DialogDescription className="text-center p-2 mb-0 pb-0">
                 Esta acción es irreversible y estaría eliminando por completo el
-                reporte seleccionado.
+                control de seguimiento seleccionado.
               </DialogDescription>
             </DialogHeader>
 
@@ -121,11 +126,11 @@ const MitigationMeasureDropdownActions = ({
               </Button>
 
               <Button
-                disabled={deleteVoluntaryReport.isPending}
+                disabled={deleteMitigationMeasure.isPending}
                 className="hover:bg-white hover:text-black hover:border hover:border-black transition-all"
                 onClick={() => handleDelete(mitigationMeasure.id)}
               >
-                {deleteVoluntaryReport.isPending ? (
+                {deleteMitigationMeasure.isPending ? (
                   <Loader2 className="size-4 animate-spin" />
                 ) : (
                   <p>Confirmar</p>
@@ -135,28 +140,28 @@ const MitigationMeasureDropdownActions = ({
           </DialogContent>
         </Dialog>
 
-        <Dialog
-          open={openCreateDangerIdentification}
-          onOpenChange={setOpenCreateDangerIdentification}
-        >
-          <DialogContent className="flex flex-col max-w-2xl m-2">
-            <DialogHeader>
-              <DialogTitle></DialogTitle>
-              <DialogDescription></DialogDescription>
-            </DialogHeader>
-
-            <CreateFollowUpControlForm
-              onClose={() => setOpenCreateDangerIdentification(false)}
-            />
-          </DialogContent>
-        </Dialog>
-
         <Dialog open={openEdit} onOpenChange={setOpenEdit}>
           <DialogContent className="flex flex-col max-w-2xl m-2">
             <DialogHeader>
               <DialogTitle className="text-center"></DialogTitle>
-              <CreateFollowUpControlForm
+              <CreateMitigationMeasureForm
                 onClose={() => setOpenEdit(false)}
+                id={mitigationMeasure.mitigation_plan_id}
+              />
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog
+          open={openCreateFollowUpControl}
+          onOpenChange={setOpenCreateFollowUpControl}
+        >
+          <DialogContent className="flex flex-col max-w-2xl m-2">
+            <DialogHeader>
+              <DialogTitle className="text-center"></DialogTitle>
+              <CreateFollowUpControlForm
+                onClose={() => setOpenCreateFollowUpControl(false)}
+                id={mitigationMeasure.id}
               />
             </DialogHeader>
           </DialogContent>
