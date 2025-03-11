@@ -33,9 +33,7 @@ export const columns: ColumnDef<FollowUpControl>[] = [
     ),
     meta: { title: "Numero de Control" },
     cell: ({ row }) => {
-      return (
-        <div className="flex justify-center">{row.original.id}</div>
-      );
+      return <div className="flex justify-center">{row.original.id}</div>;
     },
   },
   {
@@ -71,39 +69,8 @@ export const columns: ColumnDef<FollowUpControl>[] = [
     cell: ({ row }) => {
       const FollowUpControl = row.original;
       return (
-        <FollowUpControlDropdownActions
-          followUpControl={FollowUpControl}
-        />
+        <FollowUpControlDropdownActions followUpControl={FollowUpControl} />
       );
     },
   },
 ];
-
-/*
- {followUpControls ? (
-              <Dialog>
-                <DialogTrigger>Controles de Seguimineto</DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogDescription>
-                      Controles de Seguimineto de las Medidas
-                    </DialogDescription>
-                  </DialogHeader>
-
-                  <ul>
-                    {followUpControls.map((control, index) => (
-                      <li key={control.id}>
-                        {++index} ) {control.description}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className=" flex justify-end">
-                    <Button className="w-1/3">Ver mas</Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            ) : (
-              <p>Sin Controles Disponibles</p>
-            )}
-*/

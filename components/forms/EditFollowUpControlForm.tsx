@@ -55,6 +55,7 @@ import { useUpdateFollowUpControl } from "@/actions/sms/controles_de_seguimiento
 import { format } from "date-fns";
 import { Calendar } from "../ui/calendar";
 import { es } from "date-fns/locale";
+import { useParams } from "next/navigation";
 
 const FormSchema = z.object({
   description: z.string(),
@@ -71,19 +72,22 @@ interface FormProps {
 }
 
 export function EditFollowUpControlForm({ onClose, initialData }: FormProps) {
+  const {plan_id,measure_id} = useParams<{ plan_id: string ,measure_id:string}>();
+  console.log("plan id and measuer id",plan_id,measure_id);
   const { updateFollowUpControl } = useUpdateFollowUpControl();
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       description: initialData.description || "",
-      date: initialData.date || new Date(),
+      date: initialData.date? new Date(initialData.date) : new Date(),
     },
   });
 
   const onSubmit = async (data: FormSchemaType) => {
     const formattedData = {
       ...data,
-      id: initialData.id.toString(),
+      id: initialData.id,
+      mitigation_measure_id: measure_id,
     };
     await updateFollowUpControl.mutateAsync(formattedData);
     onClose();

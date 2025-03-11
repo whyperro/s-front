@@ -22,6 +22,7 @@ const FollowUpControlPage = () => {
     isLoading,
     isError,
   } = useGetMeasureFollowUpControl(plan_id, medida_id);  
+  
   return (
     <ContentLayout title="Controles de seguimiento">
       <div className="flex flex-col gap-y-2">

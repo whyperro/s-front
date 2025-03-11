@@ -35,7 +35,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "../ui/label";
 import {
@@ -116,7 +116,7 @@ export function CreateVoluntaryReportForm({
       delete data.reporter_email;
       delete data.reporter_phone;
     }
-    console.log("Data post is anonymous",data);
+    console.log("Data post is anonymous", data);
     if (initialData && isEditing) {
       const value = {
         ...data,
@@ -257,7 +257,7 @@ export function CreateVoluntaryReportForm({
             name="danger_location"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Localización del peligro</FormLabel>
+                <FormLabel>Base de Localizacion</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}

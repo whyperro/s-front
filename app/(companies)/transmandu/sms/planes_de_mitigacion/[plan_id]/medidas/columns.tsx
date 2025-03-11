@@ -4,26 +4,19 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 
-import { Checkbox } from "@/components/ui/checkbox";
-import Link from "next/link";
-import { MitigationMeasure, MitigationTable } from "@/types";
-import MitigationPlanPage from "./page";
-import MitigationTableDropdownActions from "@/components/misc/MitigationTableDropdownActions";
-import { useState } from "react";
-import MitigationMeasureList from "@/components/misc/MitigationMeasureList";
+import MitigationMeasureDropdownActions from "@/components/misc/MitigationMeasuresDropDownActions";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import useCurrentPath from "@/hooks/sms/currentPath";
+import { MitigationMeasure } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import MitigationMeasureDropdownActions from "@/components/misc/MitigationMeasuresDropDownActions";
+import Link from "next/link";
 
 export const columns: ColumnDef<MitigationMeasure>[] = [
   {
@@ -87,10 +80,9 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
       <DataTableColumnHeader column={column} title="Controles de Seguimiento" />
     ),
     cell: ({ row }) => {
+      const planId = row.original.mitigation_plan_id;
       const followUpControls = row.original.follow_up_control;
       const measureId = row.original.id;
-      const currentPath = useCurrentPath();
-      const [openControls, setOpenControls] = useState(false);
       return (
         <>
           <div className="flex flex-col justify-center h-10 bg-blue-300 rounded-full">
@@ -126,7 +118,7 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
                   </div>
 
                   <Link
-                    href={`${currentPath}/${measureId}/controles_de_seguimiento`}
+                    href={`/transmandu/sms/planes_de_mitigacion/${planId}/medidas/${measureId}/controles_de_seguimiento`}
                   >
                     <div className="flex justify-end mt-4">
                       <Button className="w-1/3">Ver mas</Button>

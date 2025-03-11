@@ -80,6 +80,13 @@ const MitigationMeasureDropdownActions = ({
             align="center"
             className="flex gap-2 justify-center"
           >
+            {mitigationMeasure && (
+              <DropdownMenuItem
+                onClick={() => setOpenEdit(true)}
+              >
+                <ClipboardPenLine className="size-5" />
+              </DropdownMenuItem>
+            )}
             <DialogTrigger asChild>
               <DropdownMenuItem onClick={() => setOpenDelete(true)}>
                 <Trash2 className="size-5 text-red-500" />
@@ -93,14 +100,6 @@ const MitigationMeasureDropdownActions = ({
                 <Plus className="size-5 text-black" />
               </DropdownMenuItem>
             </DialogTrigger>
-
-            {!mitigationMeasure.follow_up_control && (
-              <DropdownMenuItem
-                onClick={() => setOpenCreateDangerIdentification(true)}
-              >
-                <ClipboardPenLine className="size-5" />
-              </DropdownMenuItem>
-            )}
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -146,7 +145,9 @@ const MitigationMeasureDropdownActions = ({
               <DialogTitle className="text-center"></DialogTitle>
               <CreateMitigationMeasureForm
                 onClose={() => setOpenEdit(false)}
-                id={mitigationMeasure.mitigation_plan_id}
+                id={mitigationMeasure.id}
+                initialData={mitigationMeasure}
+                isEditing={true}
               />
             </DialogHeader>
           </DialogContent>

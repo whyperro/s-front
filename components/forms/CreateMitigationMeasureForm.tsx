@@ -29,7 +29,11 @@ import { cn } from "@/lib/utils";
 import { format, min } from "date-fns";
 
 import { Separator } from "@radix-ui/react-select";
-import { useCreateMitigationMeasure } from "@/actions/sms/medida_de_mitigacion/actions";
+import {
+  useCreateMitigationMeasure,
+  useUpdateMitigationMeasure,
+} from "@/actions/sms/medida_de_mitigacion/actions";
+import { MitigationMeasure } from "@/types";
 
 const FormSchema = z.object({
   description: z.string().min(5),
@@ -48,27 +52,48 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 interface FormProps {
   onClose: () => void;
   id: number | string;
+  isEditing?: boolean;
+  initialData?: MitigationMeasure;
 }
 
 export default function CreateMitigationMeasureForm({
   onClose,
   id,
+  initialData,
+  isEditing,
 }: FormProps) {
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      estimated_date: new Date(),
-      execution_date: new Date(),
+      description: initialData?.description,
+      implementation_responsible: initialData?.implementation_responsible,
+      implementation_supervisor: initialData?.implementation_supervisor,
+      estimated_date: initialData?.estimated_date
+        ? new Date(initialData.estimated_date)
+        : new Date(),
+      execution_date: initialData?.execution_date
+        ? new Date(initialData.execution_date)
+        : new Date(),
     },
   });
 
   const { createMitigationMeasure } = useCreateMitigationMeasure();
+  const { updateMitigationMeasure } = useUpdateMitigationMeasure();
 
   const onSubmit = async (data: FormSchemaType) => {
-    await createMitigationMeasure.mutateAsync({
-      ...data,
-      mitigation_plan_id: id,
-    });
+    if (isEditing && initialData) {
+      const value = {
+        ...data,
+        id: initialData.id,
+      };
+      await updateMitigationMeasure.mutateAsync(value);
+    } else {
+      await createMitigationMeasure.mutateAsync({
+        ...data,
+        mitigation_plan_id: id,
+      });
+    }
+
     onClose();
   };
 
