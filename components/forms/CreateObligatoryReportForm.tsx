@@ -48,45 +48,44 @@ import { useGetPilots } from "@/hooks/sms/useGetPilots";
 import { useCreateObligatoryReport } from "@/actions/sms/reporte_obligatorio/actions";
 
 //Falta añadir validaciones
+
 const FormSchema = z
   .object({
     report_code: z.string(),
-
     report_date: z
       .date()
       .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
-
     incident_date: z
       .date()
       .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
-
     incident_time: z
       .date()
       .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
     flight_time: z
       .date()
       .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
-
     pilot_id: z.string(),
     copilot_id: z.string(),
-
     aircraft_acronym: z.string().min(3),
     aircraft_model: z.string().min(3),
     flight_number: z.string().min(3),
     flight_origin: z.string().min(3),
     flight_destiny: z.string().min(3),
     flight_alt_destiny: z.string().min(3),
-    incidents: z.array(z.string()),
-    other_incidents: z.string(),
+    incidents: z.array(z.string()).optional(),
+    other_incidents: z.string().optional(),
   })
-
   .refine(
-    (data) => data.incidents.length > 0 || data.other_incidents.length > 0,
+    (data) => {
+      const hasIncidents = data.incidents && data.incidents.length > 0;
+      const hasOtherIncidents = !!data.other_incidents;
+      return hasIncidents || hasOtherIncidents;
+    },
     {
-      message: "Debes completar al menos uno de los campos.",
-      path: ["incidents"], // Puedes especificar el path para mostrar el error en el campo incidents
+      message: "Al menos una de las dos variables debe tener información",
     }
   );
+
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
