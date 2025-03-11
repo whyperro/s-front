@@ -17,8 +17,8 @@ interface ObligatoryReportData {
   flight_origin: string;
   flight_destiny: string;
   flight_alt_destiny: string;
-  incidents: string[];
-  other_incidents: string;
+  incidents?: string[];
+  other_incidents?: string;
 }
 
 export const useCreateObligatoryReport = () => {
