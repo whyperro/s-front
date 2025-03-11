@@ -87,12 +87,12 @@ const styles = StyleSheet.create({
     right: 90,
   },
   dateLabel: {
-    fontSize: 9,
+    fontSize: 10,
   },
   dateText: {
     fontSize: 10,
     marginLeft: 40,
-    marginTop: -8,
+    marginTop: 1,
   },
 });
 
@@ -107,7 +107,7 @@ const ActivitiesReportPdf = ({
       <View style={styles.headerContainer}>
         {/* Logo en la esquina superior izquierda */}
         {/* <Image src="/ruta/del/logo.png" style={styles.logo} /> */}
-        {/* <Image src="/LOGO_TRD.png" style={styles.logo} /> */}
+        <Image src="/LOGO_TRD.png" style={styles.logo} />
         {/* Título en dos líneas */}
         <View style={styles.titleContainer}>
           <Text style={styles.titleText}>REGISTRO DE</Text>

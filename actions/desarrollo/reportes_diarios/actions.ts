@@ -73,7 +73,7 @@ export const useUpdateFinalHour = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["daily-activity"] });
             queryClient.invalidateQueries({ queryKey: ["activities"] });
-            toast.success("¡Actividad creada!", {
+            toast.success("¡Actividad actualizada!", {
                 description: "La actividad se ha actualizado correctamente."
             });
         },

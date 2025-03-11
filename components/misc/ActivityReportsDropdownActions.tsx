@@ -34,7 +34,7 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
   console.log(report)
   return (
     <>
-      <Dialog open={isObservationOpen} onOpenChange={setIsObservationOpen}>
+      {/* <Dialog open={isObservationOpen} onOpenChange={setIsObservationOpen}>
         <DialogContent>
           <DialogHeader>Agregar Observación</DialogHeader>
           <Input
@@ -46,7 +46,7 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
             <Button onClick={() => setIsObservationOpen(false)}>Guardar</Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
       <DropdownMenu>
         <DropdownMenuTrigger disabled={isReportLoading} asChild>
@@ -62,7 +62,7 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
           <DropdownMenuItem onClick={handleView} className="cursor-pointer">
             <Eye className="size-5" />
           </DropdownMenuItem>
-          <DropdownMenuItem disabled={isReportLoading} className="cursor-pointer" asChild>
+          {/* <DropdownMenuItem disabled={isReportLoading} className="cursor-pointer" asChild>
             <PDFDownloadLink
               fileName="reporte_actividades.pdf"
               document={<ActivitiesReportPdf report={report!} />}
@@ -70,13 +70,13 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
             >
               <Printer className="size-5" />
             </PDFDownloadLink>
-          </DropdownMenuItem>
-          <DropdownMenuItem
+          </DropdownMenuItem> */}
+          {/* <DropdownMenuItem
             onClick={() => setIsObservationOpen(true)}
             className="cursor-pointer"
           >
             <MessageSquare className="size-5" />
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
     </>
