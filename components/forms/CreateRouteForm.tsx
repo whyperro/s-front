@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Scale } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -22,6 +23,11 @@ const formSchema = z.object({
   }).max(30, {
     message: "El nombre del lugar tiene un máximo 30 caracteres.",
   }).regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras y números"),
+  scale: z.string().min(3, {
+    message: "El nombre de la escala debe tener al menos 3 caracteres.",
+  }).max(30, {
+    message: "El nombre de la escala tiene un máximo 30 caracteres.",
+  }).optional(),
   to: z.string().min(3, {
     message: "El nombre del lugar debe tener al menos 3 caracteres.",
   }).max(30, {
@@ -58,6 +64,19 @@ export function CreateRouteForm({ onClose }: FormProps) {
                 <Input placeholder="Ingrese la salida" {...field} />
               </FormControl>
               <FormDescription>Lugar de salida</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="scale"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Escala</FormLabel>
+              <FormControl>
+                <Input placeholder="Ingrese la escala" {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

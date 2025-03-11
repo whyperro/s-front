@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import FlightDropdownActions from "@/components/misc/FlightDropdownActions";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<Flight>[] = [
   {
@@ -129,13 +130,21 @@ export const columns: ColumnDef<Flight>[] = [
       <DataTableColumnHeader filter column={column} title="Estado Actual" />
     ),
     meta: { title: "Estado actual" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.debt_status}
-        </span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.debt_status;
+      const backgroundColor =
+        status === "PENDIENTE" ? "bg-yellow-500" : "bg-green-500";
+
+      return (
+        <div>
+          <div className="flex justify-center">
+            <Badge className={backgroundColor}>
+              {row.original.debt_status}
+            </Badge>
+          </div>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "details",
@@ -144,7 +153,7 @@ export const columns: ColumnDef<Flight>[] = [
     ),
     meta: { title: "Detalles" },
     cell: ({ row }) => (
-      <div className="flex justify-center font-bold">
+      <div className="flex justify-center font-bold text-center">
         {row.original.details}
       </div>
     ),

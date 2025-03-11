@@ -5,13 +5,12 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { CreateRouteForm } from "../forms/CreateRouteForm";
+import BerkForm from "../forms/BerkanaRouteForm";
 
 export function RouteDialog() {
   const [open, setOpen] = useState(false);
@@ -21,16 +20,22 @@ export function RouteDialog() {
         <Button
           onClick={() => setOpen(true)}
           variant={"outline"}
-          className="flex items-center justify-center gap-2 h-8 border-dashed">
-          Registrar Ruta 
+          className="flex items-center justify-center gap-2 h-8 border-dashed"
+        >
+          Registrar Ruta
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[420px]">
+      <DialogContent
+        className="sm:max-w-[480px]"
+        onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Crear una Ruta</DialogTitle>
           <DialogDescription>Cree una nueva ruta.</DialogDescription>
         </DialogHeader>
-        <CreateRouteForm onClose={() => setOpen(false)} />
+        <BerkForm onClose={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );

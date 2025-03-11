@@ -8,7 +8,7 @@ import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
-import { useDeleteCashMovement } from "@/actions/contabilidad/movimientos/actions";
+import { useDeleteCashMovement } from "@/actions/administracion/movimientos/actions";
 import {
   Dialog,
   DialogContent,
@@ -19,7 +19,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Separator } from "../ui/separator";
-import { useGetCashMovementById } from "@/hooks/contabilidad/useGetMovementById";
+import { useGetCashMovementById } from "@/hooks/administracion/useGetMovementById";
 import { es } from "date-fns/locale";
 import { format } from "date-fns";
 import { CashMovement } from "@/types";
@@ -67,7 +67,7 @@ const CashMovementDropdownActions = ({
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/contabilidad/movimientos/${id}`);
+              router.push(`/administracion/movimientos/${id}`);
             }}
           ></DropdownMenuItem>
         </DropdownMenuContent>
@@ -117,7 +117,7 @@ const CashMovementDropdownActions = ({
             <Button
               variant="outline"
               onClick={() =>
-                router.push(`/transmandu/contabilidad/movimientos/${id}`)
+                router.push(`/transmandu/administracion/movimientos/${id}`)
               }
             >
               Ver detalles completos

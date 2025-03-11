@@ -25,7 +25,12 @@ export function CreateClientDialog() {
           Registrar Cliente
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[420px]">
+      <DialogContent
+        className="sm:max-w-[480px]"
+        onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Crear Cliente</DialogTitle>
           <DialogDescription>Cree un nuevo cliente.</DialogDescription>

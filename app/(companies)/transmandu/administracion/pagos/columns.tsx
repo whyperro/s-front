@@ -5,6 +5,7 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { FlightPayment } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
+import Link from "next/link";
 import FlightPaymentsDropdownActions from "@/components/misc/FlightPaymentsDropdownActions";
 
 export const columns: ColumnDef<FlightPayment>[] = [
@@ -29,13 +30,9 @@ export const columns: ColumnDef<FlightPayment>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Cliente" />
     ),
-    meta: { title: "Cliente" },
+    meta: { title: "Nombre" },
     cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.client.name}
-        </span>
-      </div>
+      <div className="flex justify-center font-bold">{row.original.client.name}</div>
     ),
   },
   {

@@ -1,149 +1,109 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import qs from "query-string";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  PopoverClose,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { es } from "date-fns/locale/es";
-import { CalendarIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { Button } from "../ui/button";
+import { format, parseISO, subDays } from "date-fns";
+import { formatDateRange } from "@/lib/utils";
+import { useState } from "react";
+import { DateRange } from "react-day-picker";
+import { ChevronDown } from "lucide-react";
+import { Calendar } from "../ui/calendar";
 
-const formSchema = z.object({
-  from: z.date({
-    required_error: "La fecha desde donde va el vuelo es requerida",
-  }),
-  to: z.date({
-    required_error: "La fecha hasta donde va el vuelo es requerida",
-  }),
-});
+const DateFilter = () => {
 
-interface FormProps {
-  onClose: () => void;
-}
+  const router = useRouter();
+  const params = useSearchParams();
+  const pathname = usePathname();
 
-export function FilterDatesForm({ onClose }: FormProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
+  const from = params.get("from") || "";
+  const to = params.get("to") || "";
 
-  const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
-    onClose();
+  const defaultTo = new Date();
+  const defaultFrom = subDays(defaultTo, 31);
+
+  const paramState = {
+    from: from ? parseISO(from) : defaultFrom,
+    to: to ? parseISO(to) : defaultTo,
+  };
+
+  const [date, setDate] = useState<DateRange | undefined>(paramState);
+
+  const pushToUrl = (dateRange: DateRange | undefined) => {
+    const query = {
+      from: format(dateRange?.from || defaultFrom, "yyyy-MM-dd"),
+      to: format(dateRange?.to || defaultTo, "yyyy-MM-dd"),
+    };
+
+    const url = qs.stringifyUrl(
+      {
+        url: pathname,
+        query,
+      },
+      { skipEmptyString: true, skipNull: true }
+    );
+
+    router.push(url);
+  };
+
+  const onReset = () => {
+    setDate(undefined);
+    pushToUrl(undefined);
   };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="flex flex-col space-y-3"
-      >
-        <div className="flex gap-2 items-center justify-center">
-          <FormField
-            control={form.control}
-            name="from"
-            render={({ field }) => (
-              <FormItem className="flex flex-col mt-2.5">
-                <FormLabel>Fecha Desde</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP", { locale: es })
-                        ) : (
-                          <span>Seleccione una fecha</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1999-07-21")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="flex gap-2 items-center justify-center">
-          <FormField
-            control={form.control}
-            name="to"
-            render={({ field }) => (
-              <FormItem className="flex flex-col mt-2.5">
-                <FormLabel>Fecha Hasta</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP", { locale: es })
-                        ) : (
-                          <span>Seleccione una fecha</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1999-07-21")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <Button type="submit" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? "Enviando..." : "Enviar"}
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          disabled={false}
+          size={"sm"}
+          variant={"outline"}
+          className="lg:w-auto w-full h-9 rounded-md px-3 font-normal bg-primary hover:bg-primary/90 hover:text-white border-none focus:ring-offset-0 focus:ring-transparent outline-none text-white focus:bg-white/30 transition"
+        >
+          <span>{formatDateRange(paramState)}</span>
+          <ChevronDown className="size-4 mr-2 opacity-50" />
         </Button>
-      </form>
-    </Form>
+      </PopoverTrigger>
+      <PopoverContent className="lg:w-auto w-full p-0" align="start">
+        <Calendar
+          disabled={false}
+          initialFocus
+          mode="range"
+          defaultMonth={date?.from}
+          selected={date}
+          onSelect={setDate}
+          numberOfMonths={2}
+        />
+        <div className="p-4 w-full flex items-center gap-x-2">
+          <PopoverClose asChild>
+            <Button
+              onClick={onReset}
+              disabled={!date?.from || !date?.to}
+              className="w-full"
+              variant={"outline"}
+            >
+              Reiniciar
+            </Button>
+          </PopoverClose>
+          <PopoverClose asChild>
+            <Button
+              onClick={() => pushToUrl(date)}
+              disabled={!date?.from || !date?.to}
+              className="w-full"
+            >
+              Aplicar
+            </Button>
+          </PopoverClose>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
-}
+};
+
+export default DateFilter;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCreateCashMovement } from "@/actions/contabilidad/movimientos/actions";
+import { useCreateCashMovement } from "@/actions/administracion/movimientos/actions";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -24,8 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetCash } from "@/hooks/contabilidad/useGetCash";
-import { useGetEmployeesByCompany } from "@/hooks/contabilidad/useGetEmployees";
+import { useGetCash } from "@/hooks/administracion/useGetCash";
+import { useGetEmployeesByCompany } from "@/hooks/administracion/useGetEmployees";
 import { useGetCompanies } from "@/hooks/useGetCompanies";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";

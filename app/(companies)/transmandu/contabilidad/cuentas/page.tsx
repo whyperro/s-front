@@ -2,7 +2,7 @@
 
 import { ContentLayout } from "@/components/layout/ContentLayout";
 import LoadingPage from "@/components/misc/LoadingPage";
-import { useGetCash } from "@/hooks/contabilidad/useGetCash";
+import { useGetCash } from "@/hooks/administracion/useGetCash";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 

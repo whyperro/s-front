@@ -55,6 +55,20 @@ export const columns: ColumnDef<Client>[] = [
     ),
   },
   {
+    accessorKey: "debt",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Deuda" />
+    ),
+    meta: { title: "Deuda" },
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <span className="text-muted-foreground italic">
+          {row.original.debt}
+        </span>
+      </div>
+    ),
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const id = row.original.id;

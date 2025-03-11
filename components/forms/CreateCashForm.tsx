@@ -1,6 +1,6 @@
 "use client";
 
-import { useCreateCash } from "@/actions/contabilidad/cuentas/actions";
+import { useCreateCash } from "@/actions/administracion/cuentas/actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,

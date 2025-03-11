@@ -17,6 +17,20 @@ export const columns: ColumnDef<Route>[] = [
     ),
   },
   {
+    accessorKey: "scale",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Escala" />
+    ),
+    meta: { title: "Escala" },
+    cell: ({ row }) => (
+      <div className="flex justify-center font-bold">
+        <span className="text-muted-foreground italic">
+          {row.original.scale ? row.original.scale : "N/A"}
+        </span>
+      </div>
+    ),
+  },
+  {
     accessorKey: "to",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Hasta" />

@@ -139,6 +139,34 @@ export function getMenuList(
                   },
                 ],
               },
+              {
+                href: "/transmandu/administracion/gestion_cajas",
+                label: "Gestion de Cajas",
+                active: pathname.includes("/transmandu/administracion/gestion_cajas"),
+                icon: Landmark,
+                roles: [
+                  "ANALISTA_PLANIFICACION",
+                  "JEFE_PLANIFICACION",
+                  "SUPERUSER",
+                ],
+                submenus: [
+                  {
+                    href: "/transmandu/administracion/gestion_cajas/cuentas",
+                    label: "Cajas",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/gestion_cajas/cuentas",
+                  },
+                  {
+                    href: "/transmandu/administracion/gestion_cajas/movimientos",
+                    label: "Movimientos",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/gestion_cajas/movimientos",
+                  },
+                ],
+              },
+              
             ],
           },
           {

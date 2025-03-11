@@ -5,7 +5,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -21,11 +20,17 @@ export function CashDialog() {
         <Button
           onClick={() => setOpen(true)}
           variant={"outline"}
-          className="flex items-center justify-center gap-2 h-8 border-dashed">
-          Registrar Caja 
+          className="flex items-center justify-center gap-2 h-8 border-dashed"
+        >
+          Registrar Caja
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[420px]">
+      <DialogContent
+        className="sm:max-w-[480px]"
+        onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Crear una Caja</DialogTitle>
           <DialogDescription>Cree una nueva caja.</DialogDescription>

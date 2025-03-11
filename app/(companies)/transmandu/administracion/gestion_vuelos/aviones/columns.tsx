@@ -31,13 +31,13 @@ export const columns: ColumnDef<Aircraft>[] = [
     ),
   },
   {
-    accessorKey: "brand",
+    accessorKey: "model",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Marca" />
+      <DataTableColumnHeader filter column={column} title="Modelo" />
     ),
-    meta: { title: "Marca" },
+    meta: { title: "Modelo" },
     cell: ({ row }) => (
-      <div className="flex justify-center font-bold">{row.original.brand}</div>
+      <div className="flex justify-center font-bold">{row.original.model}</div>
     ),
   },
   {
@@ -64,6 +64,20 @@ export const columns: ColumnDef<Aircraft>[] = [
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
           {row.original.owner}
+        </span>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "brand",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Marca" />
+    ),
+    meta: { title: "Marca" },
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <span className="text-muted-foreground italic">
+          {row.original.brand}
         </span>
       </div>
     ),

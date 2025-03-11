@@ -8,9 +8,9 @@ import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
-import { useDeleteCash } from "@/actions/contabilidad/cuentas/actions";
+import { useDeleteCash } from "@/actions/administracion/cuentas/actions";
 import { Separator } from "../ui/separator"
-import { useGetCashById } from "@/hooks/contabilidad/useGetCashById";
+import { useGetCashById } from "@/hooks/administracion/useGetCashById";
 import {
   Dialog,
   DialogContent,
@@ -58,7 +58,7 @@ const CashDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/contabilidad/cuentas/${id}`)
+              router.push(`/administracion/cuentas/${id}`)
             }}
           >
           </DropdownMenuItem>
@@ -134,7 +134,7 @@ const CashDropdownActions = ({ id }: { id: string }) => {
           )}
 
           <DialogFooter className="sm:justify-center">
-            <Button variant="outline" onClick={() => router.push(`/administracion/contabilidad/cuentas/${id}`)}>
+            <Button variant="outline" onClick={() => router.push(`/administracion/cuentas/${id}`)}>
               Ver detalles completos
             </Button>
             <Button onClick={() => setOpenCash(false)}>Cerrar</Button>

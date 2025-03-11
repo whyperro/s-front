@@ -133,9 +133,9 @@ const AircraftDropdownActions = ({ id }: { id: string }) => {
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Marca
+                  Modelo
                 </h3>
-                <p className="text-lg font-semibold">{aircraftDetails.brand}</p>
+                <p className="text-lg font-semibold">{aircraftDetails.model}</p>
                 <Separator />
               </div>
 
@@ -154,6 +154,16 @@ const AircraftDropdownActions = ({ id }: { id: string }) => {
                   Dueño
                 </h3>
                 <p className="text-lg font-semibold">{aircraftDetails.owner}</p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Marca
+                </h3>
+                <p className="text-lg font-semibold">
+                  {aircraftDetails.brand}
+                </p>
                 <Separator />
               </div>
 

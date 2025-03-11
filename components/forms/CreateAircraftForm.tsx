@@ -47,10 +47,18 @@ const FormSchema = z.object({
   brand: z
     .string()
     .min(2, {
-      message: "La marca debe tener al menos 2 caracteres alfanuméricos.",
+      message: "La marca debe tener al menos 2 caracteres.",
     })
     .max(30, {
-      message: "La marca tiene un máximo 20 caracteres alfanuméricos.",
+      message: "La marca tiene un máximo 30 caracteres.",
+    }),
+  model: z
+    .string()
+    .min(2, {
+      message: "El modelo debe tener al menos 2 caracteres alfanuméricos.",
+    })
+    .max(30, {
+      message: "El modelo tiene un máximo 20 caracteres alfanuméricos.",
     }),
   serial: z
     .string()
@@ -146,10 +154,10 @@ export function CreateAircraftForm({ onClose }: FormProps) {
         <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
-            name="brand"
+            name="model"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Marca</FormLabel>
+                <FormLabel>Modelo</FormLabel>
                 <FormControl>
                   <Input placeholder="Marca de la Aeronave" {...field} />
                 </FormControl>
@@ -189,19 +197,34 @@ export function CreateAircraftForm({ onClose }: FormProps) {
             )}
           />
         </div>
-        <FormField
-          control={form.control}
-          name="owner"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Dueño</FormLabel>
-              <FormControl>
-                <Input placeholder="Nombre del dueño" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
+        <div className="flex gap-2 items-center">
+          <FormField
+            control={form.control}
+            name="owner"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Dueño</FormLabel>
+                <FormControl>
+                  <Input placeholder="Nombre del dueño" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="brand"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Marca</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ingrese la marca" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+        </div>
         <div className="flex gap-2 items-center">
           <FormField
             control={form.control}

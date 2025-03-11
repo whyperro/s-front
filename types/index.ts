@@ -189,6 +189,7 @@ export type Client = {
   address: string,
   email: string,
   phone: string,
+  debt: number,
 }
 
 export type JobTitle = {
@@ -214,6 +215,7 @@ export type Aircraft = {
   type_engine: string,
   number_engine: string,
   comments: string,
+  model: string,
 }
 
 export type Employee = {
@@ -445,6 +447,7 @@ export type Flight = {
 export type Route = {
   id:number,
   from: string,
+  scale: string,
   to: string,
 }
 
