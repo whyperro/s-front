@@ -69,6 +69,17 @@ export const columns: ColumnDef<ActivityReport>[] = [
     }
   },
   {
+    accessorKey: "observation",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Observaciones" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <p className="font-medium text-center">{row.original.observation ?? "Sin observaciones..."}</p>
+      )
+    }
+  },
+  {
     id: "actions",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Acciones" />

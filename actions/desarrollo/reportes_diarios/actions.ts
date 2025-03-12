@@ -66,7 +66,6 @@ export const useUpdateFinalHour = () => {
         mutationFn: async (data: {
             final_hour: string;
             id: string;
-            result: string,
         }) => {
             await axiosInstance.put(`/transmandu/update-activity/${data.id}` , data);
         },
@@ -86,5 +85,35 @@ export const useUpdateFinalHour = () => {
 
     return {
         updateFinalHour: createMutation,
+    };
+};
+
+
+export const useUpdateObservation = () => {
+    const queryClient = useQueryClient();
+
+    const createMutation = useMutation({
+        mutationFn: async (data: {
+            id: string;
+            observation: string;
+        }) => {
+            await axiosInstance.patch(`/transmandu/update-observation/${data.id}` , data);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["daily-activity"] });
+            queryClient.invalidateQueries({ queryKey: ["activities"] });
+            toast.success("¡Observación actualizada!", {
+                description: "La observación se ha añadido correctamente."
+            });
+        },
+        onError: () => {
+            toast.error("Oops!", {
+                description: "Hubo un error al añadir la observación."
+            });
+        }
+    });
+
+    return {
+        updateObservation: createMutation,
     };
 };

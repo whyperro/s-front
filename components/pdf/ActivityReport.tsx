@@ -105,10 +105,7 @@ const ActivitiesReportPdf = ({
     <Page size="LETTER" orientation="landscape" style={styles.page}>
       {/* HEADER CON LOGO Y TÍTULO */}
       <View style={styles.headerContainer}>
-        {/* Logo en la esquina superior izquierda */}
-        {/* <Image src="/ruta/del/logo.png" style={styles.logo} /> */}
         <Image src="/LOGO_TRD.png" style={styles.logo} />
-        {/* Título en dos líneas */}
         <View style={styles.titleContainer}>
           <Text style={styles.titleText}>REGISTRO DE</Text>
           <Text style={styles.titleText}>ACTIVIDADES DIARIAS</Text>
@@ -172,6 +169,7 @@ const ActivitiesReportPdf = ({
 
       {/* SECCIÓN DE OBSERVACIONES */}
       <Text style={[styles.footer, { marginTop: 20 }]}>OBSERVACIONES:</Text>
+      <Text style={styles.dateText}>{report.observation}</Text>
       <View style={{ borderWidth: 1, height: 50 }}></View>
     </Page>
   </Document>

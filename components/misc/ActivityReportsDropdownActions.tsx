@@ -6,12 +6,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGetUserActivity } from "@/hooks/desarrollo/useGetUserActivities";
-import { ActivityReport } from "@/types"; // Importa correctamente los tipos
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import { Eye, MessageSquare, MoreHorizontal, Printer } from "lucide-react";
+import { Eye, MessageSquare, MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import ActivitiesReportPdf from "../pdf/ActivityReport";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -20,21 +17,36 @@ import {
   DialogHeader,
 } from "../ui/dialog";
 import { Input } from "../ui/input";
+import { useUpdateObservation } from "@/actions/desarrollo/reportes_diarios/actions";
 
 const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
   const { data: report, isLoading: isReportLoading } = useGetUserActivity(id);
+  const { updateObservation } = useUpdateObservation();
   const { user } = useAuth();
   const [observation, setObservation] = useState<string>("");
   const [isObservationOpen, setIsObservationOpen] = useState<boolean>(false);
   const router = useRouter();
+
+
+  console.log(report);
+  const userRoles = user?.roles?.map((role) => role.name) || [];
+
   const handleView = () => {
     router.push(`/transmandu/desarrollo/actividades_diarias/${id}/`);
   };
-  const userRoles = user?.roles?.map((role) => role.name) || [];
-  console.log(report)
+
+  const handleUpdateObservation = async () => {
+
+    const data ={ 
+      id: id.toString(),
+      observation: observation,
+    }
+    await updateObservation.mutateAsync(data)
+  };
+
   return (
     <>
-      {/* <Dialog open={isObservationOpen} onOpenChange={setIsObservationOpen}>
+      <Dialog open={isObservationOpen} onOpenChange={setIsObservationOpen}>
         <DialogContent>
           <DialogHeader>Agregar Observación</DialogHeader>
           <Input
@@ -43,10 +55,10 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
             placeholder="Escribe tu observación aquí..."
           />
           <DialogFooter>
-            <Button onClick={() => setIsObservationOpen(false)}>Guardar</Button>
+            <Button onClick={handleUpdateObservation}>Guardar</Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
 
       <DropdownMenu>
         <DropdownMenuTrigger disabled={isReportLoading} asChild>
@@ -55,28 +67,16 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="center"
-          className="flex gap-2 justify-center"
-        >
+        <DropdownMenuContent align="center" className="flex gap-2 justify-center">
           <DropdownMenuItem onClick={handleView} className="cursor-pointer">
             <Eye className="size-5" />
           </DropdownMenuItem>
-          {/* <DropdownMenuItem disabled={isReportLoading} className="cursor-pointer" asChild>
-            <PDFDownloadLink
-              fileName="reporte_actividades.pdf"
-              document={<ActivitiesReportPdf report={report!} />}
-              className="flex items-center gap-2"
-            >
-              <Printer className="size-5" />
-            </PDFDownloadLink>
-          </DropdownMenuItem> */}
-          {/* <DropdownMenuItem
+          <DropdownMenuItem
             onClick={() => setIsObservationOpen(true)}
             className="cursor-pointer"
           >
             <MessageSquare className="size-5" />
-          </DropdownMenuItem> */}
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </>
