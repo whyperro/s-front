@@ -7,7 +7,7 @@ const fetcVoluntaryReportsCountedByArea = async (
   to: string
 ): Promise<pieChartData[]> => {
   const { data } = await axiosInstance.get(
-    `transmandu/voluntary-reports/counted-by-area?from=${from}&to=${to}`
+    `transmandu/sms/voluntary-reports/counted-by-area?from=${from}&to=${to}`
   );
   return data;
 };

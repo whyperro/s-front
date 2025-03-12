@@ -3,7 +3,7 @@ import { VoluntaryReport } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 const fetchVoluntaryReportsByDateRange = async (): Promise<VoluntaryReport[]> => {
-  const { data } = await axiosInstance.get("/transmandu/voluntary-reports");
+  const { data } = await axiosInstance.get("/transmandu/sms/voluntary-reports");
   return data;
 };
 

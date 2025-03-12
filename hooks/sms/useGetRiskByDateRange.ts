@@ -7,7 +7,7 @@ const fetchRiskCountByDateRange = async (
   to: string
 ): Promise<pieChartData[]> => {
   const { data } = await axiosInstance.get(
-    `/transmandu/voluntary-reports/risk-count-by-date-range?from=${from}&to=${to}`
+    `/transmandu/sms/voluntary-reports/risk-count-by-date-range?from=${from}&to=${to}`
   );
   console.log("DATA FRON USE GET RISK C OUNT BY DATE RANGE ",data);
   return data;

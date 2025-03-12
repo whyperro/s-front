@@ -3,7 +3,7 @@ import { ObligatoryReport } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 const fetchObligatoryReports = async (): Promise<ObligatoryReport[]> => {
-  const { data } = await axiosInstance.get("/transmandu/obligatory-reports");
+  const { data } = await axiosInstance.get("/transmandu/sms/obligatory-reports");
   return data;
 };
 

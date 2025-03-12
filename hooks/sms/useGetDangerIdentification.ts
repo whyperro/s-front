@@ -3,7 +3,7 @@ import { DangerIdentification, InformationSource, VoluntaryReport } from "@/type
 import { useQuery } from "@tanstack/react-query";
 
 const fetchDangerIdentifications = async (): Promise<DangerIdentification[]> => {
-  const { data } = await axiosInstance.get("/transmandu/danger-identifications");
+  const { data } = await axiosInstance.get("/transmandu/sms/danger-identifications");
   return data;
 };
 

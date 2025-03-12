@@ -7,7 +7,7 @@ const fetchMeasureFollowUpControl = async (
   measure_id: string | number
 ) => {
   const { data } = await axiosInstance.get(
-    `transmandu/plan/${plan_id}/measure/${measure_id}/controls`
+    `transmandu/sms/plan/${plan_id}/measure/${measure_id}/controls`
   );
   return data;
 };

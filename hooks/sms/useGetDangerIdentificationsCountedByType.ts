@@ -7,7 +7,7 @@ const fetcDangerIdentificationsCountedByType = async (
   to: string
 ) => {
   const { data } = await axiosInstance.get(
-    `transmandu/danger-identifications/counted-by-type?from=${from}&to=${to}`
+    `transmandu/sms/danger-identifications/counted-by-type?from=${from}&to=${to}`
   );
   return data;
 };

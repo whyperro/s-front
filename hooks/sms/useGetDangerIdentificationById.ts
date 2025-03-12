@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 
 
 const fetDangerIdentificationById = async (id: string | number) => {
-  const {data} = await axiosInstance.get(`transmandu/danger-identification/${id}`);
+  const {data} = await axiosInstance.get(`transmandu/sms/danger-identification/${id}`);
   return data;
 };
 

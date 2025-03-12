@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const fetchMitigationMeasure = async (plan_id: string | number) => {
   const { data } = await axiosInstance.get(
-    `transmandu/plan/${plan_id}/measure`
+    `transmandu/sms/plan/${plan_id}/measure`
   );
   return data;
 };

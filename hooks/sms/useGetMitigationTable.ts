@@ -3,7 +3,7 @@ import {  MitigationTable } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 const fetchMitigationTable = async (): Promise<MitigationTable[]> => {
-  const { data } = await axiosInstance.get("/transmandu/analysis");
+  const { data } = await axiosInstance.get("/transmandu/sms/analysis");
   return data;
 };
 
