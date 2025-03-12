@@ -1,4 +1,4 @@
-import { useDeletePilot } from "@/actions/sms/piloto/actions";
+import { useDeletePilot } from "@/actions/ajustes/globales/piloto/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,

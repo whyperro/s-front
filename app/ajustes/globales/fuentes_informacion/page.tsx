@@ -5,7 +5,7 @@ import { useGetVendors } from "@/hooks/ajustes/globales/proveedores/useGetVendor
 import { Loader2 } from "lucide-react";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import { useGetInformationSources } from "@/hooks/sms/useGetInformationSource";
+import { useGetInformationSources } from "@/hooks/ajustes/globales/tipos_fuente/useGetInformationSource";
 import LoadingPage from "@/components/misc/LoadingPage";
 
 const InformationSourcePage = () => {

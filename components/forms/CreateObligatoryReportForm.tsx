@@ -44,7 +44,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useGetPilots } from "@/hooks/sms/useGetPilots";
+import { useGetPilots } from "@/hooks/ajustes/globales/piloto/useGetPilots";
 import { useCreateObligatoryReport } from "@/actions/sms/reporte_obligatorio/actions";
 
 //Falta añadir validaciones

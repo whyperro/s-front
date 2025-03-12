@@ -19,8 +19,9 @@ import { Loader2 } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
 
-import { useCreatePilot, useUpdatePilot } from "@/actions/sms/piloto/actions";
+
 import { Pilot } from "@/types";
+import { useCreatePilot, useUpdatePilot } from "@/actions/ajustes/globales/piloto/actions";
 
 const FormSchema = z.object({
   dni: z.string(),

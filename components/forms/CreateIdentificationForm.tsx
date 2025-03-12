@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetInformationSources } from "@/hooks/sms/useGetInformationSource";
+import { useGetInformationSources } from "@/hooks/ajustes/globales/tipos_fuente/useGetInformationSource";
 import { Textarea } from "../ui/textarea";
 import { useCreateDangerIdentification } from "@/actions/sms/peligros_identificados/actions";
 import { useState } from "react";
@@ -83,7 +83,6 @@ export default function CreateDangerIdentificationForm({
     "IT",
   ];
   const DANGER_TYPES = ["ORGANIZACIONAL", "TECNICO", "HUMANO", "NATURAL"];
-
 
   console.log("Datos del VP ", voluntaryReport);
 

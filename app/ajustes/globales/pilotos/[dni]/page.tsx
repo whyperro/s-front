@@ -1,6 +1,6 @@
 "use client";
 import { ContentLayout } from "@/components/layout/ContentLayout";
-import { useGetPilotByDni } from "@/hooks/sms/useGetPilotById";
+import { useGetPilotByDni } from "@/hooks/ajustes/globales/piloto/useGetPilotById";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 
