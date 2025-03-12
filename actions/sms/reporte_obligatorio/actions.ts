@@ -49,3 +49,30 @@ export const useCreateObligatoryReport = () => {
     createObligatoryReport: createMutation,
   };
 };
+
+export const useDeleteObligatoryReport = () => {
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation({
+    mutationKey: ["obligatory-reports"],
+    mutationFn: async (id: number | string) => {
+      await axiosInstance.delete(`/transmandu/sms/obligatory-reports/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
+      queryClient.invalidateQueries({ queryKey: ["obligatory-reports"] });
+      toast.success("¡Eliminado!", {
+        description: `¡El reporte ha sido eliminada correctamente!`,
+      });
+    },
+    onError: (e) => {
+      toast.error("Oops!", {
+        description: "¡Hubo un error al eliminar el reporte!",
+      });
+    },
+  });
+
+  return {
+    deleteObligatoryReport: deleteMutation,
+  };
+};
