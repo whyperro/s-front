@@ -10,32 +10,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import {
-  useCreateToolBox,
-  useUpdateToolBox,
-} from "@/actions/almacen/inventario/caja_herramientas/actions";
+import { useUpdateInformationSource } from "@/actions/ajustes/globales/tipos_fuente/actions";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/contexts/AuthContext";
-import { useGetEmployeesForBox } from "@/hooks/almacen/useGetEmployeeForBox";
-import { useGetEditToolBoxTools } from "@/hooks/almacen/useGetToolBoxTools";
-import { cn } from "@/lib/utils";
-import { useCompanyStore } from "@/stores/CompanyStore";
-import { Article, Batch, InformationSource, ToolBox } from "@/types";
+import { InformationSource } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Badge } from "../ui/badge";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
   Select,
   SelectContent,
@@ -44,7 +25,6 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Separator } from "../ui/separator";
-import { useUpdateInformationSource } from "@/actions/sms/tipos_fuente/actions";
 
 const FormSchema = z.object({
   name: z.string(),

@@ -1,4 +1,4 @@
-import { useDeletePilot } from "@/actions/sms/piloto/actions";
+import { useDeletePilot } from "@/actions/ajustes/globales/piloto/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +25,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { useRouter } from "next/navigation";
-import { useDeleteInformationSource } from "@/actions/sms/tipos_fuente/actions";
+import { useDeleteInformationSource } from "@/actions/ajustes/globales/tipos_fuente/actions";
 import { EditInformationSourceForm } from "../forms/EditInformationSourceForm";
 
 const InformationSourceDropdownActions = ({

@@ -4,11 +4,10 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
@@ -16,18 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { format } from "date-fns";
-import { CalendarIcon, Loader2 } from "lucide-react";
-import { es } from "date-fns/locale";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
-import { Calendar } from "@/components/ui/calendar";
-import { Textarea } from "@/components/ui/textarea";
+import { useCreateInformationSource } from "@/actions/ajustes/globales/tipos_fuente/actions";
 import {
   Select,
   SelectContent,
@@ -35,11 +23,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "../ui/label";
-import { useCreateVoluntaryReport } from "@/actions/sms/reporte_voluntario/actions";
-import { useCreateInformationSource } from "@/actions/sms/tipos_fuente/actions";
+import { Separator } from "@/components/ui/separator";
+import { Loader2 } from "lucide-react";
 
 const FormSchema = z.object({
   type: z.string(),
