@@ -54,8 +54,12 @@ export const columns: ColumnDef<InformationSource>[] = [
     ),
     meta: { title: "Tipo" },
     cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="font-bold text-center">{row.original.type}</span>
+      <div
+        className={`flex justify-center items-center rounded-full  h-10 text-center font-bold font-sans ${
+          row.original.type === "PROACTIVO" ? "bg-green-400" : "bg-red-400"
+        }`}
+      >
+        {row.original.type}
       </div>
     ),
   },
@@ -63,7 +67,11 @@ export const columns: ColumnDef<InformationSource>[] = [
     id: "actions",
     cell: ({ row }) => {
       const informationSource = row.original;
-      return <InformationSourceDropdownActions informationSource={informationSource} />;
+      return (
+        <InformationSourceDropdownActions
+          informationSource={informationSource}
+        />
+      );
     },
   },
 ];
