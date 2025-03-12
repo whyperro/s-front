@@ -14,8 +14,6 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Separator } from "../ui/separator"
-import { Textarea } from "../ui/textarea"
 
 const phoneRegex = new RegExp(
   /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
@@ -24,6 +22,8 @@ const phoneRegex = new RegExp(
 const formSchema = z.object({
   dni: z.string().min(7, {
     message: "El número de identificación debe tener el formato adecuado.",
+  }).max(9, {
+    message: "El número de identificación tiene un máximo 9 caracteres.",
   }),
   name: z.string().max(40).regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras").min(2, {
     message: "El nombre debe tener al menos 2 caracteres y maximo 40.",

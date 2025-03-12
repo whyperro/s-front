@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { CashMovement } from "@/types";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import CashMovementDropdownActions from "@/components/misc/CashMovementDropdownActions";
 
@@ -17,7 +17,7 @@ export const columns: ColumnDef<CashMovement>[] = [
     cell: ({ row }) => {
       return (
         <p>
-          {format(row.original.date, "PPP", {
+          {format(addDays(row.original.date, 1), "PPP", {
             locale: es,
           })}
         </p>

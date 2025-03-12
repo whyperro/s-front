@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { Flight } from "@/types";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import FlightDropdownActions from "@/components/misc/FlightDropdownActions";
 import Link from "next/link";
@@ -19,7 +19,7 @@ export const columns: ColumnDef<Flight>[] = [
     cell: ({ row }) => {
       return (
         <p>
-          {format(row.original.date, "PPP", {
+          {format(addDays(row.original.date, 1), "PPP", {
             locale: es,
           })}
         </p>

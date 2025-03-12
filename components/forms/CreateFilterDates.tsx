@@ -9,7 +9,7 @@ import {
   PopoverClose,
 } from "@/components/ui/popover";
 import { Button } from "../ui/button";
-import { format, parseISO, subDays } from "date-fns";
+import { format, parseISO, subDays, isValid } from "date-fns";
 import { formatDateRange } from "@/lib/utils";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
@@ -17,7 +17,6 @@ import { ChevronDown } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 
 const DateFilter = () => {
-
   const router = useRouter();
   const params = useSearchParams();
   const pathname = usePathname();
@@ -28,17 +27,18 @@ const DateFilter = () => {
   const defaultTo = new Date();
   const defaultFrom = subDays(defaultTo, 31);
 
+  // Validar y parsear las fechas
   const paramState = {
-    from: from ? parseISO(from) : defaultFrom,
-    to: to ? parseISO(to) : defaultTo,
+    from: from && isValid(parseISO(from)) ? parseISO(from) : defaultFrom,
+    to: to && isValid(parseISO(to)) ? parseISO(to) : defaultTo,
   };
 
   const [date, setDate] = useState<DateRange | undefined>(paramState);
 
   const pushToUrl = (dateRange: DateRange | undefined) => {
     const query = {
-      from: format(dateRange?.from || defaultFrom, "yyyy-MM-dd"),
-      to: format(dateRange?.to || defaultTo, "yyyy-MM-dd"),
+      from: dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : format(defaultFrom, "yyyy-MM-dd"),
+      to: dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : format(defaultTo, "yyyy-MM-dd"),
     };
 
     const url = qs.stringifyUrl(

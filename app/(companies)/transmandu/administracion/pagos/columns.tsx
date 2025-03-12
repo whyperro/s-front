@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { FlightPayment } from "@/types";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import Link from "next/link";
 import FlightPaymentsDropdownActions from "@/components/misc/FlightPaymentsDropdownActions";
@@ -18,7 +18,7 @@ export const columns: ColumnDef<FlightPayment>[] = [
     cell: ({ row }) => {
       return (
         <p>
-          {format(row.original.payment_date, "PPP", {
+          {format(addDays(row.original.payment_date, 1), "PPP", {
             locale: es,
           })}
         </p>
@@ -32,7 +32,9 @@ export const columns: ColumnDef<FlightPayment>[] = [
     ),
     meta: { title: "Nombre" },
     cell: ({ row }) => (
-      <div className="flex justify-center font-bold">{row.original.client.name}</div>
+      <div className="flex justify-center font-bold">
+        {row.original.client.name}
+      </div>
     ),
   },
   {

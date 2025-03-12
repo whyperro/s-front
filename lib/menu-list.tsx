@@ -170,35 +170,6 @@ export function getMenuList(
             ],
           },
           {
-            groupLabel: "Contabilidad",
-            menus: [
-              {
-                href: "/transmandu/contabilidad/cuentas",
-                label: "Cajas",
-                active: pathname.includes("/transmandu/contabilidad/cuentas"),
-                icon: Landmark,
-                roles: [
-                  "ANALISTA_PLANIFICACION",
-                  "JEFE_PLANIFICACION",
-                  "SUPERUSER",
-                ],
-                submenus: [],
-              },
-              {
-                href: "/transmandu/contabilidad/movimientos",
-                label: "Movimientos",
-                active: pathname.includes("/transmandu/contabilidad/movimientos"),
-                icon: Banknote,
-                roles: [
-                  "ANALISTA_PLANIFICACION",
-                  "JEFE_PLANIFICACION",
-                  "SUPERUSER",
-                ],
-                submenus: [],
-              },
-            ],
-          },
-          {
             groupLabel: "Sistema",
             menus: [
               {

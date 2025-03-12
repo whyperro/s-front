@@ -9,6 +9,8 @@ import { DataTable } from "./data-table";
 const CashMovement = () => {
   const { data, isLoading, isError } = useGetCashMovements();
 
+  console.log(data);
+
   if (isLoading) {
     return <LoadingPage />;
   }
