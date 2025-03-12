@@ -23,10 +23,10 @@ import { Printer } from "lucide-react";
 
 const ActivityReportsByIdPage = ({ params }: { params: { id: string } }) => {
   const { data: report, isLoading } = useGetUserActivity(params.id);
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const userRoles = user?.roles?.map((role) => role.name) || [];
 
-  if (isLoading) {
+  if (isLoading || loading) {
     return <LoadingPage />;
   }
 

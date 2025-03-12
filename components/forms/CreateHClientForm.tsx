@@ -1,5 +1,4 @@
 'use client';
-import { useCreateBank } from "@/actions/ajustes/banco_cuentas/bancos/actions";
 import {
   Form,
   FormControl,
@@ -10,19 +9,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { generateSlug } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
+import { useCreateClient } from "@/actions/ajustes/clientes/actions";
 
 
 const formSchema = z.object({
@@ -42,7 +34,7 @@ interface FormProps {
 }
 
 export default function CreateHClientForm({ onClose }: FormProps) {
-  const { createBank } = useCreateBank();
+  const { createClient } = useCreateClient();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -54,7 +46,7 @@ export default function CreateHClientForm({ onClose }: FormProps) {
   })
   const { control } = form;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-
+    await createClient.mutateAsync(values)
     onClose()
   }
   return (
@@ -95,7 +87,7 @@ export default function CreateHClientForm({ onClose }: FormProps) {
           name="phone_number"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Nro. de TLF</FormLabel>
               <Input placeholder="+58424XXXXXX" {...field} />
               <FormDescription>
                 Número de contacto.
@@ -118,8 +110,8 @@ export default function CreateHClientForm({ onClose }: FormProps) {
             </FormItem>
           )}
         />
-        <Button className="bg-primary mt-2 text-white hover:bg-blue-900 disabled:bg-primary/70" disabled={createBank?.isPending} type="submit">
-          {createBank?.isPending ? <Loader2 className="size-4 animate-spin" /> : <p>Crear</p>}
+        <Button className="bg-primary mt-2 text-white hover:bg-blue-900 disabled:bg-primary/70" disabled={createClient?.isPending} type="submit">
+          {createClient?.isPending ? <Loader2 className="size-4 animate-spin" /> : <p>Crear</p>}
         </Button>
       </form>
     </Form>

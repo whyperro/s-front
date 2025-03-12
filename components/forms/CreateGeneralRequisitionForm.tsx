@@ -207,16 +207,13 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
   };
 
   const onSubmit = async (data: FormSchemaType) => {
-    const formattedData = {
-      ...data,
-    }
     if (isEditing && id) {
-      await updateRequisition.mutateAsync({ data: formattedData, id: id })
-    } else {
-      await createRequisition.mutateAsync(formattedData)
+      await updateRequisition.mutateAsync({ data, id });
+    } else if (!isEditing) {
+      await createRequisition.mutateAsync(data);
     }
-    onClose()
-  }
+    onClose();
+  };
 
 
   return (

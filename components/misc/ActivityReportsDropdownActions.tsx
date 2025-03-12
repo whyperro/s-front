@@ -68,7 +68,8 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="center" className="flex gap-2 justify-center">
-          <DropdownMenuItem onClick={handleView} className="cursor-pointer">
+          <DropdownMenuItem onClick={() => router.push(`/transmandu/desarrollo/actividades_diarias/${id}/`)
+          } className="cursor-pointer">
             <Eye className="size-5" />
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -78,7 +79,7 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
             <MessageSquare className="size-5" />
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu >
     </>
   );
 };

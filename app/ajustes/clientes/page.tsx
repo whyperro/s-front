@@ -1,16 +1,13 @@
 'use client'
 
 import { ContentLayout } from '@/components/layout/ContentLayout';
-import { useGetConditions } from '@/hooks/administracion/useGetConditions';
+import { useGetMaintenanceClients } from '@/hooks/ajustes/clientes/useGetMaintenanceClients';
 import { Loader2 } from 'lucide-react';
 import { columns } from './columns';
 import { DataTable } from './data-table';
-import { useGetBanks } from '@/hooks/ajustes/globales/bancos/useGetBanks';
-import { useGetClients } from '@/hooks/ajustes/clientes/useGetClients';
 
 const BanksPage = () => {
-
-  const { data: clients, isLoading, error } = useGetClients();
+  const { data: clients, isLoading, error } = useGetMaintenanceClients();
   return (
     <ContentLayout title={'Almacenes'}>
       <h1 className='text-4xl font-bold text-center mb-2'>Control de Clientes</h1>

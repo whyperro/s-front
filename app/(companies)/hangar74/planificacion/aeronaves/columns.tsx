@@ -21,9 +21,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import Link from "next/link"
-import { Aircraft } from "@/types"
+import { MaintenanceAircraft } from "@/types"
 
-export const columns: ColumnDef<Aircraft>[] = [
+export const columns: ColumnDef<MaintenanceAircraft>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -49,7 +49,7 @@ export const columns: ColumnDef<Aircraft>[] = [
   {
     accessorKey: "serial",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="SERIAL" />
+      <DataTableColumnHeader filter column={column} title="Serial" />
     ),
     cell: ({ row }) => {
       return (
@@ -60,7 +60,7 @@ export const columns: ColumnDef<Aircraft>[] = [
   {
     accessorKey: "brand",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="FABRICANTE" />
+      <DataTableColumnHeader filter column={column} title="Fabricante" />
     ),
     cell: ({ row }) => (
       <p className="flex justify-center font-medium">{row.original.brand}</p>
@@ -69,28 +69,37 @@ export const columns: ColumnDef<Aircraft>[] = [
   {
     accessorKey: "acronym",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="ACRONYM" />
+      <DataTableColumnHeader filter column={column} title="Acronimo" />
     ),
     cell: ({ row }) => (
       <p className="flex justify-center text-muted-foreground italic">{row.original.acronym}</p>
     )
   },
   {
-    accessorKey: "aircraft_operator",
+    accessorKey: "client",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="OPERADOR" />
+      <DataTableColumnHeader filter column={column} title="Cliente" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center font-bold">{row.original.aircraft_operator}</p>
+      <p className="flex justify-center text-muted-foreground italic">{row.original.client.name}</p>
     )
   },
   {
-    accessorKey: "owner",
+    accessorKey: "flight_hours",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="DUEÑO" />
+      <DataTableColumnHeader filter column={column} title="Horas de Vuelo" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center font-bold">{row.original.owner}</p>
+      <p className="flex justify-center text-muted-foreground italic">{row.original.flight_hours}</p>
+    )
+  },
+  {
+    accessorKey: "flight_cycles",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Ciclos de Vuelo" />
+    ),
+    cell: ({ row }) => (
+      <p className="flex justify-center text-muted-foreground italic">{row.original.flight_cycles}</p>
     )
   },
   {

@@ -11,11 +11,8 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table"
-
-import { CreateBatchDialog } from "@/components/dialogs/CreateBatchDialog"
 import { DataTablePagination } from "@/components/tables/DataTablePagination"
 import { DataTableViewOptions } from "@/components/tables/DataTableViewOptions"
-import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -26,7 +23,7 @@ import {
 } from "@/components/ui/table"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { CreateAircraftDialog } from "@/components/dialogs/CreateAircraftDialog"
+import { CreateMaintenanceAircraftDialog } from "@/components/dialogs/CreateMaintenanceAircraftDialog"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -65,7 +62,7 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <CreateAircraftDialog />
+        <CreateMaintenanceAircraftDialog />
         <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-md border mb-4">

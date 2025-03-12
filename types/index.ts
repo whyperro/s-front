@@ -171,7 +171,7 @@ export type Department = {
   email: string,
 }
 
-export type Client = {
+export type MaintenanceClient = {
   id: number
   name: string,
   email: string,
@@ -186,21 +186,25 @@ export type JobTitle = {
   department: Department,
 }
 
-export type Aircraft = {
+export type MaintenanceAircraft = {
   id: number,
-  client: Client,
-  fabricant: string,
+  client: MaintenanceClient,
+  manufacturer: Manufacturer,
   brand: string,
   serial: string,
   acronym: string,
   flight_hours: number,
-  cycles: number,
+  flight_cycles: number,
   fabricant_date: string,
-  owner: string,
-  aircraft_operator: string,
-  type_engine: string,
-  number_engine: string,
   comments: string,
+}
+
+export type MaintenanceAircraftPart = {
+  part_number: string,
+  part_name: string,
+  part_hours: number,
+  part_cycles: number,
+  aircraft: MaintenanceAircraft,
 }
 
 export type Employee = {
@@ -217,7 +221,7 @@ export type Employee = {
 export interface WorkOrder extends Request {
   order_number: string
   service: string,
-  aircraft: Aircraft,
+  aircraft: MaintenanceAircraft,
   status: boolean,
   description: string,
   employee: Employee,
@@ -304,7 +308,7 @@ export type Requisition = {
   arrival_date: Date,
   submission_date: Date,
   work_order: WorkOrder,
-  aircraft: Aircraft,
+  aircraft: MaintenanceAircraft,
 }
 
 export type Vendor = {
