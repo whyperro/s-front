@@ -27,8 +27,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   logo: {
-    width: 35,
-    height: 35,
+    paddingTop: 2,
+    width: 165,
+    height: 30,
     position: "absolute",
     left: 0,
   },
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: 10,
-    fontSize: 10,
+    fontSize: 9,
   },
   inputLine: {
     borderBottomWidth: 1,
@@ -94,6 +95,16 @@ const styles = StyleSheet.create({
     marginLeft: 40,
     marginTop: 1,
   },
+  observationContainer: {
+    borderWidth: 1,
+    padding: 5,
+    marginTop: 10,
+    minHeight: 50,
+  },
+  observationText: {
+    fontSize: 10,
+    margin: 5,
+  },
 });
 
 const ActivitiesReportPdf = ({
@@ -105,7 +116,7 @@ const ActivitiesReportPdf = ({
     <Page size="LETTER" orientation="landscape" style={styles.page}>
       {/* HEADER CON LOGO Y TÍTULO */}
       <View style={styles.headerContainer}>
-        <Image src="/LOGO_TRD.png" style={styles.logo} />
+        <Image src="/tmd_nombre.png" style={styles.logo} />
         <View style={styles.titleContainer}>
           <Text style={styles.titleText}>REGISTRO DE</Text>
           <Text style={styles.titleText}>ACTIVIDADES DIARIAS</Text>
@@ -168,9 +179,10 @@ const ActivitiesReportPdf = ({
 
 
       {/* SECCIÓN DE OBSERVACIONES */}
-      <Text style={[styles.footer, { marginTop: 20 }]}>OBSERVACIONES:</Text>
-      <Text style={styles.dateText}>{report.observation}</Text>
-      <View style={{ borderWidth: 1, height: 50 }}></View>
+      <Text style={[styles.footer, { marginBottom: 5 }]}>OBSERVACIONES:</Text>
+      <View style={styles.observationContainer}>
+        <Text style={styles.observationText}>{report.observation}</Text>
+      </View>
     </Page>
   </Document>
 );
