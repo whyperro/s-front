@@ -1,6 +1,7 @@
 import axiosInstance from "@/lib/axios";
 import { Aircraft } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Update } from "next/dist/build/swc";
 import { toast } from "sonner";
 
 interface ObligatoryReportData {
@@ -21,7 +22,28 @@ interface ObligatoryReportData {
   other_incidents?: string;
 }
 
+interface UpdateObligatoryReportData {
+  id: number | string;
+  report_code: string;
+  report_date: Date;
+  incident_date: Date;
+  incident_time: string;
+  flight_time: string;
+  pilot_id: string;
+  copilot_id: string;
+  aircraft_acronym: string;
+  aircraft_model: string;
+  flight_number: string;
+  flight_origin: string;
+  flight_destiny: string;
+  flight_alt_destiny: string;
+  incidents?: string[];
+  other_incidents?: string;
+}
+
+
 export const useCreateObligatoryReport = () => {
+  
   const queryClient = useQueryClient();
   const createMutation = useMutation({
     mutationKey: ["obligatory-reports"],
@@ -31,6 +53,7 @@ export const useCreateObligatoryReport = () => {
           "Content-Type": "multipart/form-data",
         },
       });
+      console.log("THIS IS THE DATA RSO",data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["obligatory-reports"] });
@@ -74,5 +97,34 @@ export const useDeleteObligatoryReport = () => {
 
   return {
     deleteObligatoryReport: deleteMutation,
+  };
+};
+
+export const useUpdateObligatoryReport = () => {
+  const queryClient = useQueryClient();
+
+  const updateObligatoryReportMutation = useMutation({
+    mutationKey: ["obligatory-reports"],
+    mutationFn: async (data: UpdateObligatoryReportData) => {
+      await axiosInstance.patch(
+        `/transmandu/sms/obligatory-reports/${data.id}`,
+        data
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["obligatory-reports"] });
+      toast.success("¡Actualizado!", {
+        description: `El reporte voluntario ha sido actualizado correctamente.`,
+      });
+    },
+    onError: (error) => {
+      toast.error("Oops!", {
+        description: "No se pudo actualizar el reporte voluntario...",
+      });
+      console.log(error);
+    },
+  });
+  return {
+    updateObligatoryReport: updateObligatoryReportMutation,
   };
 };
