@@ -4,7 +4,6 @@ import { useGetVoluntaryReportById } from "@/hooks/sms/useGetVoluntaryReportById
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Loader2 } from "lucide-react";
-import { Content } from "next/font/google";
 import { useParams } from "next/navigation";
 import React from "react";
 
@@ -121,29 +120,3 @@ const ShowVoluntaryReport = () => {
 };
 
 export default ShowVoluntaryReport;
-
-/*
-<div className="flex flex-col juistify-center items-center border border-muted-foreground p-4 gap-y-2">
-      <h1 className="flex justify-center font-black text-2xl">Reporte voluntario</h1>
-      {isLoading && (
-        <div className="flex w-full h-full justify-center items-center">
-          <Loader2 className="size-24 animate-spin mt-48" />
-        </div>
-      )}
-      {voluntaryReport && (
-        <div className="flex flex-col justify-center items-center gap-y-2">
-          <h1>Numero del Reporte: {voluntaryReport.report_number}</h1>
-          <p>Descripcion del Reporte: {voluntaryReport.description}</p>
-          <p>Localizacion del Peligro: {voluntaryReport.danger_location}</p>
-          <p>Area de Peligro: {voluntaryReport.danger_area}</p>
-          <p>Posibles Consecuencias: {voluntaryReport.possible_consequences}</p>
-
-        </div>
-      )}
-      {isError && (
-        <p className="text-sm text-muted-foreground">
-          Ha ocurrido un error al cargar el reporte voluntario...
-        </p>
-      )}
-    </div>
-*/
