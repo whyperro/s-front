@@ -51,7 +51,7 @@ const VoluntaryReportDropdownActions = ({
 
   const handleDelete = async (id: number | string) => {
     await deleteVoluntaryReport.mutateAsync(id);
-    setOpen(false);
+    setOpenDelete(false);
   };
   return (
     <>
