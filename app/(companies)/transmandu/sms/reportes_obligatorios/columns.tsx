@@ -9,6 +9,7 @@ import { ObligatoryReport } from "@/types";
 import { format, parse } from "date-fns";
 import { es } from "date-fns/locale";
 import Link from "next/link";
+import ObligatoryReportDropdownActions from "@/components/misc/ObligatoryReportDropdownActions";
 
 export const columns: ColumnDef<ObligatoryReport>[] = [
   {
@@ -88,54 +89,9 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
     },
   },
   {
-    accessorKey: "pilot",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Datos del piloto" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <p className="font-medium text-center">
-          {row.original.pilot.first_name}
-          {row.original.pilot.last_name}
-        </p>
-      );
-    },
-  },
-  {
-    accessorKey: "copilot",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Datos del copiloto" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <p className="font-medium text-center">
-          {row.original.copilot.first_name}
-          {row.original.copilot.last_name}
-        </p>
-      );
-    },
-  },
-
-  {
-    accessorKey: "aircraft_acronym",
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title="Matricula de la aereonave"
-      />
-    ),
-    cell: ({ row }) => {
-      return (
-        <p className="font-medium text-center">
-          {row.original.aircraft_acronym}
-        </p>
-      );
-    },
-  },
-  {
     accessorKey: "flight_time",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Hora del suceso" />
+      <DataTableColumnHeader column={column} title="Hora del Vuelo" />
     ),
     cell: ({ row }) => {
       const timeString = row.original.flight_time.toString();
@@ -155,50 +111,11 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
       </p>
     ),
   },
-
   {
-    accessorKey: "aircaft_model",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Modelo de aereonave" />
-    ),
+    id: "actions",
     cell: ({ row }) => {
-      return (
-        <p className="flex justify-center text-muted-foreground italic">
-          {row.original.aircraft_model}
-        </p>
-      );
+      const obligatoryReport = row.original;
+      return <ObligatoryReportDropdownActions obligatoryReport={obligatoryReport}></ObligatoryReportDropdownActions>;
     },
-  },
-  {
-    accessorKey: "flight_origin",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Origen del vuelo" />
-    ),
-    cell: ({ row }) => (
-      <div className="flex justify-center">{row.original.flight_origin}</div>
-    ),
-  },
-  {
-    accessorKey: "flight_destination",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Destino del vuelo" />
-    ),
-    cell: ({ row }) => (
-      <div className="flex justify-center">{row.original.flight_destiny}</div>
-    ),
-  },
-  {
-    accessorKey: "alternate_destination",
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title="Destino alterno del vuelo"
-      />
-    ),
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        {row.original.flight_alt_destiny}
-      </div>
-    ),
   },
 ];
