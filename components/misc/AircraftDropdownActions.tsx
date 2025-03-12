@@ -4,7 +4,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
+import {
+  EyeIcon,
+  Loader2,
+  MoreHorizontal,
+  Trash2,
+  TrendingUp,
+} from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
@@ -18,17 +24,27 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
-const AircraftDropdownActions = ({ id }: { id: string }) => {
+interface AircraftDropdownActionsProps {
+  id: string;
+  aircraftDetails: any;
+  handleDelete: () => void;
+}
+
+export const AircraftDropdownActions = ({ id }: { id: string }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [openAircraft, setOpenAircraft] = useState<boolean>(false);
+  const [openStats, setOpenStats] = useState(false);
   const router = useRouter();
   const { deleteAircraft } = useDeleteAircraft();
   const { data: aircraftDetails, isLoading } = useGetAircraftById(id);
+
+  const handleViewStats = () => {
+    router.push(`/transmandu/administracion/gestion_vuelos/aviones/${id}`);
+  };
 
   const handleDelete = async (id: number | string) => {
     await deleteAircraft.mutateAsync(id);
@@ -57,6 +73,9 @@ const AircraftDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleViewDetails}>
             <EyeIcon className="size-5" />
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleViewStats}>
+            <TrendingUp className="size-5 text-green-500" />
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
@@ -140,14 +159,14 @@ const AircraftDropdownActions = ({ id }: { id: string }) => {
               </div>
 
               <div className="space-y-2">
-               <h3 className="text-sm font-medium text-muted-foreground">
-                 Ubicación
-               </h3>
-               <p className="text-lg font-semibold">
-                 {aircraftDetails.location.address}
-               </p>
-               <Separator />
-             </div>
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Ubicación
+                </h3>
+                <p className="text-lg font-semibold">
+                  {aircraftDetails.location.address}
+                </p>
+                <Separator />
+              </div>
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
@@ -161,9 +180,7 @@ const AircraftDropdownActions = ({ id }: { id: string }) => {
                 <h3 className="text-sm font-medium text-muted-foreground">
                   Marca
                 </h3>
-                <p className="text-lg font-semibold">
-                  {aircraftDetails.brand}
-                </p>
+                <p className="text-lg font-semibold">{aircraftDetails.brand}</p>
                 <Separator />
               </div>
 
@@ -215,6 +232,26 @@ const AircraftDropdownActions = ({ id }: { id: string }) => {
               Ver detalles completos
             </Button>
             <Button onClick={() => setOpenAircraft(false)}>Cerrar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Acciones</DialogTitle>
+            <DialogDescription>
+              Selecciona una acción para{" "}
+              {aircraftDetails?.acronym || "este avión"}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-center">
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={handleViewStats}>Ver Estadísticas</Button>
+            <Button variant="destructive" onClick={() => handleDelete(id)}>
+              Eliminar
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

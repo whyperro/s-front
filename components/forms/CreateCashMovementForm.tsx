@@ -38,6 +38,7 @@ import { z } from "zod";
 import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 import { Loader2 } from "lucide-react";
 import { Company } from "@/types";
+import { useGetVendors } from "@/hooks/ajustes/globales/proveedores/useGetVendors";
 
 const formSchema = z.object({
   responsible_id: z.string({
@@ -49,37 +50,56 @@ const formSchema = z.object({
   company_id: z.string({
     message: "Debe elegir una compañía.",
   }),
+  vendor_id: z.string({
+    message: "Debe elegir un beneficiario.",
+  }),
   date: z.date({
     required_error: "La fecha es requerida",
   }),
   income_or_output: z.enum(["INCOME", "OUTPUT"]),
-  account: z.string().min(2, {
-    message: "La cuenta debe tener al menos 2 caracteres.",
-  }).max(100, {
-    message: "La cuenta tiene un máximo 100 caracteres.",
-  }),
-  category: z.string().min(2, {
-    message: "La categoría debe tener al menos 2 caracteres.",
-  }).max(100, {
-    message: "La categoría tiene un máximo 100 caracteres.",
-  }),
-  sub_category: z.string().min(2, {
-    message: "La sub categoría debe tener al menos 2 caracteres.",
-  }).max(100, {
-    message: "La sub categoría tiene un máximo 100 caracteres.",
-  }),
-  sub_category_details: z.string().min(2, {
-    message: "El detalle de la sub categoría debe tener al menos 2 caracteres.",
-  }).max(100, {
-    message: "El detalle de la sub categoría tiene un máximo 100 caracteres.",
-  }),
-  amount: z.string().refine((val) => {
-    // Convertir el valor a número y verificar que sea positivo
-    const number = parseFloat(val);
-    return !isNaN(number) && number > 0;
-  }, {
-    message: "El monto debe ser mayor a cero.",
-  }),
+  account: z
+    .string()
+    .min(2, {
+      message: "La cuenta debe tener al menos 2 caracteres.",
+    })
+    .max(100, {
+      message: "La cuenta tiene un máximo 100 caracteres.",
+    }),
+  category: z
+    .string()
+    .min(2, {
+      message: "La categoría debe tener al menos 2 caracteres.",
+    })
+    .max(100, {
+      message: "La categoría tiene un máximo 100 caracteres.",
+    }),
+  sub_category: z
+    .string()
+    .min(2, {
+      message: "La sub categoría debe tener al menos 2 caracteres.",
+    })
+    .max(100, {
+      message: "La sub categoría tiene un máximo 100 caracteres.",
+    }),
+  sub_category_details: z
+    .string()
+    .min(2, {
+      message:
+        "El detalle de la sub categoría debe tener al menos 2 caracteres.",
+    })
+    .max(100, {
+      message: "El detalle de la sub categoría tiene un máximo 100 caracteres.",
+    }),
+  amount: z.string().refine(
+    (val) => {
+      // Convertir el valor a número y verificar que sea positivo
+      const number = parseFloat(val);
+      return !isNaN(number) && number > 0;
+    },
+    {
+      message: "El monto debe ser mayor a cero.",
+    }
+  ),
   bank_account_id: z.string({
     message: "Debe elegir una cuenta de banco.",
   }),
@@ -99,6 +119,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
   const { data: companies, isLoading: isCompaniesLoading } = useGetCompanies();
   const { data: cashes, isLoading: isCashesLoading } = useGetCash();
   const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts();
+  const { data: vendors, isLoading: isVendorLoading } = useGetVendors();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -313,8 +334,72 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             )}
           />
         </div>
-        <div className="flex gap-2 items-center justify-center">
+        <div className="flex gap-2 items-center justify-center">         
+            <FormField
+              control={form.control}
+              name="responsible_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Responsable</FormLabel>
+                  <Select
+                    disabled={isEmployeesPending}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccione" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {emp &&
+                        emp.map((e) => (
+                          <SelectItem key={e.id} value={e.id.toString()}>
+                            {e.first_name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          {form.watch("income_or_output") === "OUTPUT" && (
           <FormField
+            control={form.control}
+            name="vendor_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Beneficiario</FormLabel>
+                <Select
+                  disabled={isVendorLoading}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {vendors &&
+                      vendors.map((vendor) => (
+                        <SelectItem
+                          key={vendor.id}
+                          value={vendor.id.toString()}
+                        >
+                          {vendor.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+        </div>
+        <FormField
             control={form.control}
             name="amount"
             render={({ field }) => (
@@ -327,36 +412,6 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="responsible_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Responsable</FormLabel>
-                <Select
-                  disabled={isEmployeesPending || !form.watch("company_id")}
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {emp &&
-                      emp.map((e) => (
-                        <SelectItem key={e.id} value={e.id.toString()}>
-                          {e.first_name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
         <FormField
           control={form.control}
           name="bank_account_id"

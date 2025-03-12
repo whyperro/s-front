@@ -156,6 +156,20 @@ export const columns: ColumnDef<CashMovement>[] = [
     ),
   },
   {
+    accessorKey: "vendor",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Beneficiario" />
+    ),
+    meta: { title: "Beneficiario" },
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <span className="text-muted-foreground italic">
+          {row.original.vendor.name ? row.original.vendor.name : "N/A"}
+        </span>
+      </div>
+    ),
+  },
+  {
     accessorKey: "bank_account",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Cuenta de Banco" />

@@ -35,10 +35,13 @@ import { AmountInput } from "../misc/AmountInput";
 import { useGetRoute } from "@/hooks/administracion/useGetRoutes";
 import { useGetClients } from "@/hooks/administracion/useGetClients";
 import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
+import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 import { Label } from "../ui/label";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const formSchema = z.object({
+const formSchema = z
+  .object({
     client_id: z.string({
       message: "Debe elegir un cliente.",
     }),
@@ -51,22 +54,35 @@ const formSchema = z.object({
     date: z.date({
       required_error: "La fecha de vuelo es requerida",
     }),
-    details: z.string().min(3, {
-      message: "Los detalles deben tener al menos 3 caracteres.",
-    }).max(100, {
-      message: "Los detalles tiene un máximo 100 caracteres.",
-    }),
-    fee: z.string().min(1, "La tasa es requerida").refine((val) => {
-      const number = parseFloat(val);
-      return !isNaN(number) && number > 0;
-    }, {
-      message: "La tasa debe ser mayor a cero.",
-    }),
+    details: z
+      .string()
+      .min(3, {
+        message: "Los detalles deben tener al menos 3 caracteres.",
+      })
+      .max(100, {
+        message: "Los detalles tiene un máximo 100 caracteres.",
+      }),
+    fee: z
+      .string()
+      .min(1, "La tasa es requerida")
+      .refine(
+        (val) => {
+          const number = parseFloat(val);
+          return !isNaN(number) && number > 0;
+        },
+        {
+          message: "La tasa debe ser mayor a cero.",
+        }
+      ),
     type: z.enum(["CARGA", "PAX", "CHART"], {
       message: "Debe elegir un tipo de vuelo.",
     }),
+    bank_account_id: z.string().optional(),
     debt_status: z.enum(["PENDIENTE", "PAGADO"], {
       message: "Debe elegir un estado de vuelo.",
+    }),
+    pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"], {
+      message: "Debe elegir un método de pago.",
     }),
     total_amount: z
       .string()
@@ -100,6 +116,7 @@ interface FormProps {
 export function FlightForm({ onClose }: FormProps) {
   const { createFlight } = useCreateFlight();
   const { data: routes, isLoading: isRouteLoading, isError } = useGetRoute();
+  const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts();
   const [kg, setKg] = useState("0");
   const {
     data: clients,
@@ -418,6 +435,70 @@ export function FlightForm({ onClose }: FormProps) {
                       }}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+        </div>
+        <div className="flex gap-2 items-center justify-center">
+          <FormField
+            control={form.control}
+            name="pay_method"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Método de Pago</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione el tipo de vuelo" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="EFECTIVO">Efectivo</SelectItem>
+                    <SelectItem value="TRANSFERENCIA">Transferencia</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+          {form.watch("pay_method") !== "EFECTIVO" && (
+            <FormField
+              control={form.control}
+              name="bank_account_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cuenta de Banco</FormLabel>
+                  <Select
+                    disabled={isAccLoading}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={
+                            isAccLoading ? (
+                              <Loader2 className="animate-spin" />
+                            ) : (
+                              "Seleccione el tipo..."
+                            )
+                          }
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {accounts &&
+                        accounts.map((acc) => (
+                          <SelectItem value={acc.id.toString()} key={acc.id}>
+                            {acc.name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

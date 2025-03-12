@@ -442,6 +442,7 @@ export type Flight = {
   type: "CARGA" | "PAX" | "CHART",
   payed_amount: number,
   debt_status: "PENDIENTE" | "PAGADO",
+  bank_account: BankAccount,
 }
 
 export type Route = {
@@ -482,6 +483,6 @@ export type CashMovement = {
   sub_category_details: string,
   amount: number,
   bank_account: BankAccount, 
+  vendor: Vendor,
 }
-
 
