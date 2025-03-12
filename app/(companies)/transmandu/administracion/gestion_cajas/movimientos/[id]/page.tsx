@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetCashMovementById } from "@/hooks/contabilidad/useGetMovementById";
+import { useGetCashMovementById } from "@/hooks/administracion/useGetMovementById";
 import LoadingPage from "@/components/misc/LoadingPage";
 import { Button } from "@/components/ui/button";
 import { CashMovementDialog } from "@/components/dialogs/CreateCashMovementDialog";
