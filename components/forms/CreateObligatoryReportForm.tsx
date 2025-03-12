@@ -44,7 +44,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useGetPilots } from "@/hooks/ajustes/globales/piloto/useGetPilots";
+import { useGetPilots } from "@/hooks/sms/useGetPilots";
 import { useCreateObligatoryReport } from "@/actions/sms/reporte_obligatorio/actions";
 
 //Falta añadir validaciones
@@ -106,7 +106,7 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
     "Incursion en pista o calle de rodaje ( RUNAWAY INCURSION-RI)",
     "Aproximacion no estabilizada por debajo de los 500 pies VRF o 1000 PIES IRF",
     "Desprezurizacion",
-    "Salida de pista () RUNAWAY INCURSION-RE",
+    "Salida de pista - RUNAWAY INCURSION",
     "Derrame de combustible",
     "Error  de navegacion con desviacion significativa de la ruta",
     "Casi colision (RESOLUCION ACVSORY-RA)",

@@ -4,7 +4,7 @@ import { ContentLayout } from "@/components/layout/ContentLayout";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import LoadingPage from "@/components/misc/LoadingPage";
-import { useGetPilots } from "@/hooks/ajustes/globales/piloto/useGetPilots";
+import { useGetPilots } from "@/hooks/sms/useGetPilots";
 
 const PilotsPage = () => {
   const { data, isLoading, isError } = useGetPilots();
