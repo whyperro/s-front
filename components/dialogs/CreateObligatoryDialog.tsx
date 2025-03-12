@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ObligatoryReportForm } from "../forms/CreateObligatoryReportForm";
+import { CreateObligatoryReportForm } from "../forms/CreateObligatoryReportForm";
 import { useState } from "react";
 
 export function CreateObligatoryDialog() {
@@ -34,7 +34,7 @@ export function CreateObligatoryDialog() {
               <DialogTitle></DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
-            <ObligatoryReportForm onClose={() => setOpen(false)} />
+            <CreateObligatoryReportForm onClose={() => setOpen(false)} />
           </DialogContent>
         </Dialog>
       </Card>

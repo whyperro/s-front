@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -45,9 +45,17 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useGetPilots } from "@/hooks/sms/useGetPilots";
-import { useCreateObligatoryReport } from "@/actions/sms/reporte_obligatorio/actions";
+import { useCreateObligatoryReport, useUpdateObligatoryReport } from "@/actions/sms/reporte_obligatorio/actions";
+import { ObligatoryReport } from "@/types";
+import { dataTagSymbol } from "@tanstack/react-query";
 
 //Falta añadir validaciones
+
+function timeFormat(date: Date) {
+  const timeString = date.toString();
+  const parsedTime = parse(timeString, "HH:mm:ss", new Date());
+  return parsedTime;
+}
 
 const FormSchema = z
   .object({
@@ -78,25 +86,51 @@ const FormSchema = z
   .refine(
     (data) => {
       const hasIncidents = data.incidents && data.incidents.length > 0;
-      const hasOtherIncidents = !!data.other_incidents;
+      const hasOtherIncidents =
+        data.other_incidents && data.other_incidents.trim() !== "";
+
+      // Return true if either field is valid or both are valid
       return hasIncidents || hasOtherIncidents;
     },
     {
-      message: "Al menos una de las dos variables debe tener información",
+      message:
+        "At least one of 'incidents' or 'other_incidents' must be provided.",
+      path: ["incidents", "other_incidents"], // Optional, to highlight both fields in error
     }
   );
-
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
+  isEditing?: boolean;
+  initialData?: ObligatoryReport;
   onClose: () => void;
 }
 
-export function ObligatoryReportForm({ onClose }: FormProps) {
+export function CreateObligatoryReportForm({
+  onClose,
+  isEditing,
+  initialData,
+}: FormProps) {
   const { createObligatoryReport } = useCreateObligatoryReport();
-  const [showOtherInput, setShowOtherInput] = useState(false);
+  const { updateObligatoryReport } = useUpdateObligatoryReport();
+
+  const [showOtherInput, setShowOtherInput] = useState(
+    initialData?.other_incidents ? true : false
+  );
+
   const [open, setOpen] = useState(false);
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+
+  const [selectedValues, setSelectedValues] = useState<string[]>(() => {
+    if (initialData?.incidents) {
+      try {
+        return JSON.parse(initialData.incidents);
+      } catch (error) {
+        console.error("Error al parsear initialData.incidents:", error);
+        return []; // Devuelve un array vacío en caso de error de parseo
+      }
+    }
+    return []; // Devuelve un array vacío si initialData?.incidents es null o undefined
+  });
 
   // No estoy seguro si esto va aca lol
   const { data: pilots, isLoading } = useGetPilots();
@@ -125,33 +159,73 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      report_date: new Date(),
-      flight_time: new Date(),
-      incident_time: new Date(),
-      incident_date: new Date(),
-      incidents: [],
+      aircraft_acronym: initialData?.aircraft_acronym,
+      aircraft_model: initialData?.aircraft_model,
+      pilot_id: initialData?.pilot_id.toString(),
+      copilot_id: initialData?.copilot_id.toString(),
+      flight_alt_destiny: initialData?.flight_alt_destiny,
+      flight_destiny: initialData?.flight_destiny,
+      flight_number: initialData?.flight_number,
+      flight_origin: initialData?.flight_origin,
+      other_incidents: initialData?.other_incidents,
+      report_code: initialData?.report_code,
+      report_date: initialData?.report_date
+        ? new Date(initialData?.report_date)
+        : new Date(),
+      incident_date: initialData?.incident_date
+        ? new Date(initialData?.incident_date)
+        : new Date(),
+
+      flight_time: initialData?.flight_time
+        ? timeFormat(initialData?.flight_time)
+        : new Date(),
+      incident_time: initialData?.incident_time
+        ? timeFormat(initialData?.incident_time)
+        : new Date(),
     },
   });
 
   const onSubmit = async (data: FormSchemaType) => {
-    const value = {
-      report_code: data.report_code,
-      incident_date: data.incident_date,
-      report_date: data.report_date,
-      incident_time: format(data.incident_time, "HH:mm:ss"),
-      flight_time: format(data.flight_time, "HH:mm:ss"),
-      pilot_id: data.pilot_id,
-      copilot_id: data.pilot_id,
-      aircraft_acronym: data.aircraft_acronym,
-      aircraft_model: data.aircraft_model,
-      flight_number: data.flight_number,
-      flight_origin: data.flight_origin,
-      flight_destiny: data.flight_destiny,
-      flight_alt_destiny: data.flight_alt_destiny,
-      incidents: data.incidents,
-      other_incidents: data.other_incidents,
-    };
-    await createObligatoryReport.mutateAsync(value);
+    if (isEditing && initialData){
+        const value = {
+          id: initialData.id,
+          report_code: data.report_code,
+          incident_date: data.incident_date,
+          report_date: data.report_date,
+          incident_time: format(data.incident_time, "HH:mm:ss"),
+          flight_time: format(data.flight_time, "HH:mm:ss"),
+          pilot_id: data.pilot_id,
+          copilot_id: data.pilot_id,
+          aircraft_acronym: data.aircraft_acronym,
+          aircraft_model: data.aircraft_model,
+          flight_number: data.flight_number,
+          flight_origin: data.flight_origin,
+          flight_destiny: data.flight_destiny,
+          flight_alt_destiny: data.flight_alt_destiny,
+          incidents: data.incidents,
+          other_incidents: data.other_incidents,
+        }
+        await updateObligatoryReport.mutateAsync(value);
+    } else {
+      const value = {
+        report_code: data.report_code,
+        incident_date: data.incident_date,
+        report_date: data.report_date,
+        incident_time: format(data.incident_time, "HH:mm:ss"),
+        flight_time: format(data.flight_time, "HH:mm:ss"),
+        pilot_id: data.pilot_id,
+        copilot_id: data.pilot_id,
+        aircraft_acronym: data.aircraft_acronym,
+        aircraft_model: data.aircraft_model,
+        flight_number: data.flight_number,
+        flight_origin: data.flight_origin,
+        flight_destiny: data.flight_destiny,
+        flight_alt_destiny: data.flight_alt_destiny,
+        incidents: data.incidents,
+        other_incidents: data.other_incidents,
+      };
+      await createObligatoryReport.mutateAsync(value);
+    }
     onClose();
   };
 
@@ -346,7 +420,7 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
         <div className="flex gap-2 justify-center items-center">
           <FormField
             control={form.control}
-            name="flight_time"
+            name="incident_time"
             render={({ field }) => {
               const handleChange = (event: { target: { value: any } }) => {
                 const timeString = event.target.value;
@@ -358,7 +432,7 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
 
               return (
                 <FormItem className="w-full">
-                  <FormLabel>Indicar hora de vuelo</FormLabel>
+                  <FormLabel>Indicar hora del incidente</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -392,10 +466,9 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
               );
             }}
           />
-
           <FormField
             control={form.control}
-            name="incident_time"
+            name="flight_time"
             render={({ field }) => {
               const handleChange = (event: { target: { value: any } }) => {
                 const timeString = event.target.value;
@@ -407,7 +480,7 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
 
               return (
                 <FormItem className="w-full">
-                  <FormLabel>Indicar hora del incidente</FormLabel>
+                  <FormLabel>Indicar hora de vuelo</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -533,7 +606,7 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
           name="incidents"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Destino alterno del vuelo</FormLabel>
+              <FormLabel>Incidentes:</FormLabel>
               <FormControl>
                 <Popover open={open} onOpenChange={setOpen}>
                   <PopoverTrigger asChild>
@@ -541,9 +614,9 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
                       variant="outline"
                       role="combobox"
                       aria-expanded={open}
-                      className="w-[300px] justify-between" // Aumentada la anchura para opciones más largas
+                      className="w-[300px] justify-between"
                     >
-                      {selectedValues.length > 0 ? (
+                      {selectedValues && selectedValues.length > 0 ? (
                         <p>({selectedValues.length}) seleccionados</p>
                       ) : (
                         "Seleccionar opciones..."
@@ -552,8 +625,6 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-[300px] p-0">
-                    {" "}
-                    {/* Aumentada la anchura para opciones más largas */}
                     <Command>
                       <CommandInput placeholder="Buscar opciones..." />
                       <CommandList>
@@ -573,18 +644,22 @@ export function ObligatoryReportForm({ onClose }: FormProps) {
                                   : [...selectedValues, currentValue];
 
                                 setSelectedValues(newValues);
-                                field.onChange(newValues); // Actualizar el valor del campo de formulario
+                                field.onChange(
+                                  newValues.length > 0 ? newValues : []
+                                ); // Actualizar el valor del campo de formulario
                               }}
                             >
                               {option}
-                              <Check
-                                className={cn(
-                                  "ml-auto",
-                                  selectedValues.includes(option)
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
+                              {selectedValues && (
+                                <Check
+                                  className={cn(
+                                    "ml-auto",
+                                    selectedValues.includes(option)
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                              )}
                             </CommandItem>
                           ))}
                         </CommandGroup>

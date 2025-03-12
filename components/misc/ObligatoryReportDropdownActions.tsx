@@ -26,6 +26,7 @@ import {
 } from "../ui/dialog";
 import { useDeleteObligatoryReport } from "@/actions/sms/reporte_obligatorio/actions";
 import { useRouter } from "next/navigation";
+import { CreateObligatoryReportForm } from "../forms/CreateObligatoryReportForm";
 
 const ObligatoryReportDropdownActions = ({
   obligatoryReport,
@@ -127,6 +128,11 @@ const ObligatoryReportDropdownActions = ({
           <DialogContent className="flex flex-col max-w-2xl m-2">
             <DialogHeader>
               <DialogTitle className="text-center"></DialogTitle>
+              <CreateObligatoryReportForm
+                initialData={obligatoryReport}
+                isEditing={true}
+                onClose={() => setOpenEdit(false)}
+              />
             </DialogHeader>
           </DialogContent>
         </Dialog>
