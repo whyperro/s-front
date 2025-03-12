@@ -1,19 +1,20 @@
-import { useDeletePilot } from "@/actions/ajustes/globales/piloto/actions";
+import { useDeleteInformationSource } from "@/actions/ajustes/globales/tipos_fuente/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { InformationSource, Pilot } from "@/types";
+import { InformationSource } from "@/types";
 import {
   ClipboardPen,
-  EyeIcon,
   Loader2,
   MoreHorizontal,
-  Trash2,
+  Trash2
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { EditInformationSourceForm } from "../forms/EditInformationSourceForm";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -21,12 +22,8 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTitle
 } from "../ui/dialog";
-import { useRouter } from "next/navigation";
-import { useDeleteInformationSource } from "@/actions/ajustes/globales/tipos_fuente/actions";
-import { EditInformationSourceForm } from "../forms/EditInformationSourceForm";
 
 const InformationSourceDropdownActions = ({
   informationSource,

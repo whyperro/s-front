@@ -1,20 +1,23 @@
-import { useDeletePilot } from "@/actions/sms/piloto/actions";
+import { useDeleteVoluntaryReport } from "@/actions/sms/reporte_voluntario/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { InformationSource, Pilot, VoluntaryReport } from "@/types";
+import { VoluntaryReport } from "@/types";
 import {
+  ClipboardPen,
+  ClipboardPenLine,
   EyeIcon,
   Loader2,
   MoreHorizontal,
   Trash2,
-  ClipboardPenLine,
-  ClipboardPen,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
+import { CreateVoluntaryReportForm } from "../forms/CreateVoluntaryReportForm";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -25,13 +28,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { useRouter } from "next/navigation";
-import { useDeleteInformationSource } from "@/actions/sms/tipos_fuente/actions";
-import { useDeleteVoluntaryReport } from "@/actions/sms/reporte_voluntario/actions";
-import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
-import CreateDangerIdentificationDialog from "../dialogs/CreateDangerIdentificationDialog";
-import CreateVoluntaryReportDialog from "../dialogs/CreateVoluntaryReportDialog";
-import { CreateVoluntaryReportForm } from "../forms/CreateVoluntaryReportForm";
 
 const VoluntaryReportDropdownActions = ({
   voluntaryReport,
@@ -81,7 +77,7 @@ const VoluntaryReportDropdownActions = ({
             <DropdownMenuItem
               onClick={() => {
                 router.push(
-                  `/transmandu/sms/reportes_voluntarios/ver/${voluntaryReport.id}`
+                  `/transmandu/sms/reportes_voluntarios/${voluntaryReport.id}`
                 );
               }}
             >
