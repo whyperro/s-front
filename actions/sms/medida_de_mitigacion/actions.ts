@@ -24,7 +24,7 @@ export const useCreateMitigationMeasure = () => {
   const createMutation = useMutation({
     mutationKey: ["mitigation-measures"],
     mutationFn: async (data: MitigationMeasureData) => {
-      await axiosInstance.post("/transmandu/mitigation-measures", data, {
+      await axiosInstance.post("/transmandu/sms/mitigation-measures", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -54,7 +54,7 @@ export const useDeleteMitigationMeasure = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number | string) => {
-      await axiosInstance.delete(`/transmandu/mitigation-measures/${id}`);
+      await axiosInstance.delete(`/transmandu/sms/mitigation-measures/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mitigation-measures"] });
@@ -81,7 +81,7 @@ export const useUpdateMitigationMeasure = () => {
     mutationKey: ["mitigation-measures"],
     mutationFn: async (data: UpdateMitigationMeasureData) => {
       await axiosInstance.put(
-        `/transmandu/mitigation-measures/${data.id}`,
+        `/transmandu/sms/mitigation-measures/${data.id}`,
         data
       );
     },

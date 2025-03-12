@@ -16,7 +16,7 @@ export const useCreateAnalysis = () => {
   const createMutation = useMutation({
     mutationKey: ["analysis"],
     mutationFn: async (data: AnalysisData) => {
-      await axiosInstance.post("/transmandu/analysis", data, {
+      await axiosInstance.post("/transmandu/sms/analysis", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -46,7 +46,7 @@ export const useDeleteAnalysis = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number | string) => {
-      await axiosInstance.delete(`/transmandu/analysis/${id}`);
+      await axiosInstance.delete(`/transmandu/sms/analysis/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["analysis"] });
@@ -72,7 +72,7 @@ export const useUpdateAnalyses = () => {
   const updateAnalysesMutation = useMutation({
     mutationKey: ["analysis"],
     mutationFn: async (data: Analysis) => {
-      await axiosInstance.put(`/transmandu/analysis/${data.id}`, data);
+      await axiosInstance.put(`/transmandu/sms/analysis/${data.id}`, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["analysis"] });

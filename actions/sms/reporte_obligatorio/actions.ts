@@ -26,7 +26,7 @@ export const useCreateObligatoryReport = () => {
   const createMutation = useMutation({
     mutationKey: ["obligatory-reports"],
     mutationFn: async (data: ObligatoryReportData) => {
-      await axiosInstance.post("/transmandu/obligatory-reports", data, {
+      await axiosInstance.post("/transmandu/sms/obligatory-reports", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

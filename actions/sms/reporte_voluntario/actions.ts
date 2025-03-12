@@ -44,7 +44,7 @@ export const useCreateVoluntaryReport = () => {
   const createMutation = useMutation({
     mutationKey: ["voluntary-reports"],
     mutationFn: async (data: VoluntaryReportData) => {
-      await axiosInstance.post("/transmandu/voluntary-reports", data, {
+      await axiosInstance.post("/transmandu/sms/voluntary-reports", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -74,7 +74,7 @@ export const useDeleteVoluntaryReport = () => {
   const deleteMutation = useMutation({
     mutationKey: ["voluntary-reports"],
     mutationFn: async (id: number | string) => {
-      await axiosInstance.delete(`/transmandu/voluntary-reports/${id}`);
+      await axiosInstance.delete(`/transmandu/sms/voluntary-reports/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
@@ -102,7 +102,7 @@ export const useUpdateVoluntaryReport = () => {
     mutationKey: ["voluntary-reports"],
     mutationFn: async (data: UpdateVoluntaryReportData) => {
       await axiosInstance.patch(
-        `/transmandu/voluntary-reports/${data.id}`,
+        `/transmandu/sms/voluntary-reports/${data.id}`,
         data
       );
     },

@@ -28,7 +28,7 @@ export const useCreateMitigationPlan = () => {
   const createMutation = useMutation({
     mutationKey: ["danger-identifications/${id}"],
     mutationFn: async (data: MitigationPlanData) => {
-      await axiosInstance.post("/transmandu/mitigation-plans", data, {
+      await axiosInstance.post("/transmandu/sms/mitigation-plans", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -58,7 +58,7 @@ export const useDeleteMitigationPlan = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number | string) => {
-      await axiosInstance.delete(`/transmandu/mitigation-plans/${id}`);
+      await axiosInstance.delete(`/transmandu/sms/mitigation-plans/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mitigation-plans"] });
@@ -87,7 +87,7 @@ export const useUpdateMitigationPlan = () => {
   const updateMitigationPlanMutation = useMutation({
       mutationKey: ["mitigation-plans"],
       mutationFn: async (data: UpdateMitigationPlanData) => {
-          await axiosInstance.put(`/transmandu/mitigation-plans/${data.id}`, data)
+          await axiosInstance.put(`/transmandu/sms/mitigation-plans/${data.id}`, data)
         },
       onSuccess: () => {
           queryClient.invalidateQueries({queryKey: ['analysis']})

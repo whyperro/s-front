@@ -27,7 +27,7 @@ export const useCreateDangerIdentification = () => {
     mutationKey: ["danger-identifications/${id}"],
     mutationFn: async (data: DangerIdentificationData) => {
       await axiosInstance.post(
-        `/transmandu/danger-identifications/${data.id}`,
+        `/transmandu/sms/danger-identifications/${data.id}`,
         data,
         {
           headers: {
@@ -60,7 +60,7 @@ export const useDeleteDangerIdentification = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number | string) => {
-      await axiosInstance.delete(`/transmandu/danger-identifications/${id}`);
+      await axiosInstance.delete(`/transmandu/sms/danger-identifications/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
