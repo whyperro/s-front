@@ -205,6 +205,7 @@ export function CreateObligatoryReportForm({
           incidents: data.incidents,
           other_incidents: data.other_incidents,
         }
+        console.log("THIS IS VALUE FROM EDIT AND INITIAL DATA", value);
         await updateObligatoryReport.mutateAsync(value);
     } else {
       const value = {
@@ -224,6 +225,7 @@ export function CreateObligatoryReportForm({
         incidents: data.incidents,
         other_incidents: data.other_incidents,
       };
+      console.log("THIS IS VALUE FROM CREATE ", value);
       await createObligatoryReport.mutateAsync(value);
     }
     onClose();
