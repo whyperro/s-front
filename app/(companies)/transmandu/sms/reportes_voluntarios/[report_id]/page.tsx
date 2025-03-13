@@ -52,14 +52,18 @@ const ShowVoluntaryReport = () => {
                 })}
               </p>
             </div>
-            <div className="flex bg-gray-100 justify-between items-center p-4 rounded-lg">
+            <div className=" bg-gray-100  p-4 rounded-lg">
               <p className="text-lg text-gray-700">
                 <span className="font-semibold">Área de Peligro:</span>{" "}
                 {voluntaryReport.danger_area}
               </p>
               <p className="text-lg font-medium text-gray-700">
-                <span className="font-semibold">Localización del Peligro:</span>{" "}
+                <span className="font-semibold">Departamento:</span>{" "}
                 {voluntaryReport.danger_location}
+              </p>
+              <p className="text-lg font-medium text-gray-700">
+                <span className="font-semibold">Localización del Peligro:</span>{" "}
+                {voluntaryReport.airport_location}
               </p>
             </div>
             <div className="bg-gray-100 p-4 rounded-lg">

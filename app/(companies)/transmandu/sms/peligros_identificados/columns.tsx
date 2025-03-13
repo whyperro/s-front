@@ -33,23 +33,6 @@ export const columns: ColumnDef<DangerIdentification>[] = [
     },
   },
   {
-    accessorKey: "danger_location",
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        filter
-        column={column}
-        title="Localización del peligro"
-      />
-    ),
-    cell: ({ row }) => {
-      return (
-        <p className="font-medium text-center">
-          {row.original.danger_location}
-        </p>
-      );
-    },
-  },
-  {
     accessorKey: "danger_area",
     header: ({ column }) => (
       <DataTableColumnHeader

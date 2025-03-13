@@ -38,9 +38,7 @@ import { useGetVoluntaryReportById } from "@/hooks/sms/useGetVoluntaryReportById
 
 const FormSchema = z.object({
   danger: z.string().min(3, "Debe contener al menos 3 dígitos caracteres"),
-  danger_location: z
-    .string()
-    .min(3, "Debe contener al menos 3 dígitos caracteres"),
+
   danger_area: z.string(),
 
   description: z.string().min(3, "Debe contener al menos 3 dígitos caracteres"),
@@ -76,7 +74,7 @@ export default function CreateDangerIdentificationForm({
   const { data: voluntaryReport } = useGetVoluntaryReportById(id); // Para mostrar los datos reporte como referencia en este formulario
 
   const AREAS = [
-    "OPERACIONAL",
+    "OPERACIONES",
     "MANTENIMIENTO",
     "ADMINISTRACION",
     "CONTROL_CALIDAD",
@@ -164,20 +162,6 @@ export default function CreateDangerIdentificationForm({
                   </SelectContent>
                 </Select>
                 <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="danger_location"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Lugar de identificación</FormLabel>
-                <FormControl>
-                  <Input placeholder="Donde se identifico" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
               </FormItem>
             )}
           />
