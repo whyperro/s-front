@@ -42,7 +42,11 @@ export const columns: ColumnDef<VoluntaryReport>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex justify-center">
-          {row.original.report_number ?? "N/A"}
+          {row.original.report_number ? (
+            <p>RVP-{row.original.report_number}</p>
+          ) : (
+            "N/A"
+          )}
         </div>
       );
     },

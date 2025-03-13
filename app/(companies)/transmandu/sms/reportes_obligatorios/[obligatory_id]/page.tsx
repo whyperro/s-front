@@ -103,7 +103,7 @@ const ShowObligatoryReport = () => {
 
             <div className="bg-gray-100 p-4 rounded-lg">
               <p className="text-xl font-semibold text-center text-gray-800 mb-2">
-                Datos de Aereonaves
+                Datos de Aereonave
               </p>
               <p className="text-lg text-gray-700">
                 <span className="font-semibold">Matricula de Aereonave: </span>
