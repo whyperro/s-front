@@ -164,7 +164,7 @@ export const columns: ColumnDef<CashMovement>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.vendor.name ? row.original.vendor.name : "N/A"}
+          {row.original.vendor ? row.original.vendor.name : "N/A"}
         </span>
       </div>
     ),
