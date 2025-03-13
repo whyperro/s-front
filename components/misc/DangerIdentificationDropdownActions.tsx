@@ -1,4 +1,4 @@
-import { useDeletePilot } from "@/actions/sms/piloto/actions";
+import { useDeleteDangerIdentification } from "@/actions/sms/peligros_identificados/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,19 +6,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  DangerIdentification,
-  InformationSource,
-  Pilot,
-  VoluntaryReport,
+  DangerIdentification
 } from "@/types";
 import {
+  ClipboardPenLine,
   EyeIcon,
   Loader2,
   MoreHorizontal,
   Trash2,
-  ClipboardPenLine,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import CreateAnalysisForm from "../forms/CreateAnalysisForm";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -29,13 +28,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { useRouter } from "next/navigation";
-import { useDeleteInformationSource } from "@/actions/sms/tipos_fuente/actions";
-import { useDeleteVoluntaryReport } from "@/actions/sms/reporte_voluntario/actions";
-import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
-import CreateDangerIdentificationDialog from "../dialogs/CreateDangerIdentificationDialog";
-import CreateAnalysisForm from "../forms/CreateAnalysisForm";
-import { useDeleteDangerIdentification } from "@/actions/sms/peligros_identificados/actions";
 
 const DangerIdentificationDropdownActions = ({
   dangerIdentification,
@@ -81,7 +73,7 @@ const DangerIdentificationDropdownActions = ({
             <DropdownMenuItem
               onClick={() => {
                 router.push(
-                  `/transmandu/sms/peligros_identificados/ver/${dangerIdentification.id}`
+                  `/transmandu/sms/peligros_identificados/${dangerIdentification.id}`
                 );
               }}
             >
