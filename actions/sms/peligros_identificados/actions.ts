@@ -12,7 +12,6 @@ import { toast } from "sonner";
 interface DangerIdentificationData {
   id: string | number;
   danger: string;
-  danger_location: string;
   danger_area: string;
   description: string;
   possible_consequences: string;
