@@ -391,6 +391,7 @@ export type VoluntaryReport = {
   danger_location: string;
   danger_area: string;
   description: string;
+  airport_location: string;
   possible_consequences: string;
   danger_identification_id: number;
   status: string;
@@ -403,7 +404,6 @@ export type VoluntaryReport = {
 export type DangerIdentification = {
   id: number;
   danger: string;
-  danger_location: string;
   danger_area: string;
   description: string;
   possible_consequences: string;
