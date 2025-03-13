@@ -54,6 +54,7 @@ const FormSchema = z.object({
   report_number: z.string(),
   danger_location: z.string(),
   danger_area: z.string(),
+  airport_location: z.string(),
   description: z.string(),
   possible_consequences: z.string(),
 
@@ -94,6 +95,7 @@ export function CreateVoluntaryReportForm({
       danger_location: initialData?.danger_location || "",
       description: initialData?.description || "",
       possible_consequences: initialData?.possible_consequences || "",
+      airport_location: initialData?.airport_location || "",
       identification_date: initialData?.identification_date
         ? new Date(initialData.identification_date)
         : new Date(),
@@ -291,16 +293,16 @@ export function CreateVoluntaryReportForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="OPERACIONAL">Operacional</SelectItem>
-                    <SelectItem value="MANTENIMIENTO">Mantenimiento</SelectItem>
+                    <SelectItem value="OPERACIONES">OPERACIONES</SelectItem>
+                    <SelectItem value="MANTENIMIENTO">MANTENIMIENTO</SelectItem>
                     <SelectItem value="ADMINISTRACION">
-                      Administracion
+                      ADMINISTRACION
                     </SelectItem>
-                    <SelectItem value="RRHH">Recuros Humanos</SelectItem>
+                    <SelectItem value="RRHH">RECURSOS HUMANOS</SelectItem>
                     <SelectItem value="CONTROL_CALIDAD">
-                      Control de Calidad
+                      CCONTROL DE CALIDAD
                     </SelectItem>
-                    <SelectItem value="IT">IT</SelectItem>
+                    <SelectItem value="IT">TECNOLOGIA E INFORMACION</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -308,6 +310,31 @@ export function CreateVoluntaryReportForm({
             )}
           />
         </div>
+
+        <FormField
+          control={form.control}
+          name="airport_location"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>Lugar de Identificacion</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="CALLE_RODAJE">CALLE DE RODAJE</SelectItem>
+                  <SelectItem value="HANGAR13B">HANGAR13B</SelectItem>
+                  <SelectItem value="AEROPUERTO_CANAIMA">AEREOPUERTO CANAIMA</SelectItem>
+                  <SelectItem value="PLATAFORMA">PLATAFORMA</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="description"
@@ -353,7 +380,7 @@ export function CreateVoluntaryReportForm({
           <Label className="ml-2 text-sm">Reporte anónimo</Label>
         </div>
 
-        {!isAnonymous && (
+ 
           <div className="grid grid-cols-2 gap-2">
             <FormField
               control={form.control}
@@ -411,7 +438,7 @@ export function CreateVoluntaryReportForm({
               )}
             />
           </div>
-        )}
+   
 
         <div className="flex justify-between items-center gap-x-4">
           <Separator className="flex-1" />
