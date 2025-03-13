@@ -43,8 +43,7 @@ const ActivityReportsByIdPage = ({ params }: { params: { id: string } }) => {
         </Breadcrumb>
         <h1 className="text-4xl font-bold text-center">
           Actividades Diarias <br /> {report?.user.first_name}{" "}
-          {report?.user.last_name} -{" "}
-          {format(addDays(report!.date, 1), "PPP", { locale: es })}
+          {report?.user.last_name}
         </h1>
         <p className="text-sm text-muted-foreground text-center italic">
           Aquí puede observar todas las actividades realizadas el día de hoy por
