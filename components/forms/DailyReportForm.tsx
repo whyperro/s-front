@@ -77,7 +77,6 @@ export function DailyReportForm({
       ...data,
       activity_report_id: report_id,
     };
-    console.log(formattedData);
     await registerActivity.mutateAsync(formattedData);
     window.location.reload();
   };

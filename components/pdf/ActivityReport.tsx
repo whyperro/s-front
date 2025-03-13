@@ -1,6 +1,7 @@
 import { ActivityReport } from "@/types";
 import {
   Document,
+  Image,
   Page,
   StyleSheet,
   Text,
@@ -20,24 +21,25 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   headerContainer: {
-    flexDirection: "row", // Mantiene la imagen y el título en la misma fila
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center", // Centra el contenido
+    justifyContent: "center",
     marginBottom: 10,
   },
   logo: {
-    width: 50, // Ajusta según el tamaño del logo
-    height: 50,
+    paddingTop: 2,
+    width: 165,
+    height: 30,
     position: "absolute",
-    left: 0, // Fijado en la esquina superior izquierda
+    left: 0,
   },
   titleContainer: {
-    flexDirection: "column", // Asegura que el texto esté en dos líneas
-    alignItems: "center", // Centra el texto
+    flexDirection: "column",
+    alignItems: "center",
   },
   titleText: {
     fontSize: 14,
-    fontWeight: 900, // Extra negrita
+    fontWeight: 900,
     textAlign: "center",
   },
   row: {
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: 10,
-    fontSize: 10,
+    fontSize: 9,
   },
   inputLine: {
     borderBottomWidth: 1,
@@ -83,15 +85,25 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     position: "absolute",
-    right: 90, // FECHA se mantiene en su lugar
+    right: 90,
   },
   dateLabel: {
-    fontSize: 9,
+    fontSize: 10,
   },
   dateText: {
     fontSize: 10,
-    marginLeft: 40, // Movido más a la derecha
-    marginTop: -8,
+    marginLeft: 40,
+    marginTop: 1,
+  },
+  observationContainer: {
+    borderWidth: 1,
+    padding: 5,
+    marginTop: 10,
+    minHeight: 50,
+  },
+  observationText: {
+    fontSize: 10,
+    margin: 5,
   },
 });
 
@@ -104,10 +116,7 @@ const ActivitiesReportPdf = ({
     <Page size="LETTER" orientation="landscape" style={styles.page}>
       {/* HEADER CON LOGO Y TÍTULO */}
       <View style={styles.headerContainer}>
-        {/* Logo en la esquina superior izquierda */}
-        {/* <Image src="/ruta/del/logo.png" style={styles.logo} /> */}
-
-        {/* Título en dos líneas */}
+        <Image src="/tmd_nombre.png" style={styles.logo} />
         <View style={styles.titleContainer}>
           <Text style={styles.titleText}>REGISTRO DE</Text>
           <Text style={styles.titleText}>ACTIVIDADES DIARIAS</Text>
@@ -149,7 +158,6 @@ const ActivitiesReportPdf = ({
       </View>
 
       {/* Iterar sobre cada ActivityReport y sus actividades */}
-
       <View>
         {report.activities.map((activity, activityIndex) => (
           <View style={[styles.row, styles.table]} key={activity.id}>
@@ -171,8 +179,10 @@ const ActivitiesReportPdf = ({
 
 
       {/* SECCIÓN DE OBSERVACIONES */}
-      <Text style={[styles.footer, { marginTop: 20 }]}>OBSERVACIONES:</Text>
-      <View style={{ borderWidth: 1, height: 50 }}></View>
+      <Text style={[styles.footer, { marginBottom: 5 }]}>OBSERVACIONES:</Text>
+      <View style={styles.observationContainer}>
+        <Text style={styles.observationText}>{report.observation}</Text>
+      </View>
     </Page>
   </Document>
 );

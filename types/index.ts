@@ -436,7 +436,7 @@ export type ActivityReport = {
   date: string,
   user: User,
   activities: Activity[],
-  observations?: string,
+  observation?: string,
 }
 
 export type Activity = {
