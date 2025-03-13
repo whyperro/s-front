@@ -190,12 +190,13 @@ export type MaintenanceAircraft = {
   id: number,
   client: MaintenanceClient,
   manufacturer: Manufacturer,
-  brand: string,
   serial: string,
   acronym: string,
   flight_hours: number,
   flight_cycles: number,
   fabricant_date: string,
+  aircraft_parts: MaintenanceAircraftPart[],
+  location: Location,
   comments: string,
 }
 
@@ -204,6 +205,17 @@ export type MaintenanceAircraftPart = {
   part_name: string,
   part_hours: number,
   part_cycles: number,
+  aircraft: MaintenanceAircraft,
+}
+
+export type FlightControl = {
+  flight_number: string,
+  aircraft_operator: string,
+  origin: string,
+  destination: string,
+  flight_date: string,
+  flight_hours: number,
+  flight_cycles: number,
   aircraft: MaintenanceAircraft,
 }
 

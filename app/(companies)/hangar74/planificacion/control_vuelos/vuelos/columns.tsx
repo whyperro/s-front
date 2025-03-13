@@ -20,10 +20,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { FlightControl } from "@/types"
 import Link from "next/link"
-import { MaintenanceAircraft } from "@/types"
 
-export const columns: ColumnDef<MaintenanceAircraft>[] = [
+export const columns: ColumnDef<FlightControl>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -47,30 +47,30 @@ export const columns: ColumnDef<MaintenanceAircraft>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "acronym",
+    accessorKey: "flight_number",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Matricula" />
+      <DataTableColumnHeader filter column={column} title="Nro. de Vuelo" />
     ),
     cell: ({ row }) => (
-      <Link href={`/hangar74/planificacion/aeronaves/${row.original.acronym}`} className="flex justify-center font-bold italic">{row.original.acronym}</Link>
+      <Link href={`/hangar74/planificacion/control_vuelos/vuelos/${row.original.flight_number}`} className="flex justify-center font-bold italic">{row.original.flight_number}</Link>
     )
   },
   {
-    accessorKey: "manufacturer.name",
+    accessorKey: "aircraft.acronym",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Fabricante" />
+      <DataTableColumnHeader filter column={column} title="Aeronave" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center font-medium">{row.original.manufacturer.name}</p>
+      <p className="flex justify-center font-medium">{row.original.aircraft.acronym}</p>
     )
   },
   {
-    accessorKey: "client.name",
+    accessorKey: "destination",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Cliente" />
+      <DataTableColumnHeader filter column={column} title="Ruta" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground italic">{row.original.client.name}</p>
+      <p className="flex justify-center text-muted-foreground italic">{row.original.origin} - {row.original.destination}</p>
     )
   },
   {
@@ -92,21 +92,12 @@ export const columns: ColumnDef<MaintenanceAircraft>[] = [
     )
   },
   {
-    accessorKey: "location",
+    accessorKey: "aircraft_operator",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Ubicación" />
+      <DataTableColumnHeader column={column} title="Operador" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground italic">{row.original.location.address}</p>
-    )
-  },
-  {
-    accessorKey: "comments",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Comentarios" />
-    ),
-    cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground text-center">{row.original.comments}</p>
+      <p className="flex justify-center text-muted-foreground italic">{row.original.aircraft_operator}</p>
     )
   },
   {

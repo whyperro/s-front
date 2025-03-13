@@ -4,14 +4,10 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
 
+import ActivityReportsDropdownActions from "@/components/misc/ActivityReportsDropdownActions"
 import { ActivityReport } from "@/types"
 import { addDays, format } from "date-fns"
-import { Checkbox } from "@radix-ui/react-checkbox"
 import { es } from "date-fns/locale"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
-import { Button } from "react-day-picker"
-import { MoreVertical } from "lucide-react"
-import ActivityReportsDropdownActions from "@/components/misc/ActivityReportsDropdownActions"
 
 
 export const columns: ColumnDef<ActivityReport>[] = [
@@ -43,7 +39,7 @@ export const columns: ColumnDef<ActivityReport>[] = [
       <DataTableColumnHeader column={column} title="Fecha" />
     ),
     cell: ({ row }) => (
-      <p className="font-medium text-center">{format(addDays(row.original.date, 1), "PPP", { locale: es })}</p>
+      <p className="font-medium text-center">{row.original.date}</p>
     )
   },
   {

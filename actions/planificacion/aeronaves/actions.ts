@@ -31,7 +31,7 @@ export const useCreateMaintenanceAircraft = () => {
           await axiosInstance.post('/hangar74/aircrafts', data)
         },
       onSuccess: () => {
-          queryClient.invalidateQueries({queryKey: ['quotes']})
+          queryClient.invalidateQueries({queryKey: ['aircrafts']})
           toast.success("¡Creado!", {
               description: `La aeronave ha sido creada correctamente.`
           })

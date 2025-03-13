@@ -1,15 +1,15 @@
 import axios from '@/lib/axios';
-import { MaintenanceAircraft } from '@/types';
+import { MaintenanceAircraftPart } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 
-const fetchAircrafts = async (): Promise<MaintenanceAircraft[]> => {
+const fetchAircraftParts = async (): Promise<MaintenanceAircraftPart[]> => {
   const {data} = await axios.get('/hangar74/aircrafts-parts');
   return data;
 };
 
-export const useGetAircrafts = () => {
-  return useQuery<MaintenanceAircraft[], Error>({
-    queryKey: ["aircrafts"],
-    queryFn: fetchAircrafts,
+export const useGetAircraftsParts = () => {
+  return useQuery<MaintenanceAircraftPart[], Error>({
+    queryKey: ["aircraft-parts"],
+    queryFn: fetchAircraftParts,
   });
 };

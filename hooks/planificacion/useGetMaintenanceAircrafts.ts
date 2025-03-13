@@ -7,7 +7,7 @@ const fetchAircrafts = async (): Promise<MaintenanceAircraft[]> => {
   return data;
 };
 
-export const useGetAircrafts = () => {
+export const useGetMaintenanceAircrafts = () => {
   return useQuery<MaintenanceAircraft[], Error>({
     queryKey: ["aircrafts"],
     queryFn: fetchAircrafts,

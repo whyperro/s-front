@@ -23,7 +23,6 @@ import { Input } from "../ui/input";
 
 const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
   const { data: report, isLoading: isReportLoading } = useGetUserActivity(id);
-  const { user } = useAuth();
   const [observation, setObservation] = useState<string>("");
   const [isObservationOpen, setIsObservationOpen] = useState<boolean>(false);
   const router = useRouter();

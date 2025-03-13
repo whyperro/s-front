@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
 import {
   Banknote,
+  BookCheck,
   BookUser,
   Building,
   ClipboardCopy,
@@ -377,6 +378,25 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
                   href: "/hangar74/planificacion/aeronaves/partes",
                   label: "Gestión de Partes",
                   active: pathname === "/hangar74/planificacion/aeronaves/partes"
+                },
+              ]
+            },
+            {
+              href: "/hangar74/planificacion/aeronaves",
+              label: "Control de Vuelos",
+              active: pathname.includes("/hangar74/planificacion/control_vuelos"),
+              icon: BookCheck,
+              roles: ["ANALISTA_PLANIFICACION", "JEFE_PLANIFICACION", "SUPERUSER"],
+              submenus: [
+                {
+                  href: "/hangar74/planificacion/control_vuelos/vuelos",
+                  label: "Vuelos",
+                  active: pathname === "/hangar74/planificacion/control_vuelos/vuelos"
+                },
+                {
+                  href: "/hangar74/planificacion/control_vuelos/reportes",
+                  label: "Reportes",
+                  active: pathname === "/hangar74/planificacion/control_vuelos/reportes"
                 },
               ]
             }
