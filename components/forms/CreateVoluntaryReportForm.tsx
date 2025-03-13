@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -35,7 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "../ui/label";
 import {
@@ -63,7 +62,7 @@ const FormSchema = z.object({
   reporter_phone: z
     .string()
     .regex(/^\d{11}$/, {
-      message: "El número telefónico debe tener exactamente 11 dígitos",
+      message: "El número telefónico debe tener almenos 11 dígitos",
     })
     .optional(),
   reporter_email: z.string().email().optional(),
@@ -111,10 +110,10 @@ export function CreateVoluntaryReportForm({
   const onSubmit = async (data: FormSchemaType) => {
     console.log("valor de is anonymous", isAnonymous);
     if (isAnonymous) {
-      delete data.reporter_name;
-      delete data.reporter_last_name;
-      delete data.reporter_email;
-      delete data.reporter_phone;
+      data.reporter_name = "";
+      data.reporter_last_name = "";
+      data.reporter_email = "";
+      data.reporter_phone = "";
     }
     console.log("Data post is anonymous", data);
     if (initialData && isEditing) {
@@ -242,9 +241,9 @@ export function CreateVoluntaryReportForm({
           name="report_number"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Codigo del reporte</FormLabel>
+              <FormLabel>Codigo del Reporte Voluntario</FormLabel>
               <FormControl>
-                <Input placeholder="" {...field} />
+                <Input placeholder="" {...field} maxLength={4} />
               </FormControl>
               <FormMessage className="text-xs" />
             </FormItem>
