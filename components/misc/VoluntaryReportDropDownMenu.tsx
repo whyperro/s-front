@@ -64,9 +64,11 @@ const VoluntaryReportDropdownActions = ({
             align="center"
             className="flex gap-2 justify-center"
           >
-            <DropdownMenuItem onClick={() => setOpenEdit(true)}>
-              <ClipboardPen className="size-5" />
-            </DropdownMenuItem>
+            {voluntaryReport && voluntaryReport.status !== "CERRADO" && (
+              <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+                <ClipboardPen className="size-5" />
+              </DropdownMenuItem>
+            )}
 
             <DialogTrigger asChild>
               <DropdownMenuItem onClick={() => setOpenDelete(true)}>
