@@ -25,7 +25,7 @@ import {
 import { useRouter, usePathname } from "next/navigation"
 import { useState } from "react"
 
-import { DailyActivitiesReportDialog } from "@/components/dialogs/ActivityReportDialog"
+import { DailyActivitiesReportDialog } from "@/components/dialogs/DailyReportDialog"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
