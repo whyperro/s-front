@@ -15,15 +15,6 @@ import { Row } from "react-day-picker";
 
 export const columns: ColumnDef<DangerIdentification>[] = [
   {
-    accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="ID" />
-    ),
-    cell: ({ row }) => {
-      return <div className="flex justify-center">{row.original.id}</div>;
-    },
-  },
-  {
     accessorKey: "danger",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Peligro" />
@@ -93,23 +84,7 @@ export const columns: ColumnDef<DangerIdentification>[] = [
       );
     },
   },
-  {
-    accessorKey: "analyses",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Analisis" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div>
-          {row.original.analysis ? (
-            <p>{row.original.analysis.result}</p>
-          ) : (
-            "N/A"
-          )}
-        </div>
-      );
-    },
-  },
+
   {
     id: "actions",
     cell: ({ row }) => {
