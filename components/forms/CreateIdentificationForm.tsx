@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,7 +15,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Separator } from "@radix-ui/react-select";
+import {
+  useCreateDangerIdentification,
+  useUpdateDangerIdentification,
+} from "@/actions/sms/peligros_identificados/actions";
 import {
   Select,
   SelectContent,
@@ -25,10 +27,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetInformationSources } from "@/hooks/sms/useGetInformationSource";
-import { Textarea } from "../ui/textarea";
-import { useCreateDangerIdentification } from "@/actions/sms/peligros_identificados/actions";
-import { useState } from "react";
 import { useGetVoluntaryReportById } from "@/hooks/sms/useGetVoluntaryReportById";
+import { DangerIdentification } from "@/types";
+import { Separator } from "@radix-ui/react-select";
+import { useEffect, useState } from "react";
+import { Textarea } from "../ui/textarea";
 
 // HAY DATOS QUE VIENEN DEL REPORTE
 // COMO FECHA DE REPORTE E IDENTIFICACION
@@ -61,18 +64,22 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 interface FormProps {
   id: number;
   onClose: () => void;
+  initialData?: DangerIdentification;
+  isEditing?: boolean;
 }
 // { onClose }: FormProps
 // lo de arriba va en prop
 export default function CreateDangerIdentificationForm({
   onClose,
   id,
+  isEditing,
+  initialData,
 }: FormProps) {
   const [consequences, setConsequences] = useState<string[]>([]);
   const { data: informationSources, isLoading } = useGetInformationSources();
   const { createDangerIdentification } = useCreateDangerIdentification();
+  const { updateDangerIdentification } = useUpdateDangerIdentification();
   const { data: voluntaryReport } = useGetVoluntaryReportById(id); // Para mostrar los datos reporte como referencia en este formulario
-
   const AREAS = [
     "OPERACIONES",
     "MANTENIMIENTO",
@@ -82,21 +89,56 @@ export default function CreateDangerIdentificationForm({
   ];
   const DANGER_TYPES = ["ORGANIZACIONAL", "TECNICO", "HUMANO", "NATURAL"];
 
-  console.log("Datos del VP ", voluntaryReport);
-
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      description: voluntaryReport?.description,
-      possible_consequences: voluntaryReport?.possible_consequences,
+      danger: initialData?.danger,
+      consequence_to_evaluate: initialData?.consequence_to_evaluate,
+      danger_area: initialData?.danger_area,
+      danger_type: initialData?.danger_type,
+      information_source_id: initialData?.information_source.id,
+      root_cause_analysis: initialData?.root_cause_analysis,
+      description: initialData?.description
+        ? initialData.description
+        : voluntaryReport?.description,
+
+      possible_consequences: initialData?.possible_consequences
+        ? initialData?.possible_consequences
+        : voluntaryReport?.possible_consequences,
     },
   });
 
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        information_source_id: initialData.information_source.id
+          ? initialData.information_source.id.toString()
+          : "",
+      });
+    }
+  }, [initialData, form.reset]);
+
   const onSubmit = async (data: FormSchemaType) => {
-    await createDangerIdentification.mutateAsync({
-      ...data,
-      id,
-    });
+    if (initialData && isEditing) {
+      const values = {
+        id: initialData.id,
+        danger: initialData.danger,
+        danger_area: initialData.danger_area,
+        danger_type: initialData.danger_type,
+        description: initialData.description,
+        possible_consequences: initialData.possible_consequences,
+        consequence_to_evaluate: initialData.consequence_to_evaluate,
+        root_cause_analysis: initialData.root_cause_analysis,
+        information_source_id: initialData.information_source.id,
+      };
+      await updateDangerIdentification.mutateAsync(values);
+    } else {
+      await createDangerIdentification.mutateAsync({
+        ...data,
+        id,
+      });
+    }
+
     onClose();
   };
 
@@ -227,34 +269,40 @@ export default function CreateDangerIdentificationForm({
           <FormField
             control={form.control}
             name="information_source_id"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Método de identificacion</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar Fuente de Informacion" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {informationSources &&
-                      informationSources.map((source) => (
-                        <SelectItem
-                          key={source.id}
-                          value={source.id.toString()}
-                        >
-                          {source.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              const defaultValue =
+                initialData?.information_source.id.toString();
+              return (
+                <FormItem className="w-full">
+                  <FormLabel>Método de identificación</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || defaultValue}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar Fuente de Información" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {informationSources &&
+                        informationSources.map((source) => (
+                          <SelectItem
+                            key={source.id}
+                            value={source.id.toString()}
+                          >
+                            {source.name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
+        </div>
+        <div className="flex gap-2 justify-center items-center">
           <FormField
             control={form.control}
             name="danger_type"
