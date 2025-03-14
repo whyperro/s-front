@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import Link from "next/link";
 import VoluntaryReportDropdownActions from "@/components/misc/VoluntaryReportDropDownMenu";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<VoluntaryReport>[] = [
   {
@@ -113,12 +114,14 @@ export const columns: ColumnDef<VoluntaryReport>[] = [
       <DataTableColumnHeader column={column} title="Estado del Reporte" />
     ),
     cell: ({ row }) => (
-      <div
-        className={`flex justify-center items-center rounded-full h-10 text-center font-bold font-sans ${
-          row.original.status === "CERRADO" ? "bg-green-400" : "bg-red-400"
-        }`}
-      >
-        {row.original.status}
+      <div className="flex justify-center">
+        <Badge
+          className={`justify-center items-center text-center font-bold font-sans ${
+            row.original.status === "CERRADO" ? "bg-green-400" : "bg-red-400"
+          }`}
+        >
+          {row.original.status}
+        </Badge>
       </div>
     ),
   },

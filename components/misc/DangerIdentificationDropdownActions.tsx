@@ -36,11 +36,10 @@ const DangerIdentificationDropdownActions = ({
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [openEditAnalyses, setOpenEditAnalyses] = useState<boolean>(false);
 
   const { deleteDangerIdentification } = useDeleteDangerIdentification();
-
   const [openCreateAnalysis, setOpenCreateAnalysis] = useState<boolean>(false);
-
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const router = useRouter();
 
@@ -64,9 +63,12 @@ const DangerIdentificationDropdownActions = ({
             align="center"
             className="flex gap-2 justify-center"
           >
-            <DropdownMenuItem onClick={() => setOpenEdit(true)}>
-              <ClipboardPen className="size-5" />
-            </DropdownMenuItem>
+            {dangerIdentification &&
+              dangerIdentification.voluntary_report.status === "ABIERTO" && (
+                <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+                  <ClipboardPen className="size-5" />
+                </DropdownMenuItem>
+              )}
 
             <DialogTrigger asChild>
               <DropdownMenuItem onClick={() => setOpenDelete(true)}>
@@ -84,17 +86,19 @@ const DangerIdentificationDropdownActions = ({
               <EyeIcon className="size-5" />
             </DropdownMenuItem>
 
-            {dangerIdentification && dangerIdentification.analysis === null && (
+            {dangerIdentification && !dangerIdentification.analysis && (
               <DropdownMenuItem onClick={() => setOpenCreateAnalysis(true)}>
                 <ClipboardPenLine className="size-5" />
               </DropdownMenuItem>
             )}
 
-            {dangerIdentification && dangerIdentification.analysis && (
-              <DropdownMenuItem onClick={() => setOpenEdit(true)}>
-                <ClipboardPenLine className="size-5" />
-              </DropdownMenuItem>
-            )}
+            {dangerIdentification &&
+              dangerIdentification.analysis &&
+              dangerIdentification.voluntary_report.status !== "CERRADO" && (
+                <DropdownMenuItem onClick={() => setOpenEditAnalyses(true)}>
+                  <ClipboardPenLine className="size-5" />
+                </DropdownMenuItem>
+              )}
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -149,7 +153,7 @@ const DangerIdentificationDropdownActions = ({
           </DialogContent>
         </Dialog>
 
-        <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+        <Dialog open={openEditAnalyses} onOpenChange={setOpenEditAnalyses}>
           <DialogContent className="flex flex-col max-w-2xl m-2">
             <DialogHeader>
               <DialogTitle></DialogTitle>
@@ -157,7 +161,7 @@ const DangerIdentificationDropdownActions = ({
             </DialogHeader>
 
             <CreateAnalysisForm
-              onClose={() => setOpenEdit(false)}
+              onClose={() => setOpenEditAnalyses(false)}
               id={dangerIdentification.id}
               name={"identification"}
               isEditing={true}

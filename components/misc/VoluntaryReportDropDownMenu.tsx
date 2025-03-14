@@ -12,6 +12,7 @@ import {
   EyeIcon,
   Loader2,
   MoreHorizontal,
+  PrinterCheck,
   Trash2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -28,6 +29,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import VoluntaryReportPdf from "../pdf/sms/VoluntaryReportPrint";
+import { format } from "date-fns";
 
 const VoluntaryReportDropdownActions = ({
   voluntaryReport,
@@ -35,6 +39,8 @@ const VoluntaryReportDropdownActions = ({
   voluntaryReport: VoluntaryReport;
 }) => {
   const [open, setOpen] = useState<boolean>(false);
+  const [openPDF, setOpenPDF] = useState<boolean>(false);
+
   const [openEdit, setOpenEdit] = useState<boolean>(false);
 
   const { deleteVoluntaryReport } = useDeleteVoluntaryReport();
@@ -93,9 +99,44 @@ const VoluntaryReportDropdownActions = ({
                 <ClipboardPenLine className="size-5" />
               </DropdownMenuItem>
             )}
+
+            {voluntaryReport && voluntaryReport.status !== "ABIERTO" && (
+              <DropdownMenuItem onClick={() => setOpenPDF(true)}>
+                <PrinterCheck className="size-5" />
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
 
+        
+        <Dialog open={openPDF} onOpenChange={setOpenPDF}>
+          <DialogContent className="sm:max-w-[65%] max-h-[80vh]">
+            <DialogHeader>
+              <DialogTitle>Vista Previa del Reporte</DialogTitle>
+              <DialogDescription>
+                Revisa el reporte antes de descargarlo.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="w-full h-screen">
+              {voluntaryReport && (
+                <PDFViewer style={{ width: "100%", height: "60%" }}>
+                  <VoluntaryReportPdf report={voluntaryReport} />
+                </PDFViewer>
+              )}
+            </div>
+            <div className="flex justify-end mt-4">
+              <PDFDownloadLink
+                fileName={`reporte_diario_${format(
+                  new Date(),
+                  "dd-MM-yyyy"
+                )}.pdf`}
+                document={<VoluntaryReportPdf report={voluntaryReport} />}
+              >
+                <Button>Descargar Reporte</Button>
+              </PDFDownloadLink>
+            </div>
+          </DialogContent>
+        </Dialog>
         <Dialog open={openDelete} onOpenChange={setOpenDelete}>
           <DialogContent>
             <DialogHeader>
