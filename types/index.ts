@@ -10,126 +10,23 @@ export type AdministrationCompany = {
   updated_at: string,
 }
 
-export type Cash = {
+export type Aircraft = {
   id: number,
-  name: string,
-  total_amount: string,
-  box_type: string,
-}
-
-export type CashMovement = {
-  id: number,
-  responsible: Employee,
-  cash: Cash,
-  company: AdministrationCompany,
-  date: Date,
-  type: "INCOME" | "OUTPUT",
-  account: string,
-  category: string,
-  sub_category: string,
-  sub_category_details: string,
-  amount: number,
-  bank_account: BankAccount, 
-  vendor: Vendor,
-}
-export type Role = {
-    id: number,
-    name: string,
-    companyId: number;
-    permissions: Permission[],
-    company: {
-      id: number,
-      name: string,
-      description: string,
-    }[]
-}
-
-
-export type Permission = {
-  id: number,
-  name: string,
-  label: string,
-  modules: {
-    id: number,
-    name: string,
-    description: string,
-    registered_by: string,
-    company_id: string,
-    pivot: {
-      permission_id: string,
-      module_id: string,
-    },
-    company: {
-      id: number,
-      name: string,
-      description: string,
-    }
-  }[],
-}
-
-export type Module = {
-  id: number,
-  name: string,
-  description: string,
-  company_id: string,
-}
-
-export type Condition = {
-  id: number,
-  name: string,
-  description: string,
-  registered_by: string,
-  updated_by: string,
-}
-
-export type Company = {
-  id: number,
-  name: string,
-  description: string,
-  rif: string,
-  cod_inac: string,
-  fiscal_address: string,
-  phone_number: number,
-  alt_phone_number: number,
-  cod_iata: string,
-  cod_oaci: string,
-  created_at: string,
-  updated_at: string,
-}
-
-export type Location = {
-  id: number,
-  name: string,
-  address: string,
-  type: string,
-  isMainBase: boolean,
-  cod_iata: string,
-  companies: Company[],
-  
-}
-
-export type Warehouse = {
-    id: string,
-    name: string,
-    address: string,
-    company: string,
-    type: string,
-}
-
-export type Batch = {
-  id: number,
-  name: string,
-  slug: string,
-  description: string,
-  category: string,
-  ata_code: string,
-  brand:string,
-  is_hazarous: boolean,
-  medition_unit: string,
-  min_quantity: number,
-  zone: string,
-  warehouse_id: number,
-  warehouse_name: string,
+  client: Client,
+  location: Location,
+  fabricant: string,
+  brand: string,
+  serial: string,
+  acronym: string,
+  flight_hours: number,
+  cycles: number,
+  fabricant_date: Date,
+  owner: string,
+  aircraft_operator: string,
+  type_engine: string,
+  number_engine: string,
+  comments: string,
+  model: string,
 }
 
 export type Article = {
@@ -157,46 +54,74 @@ export type Article = {
   image?:File| string,
 }
 
-export interface ConsumableArticle extends Article {
-  is_managed?: boolean,
-  quantity?: number,
-  caducate_date?: string,
-  fabrication_date?: string,
-}
-
-export interface ComponentArticle extends Article {
-  caducate_date?: string,
-  fabrication_date?: string,
-  hour_date?: number,
-  cycle_date?: number,
-  calendar_date?: string,
-  component_id?: number,
-}
-
-export interface ToolArticle extends Article {
-  is_special: boolean,
-}
-
-export type Request = {
+export type Bank = {
   id: number,
-  request_number: string,
-  justification: string,
-  submission_date: string,
-  work_order?: WorkOrder,
-  requisition_order?: string,
-  article?: Article,
-  requested_by: string,
-  created_by: string,
-}
-
-export type Department = {
-  id: number,
-  address: string,
-  type: string,
-  is_main_base: string,
-  cod_iata: string,
   name: string,
-  email: string,
+  type: string,
+  created_by: string,
+  updated_by: string,
+}
+
+export type BankAccount = {
+  id: number,
+  name: string,
+  account_number: string,
+  account_type: string,
+  account_owner: string,
+  bank: Bank,
+  cards: Card[],
+  company: Company,
+  created_by: string,
+  updated_by: string,
+}
+
+export type Batch = {
+  id: number,
+  name: string,
+  slug: string,
+  description: string,
+  category: string,
+  ata_code: string,
+  brand:string,
+  is_hazarous: boolean,
+  medition_unit: string,
+  min_quantity: number,
+  zone: string,
+  warehouse_id: number,
+  warehouse_name: string,
+}
+
+export type Card = {
+  id: number,
+  name: string,
+  card_number: string,
+  type: string,
+  bank_account: BankAccount,
+  created_by: string,
+  updated_by: string,
+}
+
+export type Cash = {
+  id: number,
+  name: string,
+  total_amount: string,
+  box_type: string,
+}
+
+export type CashMovement = {
+  id: number,
+  responsible: Employee,
+  cash: Cash,
+  company: AdministrationCompany,
+  date: Date,
+  type: "INCOME" | "OUTPUT",
+  account: string,
+  category: string,
+  sub_category: string,
+  sub_category_details: string,
+  amount: number,
+  bank_account: BankAccount, 
+  vendor: Vendor,
 }
 
 export type Client = {
@@ -209,50 +134,65 @@ export type Client = {
   debt: number,
 }
 
-export type JobTitle = {
+export type Condition = {
   id: number,
   name: string,
   description: string,
-  department: Department,
+  registered_by: string,
+  updated_by: string,
 }
 
-export type Aircraft = {
-  id: number,
-  client: Client,
-  location: Location,
-  fabricant: string,
-  brand: string,
-  serial: string,
-  acronym: string,
-  flight_hours: number,
-  cycles: number,
-  fabricant_date: Date,
-  owner: string,
-  aircraft_operator: string,
-  type_engine: string,
-  number_engine: string,
-  comments: string,
-  model: string,
+export interface ConsumableArticle extends Article {
+  is_managed?: boolean,
+  quantity?: number,
+  caducate_date?: string,
+  fabrication_date?: string,
 }
 
-export type Employee = {
+export type Convertion = {
   id: number,
-  first_name: string,
-  last_name: string,
-  company: string,
-  dni: string,
-  job_title: JobTitle,
-  department: Department,
-  user?: User,
-  location: Location,
+  secondary_unit: string,
+  convertion_rate: number,
+  unit: Unit,
+  quantity_unit: number,
+  updated_by: string,
+  registered_by: string,
+  created_at: Date,
+  updated_at: Date,
 }
-export interface WorkOrder extends Request {
-  order_number: string
-  service: string,
-  aircraft: Aircraft,
-  status: boolean,
+
+export type Company = {
+  id: number,
+  name: string,
   description: string,
-  employee: Employee,
+  rif: string,
+  cod_inac: string,
+  fiscal_address: string,
+  phone_number: number,
+  alt_phone_number: number,
+  cod_iata: string,
+  cod_oaci: string,
+  created_at: string,
+  updated_at: string,
+}
+
+export interface ComponentArticle extends Article {
+  caducate_date?: string,
+  fabrication_date?: string,
+  hour_date?: number,
+  cycle_date?: number,
+  calendar_date?: string,
+  component_id?: number,
+}
+
+export type Department = {
+  id: number,
+  address: string,
+  type: string,
+  is_main_base: string,
+  cod_iata: string,
+  name: string,
+  email: string,
 }
 
 export interface DispatchRequest extends Request {
@@ -275,39 +215,65 @@ export interface DispatchRequest extends Request {
   category: string,
 }
 
-export type Unit = {
+export type Employee = {
   id: number,
-  value: string,
-  label: string,
-  updated_by: string,
-  registered_by: string,
-
-  created_at: Date,
-  updated_at: Date,
+  first_name: string,
+  last_name: string,
+  company: string,
+  dni: string,
+  job_title: JobTitle,
+  department: Department,
+  user?: User,
+  location: Location,
 }
 
-export type Convertion = {
-  id: number,
-  secondary_unit: string,
-  convertion_rate: number,
-  unit: Unit,
-  quantity_unit: number,
-  updated_by: string,
-  registered_by: string,
-  created_at: Date,
-  updated_at: Date,
+export type Flight = {
+  id:number,
+  client: Client, 
+  route: Route,      
+  aircraft: Aircraft,  
+  date: string,
+  details: string,
+  fee: number,
+  total_amount: number, 
+  type: "CARGA" | "PAX" | "CHART",
+  payed_amount: number,
+  debt_status: "PENDIENTE" | "PAGADO",
+  bank_account: BankAccount,
 }
 
-export type ToolBox = {
+export type FlightPayment = {
+  id: number,
+  bank_account: BankAccount,
+  flight: Flight,
+  client: Client,
+  pay_method: "EFECTIVO" | "TRANSFERENCIA",
+  pay_amount: string,
+  payment_date: Date,
+  pay_description: string,
+}
+
+export type GeneralSalesReport = {
+  requisition_order: Requisition,
+  purchase_order?: PurchaseOrder,
+  quote_order?: Quote[],
+}[]
+
+export type JobTitle = {
   id: number,
   name: string,
-  created_by: string,
-  delivered_by: string,
-  employee: Employee,
-  tool: {
-    serial: string,
-    article: ToolArticle,
-  }[],
+  description: string,
+  department: Department,
+}
+
+export type Location = {
+  id: number,
+  name: string,
+  address: string,
+  type: string,
+  isMainBase: boolean,
+  cod_iata: string,
+  companies: Company[],
 }
 
 export type Manufacturer = {
@@ -316,60 +282,33 @@ export type Manufacturer = {
   description: string,
 }
 
-export type Requisition = {
+export type Module = {
   id: number,
-  order_number: string,
-  status: string,
-  created_by: User,
-  requested_by: string,
-  batch: {
-    name: string,
-    batch_articles: {
-      article_part_number: string,
-      quantity: number,
-      unit?: Convertion,
-      image: string,
-    }[]
-  }[],
-  received_by: string,
-  justification: string,
-  arrival_date: Date,
-  submission_date: Date,
-  work_order: WorkOrder,
-  aircraft: Aircraft,
-}
-
-export type Vendor = {
-id: string | number,
   name: string,
-  email: string,
-  phone: string,
-  address: string,
-  created_at: Date,
-  updated_at: Date,
+  description: string,
+  company_id: string,
 }
 
-export type Quote = {
+export type Permission = {
   id: number,
-  quote_number: string,
-  justification: string,
-  article_quote_order: {
-    batch: {
-      name: string,
+  name: string,
+  label: string,
+  modules: {
+    id: number,
+    name: string,
+    description: string,
+    registered_by: string,
+    company_id: string,
+    pivot: {
+      permission_id: string,
+      module_id: string,
     },
-    article_part_number: string,
-    quantity: number,
-    unit_price: string,
-    unit?: Convertion,
-    image: string,
+    company: {
+      id: number,
+      name: string,
+      description: string,
+    }
   }[],
-  sub_total: number,
-  total: number,
-  vendor: Vendor,
-  requisition_order: Requisition,
-  quote_date: Date,
-  created_by: string,
-  status: string,
 }
 
 export type PurchaseOrder = {
@@ -409,57 +348,74 @@ export type PurchaseOrder = {
   company: string,
 }
 
-
-export type Bank = {
+export type Quote = {
   id: number,
-  name: string,
-  type: string,
-  created_by: string,
-  updated_by: string,
-}
-
-export type BankAccount = {
-  id: number,
-  name: string,
-  account_number: string,
-  account_type: string,
-  account_owner: string,
-  bank: Bank,
-  cards: Card[],
-  company: Company,
-  created_by: string,
-  updated_by: string,
-}
-
-export type Card = {
-  id: number,
-  name: string,
-  card_number: string,
-  type: string,
-  bank_account: BankAccount,
-  created_by: string,
-  updated_by: string,
-}
-
-export type GeneralSalesReport = {
+  quote_number: string,
+  justification: string,
+  article_quote_order: {
+    batch: {
+      name: string,
+    },
+    article_part_number: string,
+    quantity: number,
+    unit_price: string,
+    unit?: Convertion,
+    image: string,
+  }[],
+  sub_total: number,
+  total: number,
+  vendor: Vendor,
   requisition_order: Requisition,
-  purchase_order?: PurchaseOrder,
-  quote_order?: Quote[],
-}[]
+  quote_date: Date,
+  created_by: string,
+  status: string,
+}
 
-export type Flight = {
-  id:number,
-  client: Client, 
-  route: Route,      
-  aircraft: Aircraft,  
-  date: string,
-  details: string,
-  fee: number,
-  total_amount: number, 
-  type: "CARGA" | "PAX" | "CHART",
-  payed_amount: number,
-  debt_status: "PENDIENTE" | "PAGADO",
-  bank_account: BankAccount,
+export type Request = {
+  id: number,
+  request_number: string,
+  justification: string,
+  submission_date: string,
+  work_order?: WorkOrder,
+  requisition_order?: string,
+  article?: Article,
+  requested_by: string,
+  created_by: string,
+}
+
+export type Requisition = {
+  id: number,
+  order_number: string,
+  status: string,
+  created_by: User,
+  requested_by: string,
+  batch: {
+    name: string,
+    batch_articles: {
+      article_part_number: string,
+      quantity: number,
+      unit?: Convertion,
+      image: string,
+    }[]
+  }[],
+  received_by: string,
+  justification: string,
+  arrival_date: Date,
+  submission_date: Date,
+  work_order: WorkOrder,
+  aircraft: Aircraft,
+}
+
+export type Role = {
+  id: number,
+  name: string,
+  companyId: number;
+  permissions: Permission[],
+  company: {
+    id: number,
+    name: string,
+    description: string,
+  }[]
 }
 
 export type Route = {
@@ -469,18 +425,32 @@ export type Route = {
   to: string,
 }
 
-export type FlightPayment = {
-  id: number,
-  bank_account: BankAccount,
-  flight: Flight,
-  client: Client,
-  pay_method: "EFECTIVO" | "TRANSFERENCIA",
-  pay_amount: string,
-  payment_date: Date,
-  pay_description: string,
+export interface ToolArticle extends Article {
+  is_special: boolean,
 }
 
+export type ToolBox = {
+  id: number,
+  name: string,
+  created_by: string,
+  delivered_by: string,
+  employee: Employee,
+  tool: {
+    serial: string,
+    article: ToolArticle,
+  }[],
+}
 
+export type Unit = {
+  id: number,
+  value: string,
+  label: string,
+  updated_by: string,
+  registered_by: string,
+
+  created_at: Date,
+  updated_at: Date,
+}
 
 export type User = {
   id: number;
@@ -496,4 +466,31 @@ export type User = {
   }[];
   permissions: Permission[],
   companies: Company[]
+}
+
+export type Vendor = {
+  id: string | number,
+    name: string,
+    email: string,
+    phone: string,
+    address: string,
+    created_at: Date,
+    updated_at: Date,
+  }
+
+export type Warehouse = {
+  id: string,
+  name: string,
+  address: string,
+  company: string,
+  type: string,
+}
+
+export interface WorkOrder extends Request {
+  order_number: string
+  service: string,
+  aircraft: Aircraft,
+  status: boolean,
+  description: string,
+  employee: Employee,
 }
