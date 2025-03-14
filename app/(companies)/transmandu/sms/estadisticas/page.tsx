@@ -9,11 +9,13 @@ import { useGetVoluntaryReportsCountedByArea } from "@/hooks/sms/useGetVoluntary
 import { Loader2 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import DynamicBarChart from "../prueba/page";
+import DynamicBarChart from "../../../../../components/charts/DynamicBarChart";
 import HorizontalForm from "@/components/forms/HorizontalForm";
 import { FormLabel } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { useGetRiskCountByDateRange } from "@/hooks/sms/useGetRiskByDateRange";
+import { useGetPostRiskCountByDateRange } from "@/hooks/sms/useGetPostRiskByDateRange";
+import { useGetVoluntaryReportsCountedByAirportLocation } from "@/hooks/sms/useGetVoluntaryReportsCountedByAirportLocation";
 
 const languages = [
   { label: "English", value: "en" },
@@ -76,6 +78,25 @@ const Statistics = () => {
 
   // Asigna parametros cuando cambia el Pathname o el SearchParams
 
+  const {
+    data: airportLocationData,
+    isLoading: isLoadingAirportLocationData,
+    isError: isErrorAirportLocationData,
+    refetch: refetchAirportLocationData,
+  } = useGetVoluntaryReportsCountedByAirportLocation(
+    params.from || "2025-03-01",
+    params.to || "2025-03-15"
+  );
+
+  const {
+    data: postRiskData,
+    isLoading: isLoadingPostRisk,
+    isError: isErrorPostRisk,
+    refetch: refetchPostRisk,
+  } = useGetPostRiskCountByDateRange(
+    params.from || "2025-03-01",
+    params.to || "2025-03-15"
+  );
 
   const {
     data: riskData,
@@ -84,7 +105,7 @@ const Statistics = () => {
     refetch: refetchRisk,
   } = useGetRiskCountByDateRange(
     params.from || "2025-03-01",
-    params.to || "2025-03-10"
+    params.to || "2025-03-15"
   );
 
   useEffect(() => {
@@ -110,7 +131,7 @@ const Statistics = () => {
     refetch: refetchBarChart,
   } = useGetVoluntaryReportingStatsByYear(
     params.from || "2025-03-01",
-    params.to || "2025-03-10"
+    params.to || "2025-03-15"
   );
 
   // Para extraer el numero de reportes por area dado unos rangos de fecha, desde hasta
@@ -121,7 +142,7 @@ const Statistics = () => {
     refetch: refetchPieChart,
   } = useGetVoluntaryReportsCountedByArea(
     params.from || "2025-03-01",
-    params.to || "2025-03-10"
+    params.to || "2025-03-15"
   );
 
   const {
@@ -131,7 +152,7 @@ const Statistics = () => {
     refetch: refetchDynamicChart,
   } = useGetDangerIdentificationsCountedByType(
     params.from || "2025-03-01",
-    params.to || "2025-03-10"
+    params.to || "2025-03-15"
   );
 
   useEffect(() => {
@@ -146,6 +167,8 @@ const Statistics = () => {
     refetchPieChart,
     refetchDynamicChart,
     refetchRisk,
+    refetchPostRisk,
+    refetchAirportLocationData,
   ]);
 
   return (
@@ -178,20 +201,6 @@ const Statistics = () => {
             </p>
           )}
         </div>
-        <div className="flex-col justify-center items-center gpa-2">
-          {isLoadingPieCharData && (
-            <div className="flex w-full h-full justify-center items-center">
-              <Loader2 className="size-24 animate-spin mt-48" />
-            </div>
-          )}
-          {pieCharData && pieCharData.length > 0 ? (
-            <PieChartComponent data={pieCharData} />
-          ) : (
-            <p className="text-lg text-muted-foreground">
-              No hay datos para mostrar.
-            </p>
-          )}
-        </div>
 
         <div className="flex-col justify-center items-center gpa-2">
           {isLoadingDynamicData && (
@@ -200,7 +209,10 @@ const Statistics = () => {
             </div>
           )}
           {dynamicData && dynamicData.length > 0 ? (
-            <DynamicBarChart data={dynamicData} />
+            <DynamicBarChart
+              data={dynamicData}
+              title="Numero de Reportes vs Tipo"
+            />
           ) : (
             <p className="text-lg text-muted-foreground">
               No hay datos para mostrar.
@@ -208,15 +220,49 @@ const Statistics = () => {
           )}
         </div>
 
+        <div className="flex justify-center items-center gpa-2">
+          <div>
+            {isLoadingRisk && (
+              <div className="flex w-full h-full justify-center items-center">
+                <Loader2 className="size-24 animate-spin mt-48" />
+              </div>
+            )}
+            {riskData && riskData.length > 0 ? (
+              <PieChartComponent
+                data={riskData}
+                title="Porcentaje de Indice de Riesgo Post Mitigacion"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+
+          <div>
+            {isLoadingPostRisk && (
+              <div className="flex w-full h-full justify-center items-center">
+                <Loader2 className="size-24 animate-spin mt-48" />
+              </div>
+            )}
+            {postRiskData && postRiskData.length > 0 ? (
+              <PieChartComponent data={postRiskData} />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+        </div>
 
         <div className="flex-col justify-center items-center gpa-2">
-          {isLoadingRisk && (
+          {isLoadingPostRisk && (
             <div className="flex w-full h-full justify-center items-center">
               <Loader2 className="size-24 animate-spin mt-48" />
             </div>
           )}
-          {riskData && riskData.length > 0 ? (
-            <PieChartComponent data={riskData} />
+          {postRiskData && postRiskData.length > 0 ? (
+            <PieChartComponent data={postRiskData} />
           ) : (
             <p className="text-lg text-muted-foreground">
               No hay datos para mostrar.
@@ -224,7 +270,23 @@ const Statistics = () => {
           )}
         </div>
 
-
+        <div className="flex-col justify-center items-center gpa-2">
+          {isLoadingAirportLocationData && (
+            <div className="flex w-full h-full justify-center items-center">
+              <Loader2 className="size-24 animate-spin mt-48" />
+            </div>
+          )}
+          {airportLocationData && airportLocationData.length > 0 ? (
+            <DynamicBarChart
+              data={airportLocationData}
+              title="Numero de Reportes vs Localizacion"
+            />
+          ) : (
+            <p className="text-lg text-muted-foreground">
+              No hay datos para mostrar.
+            </p>
+          )}
+        </div>
       </ContentLayout>
     </>
   );

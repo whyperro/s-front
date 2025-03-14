@@ -27,7 +27,11 @@ interface BarChartProps {
 const BarChartComponent = ({ data, title }: BarChartProps) => {
   console.log("BarChartComponent", data);
   if (data.closed_reports == 0 && data.open_reports == 0) {
-    return <p className="text-lg text-muted-foreground">No hay datos para mostrar acerca de "{title}"</p>
+    return (
+      <p className="text-lg text-muted-foreground">
+        No hay datos para mostrar acerca de "{title}"
+      </p>
+    );
   }
   const values: StatsDataByYear[] = data
     ? [
@@ -39,12 +43,11 @@ const BarChartComponent = ({ data, title }: BarChartProps) => {
         },
       ]
     : [];
-  console.log("this is the valueeee", values);
   return (
     <>
-      <div className="flex-col justify-center items-center">
-        <h1 className="font-semibold">{title}</h1>
-        <ResponsiveContainer width="50%" height="50%" aspect={2}>
+      <div className="flex flex-col justify-center items-center">
+        <h1 className="text-xl font-semibold">{title}</h1>
+        <ResponsiveContainer width="80%" height="80%" aspect={2}>
           {values ? (
             <BarChart
               width={300}

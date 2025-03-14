@@ -13,7 +13,7 @@ const COLORS: string[] = [
   "#FFBB28",
   "#ED1C1C",
   "#CE33FF",
-  "#FF2886"
+  "#FF2886",
 ];
 
 interface CustomizedLabelProps {
@@ -29,13 +29,13 @@ interface CustomizedLabelProps {
 
 const RADIAN = Math.PI / 180;
 
-
 interface PieChartComponentProps {
   data: pieChartData[];
+  title?: string;
 }
 
-const PieChartComponent = ({ data }: PieChartComponentProps) => {
-  console.log("PieChartComponent",data);
+const PieChartComponent = ({ data, title }: PieChartComponentProps) => {
+  console.log("PieChartComponent", data);
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const { theme } = useTheme();
   const renderCustomizedLabel = ({
@@ -73,34 +73,37 @@ const PieChartComponent = ({ data }: PieChartComponentProps) => {
     console.log(activeIndex);
   };
   return (
-    <ResponsiveContainer width="100%" height="100%" aspect={2}>
-      <PieChart width={400} height={400}>
-        {data ? (
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            labelLine={true}
-            label={renderCustomizedLabel}
-            outerRadius={120}
-            fill="#8884d8"
-            dataKey="value"
-            activeIndex={activeIndex}
-            onMouseEnter={onPieEnter}
-          >
-            {data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
-            <Tooltip />
-          </Pie>
-        ) : (
-          <p>No hay datos para mostrar..</p>
-        )}
-      </PieChart>
-    </ResponsiveContainer>
+    <>
+      <h1 className="text-xl font-semibold">{title}</h1>
+      <ResponsiveContainer width="100%" height="100%" aspect={2}>
+        <PieChart width={400} height={400}>
+          {data ? (
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              labelLine={true}
+              label={renderCustomizedLabel}
+              outerRadius={120}
+              fill="#8884d8"
+              dataKey="value"
+              activeIndex={activeIndex}
+              onMouseEnter={onPieEnter}
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+              <Tooltip />
+            </Pie>
+          ) : (
+            <p>No hay datos para mostrar..</p>
+          )}
+        </PieChart>
+      </ResponsiveContainer>
+    </>
   );
 };
 export default PieChartComponent;
