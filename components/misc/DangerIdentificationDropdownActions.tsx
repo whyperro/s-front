@@ -5,10 +5,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DangerIdentification } from "@/types";
 import {
-  DangerIdentification
-} from "@/types";
-import {
+  ClipboardPen,
   ClipboardPenLine,
   EyeIcon,
   Loader2,
@@ -28,6 +27,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
 
 const DangerIdentificationDropdownActions = ({
   dangerIdentification,
@@ -64,6 +64,10 @@ const DangerIdentificationDropdownActions = ({
             align="center"
             className="flex gap-2 justify-center"
           >
+            <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+              <ClipboardPen className="size-5" />
+            </DropdownMenuItem>
+
             <DialogTrigger asChild>
               <DropdownMenuItem onClick={() => setOpenDelete(true)}>
                 <Trash2 className="size-5 text-red-500" />
@@ -159,6 +163,19 @@ const DangerIdentificationDropdownActions = ({
               isEditing={true}
               initialData={dangerIdentification.analysis}
             />
+          </DialogContent>
+        </Dialog>
+        <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+          <DialogContent className="flex flex-col max-w-2xl m-2">
+            <DialogHeader>
+              <DialogTitle className="text-center"></DialogTitle>
+              <CreateDangerIdentificationForm
+                id={dangerIdentification.voluntary_report.id}
+                initialData={dangerIdentification}
+                isEditing={true}
+                onClose={() => setOpenEdit(false)}
+              />
+            </DialogHeader>
           </DialogContent>
         </Dialog>
       </Dialog>
