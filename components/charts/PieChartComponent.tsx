@@ -32,9 +32,18 @@ const RADIAN = Math.PI / 180;
 interface PieChartComponentProps {
   data: pieChartData[];
   title?: string;
+  height: string;
+  width: string;
+  radius: number;
 }
 
-const PieChartComponent = ({ data, title }: PieChartComponentProps) => {
+const PieChartComponent = ({
+  data,
+  title,
+  height,
+  width,
+  radius,
+}: PieChartComponentProps) => {
   console.log("PieChartComponent", data);
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const { theme } = useTheme();
@@ -75,7 +84,7 @@ const PieChartComponent = ({ data, title }: PieChartComponentProps) => {
   return (
     <>
       <h1 className="text-xl font-semibold">{title}</h1>
-      <ResponsiveContainer width="100%" height="100%" aspect={2}>
+      <ResponsiveContainer width={width} height={height} aspect={2}>
         <PieChart width={400} height={400}>
           {data ? (
             <Pie
@@ -84,7 +93,7 @@ const PieChartComponent = ({ data, title }: PieChartComponentProps) => {
               cy="50%"
               labelLine={true}
               label={renderCustomizedLabel}
-              outerRadius={120}
+              outerRadius={radius}
               fill="#8884d8"
               dataKey="value"
               activeIndex={activeIndex}

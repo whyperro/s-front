@@ -22,9 +22,11 @@ interface StatsDataByYear {
 interface BarChartProps {
   data: ReportingStats;
   title: string;
+  width: string;
+  height:string;
 }
 
-const BarChartComponent = ({ data, title }: BarChartProps) => {
+const BarChartComponent = ({ data, title ,width, height}: BarChartProps) => {
   console.log("BarChartComponent", data);
   if (data.closed_reports == 0 && data.open_reports == 0) {
     return (

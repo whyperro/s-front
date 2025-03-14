@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { useGetRiskCountByDateRange } from "@/hooks/sms/useGetRiskByDateRange";
 import { useGetPostRiskCountByDateRange } from "@/hooks/sms/useGetPostRiskByDateRange";
 import { useGetVoluntaryReportsCountedByAirportLocation } from "@/hooks/sms/useGetVoluntaryReportsCountedByAirportLocation";
+import { ResponsiveContainer } from "recharts";
 
 const languages = [
   { label: "English", value: "en" },
@@ -174,63 +175,46 @@ const Statistics = () => {
   return (
     <>
       <ContentLayout title="Gráficos Estadísticos de los Reportes">
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center mb-4">
           <div className="flex flex-col">
-            <Label className=" text-lg font-semibold">Seleccionar Fecha:</Label>
+            <Label className="text-lg font-semibold">Seleccionar Fecha:</Label>
             <DataFilter />
           </div>
         </div>
 
-        <div className="flex-col justify-center items-center gpa-2">
-          {isLoadingBarChart && (
-            <div className="flex w-full h-full justify-center items-center">
-              <Loader2 className="size-24 animate-spin mt-48" />
-            </div>
-          )}
-
-          {barChartData && (
-            <BarChartComponent
-              data={barChartData}
-              title="Peligros Identificados"
-            />
-          )}
-
-          {isErrorBarChart && (
-            <p className="text-sm text-muted-foreground">
-              Ha ocurrido un error al cargar las...
-            </p>
-          )}
-        </div>
-
-        <div className="flex-col justify-center items-center gpa-2">
-          {isLoadingDynamicData && (
-            <div className="flex w-full h-full justify-center items-center">
-              <Loader2 className="size-24 animate-spin mt-48" />
-            </div>
-          )}
-          {dynamicData && dynamicData.length > 0 ? (
-            <DynamicBarChart
-              data={dynamicData}
-              title="Numero de Reportes vs Tipo"
-            />
-          ) : (
-            <p className="text-lg text-muted-foreground">
-              No hay datos para mostrar.
-            </p>
-          )}
-        </div>
-
-        <div className="flex justify-center items-center gpa-2">
-          <div>
-            {isLoadingRisk && (
-              <div className="flex w-full h-full justify-center items-center">
-                <Loader2 className="size-24 animate-spin mt-48" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Gráfico de Barras (Peligros Identificados) */}
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingBarChart ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
               </div>
+            ) : barChartData ? (
+              <BarChartComponent
+                height="100%"
+                width="100%"
+                data={barChartData}
+                title="Peligros Identificados"
+              />
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Ha ocurrido un error al cargar las...
+              </p>
             )}
-            {riskData && riskData.length > 0 ? (
-              <PieChartComponent
-                data={riskData}
-                title="Porcentaje de Indice de Riesgo Post Mitigacion"
+          </div>
+
+          {/* Gráfico de Barras Dinámico (Numero de Reportes vs Tipo) */}
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingDynamicData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : dynamicData && dynamicData.length > 0 ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={dynamicData}
+                title="Numero de Reportes vs Tipo"
               />
             ) : (
               <p className="text-lg text-muted-foreground">
@@ -239,53 +223,90 @@ const Statistics = () => {
             )}
           </div>
 
-          <div>
-            {isLoadingPostRisk && (
-              <div className="flex w-full h-full justify-center items-center">
-                <Loader2 className="size-24 animate-spin mt-48" />
+          {/* Gráfico de Torta (Porcentaje de Indice de Riesgo Pre-Mitigacion) */}
+          <div
+            className="flex flex-col justify-center items-center 
+          p-4 rounded-lg shadow border"
+          >
+            {isLoadingRisk ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
               </div>
-            )}
-            {postRiskData && postRiskData.length > 0 ? (
-              <PieChartComponent data={postRiskData} />
+            ) : riskData && riskData.length > 0 ? (
+              <PieChartComponent
+                radius={120}
+                height="50%"
+                width="50%"
+                data={riskData}
+                title="Porcentaje de Indice de Riesgo Pre-Mitigacion"
+              />
             ) : (
               <p className="text-lg text-muted-foreground">
                 No hay datos para mostrar.
               </p>
             )}
           </div>
-        </div>
 
-        <div className="flex-col justify-center items-center gpa-2">
-          {isLoadingPostRisk && (
-            <div className="flex w-full h-full justify-center items-center">
-              <Loader2 className="size-24 animate-spin mt-48" />
-            </div>
-          )}
-          {postRiskData && postRiskData.length > 0 ? (
-            <PieChartComponent data={postRiskData} />
-          ) : (
-            <p className="text-lg text-muted-foreground">
-              No hay datos para mostrar.
-            </p>
-          )}
-        </div>
+          {/* Gráfico de Barras Dinámico (Indice de Riesgo Pre-Mitigacion) */}
+          <div className="flex-col p-4 rounded-lg shadow border">
+            {isLoadingRisk ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : riskData && riskData.length > 0 ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={riskData}
+                title="Indice de Riesgo Pre-Mitigacion"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
 
-        <div className="flex-col justify-center items-center gpa-2">
-          {isLoadingAirportLocationData && (
-            <div className="flex w-full h-full justify-center items-center">
-              <Loader2 className="size-24 animate-spin mt-48" />
-            </div>
-          )}
-          {airportLocationData && airportLocationData.length > 0 ? (
-            <DynamicBarChart
-              data={airportLocationData}
-              title="Numero de Reportes vs Localizacion"
-            />
-          ) : (
-            <p className="text-lg text-muted-foreground">
-              No hay datos para mostrar.
-            </p>
-          )}
+          {/* Gráfico de Torta (Porcentaje de Indice de Riesgo Post-Mitigacion) */}
+          <div className="flex flex-col justify-center items-center p-4 rounded-lg shadow border ">
+            {isLoadingPostRisk ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : postRiskData && postRiskData.length > 0 ? (
+              <PieChartComponent
+                radius={120}
+                height="100%"
+                width="100%"
+                data={postRiskData}
+                title="Porcentaje de Indice de Riesgo Post-Mitigacion"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+
+          {/* Gráfico de Barras Dinámico (Numero de Reportes vs Localizacion) */}
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingAirportLocationData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : airportLocationData && airportLocationData.length > 0 ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={airportLocationData}
+                title="Numero de Reportes vs Localizacion"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
         </div>
       </ContentLayout>
     </>
