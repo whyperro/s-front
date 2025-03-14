@@ -7,6 +7,8 @@ import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import Link from "next/link";
 import FlightPaymentsDropdownActions from "@/components/misc/FlightPaymentsDropdownActions";
+import ClientResumeDialog from "@/components/dialogs/ClientResumeDialog";
+import FlightResumeDialog from "@/components/dialogs/FlightResumeDialog";
 
 export const columns: ColumnDef<FlightPayment>[] = [
   {
@@ -26,28 +28,22 @@ export const columns: ColumnDef<FlightPayment>[] = [
     },
   },
   {
-    accessorKey: "client",
+    accessorKey: "client.name",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Cliente" />
     ),
-    meta: { title: "Nombre" },
-    cell: ({ row }) => (
-      <div className="flex justify-center font-bold">
-        {row.original.client.name}
-      </div>
-    ),
+    meta: { title: "Cliente" },
+    cell: ({ row }) => <ClientResumeDialog client={row.original.client} />,
   },
   {
-    accessorKey: "flights",
+    accessorKey: "flights.details",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Vuelo" />
     ),
     meta: { title: "Vuelo" },
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.flight.details}
-        </span>
+        <FlightResumeDialog id={row.original.flight.id.toString()} />
       </div>
     ),
   },
@@ -66,7 +62,7 @@ export const columns: ColumnDef<FlightPayment>[] = [
     ),
   },
   {
-    accessorKey: "bank_account",
+    accessorKey: "bank_account.name",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Cuenta de Banco" />
     ),

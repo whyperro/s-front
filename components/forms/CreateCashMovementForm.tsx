@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { useGetCash } from "@/hooks/administracion/useGetCash";
 import { useGetEmployeesByCompany } from "@/hooks/administracion/useGetEmployees";
-import { useGetCompanies } from "@/hooks/useGetCompanies";
+import { useGetAdministrationCompany } from "@/hooks/administracion/useGetAdministrationCompany";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -37,7 +37,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 import { Loader2 } from "lucide-react";
-import { Company } from "@/types";
+import { AdministrationCompany } from "@/types";
 import { useGetVendors } from "@/hooks/ajustes/globales/proveedores/useGetVendors";
 
 const formSchema = z.object({
@@ -56,7 +56,7 @@ const formSchema = z.object({
   date: z.date({
     required_error: "La fecha es requerida",
   }),
-  income_or_output: z.enum(["INCOME", "OUTPUT"]),
+  type: z.enum(["INCOME", "OUTPUT"]),
   account: z
     .string()
     .min(2, {
@@ -116,7 +116,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
     mutate,
     isPending: isEmployeesPending,
   } = useGetEmployeesByCompany();
-  const { data: companies, isLoading: isCompaniesLoading } = useGetCompanies();
+  const { data: companies, isLoading: isCompaniesLoading } = useGetAdministrationCompany();
   const { data: cashes, isLoading: isCashesLoading } = useGetCash();
   const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts();
   const { data: vendors, isLoading: isVendorLoading } = useGetVendors();
@@ -227,7 +227,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
         <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
-            name="income_or_output"
+            name="type"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tipo de Transacción</FormLabel>
@@ -364,7 +364,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                 </FormItem>
               )}
             />
-          {form.watch("income_or_output") === "OUTPUT" && (
+          {form.watch("type") === "OUTPUT" && (
           <FormField
             control={form.control}
             name="vendor_id"

@@ -164,6 +164,13 @@ export function getMenuList(
                       pathname ===
                       "/transmandu/administracion/gestion_cajas/movimientos",
                   },
+                  {
+                    href: "/transmandu/administracion/gestion_cajas/empresa",
+                    label: "Gestionar Empresa",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/gestion_cajas/empresa",
+                  },
                 ],
               },
               

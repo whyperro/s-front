@@ -13,7 +13,7 @@ const FlightPaymentsPage = () => {
   if (isLoading) {
     return <LoadingPage />;
   }
-
+  console.log(data);
   return (
     <ContentLayout title="Clientes">
       {" "}

@@ -25,7 +25,7 @@ const CashMovementResume = ({ movement }: { movement: CashMovement }) => {
         <h3 className="text-sm font-medium text-muted-foreground">
           Inreso/Egreso
         </h3>
-        <p className="text-lg font-semibold">{movement.income_or_output}</p>
+        <p className="text-lg font-semibold">{movement.type}</p>
         <Separator />
       </div>
 

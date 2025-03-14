@@ -18,10 +18,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { Separator } from "../ui/separator";
-import { useGetCashMovementById } from "@/hooks/administracion/useGetMovementById";
-import { es } from "date-fns/locale";
-import { format } from "date-fns";
 import { CashMovement } from "@/types";
 import CashMovementResume from "./CashMovementResume";
 

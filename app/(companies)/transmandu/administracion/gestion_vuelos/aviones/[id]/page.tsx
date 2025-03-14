@@ -44,12 +44,12 @@ import {
 } from "recharts";
 import { Flight } from "@/types";
 
-// Tipo para los datos mensuales
+// Tipo para los datos mensuales 
 type MonthlyData = {
-  name: string;
-  ganancias: number;
-  vuelos: number;
-  month: number;
+  name: string;  //nombre del mes enero a diciembre 
+  ganancias: number;  //sumatoria del total pagado, no puede ser null 
+  vuelos: number;   //total de vuelos en ese mes, no puede estar undefined  
+  month: number;  // del 0 al 11
 };
 
 const monthNames = [
@@ -132,23 +132,37 @@ export default function AircraftReportPage() {
 
   // Calcular estadísticas totales
   const totalEarnings = monthlyData.reduce(
-    (sum, month) => sum + month.ganancias,
+    (sum, month) => {
+      const ganancias = typeof month.ganancias === 'number' ? month.ganancias : 0;
+      return sum + ganancias;
+    },
     0
   );
   const totalFlights = monthlyData.reduce(
-    (sum, month) => sum + month.vuelos,
+    (sum, month) => {
+      const vuelos = typeof month.vuelos === 'number' ? month.vuelos : 0;
+      return sum + vuelos;
+    },
     0
   );
   const averageEarningPerFlight =
     totalFlights > 0 ? totalEarnings / totalFlights : 0;
-
+    
   // Encontrar el mes con más ganancias
   const bestMonth =
     monthlyData.length > 0
-      ? monthlyData.reduce((prev, current) =>
-          prev.ganancias > current.ganancias ? prev : current
-        )
+      ? monthlyData.reduce((prev, current) =>{
+        const prevGanancias = typeof prev.ganancias === 'number' ? prev.ganancias : 0;
+        const currentGanancias = typeof current.ganancias === 'number' ? current.ganancias : 0;
+        return prevGanancias > currentGanancias ? prev : current;
+      })
       : null;
+
+      //console.log("Monthly Data:", monthlyData);
+      //console.log("Total Earnings:", totalEarnings);
+      //console.log("Total Flights:", totalFlights);
+      //console.log("Average Earnings per Flight:", averageEarningPerFlight);
+      //console.log("Best Month:", bestMonth);
 
   if (isLoading) {
     return (

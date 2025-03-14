@@ -1,5 +1,37 @@
 import { z } from "zod";
 
+export type AdministrationCompany = {
+  id: number,
+  name: string,
+  rif: string,
+  fiscal_address: string,
+  phone_number: number,
+  created_at: string,
+  updated_at: string,
+}
+
+export type Cash = {
+  id: number,
+  name: string,
+  total_amount: string,
+  box_type: string,
+}
+
+export type CashMovement = {
+  id: number,
+  responsible: Employee,
+  cash: Cash,
+  company: AdministrationCompany,
+  date: Date,
+  type: "INCOME" | "OUTPUT",
+  account: string,
+  category: string,
+  sub_category: string,
+  sub_category_details: string,
+  amount: number,
+  bank_account: BankAccount, 
+  vendor: Vendor,
+}
 export type Role = {
     id: number,
     name: string,
@@ -12,21 +44,6 @@ export type Role = {
     }[]
 }
 
-export type User = {
-    id: number;
-    username: string;
-    first_name: string,
-    last_name: string,
-    email: string;
-    isActive: boolean,
-    roles?: {
-      id: number,
-      name: string,
-      permissions: Permission[]
-    }[];
-    permissions: Permission[],
-    companies: Company[]
-}
 
 export type Permission = {
   id: number,
@@ -463,26 +480,20 @@ export type FlightPayment = {
   pay_description: string,
 }
 
-export type Cash = {
-  id: number,
-  name: string,
-  total_amount: string,
-  box_type: string,
-}
 
-export type CashMovement = {
-  id: number,
-  responsible: Employee,
-  cash: Cash,
-  company: Company,
-  date: Date,
-  income_or_output: "INCOME" | "OUTPUT",
-  account: string,
-  category: string,
-  sub_category: string,
-  sub_category_details: string,
-  amount: number,
-  bank_account: BankAccount, 
-  vendor: Vendor,
-}
 
+export type User = {
+  id: number;
+  username: string;
+  first_name: string,
+  last_name: string,
+  email: string;
+  isActive: boolean,
+  roles?: {
+    id: number,
+    name: string,
+    permissions: Permission[]
+  }[];
+  permissions: Permission[],
+  companies: Company[]
+}

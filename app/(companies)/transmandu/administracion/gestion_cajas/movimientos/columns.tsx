@@ -25,7 +25,7 @@ export const columns: ColumnDef<CashMovement>[] = [
     },
   },
   {
-    accessorKey: "company",
+    accessorKey: "company.name",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Empresa" />
     ),
@@ -39,7 +39,7 @@ export const columns: ColumnDef<CashMovement>[] = [
     ),
   },
   {
-    accessorKey: "income_or_outcome",
+    accessorKey: "type",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Ingreso/Egreso" />
     ),
@@ -47,13 +47,13 @@ export const columns: ColumnDef<CashMovement>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.income_or_output}
+          {row.original.type}
         </span>
       </div>
     ),
   },
   {
-    accessorKey: "cash",
+    accessorKey: "cash.name",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Caja" />
     ),
@@ -141,7 +141,7 @@ export const columns: ColumnDef<CashMovement>[] = [
     ),
   },
   {
-    accessorKey: "responsible",
+    accessorKey: "responsible.first_name",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Responsable" />
     ),
@@ -156,7 +156,7 @@ export const columns: ColumnDef<CashMovement>[] = [
     ),
   },
   {
-    accessorKey: "vendor",
+    accessorKey: "vendor.name",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Beneficiario" />
     ),
@@ -170,7 +170,7 @@ export const columns: ColumnDef<CashMovement>[] = [
     ),
   },
   {
-    accessorKey: "bank_account",
+    accessorKey: "bank_account.name",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Cuenta de Banco" />
     ),

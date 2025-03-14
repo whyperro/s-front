@@ -41,7 +41,7 @@ export const columns: ColumnDef<Aircraft>[] = [
     ),
   },
   {
-    accessorKey: "location",
+    accessorKey: "location.address",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Ubicación" />
     ),

@@ -3,7 +3,7 @@ import axiosInstance from "@/lib/axios";
 import { Flight } from "@/types";
 
 const fetchFlightsByAircraft = async (aircraftId: string): Promise<Flight[]> => {
-  const { data } = await axiosInstance.get(`/transmandu/flights?aircraftId=${aircraftId}`);
+  const { data } = await axiosInstance.get(`/transmandu/flights-by-aircraft/${aircraftId}`);
   return data;
 };
 

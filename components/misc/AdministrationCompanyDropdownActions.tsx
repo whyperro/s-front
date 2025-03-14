@@ -9,8 +9,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { useGetClientById } from "@/hooks/administracion/useGetClientsById";
-import { useDeleteClient } from "@/actions/administracion/clientes/actions";
+import { useGetAdministrationCompanyById } from "@/hooks/administracion/useGetAdministrationCompanyById";
+import { useDeleteAdministrationCompany } from "@/actions/administracion/empresa/actions";
 import {
   Dialog,
   DialogContent,
@@ -21,20 +21,20 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 
-const ClientDropdownActions = ({ id }: { id: string }) => {
+const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [openClient, setOpenClient] = useState<boolean>(false);
+  const [openAdminCompany, setOpenAdminCompany] = useState<boolean>(false);
   const router = useRouter();
-  const { deleteClient } = useDeleteClient();
-  const { data: clientDetails, isLoading } = useGetClientById(id);
+  const { DeleteAdministrationCompany } =useDeleteAdministrationCompany();
+  const { data: adminCompany, isLoading } = useGetAdministrationCompanyById(id);
 
   const handleDelete = async (id: number | string) => {
-    await deleteClient.mutateAsync(id);
+    await DeleteAdministrationCompany.mutateAsync(id);
     setOpen(false);
   };
 
   const handleViewDetails = () => {
-    setOpenClient(true);
+    setOpenAdminCompany(true);
   };
 
   return (
@@ -58,7 +58,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/gestion_vuelos/clientes/${id}`); //segun la query deberia ser aircrafts
+              router.push(`/administracion/gestion_cajas/empresa/${id}`);
             }}
           ></DropdownMenuItem>
         </DropdownMenuContent>
@@ -68,7 +68,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center">
-              ¿Seguro que desea eliminar al cliente?
+              ¿Seguro que desea eliminar el registro de la empresa?
             </DialogTitle>
             <DialogDescription className="text-center p-2 mb-0 pb-0">
               Esta acción es irreversible y estaría eliminando por completo el
@@ -84,11 +84,11 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
               Cancelar
             </Button>
             <Button
-              disabled={deleteClient.isPending}
+              disabled={DeleteAdministrationCompany.isPending}
               className="hover:bg-white hover:text-black hover:border hover:border-black transition-all"
               onClick={() => handleDelete(id)}
             >
-              {deleteClient.isPending ? (
+              {DeleteAdministrationCompany.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <p>Confirmar</p>
@@ -97,75 +97,72 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <Dialog open={openClient} onOpenChange={setOpenClient}>
+
+      <Dialog open={openAdminCompany} onOpenChange={setOpenAdminCompany}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader className="text-center font-bold">
-            Resumen del Cliente
+            Resumen de Empresa
           </DialogHeader>
           {isLoading ? (
             <div className="flex justify-center py-4">
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
-          ) : clientDetails ? (
+          ) : adminCompany ? (
             <div className="space-y-4">
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Nombre
+                  Cliente
                 </h3>
-                <p className="text-lg font-semibold">{clientDetails.name}</p>
+                <p className="text-lg font-semibold">
+                  {adminCompany.name}
+                </p>
                 <Separator />
               </div>
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Cedula / RIF
+                  RIF
                 </h3>
-                <p className="text-lg font-semibold">{clientDetails.dni}</p>
+                <p className="text-lg font-semibold">
+                  {adminCompany.rif}
+                </p>
                 <Separator />
               </div>
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Número de Teléfono
+                  Dirección Fiscal
                 </h3>
-                <p className="text-lg font-semibold">{clientDetails.phone}</p>
+                <p className="text-lg font-semibold">
+                  {adminCompany.fiscal_address}
+                </p>
                 <Separator />
               </div>
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Ubicación
+                  Número de Telefono
                 </h3>
-                <p className="text-lg font-semibold">{clientDetails.address}</p>
+                <p className="text-lg font-semibold">
+                  {adminCompany.phone_number}
+                </p>
                 <Separator />
-              </div>
-
-              <div className="bg-muted p-4 rounded-lg mt-6">
-                <h3 className="font-medium mb-2">Deuda</h3>
-                <div className="flex justify-between items-center">
-                  <span>Cuenta por Cobrar:</span>
-                  <span className="font-bold text-xl">
-                    ${clientDetails.debt}
-                  </span>
-                </div>
               </div>
             </div>
           ) : (
             <p className="text-center text-muted-foreground">
-              No se pudo cargar la información del cliente.
+              No se pudo cargar la información de la empresa.
             </p>
           )}
 
           <DialogFooter className="sm:justify-center">
             <Button
               variant="outline"
-              onClick={() =>
-                router.push(`/administracion/gestion_vuelos/clientes/${id}`)
-              }
+              onClick={() => router.push(`/administracion/gestion_cajas/empresa/${id}`)}
             >
               Ver detalles completos
             </Button>
-            <Button onClick={() => setOpenClient(false)}>Cerrar</Button>
+            <Button onClick={() => setOpenAdminCompany(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -173,4 +170,4 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
   );
 };
 
-export default ClientDropdownActions;
+export default AdministrationCompanyDropdownActions;
