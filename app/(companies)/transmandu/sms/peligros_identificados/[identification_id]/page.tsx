@@ -1,13 +1,8 @@
 "use client";
 import { ContentLayout } from "@/components/layout/ContentLayout";
 import { useGetDangerIdentificationById } from "@/hooks/sms/useGetDangerIdentificationById";
-import { useGetVoluntaryReportById } from "@/hooks/sms/useGetVoluntaryReportById";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
 import { Loader2 } from "lucide-react";
-import { Content } from "next/font/google";
 import { useParams } from "next/navigation";
-import React from "react";
 
 const ShowDangerIdentification = () => {
   const { identification_id } = useParams<{ identification_id: string }>();
