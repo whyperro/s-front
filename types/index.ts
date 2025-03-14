@@ -405,12 +405,14 @@ export type DangerIdentification = {
   id: number;
   danger: string;
   danger_area: string;
+  danger_type: string;
   description: string;
   possible_consequences: string;
   consequence_to_evaluate: string;
   root_cause_analysis: string;
   information_source: InformationSource;
   analysis: Analysis;
+  voluntary_report: VoluntaryReport;
 };
 
 export type FollowUpControl = {
@@ -478,14 +480,12 @@ export type ReportingStats = {
   closed_reports: number;
 };
 
-
 export type pieChartData = {
   name: string;
   value: number;
-}
+};
 
 export type Areas = {
-  id: number
+  id: number;
   name: string;
-  
-}
+};
