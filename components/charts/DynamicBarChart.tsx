@@ -40,12 +40,17 @@ const renderLegendText = (value: string) => {
   return <span style={{ fontWeight: "bold" }}></span>;
 };
 
-const DynamicBarChart = ({ data, title ,height,width}: DynamicBarChartProps) => {
+const DynamicBarChart = ({
+  data,
+  title,
+  height,
+  width,
+}: DynamicBarChartProps) => {
   console.log("DYNAMICBARCHART", data);
   return (
     <>
       <h1 className="text-xl font-semibold">{title}</h1>
-      <ResponsiveContainer width={height} height={width} aspect={2}>
+      <ResponsiveContainer aspect={2}>
         <BarChart width={730} height={250} data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
@@ -55,7 +60,8 @@ const DynamicBarChart = ({ data, title ,height,width}: DynamicBarChartProps) => 
           <Bar
             dataKey="value"
             fill="#8884d8"
-            name="Numero de Reportes Segun su Tipo"
+            barSize={200}
+            name={title}
           >
             {data.map((entry, index) => (
               <Cell

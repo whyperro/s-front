@@ -40,6 +40,12 @@ const ShowDangerIdentification = () => {
             </div>
             <div className="flex bg-gray-100 justify-between items-center p-4 rounded-lg">
               <p className="text-lg text-gray-700">
+                <span className="font-semibold">Tipo de Peligro:</span>
+                {dangerIdentification.danger_type}
+              </p>
+            </div>
+            <div className="flex bg-gray-100 justify-between items-center p-4 rounded-lg">
+              <p className="text-lg text-gray-700">
                 <span className="font-semibold">Nombre de la Fuente:</span>
                 {dangerIdentification.information_source.name}
               </p>

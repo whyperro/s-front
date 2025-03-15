@@ -23,10 +23,10 @@ interface BarChartProps {
   data: ReportingStats;
   title: string;
   width: string;
-  height:string;
+  height: string;
 }
 
-const BarChartComponent = ({ data, title ,width, height}: BarChartProps) => {
+const BarChartComponent = ({ data, title, width, height }: BarChartProps) => {
   console.log("BarChartComponent", data);
   if (data.closed_reports == 0 && data.open_reports == 0) {
     return (
@@ -47,50 +47,48 @@ const BarChartComponent = ({ data, title ,width, height}: BarChartProps) => {
     : [];
   return (
     <>
-      <div className="flex flex-col justify-center items-center">
-        <h1 className="text-xl font-semibold">{title}</h1>
-        <ResponsiveContainer width="80%" height="80%" aspect={2}>
-          {values ? (
-            <BarChart
-              width={300}
-              height={600}
-              data={values}
-              margin={{
-                top: 20,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-              barSize={160}
-            >
-              <CartesianGrid strokeDasharray="3" stroke="#000" opacity={0.5} />
-              <XAxis dataKey="name" />
-              <YAxis
-                allowDecimals={false}
-                type="number"
-                domain={[0, "dataMax"]}
-              />
-              <Tooltip />
-              <Legend />
-              <Bar
-                dataKey="open_reports"
-                name={"En Proceso"}
-                stackId="a"
-                fill="#8884d8"
-              />
+      <h1 className="text-xl font-semibold">{title}</h1>
+      <ResponsiveContainer width={width} height={height} aspect={2}>
+        {values ? (
+          <BarChart
+            width={300}
+            height={600}
+            data={values}
+            margin={{
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+            barSize={160}
+          >
+            <CartesianGrid strokeDasharray="3" stroke="#000" opacity={0.5} />
+            <XAxis dataKey="name" />
+            <YAxis
+              allowDecimals={false}
+              type="number"
+              domain={[0, "dataMax"]}
+            />
+            <Tooltip />
+            <Legend />
+            <Bar
+              dataKey="open_reports"
+              name={"En Proceso"}
+              stackId="a"
+              fill="#8884d8"
+            />
 
-              <Bar
-                dataKey="closed_reports"
-                name={"Gestionados"}
-                stackId="a"
-                fill="#82ca9d"
-              />
-            </BarChart>
-          ) : (
-            <p>No hay datos disponibles para mostrar el gráfico.</p>
-          )}
-        </ResponsiveContainer>
-      </div>
+            <Bar
+              dataKey="closed_reports"
+              name={"Gestionados"}
+              stackId="a"
+              fill="#82ca9d"
+            />
+          </BarChart>
+        ) : (
+          <p>No hay datos disponibles para mostrar el gráfico.</p>
+        )}
+      </ResponsiveContainer>
     </>
   );
 };

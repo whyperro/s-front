@@ -32,8 +32,8 @@ const RADIAN = Math.PI / 180;
 interface PieChartComponentProps {
   data: pieChartData[];
   title?: string;
-  height: string;
-  width: string;
+  height?: string;
+  width?: string;
   radius: number;
 }
 
@@ -84,7 +84,7 @@ const PieChartComponent = ({
   return (
     <>
       <h1 className="text-xl font-semibold">{title}</h1>
-      <ResponsiveContainer width={width} height={height} aspect={2}>
+      <ResponsiveContainer  aspect={2} >
         <PieChart width={400} height={400}>
           {data ? (
             <Pie

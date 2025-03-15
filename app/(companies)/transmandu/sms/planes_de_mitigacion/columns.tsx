@@ -17,6 +17,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 function getResult(index: string) {
   const INTOLERABLE: string[] = ["5A", "5B", "5C", "4A", "4B", "3A"];
@@ -66,20 +67,20 @@ export const columns: ColumnDef<MitigationTable>[] = [
                 const riskIndex = getResult(row.original.analysis.result);
                 if (riskIndex === "TOLERABLE") {
                   return (
-                    <div className="bg-yellow-400 p-4 rounded-lg font-semibold">
-                      <p className="text-white">TOLERABLE</p>
+                    <div className="flex justify-center">
+                      <Badge className={"bg-yellow-400"}>TOLERABLE</Badge>
                     </div>
                   );
                 } else if (riskIndex === "INTOLERABLE") {
                   return (
-                    <div className="bg-red-600 p-4 rounded-lg font-semibold">
-                      <p className="text-white">INTOLERABLE</p>
+                    <div className="flex justify-center">
+                      <Badge className={"bg-red-600"}>INTOLERABLE</Badge>
                     </div>
                   );
                 } else if (riskIndex === "ACEPTABLE") {
                   return (
-                    <div className="bg-green-500 p-4 rounded-lg font-semibold">
-                      <p className="text-white">ACEPTABLE</p>
+                    <div className="flex justify-center">
+                      <Badge className={"bg-green-500"}>ACEPTABLE</Badge>
                     </div>
                   );
                 } else {
@@ -208,20 +209,20 @@ export const columns: ColumnDef<MitigationTable>[] = [
                 const riskIndex = getResult(mitigation_analyses?.result);
                 if (riskIndex === "TOLERABLE") {
                   return (
-                    <div className="bg-yellow-400 p-4 rounded-lg">
-                      <p className="text-white">TOLERABLE</p>
+                    <div className="flex justify-center">
+                      <Badge className={"bg-yellow-400"}>TOLERABLE</Badge>
                     </div>
                   );
                 } else if (riskIndex === "INTOLERABLE") {
                   return (
-                    <div className="bg-red-600 p-4 rounded-lg">
-                      <p className="text-white">INTOLERABLE</p>
+                    <div className="flex justify-center">
+                      <Badge className={"bg-red-500"}>INTOLERABLE</Badge>
                     </div>
                   );
                 } else if (riskIndex === "ACEPTABLE") {
                   return (
-                    <div className="bg-green-500 p-4 rounded-lg">
-                      <p className="text-white">ACEPTABLE</p>
+                    <div className="flex justify-center">
+                      <Badge className={"bg-green-500"}>ACEPTABLE</Badge>
                     </div>
                   );
                 } else {

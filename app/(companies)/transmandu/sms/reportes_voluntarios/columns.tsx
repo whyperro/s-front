@@ -4,13 +4,12 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 
+import VoluntaryReportDropdownActions from "@/components/misc/VoluntaryReportDropDownMenu";
+import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { VoluntaryReport } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import Link from "next/link";
-import VoluntaryReportDropdownActions from "@/components/misc/VoluntaryReportDropDownMenu";
-import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<VoluntaryReport>[] = [
   {

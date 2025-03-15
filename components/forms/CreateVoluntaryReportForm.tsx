@@ -298,7 +298,7 @@ export function CreateVoluntaryReportForm({
                     <SelectItem value="ADMINISTRACION">
                       ADMINISTRACION
                     </SelectItem>
-                    <SelectItem value="RRHH">RECURSOS HUMANOS</SelectItem>
+                    <SelectItem value="RRH">RECURSOS HUMANOS</SelectItem>
                     <SelectItem value="CONTROL_CALIDAD">
                       CCONTROL DE CALIDAD
                     </SelectItem>
@@ -326,7 +326,9 @@ export function CreateVoluntaryReportForm({
                 <SelectContent>
                   <SelectItem value="CALLE_RODAJE">CALLE DE RODAJE</SelectItem>
                   <SelectItem value="HANGAR13B">HANGAR13B</SelectItem>
-                  <SelectItem value="AEROPUERTO_CANAIMA">AEREOPUERTO CANAIMA</SelectItem>
+                  <SelectItem value="AEROPUERTO_CANAIMA">
+                    AEREOPUERTO CANAIMA
+                  </SelectItem>
                   <SelectItem value="PLATAFORMA">PLATAFORMA</SelectItem>
                 </SelectContent>
               </Select>
@@ -380,65 +382,63 @@ export function CreateVoluntaryReportForm({
           <Label className="ml-2 text-sm">Reporte anónimo</Label>
         </div>
 
- 
-          <div className="grid grid-cols-2 gap-2">
-            <FormField
-              control={form.control}
-              name="reporter_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nombre</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nombre de quien reporta" {...field} />
-                  </FormControl>
-                  <FormMessage className="text-xs" />
-                </FormItem>
-              )}
-            />
+        <div className="grid grid-cols-2 gap-2">
+          <FormField
+            control={form.control}
+            name="reporter_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre</FormLabel>
+                <FormControl>
+                  <Input placeholder="Nombre de quien reporta" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="reporter_last_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Apellido</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Apellido de quien reporta" {...field} />
-                  </FormControl>
-                  <FormMessage className="text-xs" />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="reporter_last_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Apellido</FormLabel>
+                <FormControl>
+                  <Input placeholder="Apellido de quien reporta" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="reporter_email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Correo electrónico</FormLabel>
-                  <FormControl>
-                    <Input placeholder="ejemplo@gmail.com" {...field} />
-                  </FormControl>
-                  <FormMessage className="text-xs" />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="reporter_email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Correo electrónico</FormLabel>
+                <FormControl>
+                  <Input placeholder="ejemplo@gmail.com" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="reporter_phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Teléfono</FormLabel>
-                  <FormControl>
-                    <Input placeholder="" {...field} />
-                  </FormControl>
-                  <FormMessage className="text-xs" />
-                </FormItem>
-              )}
-            />
-          </div>
-   
+          <FormField
+            control={form.control}
+            name="reporter_phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Teléfono</FormLabel>
+                <FormControl>
+                  <Input placeholder="" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <div className="flex justify-between items-center gap-x-4">
           <Separator className="flex-1" />

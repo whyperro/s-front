@@ -3,20 +3,17 @@ import BarChartComponent from "@/components/charts/BarChartComponent";
 import PieChartComponent from "@/components/charts/PieChartComponent";
 import { ContentLayout } from "@/components/layout/ContentLayout";
 import DataFilter from "@/components/misc/DataFilter";
+import { Label } from "@/components/ui/label";
 import { useGetDangerIdentificationsCountedByType } from "@/hooks/sms/useGetDangerIdentificationsCountedByType";
+import { useGetPostRiskCountByDateRange } from "@/hooks/sms/useGetPostRiskByDateRange";
+import { useGetRiskCountByDateRange } from "@/hooks/sms/useGetRiskByDateRange";
 import { useGetVoluntaryReportingStatsByYear } from "@/hooks/sms/useGetVoluntaryReportingStatisticsByYear";
+import { useGetVoluntaryReportsCountedByAirportLocation } from "@/hooks/sms/useGetVoluntaryReportsCountedByAirportLocation";
 import { useGetVoluntaryReportsCountedByArea } from "@/hooks/sms/useGetVoluntaryReportsCountedByArea";
 import { Loader2 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import DynamicBarChart from "../../../../../components/charts/DynamicBarChart";
-import HorizontalForm from "@/components/forms/HorizontalForm";
-import { FormLabel } from "@/components/ui/form";
-import { Label } from "@/components/ui/label";
-import { useGetRiskCountByDateRange } from "@/hooks/sms/useGetRiskByDateRange";
-import { useGetPostRiskCountByDateRange } from "@/hooks/sms/useGetPostRiskByDateRange";
-import { useGetVoluntaryReportsCountedByAirportLocation } from "@/hooks/sms/useGetVoluntaryReportsCountedByAirportLocation";
-import { ResponsiveContainer } from "recharts";
 
 const languages = [
   { label: "English", value: "en" },
@@ -182,9 +179,9 @@ const Statistics = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
           {/* Gráfico de Barras (Peligros Identificados) */}
-          <div className="p-4 rounded-lg shadow border">
+          <div className=" flex flex-col justify-center items-center p-4 rounded-lg shadow border">
             {isLoadingBarChart ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
@@ -211,8 +208,8 @@ const Statistics = () => {
               </div>
             ) : dynamicData && dynamicData.length > 0 ? (
               <DynamicBarChart
-                height="100%"
-                width="100%"
+                height="70%"
+                width="70%"
                 data={dynamicData}
                 title="Numero de Reportes vs Tipo"
               />
