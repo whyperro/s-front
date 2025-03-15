@@ -8,12 +8,10 @@ import { useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
 const COLORS: string[] = [
-  "#0088FE",
-  "#00C49F",
-  "#FFBB28",
-  "#ED1C1C",
-  "#CE33FF",
-  "#FF2886",
+  "#2cff99",
+  "#39e5aa",
+  "#47cbbb",
+  "#54b2cc",
 ];
 
 interface CustomizedLabelProps {
@@ -84,7 +82,7 @@ const PieChartComponent = ({
   return (
     <>
       <h1 className="text-xl font-semibold">{title}</h1>
-      <ResponsiveContainer  aspect={2} >
+      <ResponsiveContainer aspect={2}>
         <PieChart width={400} height={400}>
           {data ? (
             <Pie

@@ -300,7 +300,7 @@ export function CreateVoluntaryReportForm({
                     </SelectItem>
                     <SelectItem value="RRH">RECURSOS HUMANOS</SelectItem>
                     <SelectItem value="CONTROL_CALIDAD">
-                      CCONTROL DE CALIDAD
+                      CONTROL DE CALIDAD
                     </SelectItem>
                     <SelectItem value="IT">TECNOLOGIA E INFORMACION</SelectItem>
                   </SelectContent>

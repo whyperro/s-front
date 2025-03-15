@@ -22,13 +22,13 @@ interface DynamicBarChartProps {
 
 // Array de colores para las barras
 const colors: string[] = [
-  "#0088FE",
   "#00C49F",
   "#FFBB28",
-  "#ED1C1C",
-  "#CE33FF",
   "#32a89d",
   "#d88488",
+  "#0088FE",
+  "#ED1C1C",
+  "#CE33FF",
   "#ca829d",
   "#c6ff58",
   "#328aa8",
@@ -50,7 +50,7 @@ const DynamicBarChart = ({
   return (
     <>
       <h1 className="text-xl font-semibold">{title}</h1>
-      <ResponsiveContainer aspect={2}>
+      <ResponsiveContainer aspect={4}>
         <BarChart width={730} height={250} data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />

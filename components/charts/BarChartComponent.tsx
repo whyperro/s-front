@@ -48,7 +48,7 @@ const BarChartComponent = ({ data, title, width, height }: BarChartProps) => {
   return (
     <>
       <h1 className="text-xl font-semibold">{title}</h1>
-      <ResponsiveContainer width={width} height={height} aspect={2}>
+      <ResponsiveContainer width={width} height={height} aspect={3}>
         {values ? (
           <BarChart
             width={300}
