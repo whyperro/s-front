@@ -1,181 +1,162 @@
-import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import React from "react";
+import {
+  Document,
+  Image,
+  Page,
+  StyleSheet,
+  Text,
+  View,
+} from "@react-pdf/renderer";
+import { VoluntaryReport } from "@/types";
 
-export type VoluntaryReportPdf = {
-  id: number;
-  report_number: string;
-  report_date: Date;
-  identification_date: Date;
-  danger_location: string;
-  danger_area: string;
-  description: string;
-  airport_location: string;
-  possible_consequences: string;
-  danger_identification_id: number;
-  status: string;
-  reporter_name?: string;
-  reporter_last_name?: string;
-  reporter_phone?: string;
-  reporter_email?: string;
-};
+// ... (your formatDate function and styles remain the same)
 
 const styles = StyleSheet.create({
   page: {
     padding: 30,
-    fontSize: 10,
-    backgroundColor: "#f7f7f7",
+    backgroundColor: "#FFF",
   },
-  header: {
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: "bold",
-    marginBottom: 5,
-    color: "#4CAF50",
-  },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: "bold",
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 10,
-    color: "#333",
   },
-  reportContainer: {
-    border: "1px solid #ccc",
-    borderRadius: 5,
-    padding: 10,
-    margin: 10,
+  logo: {
+    paddingTop: 2,
+    width: 165,
+    height: 30,
+    position: "absolute",
+    left: 0,
+  },
+  titleContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  titleText: {
+    fontSize: 8,
+    fontWeight: 900,
+    textAlign: "center",
   },
   row: {
     flexDirection: "row",
-    marginBottom: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+    borderBottomStyle: "solid",
   },
-  column: {
-    flex: 1,
+  table: {
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderColor: "#000",
+    borderStyle: "solid",
+  },
+  cell: {
+    borderRightWidth: 1,
+    borderRightColor: "#000",
+    borderRightStyle: "solid",
     padding: 5,
+    textAlign: "center",
+    fontSize: 8,
   },
-  sectionHeader: {
-    marginVertical: 10,
-    padding: 10,
-    backgroundColor: "#e0e0e0",
-    borderRadius: 5,
-  },
-  sectionTitle: {
-    fontSize: 16,
+  tableHeader: {
+    backgroundColor: "#ADD8E6",
     fontWeight: "bold",
-    marginBottom: 5,
-  },
-  sectionInfo: {
-    fontSize: 12,
-    color: "#555",
   },
   footer: {
-    marginTop: 20,
-    textAlign: "center",
-    fontSize: 12,
-    color: "#777",
+    marginTop: 10,
+    fontSize: 9,
+  },
+  inputLine: {
+    borderBottomWidth: 1,
+    width: "20%",
+    marginLeft: 5,
+  },
+  label: {
+    fontSize: 9,
+  },
+  name: {
+    fontSize: 10,
+  },
+  dateContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    position: "absolute",
+    right: 90,
+  },
+  dateLabel: {
+    fontSize: 10,
+  },
+  dateText: {
+    fontSize: 8,
+    marginLeft: 40,
+    marginTop: 1,
+  },
+  observationContainer: {
+    borderWidth: 1,
+    padding: 5,
+    marginTop: 10,
+    minHeight: 50,
+  },
+  observationText: {
+    fontSize: 8,
+    margin: 5,
   },
 });
 
-const VoluntaryReportPdf = ({ report }: { report: VoluntaryReportPdf }) => {
-  return (
-    <Document>
-      <Page size="A4" style={styles.page}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Reporte Voluntario</Text>
-          <Text style={styles.subtitle}>
-            {format(new Date(), "PPP", { locale: es })}
-          </Text>
+const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
+  <Document>
+    {/* Change the Page size and remove or change orientation */}
+    <Page style={styles.page}>
+      {/* HEADER CON LOGO Y TÍTULO */}
+      <View style={styles.headerContainer}>
+        <Image src="/tmd_nombre.png" style={styles.logo} />
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>REGISTRO DE</Text>
+          <Text style={styles.titleText}>ACTIVIDADES DIARIAS</Text>
         </View>
+      </View>
 
-        {/* Report Container */}
-        <View style={styles.reportContainer}>
-          {/* First Row: Header, Dates, Location, Report Number */}
-          <View style={styles.row}>
-            <View style={styles.column}>
-              <Text style={styles.sectionTitle}>Encabezado</Text>
-              <Text style={styles.sectionInfo}>Reporte Voluntario</Text>
-            </View>
-            <View style={styles.column}>
-              <Text style={styles.sectionTitle}>Fecha del Reporte</Text>
-              <Text style={styles.sectionInfo}>
-                {format(new Date(report.report_date), "dd/MM/yyyy HH:mm")}
-              </Text>
-            </View>
-            <View style={styles.column}>
-              <Text style={styles.sectionTitle}>Fecha de Identificación</Text>
-              <Text style={styles.sectionInfo}>
-                {format(
-                  new Date(report.identification_date),
-                  "dd/MM/yyyy HH:mm"
-                )}
-              </Text>
-            </View>
-            <View style={styles.column}>
-              <Text style={styles.sectionTitle}>Ubicación</Text>
-              <Text style={styles.sectionInfo}>{report.airport_location}</Text>
-            </View>
-            <View style={styles.column}>
-              <Text style={styles.sectionTitle}>Número de Reporte</Text>
-              <Text style={styles.sectionInfo}>{report.report_number}</Text>
-            </View>
-          </View>
-
-          {/* Second Row: Reporter Details */}
-          <View style={styles.row}>
-            <View style={styles.column}>
-              <Text style={styles.sectionTitle}>Detalles del Reportero</Text>
-              <Text style={styles.sectionInfo}>
-                Nombre: {report.reporter_name || "No especificado"}
-              </Text>
-              <Text style={styles.sectionInfo}>
-                Apellido: {report.reporter_last_name || "No especificado"}
-              </Text>
-              <Text style={styles.sectionInfo}>
-                Teléfono: {report.reporter_phone || "No especificado"}
-              </Text>
-              <Text style={styles.sectionInfo}>
-                Correo Electrónico: {report.reporter_email || "No especificado"}
-              </Text>
-            </View>
-          </View>
-
-          {/* Third Row: Rest of the Data */}
-          <View style={styles.row}>
-            <View style={styles.column}>
-              <Text style={styles.sectionTitle}>Detalles del Reporte</Text>
-              <Text style={styles.sectionInfo}>
-                Ubicación del Peligro: {report.danger_location}
-              </Text>
-              <Text style={styles.sectionInfo}>
-                Área del Peligro: {report.danger_area}
-              </Text>
-              <Text style={styles.sectionInfo}>
-                Descripción: {report.description}
-              </Text>
-              <Text style={styles.sectionInfo}>
-                Posibles Consecuencias: {report.possible_consequences}
-              </Text>
-              <Text style={styles.sectionInfo}>
-                ID de Identificación del Peligro:{" "}
-                {report.danger_identification_id}
-              </Text>
-              <Text style={styles.sectionInfo}>Estado: {report.status}</Text>
-            </View>
+      {/* INFORMACIÓN DEL ANALISTA, FIRMA Y FECHA */}
+      <View style={{ flexDirection: "row", marginBottom: 10 }}>
+        <Text style={styles.label}>ANALISTA:</Text>
+        <View style={{ width: "50%" }}>
+          <View
+            style={{
+              borderBottomWidth: 1,
+              borderBottomColor: "#000",
+              marginHorizontal: 0,
+            }}
+          >
+            <Text style={[styles.name, { paddingHorizontal: 10 }]}>
+              {report.danger_area} {report.danger_location}
+            </Text>
           </View>
         </View>
+        <Text style={[styles.label, { marginLeft: 20 }]}>FIRMA: </Text>
+        <View style={styles.inputLine}></View>
 
-        {/* Footer */}
-        <Text style={styles.footer}>
-          Este es un documento generado automáticamente. Por favor, consérvelo
-          para sus registros.
-        </Text>
-      </Page>
-    </Document>
-  );
-};
+        {/* FECHA se mantiene en su posición, la línea se movió más a la derecha */}
+        <View style={styles.dateContainer}>
+          <Text style={styles.dateLabel}>FECHA:</Text>
+          <Text style={styles.dateText}>{report.report_number}</Text>
+        </View>
+      </View>
 
-export default VoluntaryReportPdf;
+      {/* TABLA DE ACTIVIDADES */}
+      <View style={[styles.row, styles.table, styles.tableHeader]}>
+        <Text style={[styles.cell, { width: "15%" }]}>Fecha del Reporte</Text>
+        <Text style={[styles.cell, { width: "55%" }]}>Fecha en que se identifico el peligro</Text>
+        <Text style={[styles.cell, { width: "15%" }]}>Lugar donde se detecto el peligro</Text>
+        <Text style={[styles.cell, { width: "15%" }]}>Numero de Reporte</Text>
+      </View>
+
+      {/* SECCIÓN DE OBSERVACIONES */}
+      <Text style={[styles.footer, { marginBottom: 5 }]}>OBSERVACIONES:</Text>
+      <View style={styles.observationContainer}>
+        <Text style={styles.observationText}>{report.status}</Text>
+      </View>
+    </Page>
+  </Document>
+);
+
+export default ActivitiesReportPdf;
