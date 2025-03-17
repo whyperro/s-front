@@ -5,16 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 const fetcVoluntaryReportStatsByYear = async (from: string, to: string) => {
   const { data } = await axiosInstance.get(
     `transmandu/sms/voluntary-reports/stats-by-year?from=${from}&to=${to}`
-
-
-
-
-
-
-
-
-
-    
   );
   return data;
 };

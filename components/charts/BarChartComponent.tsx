@@ -1,6 +1,10 @@
 "use client";
 
-import { ReportingStats } from "@/types";
+import { useGetVoluntaryReportsByDateRange } from "@/hooks/sms/useGetVoluntaryReportsByDateRange";
+import { ReportingStats, VoluntaryReport } from "@/types";
+import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   Bar,
   BarChart,
@@ -11,6 +15,16 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
 
 interface StatsDataByYear {
   name: string;
@@ -24,17 +38,65 @@ interface BarChartProps {
   title: string;
   width: string;
   height: string;
+  from: string;
+  to: string;
 }
 
-const BarChartComponent = ({ data, title, width, height }: BarChartProps) => {
-  console.log("BarChartComponent", data);
-  if (data.closed_reports == 0 && data.open_reports == 0) {
+const BarChartComponent = ({
+  data,
+  title,
+  width,
+  height,
+  from,
+  to,
+}: BarChartProps) => {
+  const { theme } = useTheme();
+  const router = useRouter();
+  const [clickedBarType, setClickedBarType] = useState<string | null>(null);
+  const [openList, setOpenList] = useState(false);
+  const [barData, setBarData] = useState<VoluntaryReport[] | null>(null);
+  const {
+    data: reportsData,
+    isLoading,
+    isError,
+  } = useGetVoluntaryReportsByDateRange(from, to);
+
+  const filterReportsByStatus = (
+    reports: VoluntaryReport[],
+    status: string
+  ): VoluntaryReport[] => {
+    return reports.filter((report) => report.status === status);
+  };
+
+  const handleBarClick = (entry: any, index: number, barType: string) => {
+    setClickedBarType(barType);
+
+    if (reportsData && reportsData.length > 0) {
+      const statusMap: { [key: string]: string } = {
+        open_reports: "ABIERTO",
+        closed_reports: "CERRADO",
+      };
+
+      const status = statusMap[barType];
+      const filteredData = status
+        ? filterReportsByStatus(reportsData, status)
+        : [];
+      setBarData(filteredData);
+      setOpenList(filteredData.length > 0);
+    } else {
+      setBarData(null);
+      setOpenList(false);
+    }
+  };
+
+  if (!data.closed_reports && !data.open_reports) {
     return (
       <p className="text-lg text-muted-foreground">
         No hay datos para mostrar acerca de "{title}"
       </p>
     );
   }
+
   const values: StatsDataByYear[] = data
     ? [
         {
@@ -62,12 +124,20 @@ const BarChartComponent = ({ data, title, width, height }: BarChartProps) => {
             }}
             barSize={160}
           >
-            <CartesianGrid strokeDasharray="3" stroke="#000" opacity={0.5} />
-            <XAxis dataKey="name" />
+            <CartesianGrid
+              strokeDasharray="4"
+              stroke={theme === "light" ? "#000" : "#fff"}
+              opacity={0.5}
+            />
+            <XAxis
+              dataKey="name"
+              stroke={theme === "light" ? "black" : "white"}
+            />
             <YAxis
               allowDecimals={false}
               type="number"
               domain={[0, "dataMax"]}
+              stroke={theme === "light" ? "black" : "white"}
             />
             <Tooltip />
             <Legend />
@@ -75,20 +145,73 @@ const BarChartComponent = ({ data, title, width, height }: BarChartProps) => {
               dataKey="open_reports"
               name={"En Proceso"}
               stackId="a"
-              fill="#8884d8"
+              fill={theme === "light" ? "#80d5c0" : "#89f4c7"}
+              onClick={(data, index) =>
+                handleBarClick(data, index, "open_reports")
+              }
             />
 
             <Bar
               dataKey="closed_reports"
               name={"Gestionados"}
               stackId="a"
-              fill="#82ca9d"
+              fill={theme === "light" ? "#8ea7f0" : "#8f8dfe"}
+              onClick={(data, index) =>
+                handleBarClick(data, index, "closed_reports")
+              }
             />
           </BarChart>
         ) : (
           <p>No hay datos disponibles para mostrar el gráfico.</p>
         )}
       </ResponsiveContainer>
+
+      <Dialog open={openList} onOpenChange={setOpenList}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Detalles de Reportes</DialogTitle>
+          </DialogHeader>
+          {barData ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Numero de Reporte</TableHead>
+                  <TableHead>Estado</TableHead>
+                  <TableHead>Ver mas</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {barData.map((report) => (
+                  <TableRow key={report.id}>
+                    <TableCell>{report.id}</TableCell>
+                    <TableCell>RVP-{report.report_number}</TableCell>
+                    <TableCell>{report.status}</TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() => {
+                          router.push(
+                            `/transmandu/sms/reportes_voluntarios/${report.id}`
+                          );
+                        }}
+                        size="sm"
+                      >
+                        Ver Detalles
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <TableRow>
+              <TableCell colSpan={4} style={{ textAlign: "center" }}>
+                No hay detalles disponibles para esta selección.
+              </TableCell>
+            </TableRow>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
