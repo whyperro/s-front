@@ -115,8 +115,8 @@ const Statistics = () => {
     const fromValue = newParams.from;
     const toValue = newParams.to;
 
-    console.log("Valor de from:", fromValue);
-    console.log("Valor de to:", toValue);
+    console.log("ESTADISTICAS PAGE -> Valor de from:", fromValue);
+    console.log("ESTADISTICAS PAGE -> Valor de to:", toValue);
 
     setParams(newParams);
   }, [searchParams, pathname]);
@@ -158,16 +158,9 @@ const Statistics = () => {
     refetchPieChart();
     refetchDynamicChart();
     refetchRisk();
-  }, [
-    params.from,
-    params.to,
-    refetchBarChart,
-    refetchPieChart,
-    refetchDynamicChart,
-    refetchRisk,
-    refetchPostRisk,
-    refetchAirportLocationData,
-  ]);
+    refetchPostRisk();
+    refetchAirportLocationData();
+  }, [params.from, params.to]);
 
   return (
     <>

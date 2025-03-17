@@ -55,6 +55,10 @@ const BarChartComponent = ({
   const [clickedBarType, setClickedBarType] = useState<string | null>(null);
   const [openList, setOpenList] = useState(false);
   const [barData, setBarData] = useState<VoluntaryReport[] | null>(null);
+
+  console.log("ESTADISTICAS BARCHART -> Valor de from:", from);
+  console.log("ESTADISTICAS BARCHART -> Valor de to:", to);
+
   const {
     data: reportsData,
     isLoading,

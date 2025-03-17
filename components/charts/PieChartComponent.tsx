@@ -41,7 +41,6 @@ const PieChartComponent = ({
   width,
   radius,
 }: PieChartComponentProps) => {
-  console.log("PieChartComponent", data);
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const { theme } = useTheme();
   const renderCustomizedLabel = ({
@@ -76,7 +75,7 @@ const PieChartComponent = ({
 
   const onPieEnter = (_: void, index: number) => {
     setActiveIndex(index);
-    console.log(activeIndex);
+    //console.log(activeIndex);
   };
   return (
     <>
