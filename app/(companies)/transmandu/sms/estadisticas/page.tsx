@@ -187,12 +187,17 @@ const Statistics = () => {
                 <Loader2 className="size-24 animate-spin" />
               </div>
             ) : barChartData ? (
-              <BarChartComponent
-                height="100%"
-                width="100%"
-                data={barChartData}
-                title="Peligros Identificados"
-              />
+              params.from &&
+              params.to && (
+                <BarChartComponent
+                  from={params.from}
+                  to={params.to}
+                  height="100%"
+                  width="100%"
+                  data={barChartData}
+                  title="Peligros Identificados"
+                />
+              )
             ) : (
               <p className="text-sm text-muted-foreground">
                 Ha ocurrido un error al cargar las...
@@ -211,7 +216,27 @@ const Statistics = () => {
                 height="70%"
                 width="70%"
                 data={dynamicData}
-                title="Numero de Reportes vs Tipo"
+                title="Numero de Reportes vs Tipo de Peligros"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+
+          {/* Gráfico de Barras Dinámico (Numero de Reportes vs Tipo) */}
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingDynamicData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : pieCharData && pieCharData.length > 0 ? (
+              <DynamicBarChart
+                height="70%"
+                width="70%"
+                data={pieCharData}
+                title="Numero de Reportes vs Areas"
               />
             ) : (
               <p className="text-lg text-muted-foreground">

@@ -1,17 +1,18 @@
-import { DangerIdentificationsByType, pieChartData } from "@/types";
-import React from "react";
+import { pieChartData } from "@/types";
+import { useTheme } from "next-themes";
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
   Cell,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  LegendProps,
-  ResponsiveContainer,
 } from "recharts";
+import { useState } from "react";
+
 // Definición de la interfaz para las props del componente
 interface DynamicBarChartProps {
   data: pieChartData[];
@@ -22,23 +23,19 @@ interface DynamicBarChartProps {
 
 // Array de colores para las barras
 const colors: string[] = [
-  "#00C49F",
-  "#FFBB28",
-  "#32a89d",
-  "#d88488",
-  "#0088FE",
-  "#ED1C1C",
-  "#CE33FF",
+  "#89f4c7",
+  "#8ae3d0",
+  "#8bd2d9",
+  "#8cc1e3",
+  "#8dafec",
+  "#8e9ef5",
+  "#8f8dfe",
   "#ca829d",
   "#c6ff58",
   "#328aa8",
   "#9da832",
 ];
 
-// Formateador de la leyenda para darle estilo a "AAA"
-const renderLegendText = (value: string) => {
-  return <span style={{ fontWeight: "bold" }}></span>;
-};
 
 const DynamicBarChart = ({
   data,
@@ -46,23 +43,45 @@ const DynamicBarChart = ({
   height,
   width,
 }: DynamicBarChartProps) => {
-  console.log("DYNAMICBARCHART", data);
+  const { theme } = useTheme();
+  const [clickedBarName, setClickedBarName] = useState<string | null>(null);
+
+  const handleBarClick = (entry: pieChartData) => {
+    const name = entry.name;
+    setClickedBarName(name);
+    console.log(name); // Imprimir en consola
+  };
+
   return (
     <>
       <h1 className="text-xl font-semibold">{title}</h1>
+      {/* {clickedBarName && (
+        <p className="mt-2">Barra seleccionada: {clickedBarName}</p>
+      )} */}
       <ResponsiveContainer aspect={4}>
-        <BarChart width={730} height={250} data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis domain={[0, "dataMax"]} allowDecimals={false} />
+        <BarChart
+          width={730}
+          height={250}
+          data={data}
+          onClick={({ activePayload }) => {
+            if (activePayload && activePayload[0] && activePayload[0].payload) {
+              handleBarClick(activePayload[0].payload as pieChartData);
+            }
+          }}
+        >
+          <CartesianGrid strokeDasharray="4" />
+          <XAxis
+            dataKey="name"
+            stroke={theme === "light" ? "black" : "white"}
+          />
+          <YAxis
+            domain={[0, "dataMax"]}
+            allowDecimals={false}
+            stroke={theme === "light" ? "black" : "white"}
+          />
           <Tooltip />
-          <Legend formatter={renderLegendText} iconSize={0} />
-          <Bar
-            dataKey="value"
-            fill="#8884d8"
-            barSize={200}
-            name={title}
-          >
+          <Legend  iconSize={0} />
+          <Bar dataKey="value" fill="#8884d8" barSize={200} name={title}>
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}

@@ -1,6 +1,5 @@
 "use client";
 
-import { ContentLayout } from "@/components/layout/ContentLayout";
 import { pieChartData, ReportsByArea } from "@/types";
 import { Tooltip } from "@radix-ui/react-tooltip";
 import { useTheme } from "next-themes";
