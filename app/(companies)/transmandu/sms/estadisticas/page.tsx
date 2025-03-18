@@ -14,6 +14,7 @@ import { Loader2 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import DynamicBarChart from "../../../../../components/charts/DynamicBarChart";
+import { format, startOfMonth } from "date-fns";
 
 const languages = [
   { label: "English", value: "en" },
@@ -72,8 +73,11 @@ const Statistics = () => {
   }
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const [params, setParams] = useState<Params>({});
 
+  const [params, setParams] = useState<Params>({
+    from: format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    to: format(new Date(), "yyyy-MM-dd"),
+  });
   // Asigna parametros cuando cambia el Pathname o el SearchParams
 
   const {
@@ -82,8 +86,8 @@ const Statistics = () => {
     isError: isErrorAirportLocationData,
     refetch: refetchAirportLocationData,
   } = useGetVoluntaryReportsCountedByAirportLocation(
-    params.from || "2025-03-01",
-    params.to || "2025-03-15"
+    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    params.to || format(new Date(), "yyyy-MM-dd")
   );
 
   const {
@@ -92,8 +96,8 @@ const Statistics = () => {
     isError: isErrorPostRisk,
     refetch: refetchPostRisk,
   } = useGetPostRiskCountByDateRange(
-    params.from || "2025-03-01",
-    params.to || "2025-03-15"
+    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    params.to || format(new Date(), "yyyy-MM-dd")
   );
 
   const {
@@ -102,23 +106,24 @@ const Statistics = () => {
     isError: isErrorRisk,
     refetch: refetchRisk,
   } = useGetRiskCountByDateRange(
-    params.from || "2025-03-01",
-    params.to || "2025-03-15"
+    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    params.to || format(new Date(), "yyyy-MM-dd")
   );
 
   useEffect(() => {
+    const defaultFrom = format(startOfMonth(new Date()), "yyyy-MM-dd");
+    const defaultTo = format(new Date(), "yyyy-MM-dd");
+
     const newParams: Params = {};
     searchParams.forEach((value, key) => {
       newParams[key] = value;
     });
 
-    const fromValue = newParams.from;
-    const toValue = newParams.to;
-
-    console.log("ESTADISTICAS PAGE -> Valor de from:", fromValue);
-    console.log("ESTADISTICAS PAGE -> Valor de to:", toValue);
-
-    setParams(newParams);
+    const finalParams: Params = {
+      from: newParams.from || defaultFrom,
+      to: newParams.to || defaultTo,
+    };
+    setParams(finalParams);
   }, [searchParams, pathname]);
 
   // Para extraer las estadisticas de reportes dado unos rangos de fecha, desde hasta
@@ -128,8 +133,8 @@ const Statistics = () => {
     isError: isErrorBarChart,
     refetch: refetchBarChart,
   } = useGetVoluntaryReportingStatsByYear(
-    params.from || "2025-03-01",
-    params.to || "2025-03-15"
+    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    params.to || format(new Date(), "yyyy-MM-dd")
   );
 
   // Para extraer el numero de reportes por area dado unos rangos de fecha, desde hasta
@@ -139,18 +144,17 @@ const Statistics = () => {
     isError: isErrorPieCharData,
     refetch: refetchPieChart,
   } = useGetVoluntaryReportsCountedByArea(
-    params.from || "2025-03-01",
-    params.to || "2025-03-15"
+    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    params.to || format(new Date(), "yyyy-MM-dd")
   );
-
   const {
     data: dynamicData,
     isLoading: isLoadingDynamicData,
     isError: isErrorDynamicData,
     refetch: refetchDynamicChart,
   } = useGetDangerIdentificationsCountedByType(
-    params.from || "2025-03-01",
-    params.to || "2025-03-15"
+    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    params.to || format(new Date(), "yyyy-MM-dd")
   );
 
   useEffect(() => {
@@ -161,6 +165,9 @@ const Statistics = () => {
     refetchPostRisk();
     refetchAirportLocationData();
   }, [params.from, params.to]);
+
+  console.log(" BEFORE CALL DATA FROM PARAMS.FROM PARAMS.TO", params.from);
+  console.log(" BEFORE CALL DATA PARAMS.TO", params.to);
 
   return (
     <>

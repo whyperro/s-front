@@ -32,15 +32,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   logo: {
-    paddingTop: 2,
-    width: 165,
-    height: 30,
-    position: "absolute",
-    left: 0,
+    width: 35,
+    height: 35,
   },
   titleContainer: {
-    flexDirection: "column",
-    alignItems: "center",
+    flexDirection: "row",
+    alignItems: "baseline", // Asegura que el texto y la línea estén en la misma línea
+    marginBottom: 10,
   },
   titleText: {
     fontSize: 12,
@@ -112,7 +110,7 @@ const styles = StyleSheet.create({
   observationContainer: {
     borderWidth: 1,
     padding: 5,
-    marginTop: 10,
+    // marginTop: 10,
     minHeight: 50,
   },
   observationText: {
@@ -129,7 +127,6 @@ const styles = StyleSheet.create({
     fontSize: 8,
   },
   cell2: {
-    padding: "5",
     borderRightWidth: 1,
     borderRightColor: "#000",
     borderRightStyle: "solid",
@@ -139,9 +136,11 @@ const styles = StyleSheet.create({
 
   container: {
     borderStyle: "solid",
-    borderWidth: "1px",
+    borderWidth: 1,
+    borderColor: "#000",
     display: "flex",
     flexDirection: "row",
+    alignItems: "stretch", // Asegurar que los hijos ocupen toda la altura
   },
 
   containerArea: {
@@ -149,67 +148,238 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "45%",
-    backgroundColor:"#abdbe3",
+    backgroundColor: "#abdbe3",
   },
 
-  Container2: { display: "flex", flexDirection: "row" },
+  Container2: {
+    display: "flex",
+    flexDirection: "row",
+  },
 
   Container3: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor:"#abdbe3",
+    backgroundColor: "#abdbe3",
   },
 
   ContainerAreaType: { width: "100%" },
 
   lineContainer: {
     borderTop: "1px",
+    width: "100%",
+  },
+  secondColumnTop: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+    borderBottomStyle: "solid",
+    width: "100%",
+    paddingHorizontal: 5,
+  },
+  secondColumnBottom: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+  },
+  thirdColumnRow: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+    borderBottomStyle: "solid",
+    width: "100%",
+  },
+  thirdColumnLastRow: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+  },
+  headerRow: {
+    flexDirection: "row",
+    borderWidth: 1,
+    borderColor: "#000",
+    borderStyle: "solid",
+    marginBottom: 10,
+  },
+  column: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRightWidth: 1,
+    borderRightColor: "#000",
+    borderRightStyle: "solid",
+  },
+  firstColumn: {
+    width: "30%",
+    borderLeftWidth: 1,
+    borderLeftColor: "#000",
+    borderLeftStyle: "solid",
+  },
+  secondColumn: {
+    width: "40%",
+    height: 60,
+    alignSelf: "stretch",
+  },
+  thirdColumn: {
+    width: "30%",
+    borderRightWidth: 0,
+  },
+  text: {
+    fontFamily: "Helvetica",
+    fontSize: 10,
+    textAlign: "center",
+    whiteSpace: "normal", // Permitir que el texto se divida en varias líneas
+  },
+  title: {
+    fontSize: 12,
+    marginBottom: 5,
+  },
+  lineContainerDescription: {
+    marginBottom: 5,
+  },
+  line: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+    borderBottomStyle: "solid",
+    width: "100%",
+    marginBottom: 18,
+  },
+  firstLine: {
+    flexGrow: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+    borderBottomStyle: "solid",
+    marginLeft: 5, // Espacio entre el texto y la primera línea
+  },
+  linesContainer: {
+    marginTop: 5,
+  },
+
+  footerContainer: {
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    right: 20,
+    borderWidth: 1,
+    borderColor: "#000",
+  },
+  rowFooter: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+  },
+  cellLarge: {
+    flex: 3,
+    borderRightWidth: 1,
+    borderRightColor: "#000",
+    padding: 4,
+    fontSize: 8,
+    textAlign: "center",
+  },
+  cellSmall: {
+    flex: 0.5,
+    borderRightWidth: 1,
+    borderRightColor: "#000",
+    padding: 4,
+    fontSize: 8,
+    textAlign: "center",
+  },
+  lastCellSmall: {
+    flex: 0.4,
+    padding: 4,
+    fontSize: 8,
+    textAlign: "center",
+  },
+  doubleRowCell: {
+    flex: 1,
+    borderRightWidth: 1,
+    borderRightColor: "#000",
+    padding: 2,
+    fontSize: 8,
+    textAlign: "center",
+  },
+  lastDoubleRowCell: {
+    flex: 1,
+    padding: 2,
+    fontSize: 8,
+    textAlign: "center",
   },
 });
+
+const Footer = () => (
+  <View style={styles.footerContainer}>
+    {/* Primera fila */}
+    <View style={styles.rowFooter}>
+      <Text style={styles.cellLarge}>
+        DEPENDENCIA: DIRECCIÓN DE GESTIÓN DE LA SEGURIDAD OPERACIONAL{"\n"}(SMS)
+      </Text>
+      <Text style={styles.cellSmall}>REVISIÓN N°: 00</Text>
+      <Text style={styles.lastCellSmall}>SMS</Text>
+    </View>
+
+    {/* Segunda fila */}
+    <View style={styles.rowFooter}>
+      <Text style={styles.doubleRowCell}>
+        ELABORADO POR: {"\n"} ASISTENTE DE SMS
+      </Text>
+      <Text style={styles.doubleRowCell}>
+        REVISADO POR: {"\n"} DIRECTOR DE SMS
+      </Text>
+      <Text style={styles.doubleRowCell}>
+        APROBADO POR: {"\n"} DIRECTOR DE OPERACIONES
+      </Text>
+      <Text style={styles.lastDoubleRowCell}>NRO. PÁGINA {"\n"} 1 DE 2</Text>
+    </View>
+  </View>
+);
 
 const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
   <Document>
     {/* Change the Page size and remove or change orientation */}
     <Page style={styles.page}>
-      {/* HEADER CON LOGO Y TÍTULO */}
-      <View style={styles.headerContainer}>
-        <Image src="/tmd_nombre.png" style={styles.logo} />
-
-        <View style={styles.titleContainer}>
-          <Text style={styles.titleText}>
-            IMPORTANTE: EL REPORTE VOLUNTARIO DE
-          </Text>
-          <Text style={styles.titleText}>
-            PELIGRO PUEDE SER ANONIMO, ES CONFIDENCIAL Y NO PUNITIVO.
-          </Text>
+      {/* Primera fila del encabezado */}
+      <View style={styles.headerRow}>
+        {/* Primera columna (logo) */}
+        <View style={[styles.column, styles.firstColumn]}>
+          {/* <Image src="/LOGO_TRD.png" style={styles.logo} /> */}
         </View>
-      </View>
 
-      {/* INFORMACIÓN DEL ANALISTA, FIRMA Y FECHA */}
-      <View style={{ flexDirection: "row", marginBottom: 10 }}>
-        <Text style={styles.label}>ANALISTA:</Text>
-        <View style={{ width: "50%" }}>
-          <View
-            style={{
-              borderBottomWidth: 1,
-              borderBottomColor: "#000",
-              marginHorizontal: 0,
-            }}
-          >
-            <Text style={[styles.name, { paddingHorizontal: 10 }]}>
-              {report.danger_area} {report.danger_location}
+        {/* Segunda columna */}
+        <View style={[styles.column, styles.secondColumn]}>
+          <View style={styles.secondColumnTop}>
+            <Text style={[styles.text, { width: "100%" }]}>
+              SISTEMA DE GESTIÓN DE SEGURIDAD OPERACIONAL SMS
+            </Text>
+          </View>
+          <View style={styles.secondColumnBottom}>
+            <Text style={[styles.text, { width: "100%" }]}>
+              REPORTE VOLUNTARIO DE PELIGROS
             </Text>
           </View>
         </View>
-        <Text style={[styles.label, { marginLeft: 20 }]}>FIRMA: </Text>
-        <View style={styles.inputLine}></View>
 
-        {/* FECHA se mantiene en su posición, la línea se movió más a la derecha */}
-        <View style={styles.dateContainer}>
-          <Text style={styles.dateLabel}>FECHA:</Text>
-          <Text style={styles.dateText}>{report.report_number}</Text>
+        {/* Tercera columna */}
+        <View style={[styles.column, styles.thirdColumn]}>
+          <View style={styles.thirdColumnRow}>
+            <Text style={[styles.text, { width: "100%" }]}>EDICIÓN N°: 01</Text>
+          </View>
+          <View style={styles.thirdColumnRow}>
+            <Text style={[styles.text, { width: "100%" }]}>
+              FECHA DE EDICIÓN: 12/10/2023
+            </Text>
+          </View>
+          <View style={styles.thirdColumnLastRow}>
+            <Text style={[styles.text, { width: "100%" }]}>
+              CÓDIGO: TMD-FOR-SMS-002
+            </Text>
+          </View>
         </View>
       </View>
 
@@ -287,31 +457,8 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
       </View>
 
       {/* ENCABEZADO PARA PRESENTAR "II. PELIGRO IDENTIFICADO" */}
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "20%" }]}>AREA AFECTADAS</Text>
-        <Text style={[styles.cell, { width: "35%" }]}>OPERACIONES</Text>
-        <Text style={[styles.check, { width: "5%" }]}></Text>
-        <Text style={[styles.cell, { width: "35%" }]}>MANTENIMIENTO</Text>
-        <Text style={[styles.check, { width: "5%" }]}></Text>
-      </View>
-
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "20%" }]}>AREA AFECTADAS</Text>
-        <Text style={[styles.cell, { width: "35%" }]}>
-          ADMINISTRACION Y RECURSOS{"\n"}HUMANOS
-        </Text>
-        <Text style={[styles.check, { width: "5%" }]}></Text>
-        <Text style={[styles.cell, { width: "35%" }]}>
-          CONTROL Y ASEGURAMIENTO DE LA{"\n"}CALIDAD
-        </Text>
-        <Text style={[styles.check, { width: "5%" }]}></Text>
-      </View>
 
       {/* SECCIÓN DE OBSERVACIONES */}
-      <Text style={[styles.footer, { marginBottom: 5 }]}>OBSERVACIONES:</Text>
-      <View style={styles.observationContainer}>
-        <Text style={styles.observationText}>{report.status}</Text>
-      </View>
 
       <View style={[styles.container]}>
         {/* CONTAINER = ROW */}
@@ -336,24 +483,37 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
 
         <View style={[styles.Container2, { width: "100%" }]}>
           <View style={[styles.Container3, styles.cell2, { width: "100%" }]}>
-            <Text>MANTENIMIENTO</Text>
-            <View style={[styles.lineContainer]}>
+            <Text>MATENIMIENTO</Text>
+            <View style={[styles.lineContainer, { width: "100%" }]}>
               <Text>CONTROL Y ASEGURAMIENTO DE LA CALIDAD</Text>
             </View>
           </View>
 
           <View style={[styles.Container3]}>
-            <Text style={[styles.check]}>_</Text>
+            <Text style={[styles.check]}>X</Text>
             <Text style={[styles.check]}>_</Text>
           </View>
         </View>
       </View>
+
+      <View style={styles.observationContainer}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>
+            A continuación, describa claramente el peligro que está reportando:
+          </Text>
+          <View style={styles.firstLine} />
+        </View>
+
+        {/* Líneas adicionales con interlineado de 1.5 */}
+        <View style={styles.linesContainer}>
+          {[...Array(16)].map((_, index) => (
+            <View key={index} style={styles.line} />
+          ))}
+        </View>
+      </View>
+
+      <Footer />
     </Page>
-
-
-
-
-    
   </Document>
 );
 

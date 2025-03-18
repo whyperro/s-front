@@ -71,7 +71,7 @@ const BarChartComponent = ({
   ): VoluntaryReport[] => {
     return reports.filter((report) => report.status === status);
   };
-
+  
   const handleBarClick = (entry: any, index: number, barType: string) => {
     setClickedBarType(barType);
 
