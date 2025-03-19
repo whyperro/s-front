@@ -48,6 +48,17 @@ const DangerIdentificationDropdownActions = ({
     setOpenDelete(false);
   };
 
+  const status =
+    dangerIdentification.voluntary_report?.status ||
+    dangerIdentification.obligatory_report?.status;
+
+  const id =
+    dangerIdentification.voluntary_report?.id ||
+    dangerIdentification.obligatory_report?.id ||
+    "";
+
+  const reportType = dangerIdentification.voluntary_report ? "RVP" : "ROS";
+
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -63,12 +74,11 @@ const DangerIdentificationDropdownActions = ({
             align="center"
             className="flex gap-2 justify-center"
           >
-            {dangerIdentification &&
-              dangerIdentification.voluntary_report.status === "ABIERTO" && (
-                <DropdownMenuItem onClick={() => setOpenEdit(true)}>
-                  <ClipboardPen className="size-5" />
-                </DropdownMenuItem>
-              )}
+            {dangerIdentification && status === "ABIERTO" && (
+              <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+                <ClipboardPen className="size-5" />
+              </DropdownMenuItem>
+            )}
 
             <DialogTrigger asChild>
               <DropdownMenuItem onClick={() => setOpenDelete(true)}>
@@ -94,7 +104,7 @@ const DangerIdentificationDropdownActions = ({
 
             {dangerIdentification &&
               dangerIdentification.analysis &&
-              dangerIdentification.voluntary_report.status !== "CERRADO" && (
+              status !== "CERRADO" && (
                 <DropdownMenuItem onClick={() => setOpenEditAnalyses(true)}>
                   <ClipboardPenLine className="size-5" />
                 </DropdownMenuItem>
@@ -173,12 +183,15 @@ const DangerIdentificationDropdownActions = ({
           <DialogContent className="flex flex-col max-w-2xl m-2">
             <DialogHeader>
               <DialogTitle className="text-center"></DialogTitle>
-              <CreateDangerIdentificationForm
-                id={dangerIdentification.voluntary_report.id}
-                initialData={dangerIdentification}
-                isEditing={true}
-                onClose={() => setOpenEdit(false)}
-              />
+              {dangerIdentification.voluntary_report ? (
+                <CreateDangerIdentificationForm
+                  id={id}
+                  initialData={dangerIdentification}
+                  isEditing={true}
+                  onClose={() => setOpenEdit(false)}
+                  reportType={reportType}
+                />
+              ) : null}
             </DialogHeader>
           </DialogContent>
         </Dialog>

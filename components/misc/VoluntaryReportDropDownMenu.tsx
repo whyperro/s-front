@@ -186,6 +186,7 @@ const VoluntaryReportDropdownActions = ({
             <CreateDangerIdentificationForm
               onClose={() => setOpenCreateDangerIdentification(false)}
               id={voluntaryReport.id}
+              reportType="RVP"
             />
           </DialogContent>
         </Dialog>

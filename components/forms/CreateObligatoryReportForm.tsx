@@ -224,6 +224,7 @@ export function CreateObligatoryReportForm({
         flight_alt_destiny: data.flight_alt_destiny,
         incidents: data.incidents,
         other_incidents: data.other_incidents,
+        status: "ABIERTO",
       };
       console.log("THIS IS VALUE FROM CREATE ", value);
       await createObligatoryReport.mutateAsync(value);

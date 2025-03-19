@@ -62,10 +62,11 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
-  id: number;
+  id: number | string;
   onClose: () => void;
   initialData?: DangerIdentification;
   isEditing?: boolean;
+  reportType: string;
 }
 // { onClose }: FormProps
 // lo de arriba va en prop
@@ -74,6 +75,7 @@ export default function CreateDangerIdentificationForm({
   id,
   isEditing,
   initialData,
+  reportType,
 }: FormProps) {
   const [consequences, setConsequences] = useState<string[]>([]);
   const { data: informationSources, isLoading } = useGetInformationSources();
@@ -136,6 +138,7 @@ export default function CreateDangerIdentificationForm({
       await createDangerIdentification.mutateAsync({
         ...data,
         id,
+        reportType: reportType,
       });
     }
 
