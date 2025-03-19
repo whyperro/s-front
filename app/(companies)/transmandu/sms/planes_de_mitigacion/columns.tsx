@@ -99,14 +99,14 @@ export const columns: ColumnDef<MitigationTable>[] = [
       <DataTableColumnHeader
         filter
         column={column}
-        title="Nro. Plan de Mitigacion"
+        title="Consecuencia a Evaluar"
       />
     ),
-    meta: { title: "Nro. de Plan de Mitigacion" },
+    meta: { title: "Consecuencia a Evaluar" },
     cell: ({ row }) => {
       return (
         <div className="flex justify-center">
-          {row.original.mitigation_plan?.id ?? "N/A"}
+          {row.original.consequence_to_evaluate ?? "N/A"}
         </div>
       );
     },

@@ -4,17 +4,32 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 
-import { Checkbox } from "@/components/ui/checkbox";
-import { DangerIdentification, VoluntaryReport } from "@/types";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import Link from "next/link";
-import VoluntaryReportDropdownActions from "@/components/misc/VoluntaryReportDropDownMenu";
 import DangerIdentificationDropdownActions from "@/components/misc/DangerIdentificationDropdownActions";
-import { Row } from "react-day-picker";
 import { Badge } from "@/components/ui/badge";
+import { DangerIdentification } from "@/types";
 
 export const columns: ColumnDef<DangerIdentification>[] = [
+  {
+    accessorKey: "voluntary_report",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Nº de Reporte" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex justify-center">
+          {row.original.voluntary_report &&
+          row.original.voluntary_report.report_number ? (
+            <p>RVP-{row.original.voluntary_report.report_number}</p>
+          ) : row.original.obligatory_report &&
+            row.original.obligatory_report.report_code ? (
+            <p>ROS-{row.original.obligatory_report.report_code}</p>
+          ) : (
+            <p>-</p> // Or any other placeholder if both are missing
+          )}
+        </div>
+      );
+    },
+  },
   {
     accessorKey: "danger",
     header: ({ column }) => (

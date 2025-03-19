@@ -10,6 +10,7 @@ import { format, parse } from "date-fns";
 import { es } from "date-fns/locale";
 import Link from "next/link";
 import ObligatoryReportDropdownActions from "@/components/misc/ObligatoryReportDropdownActions";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<ObligatoryReport>[] = [
   {
@@ -62,21 +63,6 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
     },
   },
   {
-    accessorKey: "incident_date",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Fecha del suceso" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <p className="font-medium text-center">
-          {format(row.original.incident_date, "PPP", {
-            locale: es,
-          })}
-        </p>
-      );
-    },
-  },
-  {
     accessorKey: "incident_time",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Hora del suceso" />
@@ -112,10 +98,32 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
     ),
   },
   {
+    accessorKey: "flight_number",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Numero de vuelo" />
+    ),
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <Badge
+          className={`justify-center items-center text-center font-bold font-sans ${
+            row.original.status === "CERRADO" ? "bg-green-400" : "bg-red-400"
+          }`}
+        >
+          {row.original.status}
+        </Badge>
+      </div>
+    ),
+  },
+
+  {
     id: "actions",
     cell: ({ row }) => {
       const obligatoryReport = row.original;
-      return <ObligatoryReportDropdownActions obligatoryReport={obligatoryReport}></ObligatoryReportDropdownActions>;
+      return (
+        <ObligatoryReportDropdownActions
+          obligatoryReport={obligatoryReport}
+        ></ObligatoryReportDropdownActions>
+      );
     },
   },
 ];

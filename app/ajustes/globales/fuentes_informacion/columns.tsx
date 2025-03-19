@@ -7,6 +7,7 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { Checkbox } from "@/components/ui/checkbox";
 import { InformationSource, Manufacturer, Pilot, Vendor } from "@/types";
 import InformationSourceDropdownActions from "@/components/misc/InformationSourceDropDownMenu";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<InformationSource>[] = [
   {
@@ -54,12 +55,14 @@ export const columns: ColumnDef<InformationSource>[] = [
     ),
     meta: { title: "Tipo" },
     cell: ({ row }) => (
-      <div
-        className={`flex justify-center items-center rounded-full  h-10 text-center font-bold font-sans ${
-          row.original.type === "PROACTIVO" ? "bg-green-400" : "bg-red-400"
-        }`}
-      >
-        {row.original.type}
+      <div className="flex justify-center">
+        <Badge
+          className={`justify-center items-center text-center font-bold font-sans ${
+            row.original.type === "PROACTIVO" ? "bg-green-400" : "bg-red-400"
+          }`}
+        >
+          <p>{row.original.type}</p>
+        </Badge>
       </div>
     ),
   },
