@@ -27,6 +27,7 @@ import {
 import { useDeleteObligatoryReport } from "@/actions/sms/reporte_obligatorio/actions";
 import { useRouter } from "next/navigation";
 import { CreateObligatoryReportForm } from "../forms/CreateObligatoryReportForm";
+import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
 
 const ObligatoryReportDropdownActions = ({
   obligatoryReport,
@@ -34,7 +35,8 @@ const ObligatoryReportDropdownActions = ({
   obligatoryReport: ObligatoryReport;
 }) => {
   const [openDelete, setOpenDelete] = useState<boolean>(false);
-
+  const [openCreateDangerIdentification, setOpenCreateDangerIdentification] =
+    useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
@@ -79,6 +81,14 @@ const ObligatoryReportDropdownActions = ({
             >
               <EyeIcon className="size-5" />
             </DropdownMenuItem>
+
+            {!obligatoryReport.danger_identification_id && (
+              <DropdownMenuItem
+                onClick={() => setOpenCreateDangerIdentification(true)}
+              >
+                <ClipboardPenLine className="size-5" />
+              </DropdownMenuItem>
+            )}
 
             {!obligatoryReport.id && (
               <DropdownMenuItem onClick={() => setOpenEdit(true)}>
@@ -134,6 +144,24 @@ const ObligatoryReportDropdownActions = ({
                 onClose={() => setOpenEdit(false)}
               />
             </DialogHeader>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog
+          open={openCreateDangerIdentification}
+          onOpenChange={setOpenCreateDangerIdentification}
+        >
+          <DialogContent className="flex flex-col max-w-2xl m-2">
+            <DialogHeader>
+              <DialogTitle></DialogTitle>
+              <DialogDescription></DialogDescription>
+            </DialogHeader>
+
+            <CreateDangerIdentificationForm
+              onClose={() => setOpenCreateDangerIdentification(false)}
+              id={obligatoryReport.id}
+              reportType="ROS"
+            />
           </DialogContent>
         </Dialog>
       </Dialog>
