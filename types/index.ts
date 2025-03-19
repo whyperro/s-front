@@ -363,7 +363,7 @@ export type InformationSource = {
 };
 
 export type ObligatoryReport = {
-  id: string;
+  id: number;
   report_code: string;
   report_date: Date;
   incident_date: Date;
@@ -381,6 +381,8 @@ export type ObligatoryReport = {
   flight_alt_destiny: string;
   incidents: string;
   other_incidents: string;
+  status: string;
+  danger_identification_id: number;
 };
 
 export type VoluntaryReport = {
@@ -413,6 +415,7 @@ export type DangerIdentification = {
   information_source: InformationSource;
   analysis: Analysis;
   voluntary_report: VoluntaryReport;
+  obligatory_report: ObligatoryReport;
 };
 
 export type FollowUpControl = {
