@@ -20,6 +20,7 @@ interface ObligatoryReportData {
   flight_alt_destiny: string;
   incidents?: string[];
   other_incidents?: string;
+  status: string;
 }
 
 interface UpdateObligatoryReportData {
