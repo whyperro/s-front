@@ -19,6 +19,7 @@ interface DangerIdentificationData {
   consequence_to_evaluate: string;
   root_cause_analysis: string;
   information_source_id: string;
+  reportType: string;
 }
 
 interface UpdateDangerIdentification {
@@ -39,7 +40,7 @@ export const useCreateDangerIdentification = () => {
     mutationKey: ["danger-identifications/${id}"],
     mutationFn: async (data: DangerIdentificationData) => {
       await axiosInstance.post(
-        `/transmandu/sms/danger-identifications/${data.id}`,
+        `/transmandu/sms/danger-identifications/${data.id}/${data.reportType}`,
         data,
         {
           headers: {
