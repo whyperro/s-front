@@ -1,4 +1,5 @@
 import {
+  AreaChartIcon,
   BookOpen,
   Building,
   CalendarCheck,
@@ -86,12 +87,6 @@ export function getMenuList(
                 roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
                 submenus: [
                   {
-                    href: "/transmandu/sms/prueba",
-                    label: "prueba",
-                    roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
-                    active: pathname === "/transmandu/sms/prueba",
-                  },
-                  {
                     href: "/transmandu/sms/reportes_voluntarios",
                     label: "Reportes Voluntarios",
                     roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
@@ -103,12 +98,6 @@ export function getMenuList(
                     roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
                     active:
                       pathname === "/transmandu/sms/reportes_obligatorios",
-                  },
-                  {
-                    href: "/transmandu/sms/estadisticas",
-                    label: "Estadisticas de Reportes",
-                    roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
-                    active: pathname === "/transmandu/sms/estadisicas",
                   },
                 ],
               },
@@ -129,12 +118,43 @@ export function getMenuList(
                 submenus: [],
               },
               {
-                href: "/transmandu/sms/medidas_de_mitigation",
-                label: "Medidas de Mitigacion",
-                icon: ClipboardList,
-                active: pathname.includes("/medidas_de_mitigacion"),
+                href: "/transmandu/sms",
+                label: "Estadisticas",
+                icon: AreaChartIcon,
+                active: pathname.includes("/estadisticas"),
                 roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
-                submenus: [],
+                submenus: [
+                  {
+                    href: "/transmandu/sms/estadisticas/indicadores",
+                    label: "Indicadores de Riesgo",
+                    roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
+                    active:
+                      pathname ===
+                      "/transmandu/sms/estadisticas/indicadores_riesgo",
+                  },
+                  {
+                    href: "/transmandu/sms/estadisticas/reportes_voluntarios",
+                    label: "Reportes Voluntarios",
+                    roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
+                    active:
+                      pathname ===
+                      "/transmandu/sms/estadisticas/reportes_voluntarios",
+                  },
+                  {
+                    href: "/transmandu/sms/estadisticas/reportes_obligatorios",
+                    label: "Reportes Obligatorios",
+                    roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
+                    active:
+                      pathname ===
+                      "/transmandu/sms/estadisticas/reportes_obligatorios",
+                  },
+                  {
+                    href: "/transmandu/sms/estadisticas/general",
+                    label: "General",
+                    roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
+                    active: pathname === "/transmandu/sms/estadisticas/general",
+                  },
+                ],
               },
             ],
           },
