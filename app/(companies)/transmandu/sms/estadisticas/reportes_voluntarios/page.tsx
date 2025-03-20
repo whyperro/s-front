@@ -9,7 +9,6 @@ import { useGetPostRiskCountByDateRange } from "@/hooks/sms/useGetPostRiskByDate
 import { useGetRiskCountByDateRange } from "@/hooks/sms/useGetRiskByDateRange";
 import { useGetVoluntaryReportingStatsByYear } from "@/hooks/sms/useGetVoluntaryReportingStatisticsByYear";
 import { useGetVoluntaryReportsCountedByAirportLocation } from "@/hooks/sms/useGetVoluntaryReportsCountedByAirportLocation";
-import { useGetVoluntaryReportsCountedByArea } from "@/hooks/sms/useGetVoluntaryReportsCountedByArea";
 import { Loader2 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,6 +16,7 @@ import DynamicBarChart from "../../../../../../components/charts/DynamicBarChart
 import { format, startOfMonth } from "date-fns";
 import { useGetIdentificationStatsBySourceName } from "@/hooks/sms/useGetIdentificationStatsBySoruceName";
 import { useGetIdentificationStatsBySourceType } from "@/hooks/sms/useGetIdentificationStatsBySoruceType";
+import { useGetReportsCountedByArea } from "@/hooks/sms/useGetVoluntaryReportsCountedByArea";
 
 const languages = [
   { label: "English", value: "en" },
@@ -122,7 +122,8 @@ const Statistics = () => {
     refetch: refetchPostRisk,
   } = useGetPostRiskCountByDateRange(
     params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd")
+    params.to || format(new Date(), "yyyy-MM-dd"),
+    "voluntary"
   );
 
   const {
@@ -132,7 +133,8 @@ const Statistics = () => {
     refetch: refetchRisk,
   } = useGetRiskCountByDateRange(
     params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd")
+    params.to || format(new Date(), "yyyy-MM-dd"),
+    "voluntary"
   );
 
   useEffect(() => {
@@ -169,9 +171,10 @@ const Statistics = () => {
     isLoading: isLoadingPieCharData,
     isError: isErrorPieCharData,
     refetch: refetchPieChart,
-  } = useGetVoluntaryReportsCountedByArea(
+  } = useGetReportsCountedByArea(
     params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd")
+    params.to || format(new Date(), "yyyy-MM-dd"),
+    "voluntary"
   );
   const {
     data: dynamicData,
@@ -180,7 +183,8 @@ const Statistics = () => {
     refetch: refetchDynamicChart,
   } = useGetDangerIdentificationsCountedByType(
     params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd")
+    params.to || format(new Date(), "yyyy-MM-dd"),
+    "voluntary"
   );
 
   useEffect(() => {
@@ -255,7 +259,7 @@ const Statistics = () => {
 
           {/* Gráfico de Barras Dinámico (Numero de Reportes vs Tipo) */}
           <div className="p-4 rounded-lg shadow border">
-            {isLoadingDynamicData ? (
+            {isLoadingPieCharData ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
@@ -308,7 +312,7 @@ const Statistics = () => {
                 height="100%"
                 width="100%"
                 data={riskData}
-                title="Indice de Riesgo Pre-Mitigacion"
+                title="Numero de Reportes por Cada Indice de Riesgo (Pre-Mitigacion)"
               />
             ) : (
               <p className="text-lg text-muted-foreground">
