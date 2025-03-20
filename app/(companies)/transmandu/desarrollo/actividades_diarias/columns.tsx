@@ -40,7 +40,7 @@ export const columns: ColumnDef<ActivityReport>[] = [
   {
     accessorKey: "date",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Fecha" />
+      <DataTableColumnHeader filter column={column} title="Fecha" />
     ),
     cell: ({ row }) => (
       <p className="font-medium text-center">{format(addDays(row.original.date, 1), "PPP", { locale: es })}</p>
@@ -49,7 +49,7 @@ export const columns: ColumnDef<ActivityReport>[] = [
   {
     accessorKey: "user",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Empleado Responsable" />
+      <DataTableColumnHeader filter column={column} title="Empleado Responsable" />
     ),
     cell: ({ row }) => {
       return (
