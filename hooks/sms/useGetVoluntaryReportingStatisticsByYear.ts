@@ -8,7 +8,7 @@ const fetcVoluntaryReportStatsByYear = async (
   reportType: string
 ) => {
   const { data } = await axiosInstance.get(
-    `transmandu/sms/reports/stats-by-year?from=${from}&to=${to}&reportType=${reportType}`
+    `transmandu/sms/reports/stats-by-year?reportType=${reportType}&from=${from}&to=${to}`
   );
   return data;
 };
