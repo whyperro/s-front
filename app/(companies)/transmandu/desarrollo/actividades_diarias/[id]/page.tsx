@@ -67,15 +67,15 @@ const ActivityReportsByIdPage = ({ params }: { params: { id: string } }) => {
               </Button>
             </PDFDownloadLink>
 
-            {/* {report?.date &&
+            {report?.date &&
               report.date === new Date().toISOString().split("T")[0] && (
 
                 <DailyReportDialog
-                report_id={report.id}
-                activities_length={report.activities?.length || 0}
-                onClose={() => setDialogOpen(false)}
+                  report_id={report.id}
+                  activities_length={report.activities?.length || 0}
+                  onClose={() => setDialogOpen(false)}
                 />
-              )} */}
+              )}
           </div>
         )}
 
