@@ -26,22 +26,19 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
   const [observation, setObservation] = useState<string>("");
   const [isObservationOpen, setIsObservationOpen] = useState<boolean>(false);
   const router = useRouter();
-
-
-  console.log(report);
   const userRoles = user?.roles?.map((role) => role.name) || [];
-
-  const handleView = () => {
-    router.push(`/transmandu/desarrollo/actividades_diarias/${id}/`);
-  };
 
   const handleUpdateObservation = async () => {
 
     const data ={
       id: id.toString(),
       observation: observation,
-    }
-    await updateObservation.mutateAsync(data)
+    };
+    await updateObservation.mutateAsync(data);
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 5000);
   };
 
   return (

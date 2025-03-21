@@ -7,13 +7,8 @@ import {
   Text,
   View
 } from "@react-pdf/renderer";
-
-const formatDate = (date: Date) => {
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Los meses en JS comienzan desde 0
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-};
+import { format } from "date-fns";
+import { es } from "date-fns/locale/es";
 
 const styles = StyleSheet.create({
   page: {
@@ -142,10 +137,15 @@ const ActivitiesReportPdf = ({
         <Text style={[styles.label, { marginLeft: 20 }]}>FIRMA: </Text>
         <View style={styles.inputLine}></View>
 
-        {/* FECHA se mantiene en su posición, la línea se movió más a la derecha */}
+        {/* FECHA con formato date-fns */}
         <View style={styles.dateContainer}>
           <Text style={styles.dateLabel}>FECHA:</Text>
-          <Text style={styles.dateText}>{report.date}</Text>
+          <Text style={styles.dateText}>{format(report.date, "dd/MM/yyyy", { locale: es })}</Text>
+          {/* <Text style={styles.dateText}>
+            {report.date
+              ? format(new Date(report.date), "dd/MM/yyyy", { locale: es })
+              : ""}
+          </Text> */}
         </View>
       </View>
 
@@ -176,7 +176,6 @@ const ActivitiesReportPdf = ({
           </View>
         ))}
       </View>
-
 
       {/* SECCIÓN DE OBSERVACIONES */}
       <Text style={[styles.footer, { marginBottom: 5 }]}>OBSERVACIONES:</Text>

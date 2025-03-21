@@ -19,12 +19,16 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import ActivitiesReportPdf from "@/components/pdf/ActivityReport";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import { Printer } from "lucide-react";
+import { Printer, FileText } from "lucide-react";
+
+import { useState } from "react";
+import { DailyReportDialog } from "@/components/dialogs/DailyReportDialog";
 
 const ActivityReportsByIdPage = ({ params }: { params: { id: string } }) => {
   const { data: report, isLoading } = useGetUserActivity(params.id);
   const { user, loading } = useAuth();
   const userRoles = user?.roles?.map((role) => role.name) || [];
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   if (isLoading || loading) {
     return <LoadingPage />;
@@ -50,7 +54,7 @@ const ActivityReportsByIdPage = ({ params }: { params: { id: string } }) => {
           el empleado seleccionado.
         </p>
         {report && (
-          <div className="flex justify-left mt-2 mb-4">
+          <div className="flex gap-4 mt-2 mb-4">
             <PDFDownloadLink
               fileName="reporte_actividades.pdf"
               document={<ActivitiesReportPdf report={report} />}
@@ -61,8 +65,19 @@ const ActivityReportsByIdPage = ({ params }: { params: { id: string } }) => {
                 {isLoading ? "Generando PDF..." : "Descargar PDF"}
               </Button>
             </PDFDownloadLink>
+
+            {report?.date &&
+              report.date === new Date().toISOString().split("T")[0] && (
+                
+                <DailyReportDialog
+                report_id={report.id}
+                activities_length={report.activities?.length || 0}
+                onClose={() => setDialogOpen(false)}
+                />
+              )}
           </div>
         )}
+
         {report?.user.id === user?.id || userRoles.includes("SUPERUSER") ? (
           <DataTable columns={columns} data={report?.activities || []} />
         ) : (
