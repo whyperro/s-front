@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -40,6 +40,14 @@ import { Loader2 } from "lucide-react";
 import { AdministrationCompany } from "@/types";
 import { useGetVendors } from "@/hooks/ajustes/globales/proveedores/useGetVendors";
 import { useGetClients } from "@/hooks/administracion/useGetClients";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../ui/command";
 
 const formSchema = z.object({
   responsible_id: z.string({
@@ -116,9 +124,9 @@ interface FormProps {
 export function CreateCashMovementForm({ onClose }: FormProps) {
   const { createCashMovement } = useCreateCashMovement();
   const {
-    data: emp,
+    data: employees,
     mutate,
-    isPending: isEmployeesPending,
+    isPending: isEmployeesLoading,
   } = useGetEmployeesByCompany();
   const { data: companies, isLoading: isCompaniesLoading } =
     useGetAdministrationCompany();
@@ -131,22 +139,15 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
-  const company = form.watch("company_id");
+
   useEffect(() => {
-    if (company) {
-      const company_name = companies!
-        .find((c) => c.id.toString() === company)!
-        .name.split(" ")
-        .join("")
-        .toLowerCase();
-      mutate(company_name);
-    }
-  }, [form, mutate, company]);
+    mutate("transmandu");
+  }, [mutate]);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await createCashMovement.mutateAsync(values);
     onClose();
   }
-
   return (
     <Form {...form}>
       <form
@@ -382,27 +383,88 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
               control={form.control}
               name="responsible_id"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full flex flex-col space-y-3 mt-1.5">
                   <FormLabel>Responsable</FormLabel>
-                  <Select
-                    disabled={isEmployeesPending}
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccione un responsable" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {emp &&
-                        emp.map((e) => (
-                          <SelectItem key={e.id} value={e.id.toString()}>
-                            {e.first_name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          disabled={isEmployeesLoading}
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {isEmployeesLoading && (
+                            <Loader2 className="size-4 animate-spin mr-2" />
+                          )}
+                          {field.value ? (
+                            <p>
+                              {
+                                employees?.find(
+                                  (employee) =>
+                                    `${employee.first_name} ${employee.last_name}` ===
+                                    field.value
+                                )?.first_name
+                              }{" "}
+                              -{" "}
+                              {
+                                employees?.find(
+                                  (employee) =>
+                                    `${employee.first_name} ${employee.last_name}` ===
+                                    field.value
+                                )?.last_name
+                              }
+                            </p>
+                          ) : (
+                            "Elige al responsable..."
+                          )}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0">
+                      <Command>
+                        <CommandInput placeholder="Busque un responsable..." />
+                        <CommandList>
+                          <CommandEmpty className="text-sm p-2 text-center">
+                            No se ha encontrado ningún empleado.
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {employees?.map((employee) => (
+                              <CommandItem
+                                value={`${employee.first_name} ${employee.last_name}`}
+                                key={employee.id}
+                                onSelect={() => {
+                                  form.setValue(
+                                    "responsible_id",
+                                    employee.id.toString()
+                                  );
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    `${employee.first_name} ${employee.last_name}` ===
+                                      field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {
+                                  <p>
+                                    {employee.first_name} {employee.last_name}
+                                  </p>
+                                }
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}

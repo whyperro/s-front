@@ -6,7 +6,7 @@ import { CashMovement } from "@/types";
 import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import CashMovementDropdownActions from "@/components/misc/CashMovementDropdownActions";
-import AdministrationCompanyResumeDialog from "@/components/dialogs/AdministrationCompanyResumeDialog";
+import CompanyResumeDialog from "@/components/dialogs/AdministrationCompanyResumeDialog";
 
 // Función para determinar si solo hay ingresos o solo egresos
 const getColumnVisibility = (data: CashMovement[]) => {
@@ -46,7 +46,7 @@ export const getColumns = (data: CashMovement[]): ColumnDef<CashMovement>[] => {
         <DataTableColumnHeader filter column={column} title="Empresa" />
       ),
       meta: { title: "Cliente" },
-      cell: ({ row }) => <AdministrationCompanyResumeDialog company={row.original.company} />,
+      cell: ({ row }) => <CompanyResumeDialog company={row.original.company} />,
     },
     {
       accessorKey: "type",

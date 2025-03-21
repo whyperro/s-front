@@ -113,7 +113,7 @@ export type CashMovement = {
   id: number,
   responsible: Employee,
   cash: Cash,
-  company: AdministrationCompany,
+  company: Company,
   date: Date,
   type: "INCOME" | "OUTPUT",
   account: string,

@@ -9,20 +9,18 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { AdministrationCompany } from "@/types";
+import { Company } from "@/types";
 import { Separator } from "../ui/separator";
 import { useRouter } from "next/navigation";
 
-const AdministrationCompanyResumeDialog = ({
-  company,
-}: {
-  company: AdministrationCompany;
-}) => {
+const CompanyResumeDialog = ({ company }: { company: Company }) => {
   const [openCompany, setOpenCompany] = useState(false);
   const router = useRouter();
   return (
     <Dialog open={openCompany} onOpenChange={setOpenCompany}>
-      <DialogTrigger>{company.name}</DialogTrigger>
+      <DialogTrigger className="flex justify-center">
+        {company.name}
+      </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="text-center font-bold">
           Resumen de la Empresa
@@ -46,9 +44,7 @@ const AdministrationCompanyResumeDialog = ({
             <h3 className="text-sm font-medium text-muted-foreground">
               Dirección Fiscal
             </h3>
-            <p className="text-lg font-semibold">
-              {company.fiscal_address}
-            </p>
+            <p className="text-lg font-semibold">{company.fiscal_address}</p>
             <Separator />
           </div>
 
@@ -68,4 +64,4 @@ const AdministrationCompanyResumeDialog = ({
   );
 };
 
-export default AdministrationCompanyResumeDialog;
+export default CompanyResumeDialog;
