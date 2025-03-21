@@ -125,13 +125,12 @@ export function getMenuList(
                 roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
                 submenus: [
                   {
-                    href: "/transmandu/sms/estadisticas/indicadores",
-                    label: "Indicadores de Riesgo",
+                    href: "/transmandu/sms/estadisticas/general",
+                    label: "General",
                     roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
-                    active:
-                      pathname ===
-                      "/transmandu/sms/estadisticas/indicadores_riesgo",
+                    active: pathname === "/transmandu/sms/estadisticas/general",
                   },
+
                   {
                     href: "/transmandu/sms/estadisticas/reportes_voluntarios",
                     label: "Reportes Voluntarios",
@@ -149,10 +148,12 @@ export function getMenuList(
                       "/transmandu/sms/estadisticas/reportes_obligatorios",
                   },
                   {
-                    href: "/transmandu/sms/estadisticas/general",
-                    label: "General",
+                    href: "/transmandu/sms/estadisticas/indicadores_riesgo",
+                    label: "Indicadores de Riesgo",
                     roles: ["ANALISTA_SMS", "JEFE_SMS", "SUPERUSER"],
-                    active: pathname === "/transmandu/sms/estadisticas/general",
+                    active:
+                      pathname ===
+                      "/transmandu/sms/estadisticas/indicadores_riesgo",
                   },
                 ],
               },
