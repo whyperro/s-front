@@ -87,6 +87,7 @@ export const DailyReportDialog = ({
       activity_report_id: report_id,
     };
     await registerActivity.mutateAsync(formattedData);
+    form.reset();
     setOpen(false);
     onClose();
   };
