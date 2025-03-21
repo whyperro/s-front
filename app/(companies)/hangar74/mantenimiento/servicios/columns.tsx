@@ -20,10 +20,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { FlightControl } from "@/types"
+import { MaintenanceService } from "@/types"
 import Link from "next/link"
 
-export const columns: ColumnDef<FlightControl>[] = [
+export const columns: ColumnDef<MaintenanceService>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -47,57 +47,39 @@ export const columns: ColumnDef<FlightControl>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "aircraft.acronym",
+    accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Aeronave" />
+      <DataTableColumnHeader filter column={column} title="Nombre" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center font-medium">{row.original.aircraft.acronym}</p>
+      <p className="flex justify-center font-bold italic">{row.original.name}</p>
     )
   },
   {
-    accessorKey: "flight_number",
+    accessorKey: "manufacturer.name",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Nro. de Vuelo" />
+      <DataTableColumnHeader filter column={column} title="Fabricante" />
     ),
     cell: ({ row }) => (
-      <Link href={`/hangar74/planificacion/control_vuelos/vuelos/${row.original.flight_number}`} className="flex justify-center font-bold italic">{row.original.flight_number}</Link>
+      <p className="flex justify-center font-medium">{row.original.manufacturer.name}</p>
     )
   },
   {
-    accessorKey: "destination",
+    accessorKey: "description",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Ruta" />
+      <DataTableColumnHeader column={column} title="Descripción" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground italic">{row.original.origin} - {row.original.destination}</p>
+      <p className="flex justify-center font-bold italic">{row.original.description}</p>
     )
   },
   {
-    accessorKey: "flight_hours",
+    accessorKey: "tasks",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Horas de Vuelo" />
+      <DataTableColumnHeader column={column} title="Fabricante" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center font-semibold">{row.original.flight_hours}</p>
-    )
-  },
-  {
-    accessorKey: "flight_cycles",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Ciclos de Vuelo" />
-    ),
-    cell: ({ row }) => (
-      <p className="flex justify-center font-semibold">{row.original.flight_cycles}</p>
-    )
-  },
-  {
-    accessorKey: "aircraft_operator",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Operador" />
-    ),
-    cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground italic">{row.original.aircraft_operator}</p>
+      <p className="flex justify-center font-medium">{row.original.tasks.length} - Tareas</p>
     )
   },
   {

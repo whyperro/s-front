@@ -8,6 +8,7 @@ import {
   BookUser,
   Building,
   ClipboardCopy,
+  Drill,
   Globe,
   HandCoins,
   Landmark,
@@ -346,7 +347,7 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
           ],
         },
         {
-          groupLabel: "Planificación y Mantenimiento",
+          groupLabel: "Planificación",
           menus: [
             {
               href: "/hangar74/planificacion/ordenes_trabajo",
@@ -400,6 +401,19 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
                 },
               ]
             }
+          ]
+        },
+        {
+          groupLabel: "Mantenimiento",
+          menus: [
+            {
+              href: "/hangar74/mantenimiento/servicios",
+              label: "Servicios",
+              active: pathname.includes("/hangar74/mantenimiento/servicios"),
+              icon: Drill,
+              roles: ["ANALISTA_PLANIFICACION", "JEFE_PLANIFICACION", "SUPERUSER"],
+              submenus: []
+            },
           ]
         },
         {

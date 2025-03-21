@@ -78,7 +78,7 @@ export const columns: ColumnDef<MaintenanceAircraftPart>[] = [
       <DataTableColumnHeader column={column} title="Horas Totales" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground italic">{row.original.part_hours}</p>
+      <p className="flex justify-center font-semibold">{row.original.part_hours}H</p>
     )
   },
   {

@@ -79,7 +79,7 @@ export const columns: ColumnDef<MaintenanceAircraft>[] = [
       <DataTableColumnHeader column={column} title="Horas de Vuelo" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center font-semibold">{row.original.flight_hours}</p>
+      <p className="flex justify-center font-semibold">{row.original.flight_hours} hrs.</p>
     )
   },
   {
@@ -88,7 +88,7 @@ export const columns: ColumnDef<MaintenanceAircraft>[] = [
       <DataTableColumnHeader column={column} title="Ciclos de Vuelo" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center font-semibold">{row.original.flight_cycles}</p>
+      <p className="flex justify-center font-semibold">{row.original.flight_cycles} cyc.</p>
     )
   },
   {
