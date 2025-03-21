@@ -55,26 +55,19 @@ const BarChartComponent = ({
   const [clickedBarType, setClickedBarType] = useState<string | null>(null);
   const [openList, setOpenList] = useState(false);
   const [barData, setBarData] = useState<VoluntaryReport[] | null>(null);
-
-  console.log("ESTADISTICAS BARCHART -> Valor de from:", from);
-  console.log("ESTADISTICAS BARCHART -> Valor de to:", to);
-
   const {
     data: reportsData,
     isLoading,
     isError,
   } = useGetVoluntaryReportsByDateRange(from, to);
-
   const filterReportsByStatus = (
     reports: VoluntaryReport[],
     status: string
   ): VoluntaryReport[] => {
     return reports.filter((report) => report.status === status);
   };
-  
   const handleBarClick = (entry: any, index: number, barType: string) => {
     setClickedBarType(barType);
-
     if (reportsData && reportsData.length > 0) {
       const statusMap: { [key: string]: string } = {
         open_reports: "ABIERTO",
