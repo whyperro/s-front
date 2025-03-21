@@ -55,3 +55,28 @@ export const useDeleteClient = () => {
     deleteClient: deleteMutation,
   }
 }
+
+export const useUpdateClient = () => {
+  const queryClient = useQueryClient();
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      await axiosInstance.put(`/transmandu/clients/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['clients'] });
+      toast("¡Actualizado!", {
+        description: "¡El cliente se ha actualizado correctamente!",
+      });
+    },
+    onError: (error) => {
+      toast.error("Oops!", {
+        description: `Hubo un error al actualizar el cliente: ${error}`,
+      });
+    },
+  });
+
+  return {
+    updateClient: updateMutation,
+  };
+};

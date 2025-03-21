@@ -55,3 +55,28 @@ export const useDeleteAdministrationCompany = () => {
     DeleteAdministrationCompany: deleteMutation,
   }
 }
+
+export const useUpdateAdministrationCompany = () => {
+  const queryClient = useQueryClient();
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      await axiosInstance.put(`/transmandu/administration-company/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-company'] });
+      toast("¡Actualizado!", {
+        description: "¡La empresa se ha actualizado correctamente!",
+      });
+    },
+    onError: (error) => {
+      toast.error("Oops!", {
+        description: `Hubo un error al actualizar la empresa: ${error}`,
+      });
+    },
+  });
+
+  return {
+    updateAdministrationCompany: updateMutation,
+  };
+};

@@ -44,6 +44,8 @@ import {
 } from "recharts";
 import { Flight } from "@/types";
 
+//cambiar el payed_amount por el total_amount 
+
 // Tipo para los datos mensuales 
 type MonthlyData = {
   name: string;  //nombre del mes enero a diciembre 
@@ -175,7 +177,7 @@ export default function AircraftReportPage() {
   if (error || !aircraftDetails) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
-        <p className="text-red-500 mb-4">Error al cargar los datos del avión</p>
+        <p className="text-red-500 mb-4">Error al cargar los datos de la aeronave</p>
         <Button variant="outline" onClick={() => router.back()}>
           Volver
         </Button>
@@ -261,9 +263,10 @@ export default function AircraftReportPage() {
             <SelectValue placeholder="Seleccionar año" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="2023">2023</SelectItem>
             <SelectItem value="2024">2024</SelectItem>
             <SelectItem value="2025">2025</SelectItem>
+            <SelectItem value="2024">2026</SelectItem>
+            <SelectItem value="2025">2027</SelectItem>
           </SelectContent>
         </Select>
       </div>

@@ -9,66 +9,63 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { Client } from "@/types";
+import { AdministrationCompany } from "@/types";
 import { Separator } from "../ui/separator";
 import { useRouter } from "next/navigation";
 
-const ClientResumeDialog = ({ client }: { client: Client }) => {
-  const [openClient, setOpenClient] = useState(false);
+const AdministrationCompanyResumeDialog = ({
+  company,
+}: {
+  company: AdministrationCompany;
+}) => {
+  const [openCompany, setOpenCompany] = useState(false);
   const router = useRouter();
   return (
-    <Dialog open={openClient} onOpenChange={setOpenClient}>
-      <DialogTrigger>{client.name}</DialogTrigger>
+    <Dialog open={openCompany} onOpenChange={setOpenCompany}>
+      <DialogTrigger>{company.name}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="text-center font-bold">
-          Resumen del Cliente
+          Resumen de la Empresa
         </DialogHeader>
         <div className="space-y-4">
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-muted-foreground">
-              Nombre
+              Cliente
             </h3>
-            <p className="text-lg font-semibold">{client.name}</p>
+            <p className="text-lg font-semibold">{company.name}</p>
+            <Separator />
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-muted-foreground">RIF</h3>
+            <p className="text-lg font-semibold">{company.rif}</p>
             <Separator />
           </div>
 
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-muted-foreground">
-              Cedula / RIF
+              Dirección Fiscal
             </h3>
-            <p className="text-lg font-semibold">{client.dni}</p>
+            <p className="text-lg font-semibold">
+              {company.fiscal_address}
+            </p>
             <Separator />
           </div>
 
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-muted-foreground">
-              Número de Teléfono
+              Número de Telefono
             </h3>
-            <p className="text-lg font-semibold">{client.phone}</p>
+            <p className="text-lg font-semibold">{company.phone_number}</p>
             <Separator />
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Ubicación
-            </h3>
-            <p className="text-lg font-semibold">{client.address}</p>
-            <Separator />
-          </div>
-
-          <div className="bg-muted p-4 rounded-lg mt-6">
-            <div className="flex justify-between items-center">
-              <h3 className="font-medium">Saldo</h3>
-              <span className="font-bold text-xl ml-2">${client.balance}</span>
-            </div>
           </div>
         </div>
         <DialogFooter className="sm:justify-center">
-          <Button onClick={() => setOpenClient(false)}>Cerrar</Button>
+          <Button onClick={() => setOpenCompany(false)}>Cerrar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default ClientResumeDialog;
+export default AdministrationCompanyResumeDialog;

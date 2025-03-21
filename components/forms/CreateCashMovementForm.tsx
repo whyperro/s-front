@@ -39,6 +39,7 @@ import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 import { Loader2 } from "lucide-react";
 import { AdministrationCompany } from "@/types";
 import { useGetVendors } from "@/hooks/ajustes/globales/proveedores/useGetVendors";
+import { useGetClients } from "@/hooks/administracion/useGetClients";
 
 const formSchema = z.object({
   responsible_id: z.string({
@@ -52,6 +53,9 @@ const formSchema = z.object({
   }),
   vendor_id: z.string({
     message: "Debe elegir un beneficiario.",
+  }),
+  client_id: z.string({
+    message: "Debe elegir un cliente.",
   }),
   date: z.date({
     required_error: "La fecha es requerida",
@@ -116,10 +120,12 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
     mutate,
     isPending: isEmployeesPending,
   } = useGetEmployeesByCompany();
-  const { data: companies, isLoading: isCompaniesLoading } = useGetAdministrationCompany();
+  const { data: companies, isLoading: isCompaniesLoading } =
+    useGetAdministrationCompany();
   const { data: cashes, isLoading: isCashesLoading } = useGetCash();
   const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts();
   const { data: vendors, isLoading: isVendorLoading } = useGetVendors();
+  const { data: clients, isLoading: isClientLoading } = useGetClients();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -193,28 +199,25 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
           />
           <FormField
             control={form.control}
-            name="company_id"
+            name="cash_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Empresa</FormLabel>
+                <FormLabel>Caja</FormLabel>
                 <Select
-                  disabled={isCompaniesLoading}
+                  disabled={isCashesLoading}
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleccione" />
+                      <SelectValue placeholder="Seleccione la caja" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {companies &&
-                      companies.map((company) => (
-                        <SelectItem
-                          key={company.id}
-                          value={company.id.toString()}
-                        >
-                          {company.name}
+                    {cashes &&
+                      cashes.map((cash) => (
+                        <SelectItem key={cash.id} value={cash.id.toString()}>
+                          {cash.name}
                         </SelectItem>
                       ))}
                   </SelectContent>
@@ -248,35 +251,74 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="cash_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Caja</FormLabel>
-                <Select
-                  disabled={isCashesLoading}
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione la caja" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {cashes &&
-                      cashes.map((cash) => (
-                        <SelectItem key={cash.id} value={cash.id.toString()}>
-                          {cash.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {form.watch("type") === "OUTPUT" && (
+            <FormField
+              control={form.control}
+              name="vendor_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Beneficiario</FormLabel>
+                  <Select
+                    disabled={isVendorLoading}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccione" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {vendors &&
+                        vendors.map((vendor) => (
+                          <SelectItem
+                            key={vendor.id}
+                            value={vendor.id.toString()}
+                          >
+                            {vendor.name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+          {form.watch("type") === "INCOME" && (
+            <FormField
+              control={form.control}
+              name="client_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cliente</FormLabel>
+                  <Select
+                    disabled={isClientLoading}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccione" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {clients &&
+                        clients.map((client) => (
+                          <SelectItem
+                            key={client.id}
+                            value={client.id.toString()}
+                          >
+                            {client.name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
         <div className="flex gap-2 items-center justify-center">
           <FormField
@@ -334,7 +376,8 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             )}
           />
         </div>
-        <div className="flex gap-2 items-center justify-center">         
+        <div className="flex gap-4 items-center ">
+          <div className="flex-1 min-w-[200px]">
             <FormField
               control={form.control}
               name="responsible_id"
@@ -348,7 +391,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Seleccione" />
+                        <SelectValue placeholder="Seleccione un responsable" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -364,54 +407,21 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                 </FormItem>
               )}
             />
-          {form.watch("type") === "OUTPUT" && (
-          <FormField
-            control={form.control}
-            name="vendor_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Beneficiario</FormLabel>
-                <Select
-                  disabled={isVendorLoading}
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {vendors &&
-                      vendors.map((vendor) => (
-                        <SelectItem
-                          key={vendor.id}
-                          value={vendor.id.toString()}
-                        >
-                          {vendor.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
+          </div>
         </div>
         <FormField
-            control={form.control}
-            name="amount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Monto Final</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ingrese el monto" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          control={form.control}
+          name="amount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Monto Final</FormLabel>
+              <FormControl>
+                <Input placeholder="Ingrese el monto" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="bank_account_id"

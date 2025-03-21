@@ -4,17 +4,17 @@ import { toast } from "sonner"
 
 export const useCreateFlightPayments = () => {
 
-    const queryFlightPayments = useQueryClient()
-    const createMutation = useMutation({
-        mutationFn: async (data: any) => {
-            await axiosInstance.post('/transmandu/flights-payments', data)
-          },
+  const queryFlightPayments = useQueryClient()
+  const createMutation = useMutation({
+    mutationFn: async (data: any) => {
+          await axiosInstance.post('/transmandu/flights-payments', data)
+        },
         onSuccess: () => {
-            queryFlightPayments.invalidateQueries({queryKey: ['flights-payments']})
-            toast("¡Creado!", {
-                description: `¡El registro del pago de vuelo se ha creado correctamente!`
-            })
-          },
+          queryFlightPayments.invalidateQueries({queryKey: ['flights-payments']})
+          toast("¡Creado!", {
+              description: `¡El registro del pago de vuelo se ha creado correctamente!`
+          })
+        },
         onError: (error) => {
             toast('Hey', {
               description: `No se creo correctamente: ${error}`

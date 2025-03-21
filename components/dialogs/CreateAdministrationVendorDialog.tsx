@@ -10,10 +10,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { CreateAircraftForm } from "../forms/CreateAircraftForm";
+import { CreateAdministrationVendorForm } from "../forms/CreateAdministrationVendorForm";
 
-export function CreateAircraftDialog() {
-  const [open, setOpen] = useState<boolean>(false);
+export function AdministrationVendorDialog() {
+  const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -22,20 +22,20 @@ export function CreateAircraftDialog() {
           variant={"outline"}
           className="flex items-center justify-center gap-2 h-8 border-dashed"
         >
-          Registrar Aeronave
+          Registrar Proveedor
         </Button>
       </DialogTrigger>
       <DialogContent
         className="sm:max-w-[480px]"
         onInteractOutside={(e) => {
-          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+          e.preventDefault(); 
         }}
       >
         <DialogHeader>
-          <DialogTitle>Crear Aeronave</DialogTitle>
-          <DialogDescription>Cree una nueva aeronave.</DialogDescription>
+          <DialogTitle>Crear un Proveedor</DialogTitle>
+          <DialogDescription>Cree una nuevo proveedor.</DialogDescription>
         </DialogHeader>
-        <CreateAircraftForm onClose={() => setOpen(false)} />
+        <CreateAdministrationVendorForm onClose={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );

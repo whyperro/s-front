@@ -4,19 +4,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  EditIcon,
-  EyeIcon,
-  Loader2,
-  MoreHorizontal,
-  Trash2,
-} from "lucide-react";
+import { EditIcon, EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { useGetClientById } from "@/hooks/administracion/useGetClientsById";
-import { useDeleteClient } from "@/actions/administracion/clientes/actions";
+import { useGetAdministrationVendorById } from "@/hooks/administracion/useGetAdministrationVendorById";
+import { useDeleteAdministrationVendor } from "@/actions/administracion/proveedor/actions";
 import {
   Dialog,
   DialogContent,
@@ -26,33 +20,33 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { EditClientForm } from "../forms/EditClientForm";
+import { EditAdministrationVendorForm } from "../forms/EditAdministrationVendorForm"; "../forms/EditAdministrationVendorForm";
 
-interface ClientDropdownActionsProps {
+interface AdministrationVendorDropdownActionsProps {
   id: string;
   ClientDetails: any;
   handleDelete: () => void;
 }
 
-const ClientDropdownActions = ({ id }: { id: string }) => {
+const AdministrationVendorDropdownActions = ({ id }: { id: string }) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [openClient, setOpenClient] = useState<boolean>(false);
+  const [openVendor, setOpenVendor] = useState<boolean>(false);
   const router = useRouter();
-  const { deleteClient } = useDeleteClient();
-  const { data: clientDetails, isLoading } = useGetClientById(id);
+  const { deleteAdministrationVendor } = useDeleteAdministrationVendor();
+  const { data: vendorDetails, isLoading } = useGetAdministrationVendorById(id);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
 
   const handleViewStats = () => {
-    router.push(`/transmandu/administracion/gestion_vuelos/clientes/${id}`);
+    router.push(`/transmandu/administracion/gestion_vuelos/proveedor/${id}`);
   };
 
   const handleDelete = async (id: number | string) => {
-    await deleteClient.mutateAsync(id);
+    await deleteAdministrationVendor.mutateAsync(id);
     setOpen(false);
   };
 
   const handleViewDetails = () => {
-    setOpenClient(true);
+    setOpenVendor(true);
   };
 
   return (
@@ -79,7 +73,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/gestion_vuelos/clientes/${id}`); //segun la query deberia ser aircrafts
+              router.push(`/administracion/gestion_vuelos/proveedor/${id}`); //segun la query deberia ser aircrafts
             }}
           ></DropdownMenuItem>
         </DropdownMenuContent>
@@ -89,7 +83,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center">
-              ¿Seguro que desea eliminar al cliente?
+              ¿Seguro que desea eliminar al proveedor?
             </DialogTitle>
             <DialogDescription className="text-center p-2 mb-0 pb-0">
               Esta acción es irreversible y estaría eliminando por completo el
@@ -105,11 +99,11 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
               Cancelar
             </Button>
             <Button
-              disabled={deleteClient.isPending}
+              disabled={deleteAdministrationVendor.isPending}
               className="hover:bg-white hover:text-black hover:border hover:border-black transition-all"
               onClick={() => handleDelete(id)}
             >
-              {deleteClient.isPending ? (
+              {deleteAdministrationVendor.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <p>Confirmar</p>
@@ -118,30 +112,30 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <Dialog open={openClient} onOpenChange={setOpenClient}>
+      <Dialog open={openVendor} onOpenChange={setOpenVendor}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader className="text-center font-bold">
-            Resumen del Cliente
+            Resumen del Proveedor
           </DialogHeader>
           {isLoading ? (
             <div className="flex justify-center py-4">
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
-          ) : clientDetails ? (
+          ) : vendorDetails ? (
             <div className="space-y-4">
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
                   Nombre
                 </h3>
-                <p className="text-lg font-semibold">{clientDetails.name}</p>
+                <p className="text-lg font-semibold">{vendorDetails.name}</p>
                 <Separator />
               </div>
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Cedula / RIF
+                  Email
                 </h3>
-                <p className="text-lg font-semibold">{clientDetails.dni}</p>
+                <p className="text-lg font-semibold">{vendorDetails.email}</p>
                 <Separator />
               </div>
 
@@ -149,7 +143,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
                 <h3 className="text-sm font-medium text-muted-foreground">
                   Número de Teléfono
                 </h3>
-                <p className="text-lg font-semibold">{clientDetails.phone}</p>
+                <p className="text-lg font-semibold">{vendorDetails.phone}</p>
                 <Separator />
               </div>
 
@@ -157,22 +151,21 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
                 <h3 className="text-sm font-medium text-muted-foreground">
                   Ubicación
                 </h3>
-                <p className="text-lg font-semibold">{clientDetails.address}</p>
+                <p className="text-lg font-semibold">{vendorDetails.address}</p>
                 <Separator />
               </div>
 
-              <div className="bg-muted p-4 rounded-lg mt-6">
-                <h3 className="font-medium mb-2">Saldo</h3>
-                <div className="flex justify-between items-center">
-                  <span className="font-bold text-xl">
-                    ${clientDetails.balance}
-                  </span>
-                </div>
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Tipo
+                </h3>
+                <p className="text-lg font-semibold">{vendorDetails.type}</p>
+                <Separator />
               </div>
             </div>
           ) : (
             <p className="text-center text-muted-foreground">
-              No se pudo cargar la información del cliente.
+              No se pudo cargar la información del proveedor.
             </p>
           )}
 
@@ -180,12 +173,12 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
             <Button
               variant="outline"
               onClick={() =>
-                router.push(`/administracion/gestion_vuelos/clientes/${id}`)
+                router.push(`/administracion/gestion_vuelos/proveedor/${id}`)
               }
             >
               Ver detalles completos
             </Button>
-            <Button onClick={() => setOpenClient(false)}>Cerrar</Button>
+            <Button onClick={() => setOpenVendor(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -195,11 +188,11 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           <DialogHeader>
             <DialogTitle>Editar Cliente</DialogTitle>
           </DialogHeader>
-          <EditClientForm id={id} onClose={() => setOpenEdit(false)} />
-        </DialogContent>
+        <EditAdministrationVendorForm id={id} onClose={() => setOpenEdit(false)} />
+      </DialogContent>
       </Dialog>
     </>
   );
 };
 
-export default ClientDropdownActions;
+export default AdministrationVendorDropdownActions;

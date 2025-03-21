@@ -91,21 +91,21 @@ export function getMenuList(
                 ],
                 submenus: [],
               },
-              {
-                href: "/transmandu/administracion/pagos",
-                label: "Pagos",
-                active: pathname.includes("/transmandu/administracion/pagos"),
-                icon: CreditCard,
-                roles: [
-                  "ANALISTA_PLANIFICACION",
-                  "JEFE_PLANIFICACION",
-                  "SUPERUSER",
-                ],
-                submenus: [],
-              },
+          // {
+          //   href: "/transmandu/administracion/pagos",
+          //   label: "Pagos",
+          //   active: pathname.includes("/transmandu/administracion/pagos"),
+          //   icon: CreditCard,
+          //   roles: [
+          //     "ANALISTA_PLANIFICACION",
+          //     "JEFE_PLANIFICACION",
+          //     "SUPERUSER",
+          //   ],
+          //   submenus: [],
+          // },
               {
                 href: "/transmandu/administracion/gestion_vuelos",
-                label: "Gestion de Vuelos",
+                label: "Gestión",
                 active: pathname.includes(
                   "/transmandu/administracion/gestion_vuelos"
                 ),
@@ -124,19 +124,34 @@ export function getMenuList(
                       "/transmandu/administracion/gestion_vuelos/aviones",
                   },
                   {
-                    href: "/transmandu/administracion/gestion_vuelos/rutas",
-                    label: "Gestionar Rutas",
-                    active:
-                      pathname ===
-                      "/transmandu/administracion/gestion_vuelos/rutas",
-                  },
-                  {
                     href: "/transmandu/administracion/gestion_vuelos/clientes",
                     label: "Gestionar Clientes",
                     active:
                       pathname ===
                       "/transmandu/administracion/gestion_vuelos/clientes",
                   },
+                  {
+                    href: "/transmandu/administracion/gestion_vuelos/proveedor",
+                    label: "Gestionar Proveedor",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/gestion_vuelos/proveedor",
+                  },
+                  {
+                    href: "/transmandu/administracion/gestion_vuelos/empresa",
+                    label: "Gestionar Empresa",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/gestion_vuelos/empresa",
+                  },
+                  {
+                    href: "/transmandu/administracion/gestion_vuelos/rutas",
+                    label: "Gestionar Rutas",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/gestion_vuelos/rutas",
+                  },
+                  
                 ],
               },
               {
@@ -163,13 +178,6 @@ export function getMenuList(
                     active:
                       pathname ===
                       "/transmandu/administracion/gestion_cajas/movimientos",
-                  },
-                  {
-                    href: "/transmandu/administracion/gestion_cajas/empresa",
-                    label: "Gestionar Empresa",
-                    active:
-                      pathname ===
-                      "/transmandu/administracion/gestion_cajas/empresa",
                   },
                 ],
               },

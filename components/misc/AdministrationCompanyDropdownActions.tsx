@@ -4,7 +4,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
+import { EditIcon, EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
@@ -20,6 +20,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { EditAdministrationCompanyForm } from "../forms/EditAdministrationCompanyForm"
+
+interface AdministrationCompanyDropdownActionsProps {
+  id: string;
+  CompanyDetails: any;
+  handleDelete: () => void;
+}
 
 const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
   const [open, setOpen] = useState<boolean>(false);
@@ -27,6 +34,11 @@ const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
   const router = useRouter();
   const { DeleteAdministrationCompany } =useDeleteAdministrationCompany();
   const { data: adminCompany, isLoading } = useGetAdministrationCompanyById(id);
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
+
+  const handleViewStats = () => {
+    router.push(`/transmandu/administracion/gestion_cajas/empresa/${id}`);
+  };
 
   const handleDelete = async (id: number | string) => {
     await DeleteAdministrationCompany.mutateAsync(id);
@@ -55,6 +67,9 @@ const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleViewDetails}>
             <EyeIcon className="size-5" />
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+            <EditIcon className="size-5 text-blue-500" />
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
@@ -166,6 +181,15 @@ const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Editar Empresa</DialogTitle>
+                </DialogHeader>
+                <EditAdministrationCompanyForm id={id} onClose={() => setOpenEdit(false)} />
+              </DialogContent>
+            </Dialog>
     </>
   );
 };

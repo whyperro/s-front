@@ -8,6 +8,7 @@ import { es } from "date-fns/locale/es";
 import FlightDropdownActions from "@/components/misc/FlightDropdownActions";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import ClientResumeDialog from "@/components/dialogs/ClientResumeDialog";
 
 export const columns: ColumnDef<Flight>[] = [
   {
@@ -32,15 +33,7 @@ export const columns: ColumnDef<Flight>[] = [
       <DataTableColumnHeader filter column={column} title="Cliente" />
     ),
     meta: { title: "Cliente" },
-    cell: ({ row }) => (
-      <Link
-        href={`/transmandu/administracion/gestion_vuelos/clientes/${row.original.client.dni}`}
-      >
-        <span className="cursor-pointer hover:scale-110 transition-all">
-          {row.original.client.name}
-        </span>
-      </Link>
-    ),
+    cell: ({ row }) => <ClientResumeDialog client={row.original.client} />,
   },
   {
     accessorKey: "route",

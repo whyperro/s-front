@@ -45,7 +45,7 @@ export const useDeleteAircraft = () => {
         },
       onError: (e) => {
           toast.error("Oops!", {
-            description: "¡Hubo un error al eliminar el avión!"
+            description: "¡Hubo un error al eliminar la aeronave!"
         })
         },
       }
@@ -55,3 +55,28 @@ export const useDeleteAircraft = () => {
     deleteAircraft: deleteMutation,
   }
 }
+
+export const useUpdateAircraft = () => {
+  const queryClient = useQueryClient();
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      await axiosInstance.put(`/transmandu/aircrafts/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['aircrafts'] });
+      toast("¡Actualizado!", {
+        description: "¡La aeronave se ha actualizado correctamente!",
+      });
+    },
+    onError: (error) => {
+      toast.error("Oops!", {
+        description: `Hubo un error al actualizar la aeronave: ${error}`,
+      });
+    },
+  });
+
+  return {
+    updateAircraft: updateMutation,
+  };
+};

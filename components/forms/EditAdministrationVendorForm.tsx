@@ -1,6 +1,6 @@
 "use client";
 
-import { useCreateClient } from "@/actions/administracion/clientes/actions";
+import { useCreateAdministartionVendor } from "@/actions/administracion/proveedor/actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,17 +14,18 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Separator } from "../ui/separator";
+import { useGetAdministrationCompanyById } from "@/hooks/administracion/useGetAdministrationCompanyById";
+import { useUpdateAdministrationVendor } from "@/actions/administracion/proveedor/actions";
+import { useGetAdministrationCompany } from "@/hooks/administracion/useGetAdministrationCompany";
+import { useGetAdministrationVendorById } from "@/hooks/administracion/useGetAdministrationVendorById";
 
 const phoneRegex = new RegExp(
   /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
 );
 
 const formSchema = z.object({
-  dni: z.string().min(7, {
-    message: "El número de identificación debe tener el formato adecuado.",
-  }).max(11, {
-    message: "El número de identificación tiene un máximo 9 caracteres.",
-  }),
   name: z.string().max(40).regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras").min(2, {
     message: "El nombre debe tener al menos 2 caracteres y maximo 40.",
   }),
@@ -38,41 +39,50 @@ const formSchema = z.object({
   }).max(100, {
     message: "La dirección tiene un máximo 100 caracteres.",
   }),
+  type: z.enum(["BENEFICIARIO", "PROVEEDOR"]),
 });
 
-interface FormProps {
+type FormSchemaType = z.infer<typeof formSchema>;
+
+interface EditAdministrationVendorFormProps {
+  id: string;
   onClose: () => void;
 }
 
-export function CreateClientForm({ onClose }: FormProps) {
-  const { createClient } = useCreateClient();
-  const form = useForm<z.infer<typeof formSchema>>({
+export function EditAdministrationVendorForm({ id, onClose }: EditAdministrationVendorFormProps) {
+  const { data: vendorDetails, isLoading } = useGetAdministrationVendorById(id);
+    const { updateAdministrationVendor } = useUpdateAdministrationVendor();
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
-    defaultValues: {},
+    defaultValues: {
+        name: vendorDetails?.name,
+        phone: vendorDetails?.phone,
+        email: vendorDetails?.email,
+        address: vendorDetails?.address,
+        type: vendorDetails?.type,
+    },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createClient.mutateAsync(values);
+  const OnSubmit = async (formData: FormSchemaType) => {
+    const data ={
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        address: formData.address,
+        type: formData.type, 
+    };
+    await updateAdministrationVendor.mutate({ id, data });
     onClose();
+  };
+
+  if (isLoading) {
+    return <div>Cargando...</div>;
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-3">
+      <form onSubmit={form.handleSubmit(OnSubmit)}>
       <div className='flex gap-2 items-center justify-center'>
-        <FormField
-          control={form.control}
-          name="dni"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>DNI</FormLabel>
-              <FormControl>
-                <Input placeholder="Ej: V-12345678" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs"/>
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="name"
@@ -86,7 +96,6 @@ export function CreateClientForm({ onClose }: FormProps) {
             </FormItem>
           )}
         />
-      </div>
         <FormField
           control={form.control}
           name="phone"
@@ -102,7 +111,9 @@ export function CreateClientForm({ onClose }: FormProps) {
               <FormMessage className="text-xs"/>
             </FormItem>
           )}
-        />
+        />        
+      </div>
+      <div className='flex gap-2 items-center justify-center'>
         <FormField
           control={form.control}
           name="email"
@@ -133,8 +144,34 @@ export function CreateClientForm({ onClose }: FormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={createClient.isPending}>
-          {createClient.isPending ? "Enviando..." : "Enviar"}
+        </div>
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tipo</FormLabel>
+              <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Tipo" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="BENEFICIARIO">Beneficiario</SelectItem>
+                    <SelectItem value="PROVEEDOR">Proveedor</SelectItem>
+                  </SelectContent>
+                </Select>
+            </FormItem>
+          )}
+        />
+        <Button type="submit" disabled={updateAdministrationVendor.isPending}>
+          {updateAdministrationVendor.isPending 
+          ? "Actualizando..." 
+          : "Actualizar"}
         </Button>
       </form>
     </Form>

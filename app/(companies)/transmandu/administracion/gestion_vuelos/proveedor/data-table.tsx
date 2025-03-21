@@ -24,23 +24,18 @@ import {
 } from "@/components/ui/table";
 import { ListRestart } from "lucide-react";
 import { useState } from "react";
-import { CashMovementDialog } from "@/components/dialogs/CreateCashMovementDialog";
-import { CashMovement } from "@/types"; 
-import { getColumns } from "./columns";
+import { AdministrationVendorDialog } from "@/components/dialogs/CreateAdministrationVendorDialog";
 
 interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
-
-export function DataTable<TData extends CashMovement, TValue>({
+export function DataTable<TData, TValue>({
+  columns,
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
-  // Obtener las columnas dinámicas basadas en los datos
-  const columns = getColumns(data);
-
   const table = useReactTable({
     data,
     columns,
@@ -62,7 +57,7 @@ export function DataTable<TData extends CashMovement, TValue>({
     <div>
       <div className="flex items-center py-4">
         <div className="flex gap-x-2 items-center">
-          <CashMovementDialog />
+          <AdministrationVendorDialog />                                  
           {isFiltered && (
             <Button
               variant="ghost"

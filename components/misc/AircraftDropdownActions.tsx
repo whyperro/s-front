@@ -27,6 +27,8 @@ import {
 } from "../ui/dialog";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { EditIcon } from "lucide-react";
+import { EditAircraftForm } from "../forms/EditAircraftForm";
 
 interface AircraftDropdownActionsProps {
   id: string;
@@ -37,10 +39,10 @@ interface AircraftDropdownActionsProps {
 export const AircraftDropdownActions = ({ id }: { id: string }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [openAircraft, setOpenAircraft] = useState<boolean>(false);
-  const [openStats, setOpenStats] = useState(false);
   const router = useRouter();
   const { deleteAircraft } = useDeleteAircraft();
   const { data: aircraftDetails, isLoading } = useGetAircraftById(id);
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
 
   const handleViewStats = () => {
     router.push(`/transmandu/administracion/gestion_vuelos/aviones/${id}`);
@@ -77,11 +79,14 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
           <DropdownMenuItem onClick={handleViewStats}>
             <TrendingUp className="size-5 text-green-500" />
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+            <EditIcon className="size-5 text-blue-500" />
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
               router.push(`/administracion/gestion_vuelos/aviones/${id}`);
             }}
-          ></DropdownMenuItem>
+          ></DropdownMenuItem>         
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -89,7 +94,7 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center">
-              ¿Seguro que desea eliminar el avión?
+              ¿Seguro que desea eliminar la aeronave?
             </DialogTitle>
             <DialogDescription className="text-center p-2 mb-0 pb-0">
               Esta acción es irreversible y estaría eliminando por completo el
@@ -122,7 +127,7 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
       <Dialog open={openAircraft} onOpenChange={setOpenAircraft}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader className="text-center font-bold">
-            Resumen de Avión
+            Resumen de Aeronave
           </DialogHeader>
           {isLoading ? (
             <div className="flex justify-center py-4">
@@ -218,7 +223,7 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
             </div>
           ) : (
             <p className="text-center text-muted-foreground">
-              No se pudo cargar la información del avión.
+              No se pudo cargar la información de la aeronave.
             </p>
           )}
 
@@ -235,13 +240,14 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Acciones</DialogTitle>
             <DialogDescription>
               Selecciona una acción para{" "}
-              {aircraftDetails?.acronym || "este avión"}
+              {aircraftDetails?.acronym || "esta aeronave"}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="sm:justify-center">
@@ -253,6 +259,15 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
               Eliminar
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar Aerovane</DialogTitle>
+          </DialogHeader>
+          <EditAircraftForm id={id} onClose={() => setOpenEdit(false)} />
         </DialogContent>
       </Dialog>
     </>

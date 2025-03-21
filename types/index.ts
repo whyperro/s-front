@@ -5,7 +5,7 @@ export type AdministrationCompany = {
   name: string,
   rif: string,
   fiscal_address: string,
-  phone_number: number,
+  phone_number: string,
   created_at: string,
   updated_at: string,
 }
@@ -14,6 +14,7 @@ export type Aircraft = {
   id: number,
   client: Client,
   location: Location,
+  location_id?: number;
   fabricant: string,
   brand: string,
   serial: string,
@@ -122,6 +123,7 @@ export type CashMovement = {
   amount: number,
   bank_account: BankAccount, 
   vendor: Vendor,
+  client: Client,
 }
 
 export type Client = {
@@ -131,7 +133,7 @@ export type Client = {
   address: string,
   email: string,
   phone: string,
-  debt: number,
+  balance: number,
 }
 
 export type Condition = {
@@ -468,22 +470,33 @@ export type User = {
   companies: Company[]
 }
 
+export type AdministrationVendor = {
+  id: string | number,
+  name: string,
+  email: string,
+  phone: string,
+  address: string,
+  type: "PROVEEDOR" | "BENEFICIARIO",
+  created_at: Date,
+  updated_at: Date,
+}
+
 export type Vendor = {
   id: string | number,
-    name: string,
-    email: string,
-    phone: string,
-    address: string,
-    created_at: Date,
-    updated_at: Date,
-  }
+  name: string,
+  email: string,
+  phone: string,
+  address: string,
+  created_at: Date,
+  updated_at: Date,
+}
 
 export type Warehouse = {
   id: string,
   name: string,
   address: string,
   company: string,
-  type: string,
+  type: string, 
 }
 
 export interface WorkOrder extends Request {

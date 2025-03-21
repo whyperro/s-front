@@ -31,8 +31,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetClients } from "@/hooks/administracion/useGetClients";
-import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
 import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 import { Loader2 } from "lucide-react";
 import { Flight } from "@/types";

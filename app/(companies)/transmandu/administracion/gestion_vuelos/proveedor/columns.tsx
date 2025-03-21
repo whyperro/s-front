@@ -1,11 +1,11 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Client } from "@/types";
-import ClientDropdownActions from "@/components/misc/ClientDropdownActions";
+import { AdministrationVendor } from "@/types";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
+import AdministrationVendorDropdownActions from "@/components/misc/AdministrationVendorDropdownAtions";
 
-export const columns: ColumnDef<Client>[] = [
+export const columns: ColumnDef<AdministrationVendor>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -17,13 +17,13 @@ export const columns: ColumnDef<Client>[] = [
     ),
   },
   {
-    accessorKey: "dni",
+    accessorKey: "email",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="RIF / C.I" />
+      <DataTableColumnHeader filter column={column} title="Email" />
     ),
-    meta: { title: "RIF / C.I" },
+    meta: { title: "Email" },
     cell: ({ row }) => (
-      <div className="flex justify-center font-bold">{row.original.dni}</div>
+      <div className="flex justify-center font-bold">{row.original.email}</div>
     ),
   },
   {
@@ -55,15 +55,15 @@ export const columns: ColumnDef<Client>[] = [
     ),
   },
   {
-    accessorKey: "debt",
+    accessorKey: "type",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Saldo" />
+      <DataTableColumnHeader filter column={column} title="Tipo" />
     ),
-    meta: { title: "Saldo" },
+    meta: { title: "Tipo" },
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.balance}
+          {row.original.type}
         </span>
       </div>
     ),
@@ -72,7 +72,7 @@ export const columns: ColumnDef<Client>[] = [
     id: "actions",
     cell: ({ row }) => {
       const id = row.original.id;
-      return <ClientDropdownActions id={row.original.id.toString()} />;
+      return <AdministrationVendorDropdownActions id={row.original.id.toString()} />;
     },
   },
 ];
