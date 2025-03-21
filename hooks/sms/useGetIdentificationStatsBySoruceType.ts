@@ -8,7 +8,7 @@ const fetchIdentificationStatsBySourceType = async (
   reportType: string
 ): Promise<pieChartData[]> => {
   const { data } = await axiosInstance.get(
-    `/transmandu/sms/danger-identifications/information-source/count-by-type/${reportType}?from=${from}&to=${to}`
+    `/transmandu/sms/danger-identifications/information-source/count-by-type?reportType=${reportType}&from=${from}&to=${to}`
   );
   return data;
 };
@@ -20,7 +20,7 @@ export const useGetIdentificationStatsBySourceType = (
 ) => {
   return useQuery<pieChartData[]>({
     queryKey: [
-      "/transmandu/sms/danger-identifications/information-source/count-by-type/${reportType}?from=${from}&to=${to}",
+      "/transmandu/sms/danger-identifications/information-source/count-by-type?reportType=${reportType}&from=${from}&to=${to}",
     ],
     queryFn: () => fetchIdentificationStatsBySourceType(from, to, reportType),
     staleTime: 1000 * 60 * 5, // 5 minutos
