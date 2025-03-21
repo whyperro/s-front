@@ -98,9 +98,9 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
     ),
   },
   {
-    accessorKey: "flight_number",
+    accessorKey: "status",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Numero de vuelo" />
+      <DataTableColumnHeader column={column} title="Estado" />
     ),
     cell: ({ row }) => (
       <div className="flex justify-center">
