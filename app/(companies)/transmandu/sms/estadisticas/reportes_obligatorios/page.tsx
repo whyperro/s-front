@@ -5,7 +5,7 @@ import DataFilter from "@/components/misc/DataFilter";
 import { Label } from "@/components/ui/label";
 import { useGetDangerIdentificationsCountedByType } from "@/hooks/sms/useGetDangerIdentificationsCountedByType";
 import { useGetVoluntaryReportingStatsByYear } from "@/hooks/sms/useGetVoluntaryReportingStatisticsByYear";
-import { useGetReportsCountedByArea } from "@/hooks/sms/useGetVoluntaryReportsCountedByArea";
+import { useGetReportsCountedByArea } from "@/hooks/sms/useGetReportsCountedByArea";
 import { format, startOfMonth } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -152,29 +152,27 @@ const ObligatoryReportStats = () => {
     "obligatory"
   );
 
+  const {
+    data: reportSourceNameData,
+    isLoading: isLoadingReportSourceNameData,
+    isError: isErrorReportSourceNameData,
+    refetch: refetchReportSourceNameChart,
+  } = useGetIdentificationStatsBySourceName(
+    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    params.to || format(new Date(), "yyyy-MM-dd"),
+    "obligatory"
+  );
 
   const {
-      data: reportSourceNameData,
-      isLoading: isLoadingReportSourceNameData,
-      isError: isErrorReportSourceNameData,
-      refetch: refetchReportSourceNameChart,
-    } = useGetIdentificationStatsBySourceName(
-      params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-      params.to || format(new Date(), "yyyy-MM-dd"),
-      "obligatory"
-    );
-  
-    const {
-      data: reportSourceTypeData,
-      isLoading: isLoadingReportSourceTypeData,
-      isError: isErrorReportSourceTypeData,
-      refetch: refetchReportSourceTypeChart,
-    } = useGetIdentificationStatsBySourceType(
-      params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-      params.to || format(new Date(), "yyyy-MM-dd"),
-      "obligatory"
-    );
-
+    data: reportSourceTypeData,
+    isLoading: isLoadingReportSourceTypeData,
+    isError: isErrorReportSourceTypeData,
+    refetch: refetchReportSourceTypeChart,
+  } = useGetIdentificationStatsBySourceType(
+    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    params.to || format(new Date(), "yyyy-MM-dd"),
+    "obligatory"
+  );
 
   useEffect(() => {
     refetchBarChart();
@@ -243,6 +241,7 @@ const ObligatoryReportStats = () => {
               </p>
             )}
           </div>
+
           <div className="p-4 rounded-lg shadow border">
             {isReportsByAreaData ? (
               <div className="flex justify-center items-center h-48">
@@ -295,6 +294,7 @@ const ObligatoryReportStats = () => {
               </p>
             )}
           </div>
+
           {/* Gráfico de Barras Dinámico (Indice de Riesgo Pre-Mitigacion) */}
           <div className="flex-col p-4 rounded-lg shadow border">
             {isReportsByRiskData ? (
@@ -334,46 +334,63 @@ const ObligatoryReportStats = () => {
               </p>
             )}
           </div>
+          <div className="flex-col p-4 rounded-lg shadow border">
+            {isReportsByPostRiskData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : reportsByPostRiskData && reportsByPostRiskData.length > 0 ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={reportsByPostRiskData}
+                title="Numero de Reportes por Cada Indice de Riesgo (Post-Mitigacion)"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+          {/* Gráfico de Barras Dinámico (Indice de Riesgo Pre-Mitigacion) */}
+          <div className="flex-col p-4 rounded-lg shadow border">
+            {isLoadingReportSourceTypeData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : reportSourceTypeData && reportSourceTypeData.length > 0 ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={reportSourceTypeData}
+                title="Numero de Reportes vs Tipo de Fuente"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
 
           {/* Gráfico de Barras Dinámico (Indice de Riesgo Pre-Mitigacion) */}
-                  <div className="flex-col p-4 rounded-lg shadow border">
-                    {isLoadingReportSourceTypeData ? (
-                      <div className="flex justify-center items-center h-48">
-                        <Loader2 className="size-24 animate-spin" />
-                      </div>
-                    ) : reportSourceTypeData && reportSourceTypeData.length > 0 ? (
-                      <DynamicBarChart
-                        height="100%"
-                        width="100%"
-                        data={reportSourceTypeData}
-                        title="Numero de Reportes vs Tipo de Fuente"
-                      />
-                    ) : (
-                      <p className="text-lg text-muted-foreground">
-                        No hay datos para mostrar.
-                      </p>
-                    )}
-                  </div>
-          
-                  {/* Gráfico de Barras Dinámico (Indice de Riesgo Pre-Mitigacion) */}
-                  <div className="flex-col p-4 rounded-lg shadow border">
-                    {isLoadingReportSourceNameData ? (
-                      <div className="flex justify-center items-center h-48">
-                        <Loader2 className="size-24 animate-spin" />
-                      </div>
-                    ) : reportSourceNameData && reportSourceNameData.length > 0 ? (
-                      <DynamicBarChart
-                        height="100%"
-                        width="100%"
-                        data={reportSourceNameData}
-                        title="Numero de Reportes Voluntarios vs Nombre de la Fuente"
-                      />
-                    ) : (
-                      <p className="text-lg text-muted-foreground">
-                        No hay datos para mostrar.
-                      </p>
-                    )}
-                  </div>
+          <div className="flex-col p-4 rounded-lg shadow border">
+            {isLoadingReportSourceNameData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : reportSourceNameData && reportSourceNameData.length > 0 ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={reportSourceNameData}
+                title="Numero de Reportes Voluntarios vs Nombre de la Fuente"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
         </div>
       </ContentLayout>
     </>

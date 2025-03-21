@@ -16,7 +16,7 @@ import DynamicBarChart from "../../../../../../components/charts/DynamicBarChart
 import { format, startOfMonth } from "date-fns";
 import { useGetIdentificationStatsBySourceName } from "@/hooks/sms/useGetIdentificationStatsBySoruceName";
 import { useGetIdentificationStatsBySourceType } from "@/hooks/sms/useGetIdentificationStatsBySoruceType";
-import { useGetReportsCountedByArea } from "@/hooks/sms/useGetVoluntaryReportsCountedByArea";
+import { useGetReportsCountedByArea } from "@/hooks/sms/useGetReportsCountedByArea";
 
 const languages = [
   { label: "English", value: "en" },
@@ -334,6 +334,25 @@ const Statistics = () => {
                 width="100%"
                 data={postRiskData}
                 title="Porcentaje de Indice de Riesgo Post-Mitigacion"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+
+          <div className="flex-col p-4 rounded-lg shadow border">
+            {isLoadingPostRisk ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : postRiskData && postRiskData.length > 0 ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={postRiskData}
+                title="Numero de Reportes por Cada Indice de Riesgo (Post-Mitigacion)"
               />
             ) : (
               <p className="text-lg text-muted-foreground">

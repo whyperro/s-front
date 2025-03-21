@@ -1,22 +1,21 @@
 "use client";
 import BarChartComponent from "@/components/charts/BarChartComponent";
+import PieChartComponent from "@/components/charts/PieChartComponent";
 import { ContentLayout } from "@/components/layout/ContentLayout";
 import DataFilter from "@/components/misc/DataFilter";
 import { Label } from "@/components/ui/label";
-import { useGetDangerIdentificationsCountedByType } from "@/hooks/sms/useGetDangerIdentificationsCountedByType";
-import { useGetVoluntaryReportingStatsByYear } from "@/hooks/sms/useGetVoluntaryReportingStatisticsByYear";
-import { useGetReportsCountedByArea } from "@/hooks/sms/useGetVoluntaryReportsCountedByArea";
+import { useGetTotalReportsCountedByArea } from "@/hooks/sms/useGetTotalReportsCountedByArea";
+import { useGetTotalDangerIdentificationsCountedByType } from "@/hooks/sms/useGetTotalDangerIdentificationsCountedByType";
+import { useGetTotalIdentificationStatsBySourceType } from "@/hooks/sms/useGetTotalIdentificationStatsBySoruceType";
+import { useGetTotalReportsStatsByYear } from "@/hooks/sms/useGetTotalReportsStatsByYear";
+import { useGetTotalRiskCountByDateRange } from "@/hooks/sms/useGetTotalRiskByDateRange";
 import { format, startOfMonth } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import DynamicBarChart from "../../../../../../components/charts/DynamicBarChart";
-import { useGetRiskCountByDateRange } from "@/hooks/sms/useGetRiskByDateRange";
-import PieChartComponent from "@/components/charts/PieChartComponent";
-import { useGetPostRiskCountByDateRange } from "@/hooks/sms/useGetPostRiskByDateRange";
-import { useGetIdentificationStatsBySourceName } from "@/hooks/sms/useGetIdentificationStatsBySoruceName";
-import { useGetIdentificationStatsBySourceType } from "@/hooks/sms/useGetIdentificationStatsBySoruceType";
-import { useGetTotalReportsStatsByYear } from "@/hooks/sms/useGetTotalReportsStatsByYear";
+import { useGetTotalIdentificationStatsBySourceName } from "@/hooks/sms/useGetTotalIdentificationStatsBySoruceName";
+import { useGetTotalPostRiskCountByDateRange } from "@/hooks/sms/useGetTotalPostRiskByDateRange";
 
 const languages = [
   { label: "English", value: "en" },
@@ -108,8 +107,74 @@ const GeneralReportStats = () => {
     params.to || format(new Date(), "yyyy-MM-dd")
   );
 
+  const {
+    data: totalIdentificationData,
+    isLoading: isLoadingIdentificationData,
+    isError: isErrorIdentificationData,
+    refetch: refetchIdentificationData,
+  } = useGetTotalDangerIdentificationsCountedByType(
+    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    params.to || format(new Date(), "yyyy-MM-dd")
+  );
+
+  const {
+    data: reportsByAreaData,
+    isLoading: isLoadingReportsByAreaData,
+    isError: isErrorReportsByAreaData,
+    refetch: refetchReportsByAreaData,
+  } = useGetTotalReportsCountedByArea(
+    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    params.to || format(new Date(), "yyyy-MM-dd")
+  );
+
+  const {
+    data: totalRiskData,
+    isLoading: isLoadingTotalRiskData,
+    isError: isErrorTotalRiskData,
+    refetch: refetchTotalRiskData,
+  } = useGetTotalRiskCountByDateRange(
+    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    params.to || format(new Date(), "yyyy-MM-dd")
+  );
+
+  const {
+    data: reportSourceTypeData,
+    isLoading: isLoadingReportSourceTypeData,
+    isError: isErrorReportSourceTypeData,
+    refetch: refetchReportSourceTypeChart,
+  } = useGetTotalIdentificationStatsBySourceType(
+    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    params.to || format(new Date(), "yyyy-MM-dd")
+  );
+
+  const {
+    data: reportSourceNameData,
+    isLoading: isLoadingReportSourceNameData,
+    isError: isErrorReportSourceNameData,
+    refetch: refetchReportSourceNameChart,
+  } = useGetTotalIdentificationStatsBySourceName(
+    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    params.to || format(new Date(), "yyyy-MM-dd")
+  );
+
+  const {
+    data: totalPostRiskData,
+    isLoading: isLoadingTotalPostRiskData,
+    isError: isErrorTotalPostRiskData,
+    refetch: refetchTotalPostRiskData,
+  } = useGetTotalPostRiskCountByDateRange(
+    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    params.to || format(new Date(), "yyyy-MM-dd")
+  );
+
   useEffect(() => {
     refetchBarChart();
+    refetchIdentificationData();
+    refetchReportsByAreaData();
+    refetchTotalRiskData();
+    refetchReportSourceTypeChart();
+    refetchReportSourceNameChart();
+    refetchTotalPostRiskData()
   }, [params.from, params.to]);
 
   return (
@@ -147,6 +212,196 @@ const GeneralReportStats = () => {
               <p className="text-sm text-muted-foreground">
                 Ha ocurrido un error al cargar los datos de Peligros
                 Identificados vs Gestionados...
+              </p>
+            )}
+          </div>
+
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingIdentificationData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : totalIdentificationData &&
+              totalIdentificationData.length > 0 ? (
+              <DynamicBarChart
+                height="70%"
+                width="70%"
+                data={totalIdentificationData}
+                title="Numero de Reportes vs Tipo de Peligro (General)"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingReportsByAreaData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : reportsByAreaData && reportsByAreaData.length > 0 ? (
+              <DynamicBarChart
+                height="70%"
+                width="70%"
+                data={reportsByAreaData}
+                title="Numero de Reportes vs Area de Identificación (General)"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+            {isErrorReportsByAreaData && (
+              <p className="text-sm text-muted-foreground">
+                Ha ocurrido un error al cargar los peligros identificados...
+              </p>
+            )}
+          </div>
+
+          <div
+            className="flex flex-col justify-center items-center 
+          p-4 rounded-lg shadow border"
+          >
+            {isLoadingTotalRiskData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : totalRiskData && totalRiskData.length > 0 ? (
+              <PieChartComponent
+                radius={120}
+                height="50%"
+                width="50%"
+                data={totalRiskData}
+                title="Porcentaje de Indice de Riesgo Pre-Mitigacion"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+            {isErrorTotalRiskData && (
+              <p className="text-sm text-muted-foreground">
+                Ha ocurrido un error al cargar el numero de reportes por indice
+                de riesgo...
+              </p>
+            )}
+          </div>
+
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingTotalRiskData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : totalRiskData && totalRiskData.length > 0 ? (
+              <DynamicBarChart
+                height="70%"
+                width="70%"
+                data={totalRiskData}
+                title="Numero de Reportes por Cada Indice de Riesgo (General)"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+            {isErrorTotalRiskData && (
+              <p className="text-sm text-muted-foreground">
+                Ha ocurrido un error al cargar los peligros identificados...
+              </p>
+            )}
+          </div>
+
+          <div
+            className="flex flex-col justify-center items-center 
+          p-4 rounded-lg shadow border"
+          >
+            {isLoadingTotalPostRiskData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : totalPostRiskData && totalPostRiskData.length > 0 ? (
+              <PieChartComponent
+                radius={120}
+                height="50%"
+                width="50%"
+                data={totalPostRiskData}
+                title="Porcentaje de Indice de Riesgo Post-Mitigacion"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+            {isErrorTotalRiskData && (
+              <p className="text-sm text-muted-foreground">
+                Ha ocurrido un error al cargar el numero de reportes por indice
+                de riesgo...
+              </p>
+            )}
+          </div>
+
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingTotalRiskData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : totalRiskData && totalRiskData.length > 0 ? (
+              <DynamicBarChart
+                height="70%"
+                width="70%"
+                data={totalRiskData}
+                title="Numero de Reportes por Cada Indice de Riesgo  (Post-Mitigacion)"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+            {isErrorTotalRiskData && (
+              <p className="text-sm text-muted-foreground">
+                Ha ocurrido un error al cargar los peligros identificados...
+              </p>
+            )}
+          </div>
+
+          {/* Gráfico de Barras Dinámico (Indice de Riesgo Pre-Mitigacion) */}
+          <div className="flex-col p-4 rounded-lg shadow border">
+            {isLoadingTotalPostRiskData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : totalPostRiskData && totalPostRiskData.length > 0 ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={totalPostRiskData}
+                title="Numero de Reportes por Tipo de Fuente"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+
+          {/* Gráfico de Barras Dinámico (Indice de Riesgo Pre-Mitigacion) */}
+          <div className="flex-col p-4 rounded-lg shadow border">
+            {isLoadingReportSourceNameData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : reportSourceNameData && reportSourceNameData.length > 0 ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={reportSourceNameData}
+                title="Numero de Reportes Voluntarios vs Nombre de la Fuente"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
               </p>
             )}
           </div>

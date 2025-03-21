@@ -4,19 +4,13 @@ import PieChartComponent from "@/components/charts/PieChartComponent";
 import { ContentLayout } from "@/components/layout/ContentLayout";
 import DataFilter from "@/components/misc/DataFilter";
 import { Label } from "@/components/ui/label";
-import { useGetDangerIdentificationsCountedByType } from "@/hooks/sms/useGetDangerIdentificationsCountedByType";
-import { useGetPostRiskCountByDateRange } from "@/hooks/sms/useGetPostRiskByDateRange";
-import { useGetRiskCountByDateRange } from "@/hooks/sms/useGetRiskByDateRange";
-import { useGetVoluntaryReportingStatsByYear } from "@/hooks/sms/useGetVoluntaryReportingStatisticsByYear";
-import { useGetVoluntaryReportsCountedByAirportLocation } from "@/hooks/sms/useGetVoluntaryReportsCountedByAirportLocation";
-import { useGetVoluntaryReportsCountedByArea } from "@/hooks/sms/useGetVoluntaryReportsCountedByArea";
+import { useGetTotalReportsStatsByYear } from "@/hooks/sms/useGetTotalReportsStatsByYear";
+import { pieChartData } from "@/types";
+import { format, startOfMonth } from "date-fns";
+import { es } from "date-fns/locale";
 import { Loader2 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import DynamicBarChart from "../../../../../../components/charts/DynamicBarChart";
-import { format, startOfMonth } from "date-fns";
-import { useGetIdentificationStatsBySourceName } from "@/hooks/sms/useGetIdentificationStatsBySoruceName";
-import { useGetIdentificationStatsBySourceType } from "@/hooks/sms/useGetIdentificationStatsBySoruceType";
 
 const languages = [
   { label: "English", value: "en" },
@@ -30,7 +24,7 @@ const languages = [
   { label: "Chinese", value: "zh" },
 ] as const;
 
-const Statistics = () => {
+const Indicators = () => {
   const [selectedGraphic, setSelectedGraphic] = useState("");
   const labels = [
     {
@@ -81,60 +75,6 @@ const Statistics = () => {
     to: format(new Date(), "yyyy-MM-dd"),
   });
 
-  const {
-    data: dynamicSourceNameData,
-    isLoading: isLoadingDynamicSourceNameData,
-    isError: isErrorDynamicSourceNameData,
-    refetch: refetchDynamicSourceNameChart,
-  } = useGetIdentificationStatsBySourceName(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "voluntary"
-  );
-
-  const {
-    data: dynamicSourceTypeData,
-    isLoading: isLoadingDynamicSourceTypeData,
-    isError: isErrorDynamicSourceTypeData,
-    refetch: refetchDynamicSourceTypeChart,
-  } = useGetIdentificationStatsBySourceType(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "voluntary"
-  );
-
-  // Asigna parametros cuando cambia el Pathname o el SearchParams
-
-  const {
-    data: airportLocationData,
-    isLoading: isLoadingAirportLocationData,
-    isError: isErrorAirportLocationData,
-    refetch: refetchAirportLocationData,
-  } = useGetVoluntaryReportsCountedByAirportLocation(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd")
-  );
-
-  const {
-    data: postRiskData,
-    isLoading: isLoadingPostRisk,
-    isError: isErrorPostRisk,
-    refetch: refetchPostRisk,
-  } = useGetPostRiskCountByDateRange(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd")
-  );
-
-  const {
-    data: riskData,
-    isLoading: isLoadingRisk,
-    isError: isErrorRisk,
-    refetch: refetchRisk,
-  } = useGetRiskCountByDateRange(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd")
-  );
-
   useEffect(() => {
     const defaultFrom = format(startOfMonth(new Date()), "yyyy-MM-dd");
     const defaultTo = format(new Date(), "yyyy-MM-dd");
@@ -157,52 +97,51 @@ const Statistics = () => {
     isLoading: isLoadingBarChart,
     isError: isErrorBarChart,
     refetch: refetchBarChart,
-  } = useGetVoluntaryReportingStatsByYear(
+  } = useGetTotalReportsStatsByYear(
     params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "voluntary"
+    params.to || format(new Date(), "yyyy-MM-dd")
   );
 
-  // Para extraer el numero de reportes por area dado unos rangos de fecha, desde hasta
-  const {
-    data: pieCharData,
-    isLoading: isLoadingPieCharData,
-    isError: isErrorPieCharData,
-    refetch: refetchPieChart,
-  } = useGetVoluntaryReportsCountedByArea(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd")
-  );
-  const {
-    data: dynamicData,
-    isLoading: isLoadingDynamicData,
-    isError: isErrorDynamicData,
-    refetch: refetchDynamicChart,
-  } = useGetDangerIdentificationsCountedByType(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd")
-  );
+  const [resultArrayData, setResultArrayData] = useState<pieChartData[]>([]);
+  const [result, setResult] = useState<number>();
+
+  function formatDate(date: string) {
+    const newDate = new Date(date);
+    return format(newDate, "PPP", {
+      locale: es,
+    });
+  }
 
   useEffect(() => {
     refetchBarChart();
-    refetchPieChart();
-    refetchDynamicChart();
-    refetchRisk();
-    refetchPostRisk();
-    refetchAirportLocationData();
-    refetchDynamicSourceNameChart();
-    refetchDynamicSourceTypeChart();
-  }, [params.from, params.to]);
-
-  console.log(" BEFORE CALL DATA FROM PARAMS.FROM PARAMS.TO", params.from);
-  console.log(" BEFORE CALL DATA PARAMS.TO", params.to);
+    if (barChartData) {
+      setResultArrayData([
+        {
+          name: "Reportes en Proceso",
+          value: barChartData.open_reports,
+        },
+        {
+          name: "Reportes Gestionados",
+          value: barChartData.closed_reports, // Corregido: usa closed_reports
+        },
+      ]);
+      setResult(
+        (barChartData.closed_reports * 100) / barChartData.total_reports
+      );
+    } else {
+      setResultArrayData([]);
+    }
+    console.log(resultArrayData, "resultArrayData");
+  }, [params.from, params.to, barChartData]); // Agregado barChartData como dependencia
 
   return (
     <>
       <ContentLayout title="Gráficos Estadísticos de los Reportes">
         <div className="flex justify-center items-center mb-4">
           <div className="flex flex-col">
-            <Label className="text-lg font-semibold">Seleccionar Fecha:</Label>
+            <Label className="text-lg font-semibold">
+              Seleccionar Rango de Fechas :
+            </Label>
             <DataFilter />
           </div>
         </div>
@@ -223,184 +162,87 @@ const Statistics = () => {
                   height="100%"
                   width="100%"
                   data={barChartData}
-                  title="Peligros Identificados"
+                  title="Peligros Identificados vs Gestionados"
                 />
               )
             ) : (
               <p className="text-sm text-muted-foreground">
-                Ha ocurrido un error al cargar las...
+                Ha ocurrido un error al cargar los datos de Peligros
+                Identificados vs Gestionados...
               </p>
             )}
           </div>
 
-          {/* Gráfico de Barras Dinámico (Numero de Reportes vs Tipo) */}
-          <div className="p-4 rounded-lg shadow border">
-            {isLoadingDynamicData ? (
-              <div className="flex justify-center items-center h-48">
-                <Loader2 className="size-24 animate-spin" />
-              </div>
-            ) : dynamicData && dynamicData.length > 0 ? (
-              <DynamicBarChart
-                height="70%"
-                width="70%"
-                data={dynamicData}
-                title="Numero de Reportes vs Tipo de Peligros"
-              />
-            ) : (
-              <p className="text-lg text-muted-foreground">
-                No hay datos para mostrar.
-              </p>
-            )}
-          </div>
-
-          {/* Gráfico de Barras Dinámico (Numero de Reportes vs Tipo) */}
-          <div className="p-4 rounded-lg shadow border">
-            {isLoadingDynamicData ? (
-              <div className="flex justify-center items-center h-48">
-                <Loader2 className="size-24 animate-spin" />
-              </div>
-            ) : pieCharData && pieCharData.length > 0 ? (
-              <DynamicBarChart
-                height="70%"
-                width="70%"
-                data={pieCharData}
-                title="Numero de Reportes vs Areas"
-              />
-            ) : (
-              <p className="text-lg text-muted-foreground">
-                No hay datos para mostrar.
-              </p>
-            )}
-          </div>
-
-          {/* Gráfico de Torta (Porcentaje de Indice de Riesgo Pre-Mitigacion) */}
           <div
             className="flex flex-col justify-center items-center 
           p-4 rounded-lg shadow border"
           >
-            {isLoadingRisk ? (
+            {isLoadingBarChart ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
-            ) : riskData && riskData.length > 0 ? (
-              <PieChartComponent
-                radius={120}
-                height="50%"
-                width="50%"
-                data={riskData}
-                title="Porcentaje de Indice de Riesgo Pre-Mitigacion"
-              />
+            ) : resultArrayData && resultArrayData?.length > 0 ? (
+              <>
+                <PieChartComponent
+                  radius={120}
+                  height="50%"
+                  width="50%"
+                  data={resultArrayData}
+                  title="Porcentaje de Peligros Identificados vs Gestionados"
+                />
+                <div className="flex justify-center items-center p-4 rounded-lg shadow-md">
+                  {result && result >= 90 ? (
+                    <div
+                      className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+                      role="alert"
+                    >
+                      <strong className="font-bold">¡Meta Alcanzada! </strong>
+                      <span className="block sm:inline">
+                        Se ha alcanzado la meta de gestionar el 90% de reportes
+                        gestionados.
+                      </span>
+                      <span className="block sm:inblock">
+                        El ({result}%) de los reportes han sido gestionados entre las fechas siguientes:
+                        <div className="mt-2 p-2 bg-purple-50 rounded-md border border-gray-200 shadow-sm text-center text-black">
+                          {formatDate(params.from || "")} -{" "}
+                          {formatDate(params.to || "")}
+                        </div>
+                      </span>
+                    </div>
+                  ) : (
+                    <div
+                      className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                      role="alert"
+                    >
+                      <strong className="font-bold">Segun el gráfico: </strong>
+                      <span className="block sm:inline">
+                        Aun no se ha alcanzado la gestión del 90% de reportes
+                        identificados.
+                        <div className="mt-2 p-2 bg-purple-50 rounded-md border border-gray-200 shadow-sm text-center">
+                          {formatDate(params.from || "")} -{" "}
+                          {formatDate(params.to || "")}
+                        </div>
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </>
             ) : (
               <p className="text-lg text-muted-foreground">
                 No hay datos para mostrar.
               </p>
             )}
-          </div>
-
-          {/* Gráfico de Barras Dinámico (Indice de Riesgo Pre-Mitigacion) */}
-          <div className="flex-col p-4 rounded-lg shadow border">
-            {isLoadingRisk ? (
-              <div className="flex justify-center items-center h-48">
-                <Loader2 className="size-24 animate-spin" />
-              </div>
-            ) : riskData && riskData.length > 0 ? (
-              <DynamicBarChart
-                height="100%"
-                width="100%"
-                data={riskData}
-                title="Indice de Riesgo Pre-Mitigacion"
-              />
-            ) : (
-              <p className="text-lg text-muted-foreground">
-                No hay datos para mostrar.
+            {isErrorBarChart && (
+              <p className="text-sm text-muted-foreground">
+                Ha ocurrido un error al cargar el numero de reportes por indice
+                de riesgo...
               </p>
             )}
           </div>
-
-          {/* Gráfico de Torta (Porcentaje de Indice de Riesgo Post-Mitigacion) */}
-          <div className="flex flex-col justify-center items-center p-4 rounded-lg shadow border ">
-            {isLoadingPostRisk ? (
-              <div className="flex justify-center items-center h-48">
-                <Loader2 className="size-24 animate-spin" />
-              </div>
-            ) : postRiskData && postRiskData.length > 0 ? (
-              <PieChartComponent
-                radius={120}
-                height="100%"
-                width="100%"
-                data={postRiskData}
-                title="Porcentaje de Indice de Riesgo Post-Mitigacion"
-              />
-            ) : (
-              <p className="text-lg text-muted-foreground">
-                No hay datos para mostrar.
-              </p>
-            )}
-          </div>
-
-          {/* Gráfico de Barras Dinámico (Numero de Reportes vs Localizacion) */}
-          <div className="p-4 rounded-lg shadow border">
-            {isLoadingAirportLocationData ? (
-              <div className="flex justify-center items-center h-48">
-                <Loader2 className="size-24 animate-spin" />
-              </div>
-            ) : airportLocationData && airportLocationData.length > 0 ? (
-              <DynamicBarChart
-                height="100%"
-                width="100%"
-                data={airportLocationData}
-                title="Numero de Reportes vs Localizacion"
-              />
-            ) : (
-              <p className="text-lg text-muted-foreground">
-                No hay datos para mostrar.
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Gráfico de Barras Dinámico (Indice de Riesgo Pre-Mitigacion) */}
-        <div className="flex-col p-4 rounded-lg shadow border">
-          {isLoadingDynamicSourceTypeData ? (
-            <div className="flex justify-center items-center h-48">
-              <Loader2 className="size-24 animate-spin" />
-            </div>
-          ) : dynamicSourceTypeData && dynamicSourceTypeData.length > 0 ? (
-            <DynamicBarChart
-              height="100%"
-              width="100%"
-              data={dynamicSourceTypeData}
-              title="Numero de Reportes vs Tipo de Fuente"
-            />
-          ) : (
-            <p className="text-lg text-muted-foreground">
-              No hay datos para mostrar.
-            </p>
-          )}
-        </div>
-
-        {/* Gráfico de Barras Dinámico (Indice de Riesgo Pre-Mitigacion) */}
-        <div className="flex-col p-4 rounded-lg shadow border">
-          {isLoadingDynamicSourceNameData ? (
-            <div className="flex justify-center items-center h-48">
-              <Loader2 className="size-24 animate-spin" />
-            </div>
-          ) : dynamicSourceNameData && dynamicSourceNameData.length > 0 ? (
-            <DynamicBarChart
-              height="100%"
-              width="100%"
-              data={dynamicSourceNameData}
-              title="Numero de Reportes Voluntarios vs Nombre de la Fuente"
-            />
-          ) : (
-            <p className="text-lg text-muted-foreground">
-              No hay datos para mostrar.
-            </p>
-          )}
         </div>
       </ContentLayout>
     </>
   );
 };
 
-export default Statistics;
+export default Indicators;
