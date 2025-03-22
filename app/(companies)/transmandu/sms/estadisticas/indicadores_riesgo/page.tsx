@@ -3,6 +3,7 @@ import BarChartComponent from "@/components/charts/BarChartComponent";
 import PieChartComponent from "@/components/charts/PieChartComponent";
 import { ContentLayout } from "@/components/layout/ContentLayout";
 import DataFilter from "@/components/misc/DataFilter";
+import DoubleDateFilter from "@/components/misc/DoubleDateFilter";
 import { Label } from "@/components/ui/label";
 import { useGetTotalReportsStatsByYear } from "@/hooks/sms/useGetTotalReportsStatsByYear";
 import { pieChartData } from "@/types";
@@ -142,7 +143,7 @@ const Indicators = () => {
             <Label className="text-lg font-semibold">
               Seleccionar Rango de Fechas :
             </Label>
-            <DataFilter />
+            <DoubleDateFilter />
           </div>
         </div>
 
