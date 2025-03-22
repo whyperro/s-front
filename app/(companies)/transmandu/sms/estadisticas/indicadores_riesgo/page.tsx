@@ -177,7 +177,7 @@ const Indicators = () => {
             className="flex flex-col justify-center items-center 
           p-4 rounded-lg shadow border"
           >
-            {isLoadingBarChart ? (
+            {isLoadingBarChart && barChartData !== null? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
@@ -202,7 +202,8 @@ const Indicators = () => {
                         gestionados.
                       </span>
                       <span className="block sm:inblock">
-                        El ({result}%) de los reportes han sido gestionados entre las fechas siguientes:
+                        El ({result}%) de los reportes han sido gestionados
+                        entre las fechas siguientes:
                         <div className="mt-2 p-2 bg-purple-50 rounded-md border border-gray-200 shadow-sm text-center text-black">
                           {formatDate(params.from || "")} -{" "}
                           {formatDate(params.to || "")}
