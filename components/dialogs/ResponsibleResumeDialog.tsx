@@ -20,7 +20,9 @@ const ResponsibleResumeDialog = ({ id }: { id: string }) => {
   }
   return (
     <Dialog open={openEmployee} onOpenChange={setOpenEmployee}>
-      <DialogTrigger>{employee}</DialogTrigger>
+      <DialogTrigger>
+        {employee?.first_name} {employee?.last_name}
+      </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="text-center font-bold">
           Resumen de Responsable
@@ -37,37 +39,49 @@ const ResponsibleResumeDialog = ({ id }: { id: string }) => {
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Empresa</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Empresa
+            </h3>
+            <p className="text-lg font-semibold">{employee?.company}</p>
+            <Separator />
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Trabajo
+            </h3>
             <p className="text-lg font-semibold">
-              {employee?.company}
+              {employee?.job_title ? employee?.job_title.name : "N/A"}
             </p>
             <Separator />
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Trabajo</h3>
-            <p className="text-lg font-semibold">{employee?.job_title.name}</p>
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Departamento
+            </h3>
+            <p className="text-lg font-semibold">
+              {employee?.department ? employee.department.name : "N/A"}
+            </p>
             <Separator />
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Departamento</h3>
-            <p className="text-lg font-semibold">{employee?.department.name}</p>
-            <Separator />
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Usuario</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Usuario
+            </h3>
             <p className="text-lg font-semibold">{employee?.user?.username}</p>
             <Separator />
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Dirección</h3>
-            <p className="text-lg font-semibold">{employee?.location.name}</p>
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Dirección
+            </h3>
+            <p className="text-lg font-semibold">{employee?.location ? employee?.location.name : "N/A"}</p>
             <Separator />
           </div>
-
+        </div>
         <DialogFooter className="sm:justify-center">
           <Button onClick={() => setOpenEmployee(false)}>Cerrar</Button>
         </DialogFooter>

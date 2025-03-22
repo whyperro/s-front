@@ -151,14 +151,16 @@ export const getColumns = (data: CashMovement[]): ColumnDef<CashMovement>[] => {
         </div>
       ),
     },
-  //  {
-  //    accessorKey: "responsible.first_name",
-  //    header: ({ column }) => (
-  //      <DataTableColumnHeader filter column={column} title="Responsable" />
-  //    ),
-  //    meta: { title: "Responsable" },
-  //    cell: ({ row }) => <ResponsibleResumeDialog employee={row.original.responsible.first_name} />,
-  //  },
+    {
+      accessorKey: "responsible.first_name",
+      header: ({ column }) => (
+        <DataTableColumnHeader filter column={column} title="Responsable" />
+      ),
+      meta: { title: "Responsable" },
+      cell: ({ row }) => (
+        <ResponsibleResumeDialog id={row.original.responsible.id.toString()} />
+      ),
+    },
     {
       accessorKey: "bank_account.name",
       header: ({ column }) => (
