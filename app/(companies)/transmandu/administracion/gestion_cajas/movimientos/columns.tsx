@@ -7,6 +7,7 @@ import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import CashMovementDropdownActions from "@/components/misc/CashMovementDropdownActions";
 import CompanyResumeDialog from "@/components/dialogs/AdministrationCompanyResumeDialog";
+import ResponsibleResumeDialog from "@/components/dialogs/ResponsibleResumeDialog";
 
 // Función para determinar si solo hay ingresos o solo egresos
 const getColumnVisibility = (data: CashMovement[]) => {
@@ -150,21 +151,14 @@ export const getColumns = (data: CashMovement[]): ColumnDef<CashMovement>[] => {
         </div>
       ),
     },
-    {
-      accessorKey: "responsible.first_name",
-      header: ({ column }) => (
-        <DataTableColumnHeader filter column={column} title="Responsable" />
-      ),
-      meta: { title: "Responsable" },
-      cell: ({ row }) => (
-        <div className="flex justify-center">
-          <span className="text-muted-foreground italic">
-            {row.original.responsible.first_name}{" "}
-            {row.original.responsible.first_name}
-          </span>
-        </div>
-      ),
-    },
+  //  {
+  //    accessorKey: "responsible.first_name",
+  //    header: ({ column }) => (
+  //      <DataTableColumnHeader filter column={column} title="Responsable" />
+  //    ),
+  //    meta: { title: "Responsable" },
+  //    cell: ({ row }) => <ResponsibleResumeDialog employee={row.original.responsible.first_name} />,
+  //  },
     {
       accessorKey: "bank_account.name",
       header: ({ column }) => (
@@ -174,7 +168,7 @@ export const getColumns = (data: CashMovement[]): ColumnDef<CashMovement>[] => {
       cell: ({ row }) => (
         <div className="flex justify-center">
           <span className="text-muted-foreground flex justify-center italic">
-            {row.original.bank_account.name}
+            {row.original.bank_account ? row.original.bank_account.name : "N/A"}
           </span>
         </div>
       ),
