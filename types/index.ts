@@ -492,3 +492,15 @@ export type Areas = {
   id: number;
   name: string;
 };
+
+export type StatsByMonth = {
+  average_per_month: number;
+  months: number;
+  result: number;
+  percentage_change: number;
+};
+
+export type AverageReportsResponse = {
+  first_range: StatsByMonth;
+  second_range: StatsByMonth;
+};
