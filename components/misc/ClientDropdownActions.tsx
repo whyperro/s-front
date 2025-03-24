@@ -9,6 +9,7 @@ import {
   EyeIcon,
   Loader2,
   MoreHorizontal,
+  Plus,
   Trash2,
 } from "lucide-react";
 import { useState } from "react";
@@ -27,12 +28,55 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { EditClientForm } from "../forms/EditClientForm";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface ClientDropdownActionsProps {
   id: string;
   ClientDetails: any;
   handleDelete: () => void;
 }
+
+const AddBalanceDialog = ({ id, onClose }) => {
+  const [balance, setBalance] = useState<number>(0);
+  const [error, setError] = useState<string>("");
+
+  const handleAddBalance = () => {
+    if (balance <= 0) {
+      setError("El saldo debe ser un valor positivo.");
+      return;
+    }
+    // Agregar la lógica para actualizar el saldo del cliente
+    console.log(`Adding balance ${balance} to client ${id}`);
+    onClose();
+  };
+
+  return (
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>Registrar Saldo a Favor</DialogTitle>
+      </DialogHeader>
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="balance">Saldo</Label>
+          <Input
+            id="balance"
+            type="number"
+            value={balance}
+            onChange={(e) => setBalance(Number(e.target.value))}
+          />
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+        </div>
+      </div>
+      <DialogFooter>
+        <Button variant="outline" onClick={onClose}>
+          Cancelar
+        </Button>
+        <Button onClick={handleAddBalance}>Registrar</Button>
+      </DialogFooter>
+    </DialogContent>
+  );
+};
 
 const ClientDropdownActions = ({ id }: { id: string }) => {
   const [open, setOpen] = useState<boolean>(false);
@@ -41,6 +85,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
   const { deleteClient } = useDeleteClient();
   const { data: clientDetails, isLoading } = useGetClientById(id);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [openAddBalance, setOpenAddBalance] = useState<boolean>(false);
 
   const handleViewStats = () => {
     router.push(`/transmandu/administracion/gestion_vuelos/clientes/${id}`);
@@ -76,6 +121,9 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpenEdit(true)}>
             <EditIcon className="size-5 text-blue-500" />
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenAddBalance(true)}>
+            <Plus className="size-5 text-green-500" />
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
@@ -197,6 +245,10 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           </DialogHeader>
           <EditClientForm id={id} onClose={() => setOpenEdit(false)} />
         </DialogContent>
+      </Dialog>
+
+      <Dialog open={openAddBalance} onOpenChange={setOpenAddBalance}>
+        <AddBalanceDialog id={id} onClose={() => setOpenAddBalance(false)} />
       </Dialog>
     </>
   );

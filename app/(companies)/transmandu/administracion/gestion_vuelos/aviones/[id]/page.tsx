@@ -44,7 +44,21 @@ import {
 } from "recharts";
 import { Flight } from "@/types";
 
-//cambiar el payed_amount por el total_amount 
+// Generar años dinámicamente (desde 2020 hasta 5 años en el futuro)
+const generateYearOptions = () => {
+  const currentYear = new Date().getFullYear()
+  const startYear = 2020
+  const endYear = currentYear + 5
+  const years = []
+
+  for (let year = startYear; year <= endYear; year++) {
+    years.push(year.toString())
+  }
+
+  return years
+}
+
+const yearOptions = generateYearOptions()
 
 // Tipo para los datos mensuales 
 type MonthlyData = {
@@ -96,7 +110,7 @@ export default function AircraftReportPage() {
       const flightDate = new Date(flight.date);
       if (flightDate.getFullYear().toString() === year) {
         const month = flightDate.getMonth();
-        data[month].ganancias += flight.payed_amount;
+        data[month].ganancias += flight.total_amount;
         data[month].vuelos += 1;
       }
     });
@@ -263,10 +277,11 @@ export default function AircraftReportPage() {
             <SelectValue placeholder="Seleccionar año" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="2024">2024</SelectItem>
-            <SelectItem value="2025">2025</SelectItem>
-            <SelectItem value="2024">2026</SelectItem>
-            <SelectItem value="2025">2027</SelectItem>
+            {yearOptions.map((year) => (
+              <SelectItem key={year} value={year}>
+                {year}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -352,7 +367,7 @@ export default function AircraftReportPage() {
                         {flight.route.from} - {flight.route.to}
                       </TableCell>
                       <TableCell>
-                        ${flight.payed_amount.toLocaleString()}
+                        ${flight.total_amount.toLocaleString()}
                       </TableCell>
                       <TableCell>
                         <Badge
@@ -371,7 +386,7 @@ export default function AircraftReportPage() {
                 <TableCaption>
                   Total: {flightsData.length} vuelos | Ganancias: $
                   {flightsData
-                    .reduce((sum, flight) => sum + flight.payed_amount, 0)
+                    .reduce((sum, flight) => sum + flight.total_amount, 0)
                     .toLocaleString()}
                 </TableCaption>
               </Table>

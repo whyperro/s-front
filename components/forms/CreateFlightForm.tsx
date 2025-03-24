@@ -68,12 +68,13 @@ const formSchema = z
       .refine(
         (val) => {
           const number = parseFloat(val);
-          return !isNaN(number) && number > 0;
+          return !isNaN(number) && number >= 0;
         },
         {
           message: "La tasa debe ser mayor a cero.",
         }
-      ),
+      )
+      .optional(), // Hacer que la tasa sea opcional
     type: z.enum(["CARGA", "PAX", "CHART"], {
       message: "Debe elegir un tipo de vuelo.",
     }),
@@ -87,13 +88,13 @@ const formSchema = z
     total_amount: z
       .string()
       .min(1, "El monto total es requerido")
-      .refine((value) => !isNaN(parseFloat(value)) && parseFloat(value) >= 0, {
+      .refine((value) => parseFloat(value) >= 0, {
         message: "El monto total debe ser mayor que cero",
       }),
     payed_amount: z
       .string()
       .min(1, "El monto pagado es requerido")
-      .refine((value) => !isNaN(parseFloat(value)) && parseFloat(value) >= 0, {
+      .refine((value) => parseFloat(value) >= 0, {
         message: "El monto pagado no puede ser negativo",
       }),
   })
@@ -108,7 +109,6 @@ const formSchema = z
       path: ["payed_amount"], // Esto indica que el error se mostrará en el campo payed_amount
     }
   );
-
 interface FormProps {
   onClose: () => void;
 }
@@ -147,20 +147,25 @@ export function FlightForm({ onClose }: FormProps) {
   }, [form]);
 
   useEffect(() => {
-    let newAmount = 0;
-    const fee = parseFloat(form.watch("fee"));
-    if (Number(kg) >= 0) {
-      newAmount = (parseFloat(kg) ?? 0) * fee;
-    } else {
-      newAmount = 0 * fee;
+    if (form.watch("type") !== "CHART") {
+      let newAmount = 0;
+      const feeString = form.watch("fee") || "0"; // Proporciona un valor predeterminado si es undefined
+      const fee = parseFloat(feeString);
+
+      if (Number(kg) >= 0) {
+        newAmount = (parseFloat(kg) ?? 0) * fee;
+      } else {
+        newAmount = 0 * fee;
+      }
+      form.setValue("total_amount", newAmount.toString());
     }
-    form.setValue("total_amount", newAmount.toString());
   }, [kg, form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("clkick");
     const formattedValues = {
       ...values,
-      fee: Number(values.fee),
+      fee: values.type === "CHART" ? 0 : Number(values.fee),
       total_amount: Number(values.total_amount),
       payed_amount: Number(values.payed_amount),
     };
@@ -169,7 +174,7 @@ export function FlightForm({ onClose }: FormProps) {
   }
 
   const debtStatus = form.watch("debt_status");
-
+  console.log(form.getValues());
   return (
     <Form {...form}>
       <form
