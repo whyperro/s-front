@@ -61,6 +61,34 @@ export const useRegisterActivity = () => {
     };
 };
 
+export const useDeleteActivity = () => {
+    const queryClient = useQueryClient();
+
+    const createMutation = useMutation({
+        mutationFn: async (data: {
+            id: string;
+        }) => {
+            await axiosInstance.delete(`/transmandu/activity/${data.id}`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["activities"] });
+            queryClient.invalidateQueries({ queryKey: ["user-activity"] });
+            toast.success("¡Actividad eliminada!", {
+                description: "La actividad se ha eliminado correctamente."
+            });
+        },
+        onError: () => {
+            toast.error("Oops!", {
+                description: "Hubo un error al eliminar la actividad."
+            });
+        }
+    });
+
+    return {
+        deleteActivity: createMutation,
+    };
+};
+
 export const useUpdateFinalHour = () => {
     const queryClient = useQueryClient();
 

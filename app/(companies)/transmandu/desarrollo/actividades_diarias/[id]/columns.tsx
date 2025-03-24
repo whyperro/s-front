@@ -34,7 +34,7 @@ export const columns: ColumnDef<Activity>[] = [
       <DataTableColumnHeader column={column} title="Hora de Finalizacion" />
     ),
     cell: ({ row }) => (
-      <p className="font-medium text-center ml-[2px]">{row.original.final_hour ?? "-"}</p> // Ajuste de margen
+      <p className="font-medium text-center ml-[2px] italic">{row.original.final_hour ?? "-"}</p> // Ajuste de margen
     )
   },
   {

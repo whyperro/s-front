@@ -1,13 +1,13 @@
 'use client'
 
-import { useUpdateFinalHour } from "@/actions/desarrollo/reportes_diarios/actions"
+import { useUpdateFinalHour, useDeleteActivity } from "@/actions/desarrollo/reportes_diarios/actions"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { Clock, MoreHorizontal } from "lucide-react"
+import { Clock, MoreHorizontal, Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Button } from "../ui/button"
 import { Checkbox } from "../ui/checkbox"
@@ -17,9 +17,9 @@ import { Label } from "../ui/label"
 
 const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boolean }) => {
   const { updateFinalHour } = useUpdateFinalHour()
+  const { deleteActivity } = useDeleteActivity()
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [endTime, setEndTime] = useState("")
-
   const [result, setResult] = useState("")
   const [manualEndTime, setManualEndTime] = useState(false)
 
@@ -39,6 +39,11 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
     }
     await updateFinalHour.mutateAsync(data)
     setDialogOpen(false)
+  }
+
+  // 🗑️ Función para eliminar la actividad
+  const handleDelete = async () => {
+    await deleteActivity.mutateAsync({ id: id.toString() })
   }
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,10 +66,15 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
           <DropdownMenuItem disabled={finished} onClick={() => setDialogOpen(true)} className="cursor-pointer">
             <Clock className="size-5 mr-2" /> Finalizar Actividad
           </DropdownMenuItem>
+
+          {/* Opción para eliminar */}
+          <DropdownMenuItem onClick={handleDelete} className="cursor-pointer text-red-600">
+            <Trash2 className="size-5 mr-2" /> Eliminar Actividad
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Diálogo para ingresar hora de finalización y resultado */}
+      {/* Diálogo para finalizar la actividad */}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Finalizar Actividad</DialogTitle>
