@@ -498,9 +498,11 @@ export type StatsByMonth = {
   months: number;
   result: number;
   percentage_change: number;
+  from: string;
+  to: string;
 };
 
 export type AverageReportsResponse = {
-  first_range: StatsByMonth;
-  second_range: StatsByMonth;
+  oldest_range: StatsByMonth;
+  newest_range: StatsByMonth;
 };
