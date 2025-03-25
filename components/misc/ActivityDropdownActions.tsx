@@ -14,14 +14,20 @@ import { Checkbox } from "../ui/checkbox"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
+import { useGetUserActivity } from "@/hooks/desarrollo/useGetUserActivities"
+import { useRouter } from "next/navigation"
 
 const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boolean }) => {
+  const router = useRouter()
   const { updateFinalHour } = useUpdateFinalHour()
   const { deleteActivity } = useDeleteActivity()
+  const { data: report } = useGetUserActivity(id.toString())
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [endTime, setEndTime] = useState("")
   const [result, setResult] = useState("")
   const [manualEndTime, setManualEndTime] = useState(false)
+
+  // console.log("Actividades: ", report)
 
   useEffect(() => {
     if (!manualEndTime) {
@@ -41,11 +47,18 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
     setDialogOpen(false)
   }
 
-  // 🗑️ Función para eliminar la actividad
   const handleDelete = async () => {
+    const activities = report?.activities || []
+    const isOnlyOneActivity = activities.length === 1 && activities[0]?.id === id
     await deleteActivity.mutateAsync({ id: id.toString() })
+    if (isOnlyOneActivity) {
+      router.back()
+      router.refresh()
+    } else {
+      router.refresh()
+      setDialogOpen(false)
+    }
   }
-
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const timeValue = e.target.value
     if (timeValue >= "07:00" && timeValue <= "17:00") {
@@ -62,13 +75,20 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
+
         <DropdownMenuContent align="center" className="flex flex-col gap-2">
-          <DropdownMenuItem disabled={finished} onClick={() => setDialogOpen(true)} className="cursor-pointer">
+          <DropdownMenuItem
+            disabled={finished}
+            onClick={() => setDialogOpen(true)}
+            className="cursor-pointer"
+          >
             <Clock className="size-5 mr-2" /> Finalizar Actividad
           </DropdownMenuItem>
 
-          {/* Opción para eliminar */}
-          <DropdownMenuItem onClick={handleDelete} className="cursor-pointer text-red-600">
+          <DropdownMenuItem
+            onClick={handleDelete}
+            className="cursor-pointer text-red-600"
+          >
             <Trash2 className="size-5 mr-2" /> Eliminar Actividad
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -81,7 +101,10 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
         </DialogHeader>
         <div className="space-y-4">
           <div className="flex items-center space-x-2">
-            <Checkbox checked={manualEndTime} onCheckedChange={(checked) => setManualEndTime(Boolean(checked))} />
+            <Checkbox
+              checked={manualEndTime}
+              onCheckedChange={(checked) => setManualEndTime(Boolean(checked))}
+            />
             <Label>Ingresar hora manualmente</Label>
           </div>
           <div>
@@ -90,7 +113,7 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
               type="time"
               value={endTime}
               min="07:00"
-              max="17:00"
+              max="18:00"
               disabled={!manualEndTime}
               onChange={handleTimeChange}
             />
