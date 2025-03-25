@@ -7,6 +7,7 @@ import DataFilter from "@/components/misc/DataFilter";
 import DoubleDateFilter from "@/components/misc/DoubleDateFilter";
 import { Label } from "@/components/ui/label";
 import { useGetTotalReportsStatsByYear } from "@/hooks/sms/useGetTotalReportsStatsByYear";
+import { dateFormat } from "@/lib/utils";
 import { pieChartData } from "@/types";
 import { format, startOfMonth } from "date-fns";
 import { es } from "date-fns/locale";
@@ -179,7 +180,7 @@ const VoluntaryReportIndicators = () => {
             className="flex flex-col justify-center items-center 
           p-4 rounded-lg shadow border"
           >
-            {isLoadingBarChart && barChartData !== null? (
+            {isLoadingBarChart && barChartData !== null ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
@@ -221,9 +222,10 @@ const VoluntaryReportIndicators = () => {
                       <span className="block sm:inline">
                         Aun no se ha alcanzado la gestión del 90% de reportes
                         identificados.
-                        <div className="mt-2 p-2 bg-purple-50 rounded-md border border-gray-200 shadow-sm text-center">
-                          {formatDate(params.from || "")} -{" "}
-                          {formatDate(params.to || "")}
+                        <div className="mt-2 p-2 bg-purple-50 rounded-md border border-gray-200 shadow-sm text-center text-black">
+                          {dateFormat(params.from || "", "PPP")}
+                          {"     "} al {"     "}
+                          {dateFormat(params.to || "", "PPP")}
                         </div>
                       </span>
                     </div>
