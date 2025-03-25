@@ -4,13 +4,12 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 
+import ObligatoryReportDropdownActions from "@/components/misc/ObligatoryReportDropdownActions";
+import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ObligatoryReport } from "@/types";
 import { format, parse } from "date-fns";
-import { es } from "date-fns/locale";
-import Link from "next/link";
-import ObligatoryReportDropdownActions from "@/components/misc/ObligatoryReportDropdownActions";
-import { Badge } from "@/components/ui/badge";
+import { dateFormat } from "@/lib/utils";
 
 export const columns: ColumnDef<ObligatoryReport>[] = [
   {
@@ -43,7 +42,7 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
     meta: { title: "Nro. de Reporte" },
     cell: ({ row }) => {
       return (
-        <div className="flex justify-center">{row.original.report_code}</div>
+        <div className="flex justify-center">RSO-{row.original.report_code}</div>
       );
     },
   },
@@ -55,9 +54,7 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
     cell: ({ row }) => {
       return (
         <p className="font-medium text-center">
-          {format(row.original.report_date, "PPP", {
-            locale: es,
-          })}
+          {dateFormat(row.original.report_date, "PPP")}
         </p>
       );
     },

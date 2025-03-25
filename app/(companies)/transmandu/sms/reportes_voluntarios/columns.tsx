@@ -8,8 +8,8 @@ import VoluntaryReportDropdownActions from "@/components/misc/VoluntaryReportDro
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { VoluntaryReport } from "@/types";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDate } from "date-fns";
+import { dateFormat } from "@/lib/utils";
 
 export const columns: ColumnDef<VoluntaryReport>[] = [
   {
@@ -59,9 +59,7 @@ export const columns: ColumnDef<VoluntaryReport>[] = [
     cell: ({ row }) => {
       return (
         <p className="font-medium text-center">
-          {format(row.original.report_date, "PPP", {
-            locale: es,
-          })}
+          {dateFormat(row.original.report_date, "PPP")}
         </p>
       );
     },
