@@ -27,8 +27,6 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
   const [result, setResult] = useState("")
   const [manualEndTime, setManualEndTime] = useState(false)
 
-  // console.log("Actividades: ", report)
-
   useEffect(() => {
     if (!manualEndTime) {
       const now = new Date()
@@ -61,7 +59,7 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
   }
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const timeValue = e.target.value
-    if (timeValue >= "07:00" && timeValue <= "17:00") {
+    if (timeValue >= "07:00" && timeValue <= "18:00") {
       setEndTime(timeValue)
     }
   }
