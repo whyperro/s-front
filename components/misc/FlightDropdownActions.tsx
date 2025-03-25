@@ -31,6 +31,7 @@ import { Separator } from "../ui/separator";
 
 const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
   const [open, setOpen] = useState<boolean>(false);
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [openPayment, setOpenPayment] = useState<boolean>(false);
   const [openFlight, setOpenFlight] = useState<boolean>(false);
   const router = useRouter();
@@ -38,7 +39,7 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
 
   const handleDelete = async (id: number | string) => {
     await deleteFlight.mutateAsync(id);
-    setOpen(false);
+    setOpenDelete(false);
   };
 
   const handleViewDetails = () => {
@@ -67,7 +68,7 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
               <HandCoins className="size-5 text-green-500" />
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem onClick={() => setOpenDelete(true)}>
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleViewDetails}>
@@ -81,7 +82,8 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      {/*Dialog para eliminar el registro de un vuelo*/}
+      <Dialog open={openDelete} onOpenChange={setOpenDelete}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center">
@@ -95,7 +97,7 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
           <DialogFooter className="flex gap-2">
             <Button
               className="bg-rose-400 hover:bg-white hover:text-black hover:border hover:border-black"
-              onClick={() => setOpen(false)}
+              onClick={() => setOpenDelete(false)}
               type="submit"
             >
               Cancelar
@@ -115,6 +117,7 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
         </DialogContent>
       </Dialog>
 
+      {/*Dialog para registrar el pago de un vuelo*/}
       <Dialog open={openPayment} onOpenChange={setOpenPayment}>
         <DialogContent>
           <DialogHeader className="text-center font-bold">
@@ -127,6 +130,7 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
         </DialogContent>
       </Dialog>
 
+      {/*Dialog para ver el resumen de un vuelo*/}
       <Dialog open={openFlight} onOpenChange={setOpenFlight}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader className="text-center font-bold">

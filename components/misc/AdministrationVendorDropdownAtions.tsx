@@ -18,19 +18,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
 import { EditAdministrationVendorForm } from "../forms/EditAdministrationVendorForm"; "../forms/EditAdministrationVendorForm";
 
-interface AdministrationVendorDropdownActionsProps {
-  id: string;
-  ClientDetails: any;
-  handleDelete: () => void;
-}
-
 const AdministrationVendorDropdownActions = ({ id }: { id: string }) => {
-  const [open, setOpen] = useState<boolean>(false);
   const [openVendor, setOpenVendor] = useState<boolean>(false);
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
   const router = useRouter();
   const { deleteAdministrationVendor } = useDeleteAdministrationVendor();
   const { data: vendorDetails, isLoading } = useGetAdministrationVendorById(id);
@@ -42,7 +35,7 @@ const AdministrationVendorDropdownActions = ({ id }: { id: string }) => {
 
   const handleDelete = async (id: number | string) => {
     await deleteAdministrationVendor.mutateAsync(id);
-    setOpen(false);
+    setOpenDelete(false);
   };
 
   const handleViewDetails = () => {
@@ -62,7 +55,7 @@ const AdministrationVendorDropdownActions = ({ id }: { id: string }) => {
           align="center"
           className="flex gap-2 justify-center"
         >
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem onClick={() => setOpenDelete(true)}>
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleViewDetails}>
@@ -73,14 +66,17 @@ const AdministrationVendorDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/gestion_vuelos/proveedor/${id}`); //segun la query deberia ser aircrafts
+              router.push(`/administracion/gestion_vuelos/proveedor/${id}`); 
             }}
           ></DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+      {/*Dialog para eliminar un proveedor*/}
+      <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+        <DialogContent onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader>
             <DialogTitle className="text-center">
               ¿Seguro que desea eliminar al proveedor?
@@ -93,7 +89,7 @@ const AdministrationVendorDropdownActions = ({ id }: { id: string }) => {
           <DialogFooter className="flex gap-2">
             <Button
               className="bg-rose-400 hover:bg-white hover:text-black hover:border hover:border-black"
-              onClick={() => setOpen(false)}
+              onClick={() => setOpenDelete(false)}
               type="submit"
             >
               Cancelar
@@ -112,8 +108,12 @@ const AdministrationVendorDropdownActions = ({ id }: { id: string }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/*Dialog para ver el resumen de un proveedor*/}
       <Dialog open={openVendor} onOpenChange={setOpenVendor}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md" onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader className="text-center font-bold">
             Resumen del Proveedor
           </DialogHeader>
@@ -170,21 +170,24 @@ const AdministrationVendorDropdownActions = ({ id }: { id: string }) => {
           )}
 
           <DialogFooter className="sm:justify-center">
-            <Button
+         { /*  <Button
               variant="outline"
               onClick={() =>
                 router.push(`/administracion/gestion_vuelos/proveedor/${id}`)
               }
             >
               Ver detalles completos
-            </Button>
+            </Button> */ }
             <Button onClick={() => setOpenVendor(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
+      {/*Dialog para editar un proveedor*/}
       <Dialog open={openEdit} onOpenChange={setOpenEdit}>
-        <DialogContent>
+        <DialogContent onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader>
             <DialogTitle>Editar Cliente</DialogTitle>
           </DialogHeader>

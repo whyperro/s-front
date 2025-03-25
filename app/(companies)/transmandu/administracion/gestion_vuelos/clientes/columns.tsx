@@ -4,6 +4,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Client } from "@/types";
 import ClientDropdownActions from "@/components/misc/ClientDropdownActions";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
+import { cn, formatCurrency } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<Client>[] = [
   {
@@ -62,9 +64,14 @@ export const columns: ColumnDef<Client>[] = [
     meta: { title: "Saldo" },
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.balance}
-        </span>
+        <Badge
+          className={cn(
+            "",
+            row.original.balance < 0 ? "bg-red-500" : "bg-green-500"
+          )}
+        >
+          {formatCurrency(row.original.balance)}
+        </Badge>
       </div>
     ),
   },

@@ -53,3 +53,12 @@ export const formatDateRange = (
   // Si ambas fechas son válidas, formatea el rango
   return `${format(period.from, "LLL dd", { locale })} - ${format(period.to, "LLL dd, y", { locale })}`;
 };//ESTO ES NUEVO lo que esta en comentarios era viejo... las fechas se muestran decrementadas un numero en el dia 
+
+
+export function formatCurrency(value: number) {
+  return Intl.NumberFormat("en-US",{
+    style: 'currency',
+    currency: "USD",
+    minimumFractionDigits: 2,
+  }).format(value)
+}

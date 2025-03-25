@@ -16,7 +16,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
 import { CashMovement } from "@/types";
 import CashMovementResume from "./CashMovementResume";
@@ -28,14 +27,14 @@ const CashMovementDropdownActions = ({
   id: string;
   movement: CashMovement;
 }) => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [openCashMovement, setOpenCashMovement] = useState<boolean>(false);
   const router = useRouter();
   const { deleteCashMovement } = useDeleteCashMovement();
 
   const handleDelete = async (id: number | string) => {
     await deleteCashMovement.mutateAsync(id);
-    setOpen(false);
+    setOpenDelete(false);
   };
 
   const handleViewDetails = () => {
@@ -55,7 +54,7 @@ const CashMovementDropdownActions = ({
           align="center"
           className="flex gap-2 justify-center"
         >
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem onClick={() => setOpenDelete(true)}>
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleViewDetails}>
@@ -69,8 +68,11 @@ const CashMovementDropdownActions = ({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+      {/*Dialog para eliminar un movimiento*/}
+      <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+        <DialogContent onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader>
             <DialogTitle className="text-center">
               ¿Seguro que desea eliminar el movimiento?
@@ -83,7 +85,7 @@ const CashMovementDropdownActions = ({
           <DialogFooter className="flex gap-2">
             <Button
               className="bg-rose-400 hover:bg-white hover:text-black hover:border hover:border-black"
-              onClick={() => setOpen(false)}
+              onClick={() => setOpenDelete(false)}
               type="submit"
             >
               Cancelar
@@ -103,21 +105,24 @@ const CashMovementDropdownActions = ({
         </DialogContent>
       </Dialog>
 
+      {/*Dialog para mostar el resumen del movimiento de una caja*/}
       <Dialog open={openCashMovement} onOpenChange={setOpenCashMovement}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md" onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader className="text-center font-bold">
             Resumen del Movimiento de la Caja
           </DialogHeader>
           <CashMovementResume movement={movement} />
           <DialogFooter className="sm:justify-center">
-            <Button
+          {/*  <Button
               variant="outline"
               onClick={() =>
                 router.push(`/transmandu/administracion/movimientos/${id}`)
               }
             >
               Ver detalles completos
-            </Button>
+            </Button>  */}
             <Button onClick={() => setOpenCashMovement(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>

@@ -30,6 +30,16 @@ export type Aircraft = {
   model: string,
 }
 
+export type AdministrationArticle = {
+  id: number,
+  serial: string,
+  name: string,
+  status: "VENDIDO" | "EN POSESION" | "ORDENADO" | "RENTADO",
+  price: string,
+  brand: string,
+  type: string,
+}
+
 export type Article = {
   id?: number,
   article_type?: string,
@@ -106,7 +116,7 @@ export type Cash = {
   id: number,
   name: string,
   total_amount: string,
-  box_type: string,
+  coin: "BOLIVARES" | "DOLARES" | "EUROS",
 }
 
 export type CashMovement = {
@@ -371,6 +381,21 @@ export type Quote = {
   quote_date: Date,
   created_by: string,
   status: string,
+}
+
+export type Renting = {
+  id: number;
+  description: string,
+  status: "EN PROCESO" | "CULMINADO" | "RETRASADO",
+  type: "AERONAVE" | "ARTICULO",
+  price: number,
+  payed_amount: number,
+  start_date: Date,
+  end_date: Date,
+  deadline: Date,
+  article: AdministrationArticle,
+  aircraft: Aircraft,
+  client: Client,
 }
 
 export type Request = {

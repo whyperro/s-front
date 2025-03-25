@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Cash } from "@/types"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 const formSchema = z.object({
   name: z.string().regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras").min(2, {
@@ -29,11 +29,7 @@ const formSchema = z.object({
   }, {
     message: "El monto total debe ser un número positivo.",
   }),
-  box_type: z.string().min(2, {
-    message: "El tipo de caja debe tener al menos 2 caracteres.",
-  }).max(30, {
-    message: "El tipo de caja tiene un máximo 30 caracteres.",
-  }),
+  coin: z.enum(["BOLIVARES", "DOLARES", "EUROS"]),
 });
 
 interface FormProps {
@@ -86,14 +82,25 @@ export function CreateCashForm({ onClose }: FormProps) {
         />
         <FormField
           control={form.control}
-          name="box_type"
+          name="coin"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tipo de Caja</FormLabel>
-              <FormControl>
-                <Input placeholder="Ingresa el tipo de caja" {...field} />
-              </FormControl>
-              <FormMessage />
+              <FormLabel>Moneda</FormLabel>
+              <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Ingrese el tipo de moneda" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="BOLIVARES">Bolívares</SelectItem>
+                    <SelectItem value="DOLARES">Dolares</SelectItem>
+                    <SelectItem value="EUROS">Euros</SelectItem>
+                  </SelectContent>
+                </Select>
             </FormItem>
           )}
         />

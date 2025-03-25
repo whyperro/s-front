@@ -4,7 +4,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu";
-  import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
+  import { Loader2, MoreHorizontal, Trash2 } from "lucide-react";
   import { useState } from "react";
 import { Button } from "../ui/button";
 import { useDeleteRoute } from "@/actions/administracion/rutas/actions";
@@ -19,17 +19,16 @@ import {
 } from "../ui/dialog";
   
 const RouteDropdownActions = ({ id }: { id: string }) => {
-  const [open, setOpen] = useState<boolean>(false);
-
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
   const { deleteRoute } = useDeleteRoute();
 
   const handleDelete = async (id: number | string) => {
     await deleteRoute.mutateAsync(id);
-    setOpen(false);
+    setOpenDelete(false);
   }
 
     return (
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={openDelete} onOpenChange={setOpenDelete}>
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Button variant="ghost" className="h-8 w-8 p-0">
@@ -48,6 +47,8 @@ const RouteDropdownActions = ({ id }: { id: string }) => {
             </DialogTrigger>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/*Dialog para eliminar una ruta*/}
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center">
@@ -61,7 +62,7 @@ const RouteDropdownActions = ({ id }: { id: string }) => {
           <DialogFooter className="flex gap-2">
             <Button
               className="bg-rose-400 hover:bg-white hover:text-black hover:border hover:border-black"
-              onClick={() => setOpen(false)}
+              onClick={() => setOpenDelete(false)}
               type="submit"
             >
               Cancelar

@@ -1,9 +1,11 @@
+import { useDeleteClient } from "@/actions/administracion/clientes/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useGetClientById } from "@/hooks/administracion/useGetClientsById";
 import {
   EditIcon,
   EyeIcon,
@@ -12,12 +14,10 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { EditClientForm } from "../forms/EditClientForm";
 import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
-import { useGetClientById } from "@/hooks/administracion/useGetClientsById";
-import { useDeleteClient } from "@/actions/administracion/clientes/actions";
 import {
   Dialog,
   DialogContent,
@@ -25,61 +25,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
-import { EditClientForm } from "../forms/EditClientForm";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
-interface ClientDropdownActionsProps {
-  id: string;
-  ClientDetails: any;
-  handleDelete: () => void;
-}
-
-const AddBalanceDialog = ({ id, onClose }) => {
-  const [balance, setBalance] = useState<number>(0);
-  const [error, setError] = useState<string>("");
-
-  const handleAddBalance = () => {
-    if (balance <= 0) {
-      setError("El saldo debe ser un valor positivo.");
-      return;
-    }
-    // Agregar la lógica para actualizar el saldo del cliente
-    console.log(`Adding balance ${balance} to client ${id}`);
-    onClose();
-  };
-
-  return (
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>Registrar Saldo a Favor</DialogTitle>
-      </DialogHeader>
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="balance">Saldo</Label>
-          <Input
-            id="balance"
-            type="number"
-            value={balance}
-            onChange={(e) => setBalance(Number(e.target.value))}
-          />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-        </div>
-      </div>
-      <DialogFooter>
-        <Button variant="outline" onClick={onClose}>
-          Cancelar
-        </Button>
-        <Button onClick={handleAddBalance}>Registrar</Button>
-      </DialogFooter>
-    </DialogContent>
-  );
-};
+import { Separator } from "../ui/separator";
+import AddClientBalanceForm from "../forms/AddClientBalanceForm";
 
 const ClientDropdownActions = ({ id }: { id: string }) => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [openClient, setOpenClient] = useState<boolean>(false);
   const router = useRouter();
   const { deleteClient } = useDeleteClient();
@@ -93,7 +44,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
 
   const handleDelete = async (id: number | string) => {
     await deleteClient.mutateAsync(id);
-    setOpen(false);
+    setOpenDelete(false);
   };
 
   const handleViewDetails = () => {
@@ -113,7 +64,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           align="center"
           className="flex gap-2 justify-center"
         >
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem onClick={() => setOpenDelete(true)}>
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleViewDetails}>
@@ -127,14 +78,17 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/gestion_vuelos/clientes/${id}`); //segun la query deberia ser aircrafts
+              router.push(`/administracion/gestion_vuelos/clientes/${id}`);
             }}
           ></DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+      {/*Dialog para eliminar un cliente*/}
+      <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+        <DialogContent onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader>
             <DialogTitle className="text-center">
               ¿Seguro que desea eliminar al cliente?
@@ -147,7 +101,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           <DialogFooter className="flex gap-2">
             <Button
               className="bg-rose-400 hover:bg-white hover:text-black hover:border hover:border-black"
-              onClick={() => setOpen(false)}
+              onClick={() => setOpenDelete(false)}
               type="submit"
             >
               Cancelar
@@ -166,8 +120,12 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      
+      {/*Dialog para ver el resumen de un cliente*/}
       <Dialog open={openClient} onOpenChange={setOpenClient}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md" onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader className="text-center font-bold">
             Resumen del Cliente
           </DialogHeader>
@@ -225,21 +183,24 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           )}
 
           <DialogFooter className="sm:justify-center">
-            <Button
+          {/*  <Button
               variant="outline"
               onClick={() =>
                 router.push(`/administracion/gestion_vuelos/clientes/${id}`)
               }
             >
               Ver detalles completos
-            </Button>
+            </Button> */}
             <Button onClick={() => setOpenClient(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
+      {/*Dialog para editar un cliente*/}
       <Dialog open={openEdit} onOpenChange={setOpenEdit}>
-        <DialogContent>
+        <DialogContent onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader>
             <DialogTitle>Editar Cliente</DialogTitle>
           </DialogHeader>
@@ -247,8 +208,19 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
         </DialogContent>
       </Dialog>
 
+      {/*Dialog para Registrar un saldo a favor para un cliente*/}
       <Dialog open={openAddBalance} onOpenChange={setOpenAddBalance}>
-        <AddBalanceDialog id={id} onClose={() => setOpenAddBalance(false)} />
+        <DialogContent onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
+          <DialogHeader>
+            <DialogTitle>Registrar Saldo a Favor</DialogTitle>
+          </DialogHeader>
+          <AddClientBalanceForm
+            id={id}
+            onClose={() => setOpenAddBalance(false)}
+          />
+        </DialogContent>
       </Dialog>
     </>
   );

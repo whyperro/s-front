@@ -1,6 +1,7 @@
 import {
   Banknote,
   BookUser,
+  Boxes,
   Building,
   ClipboardCopy,
   CreditCard,
@@ -20,6 +21,7 @@ import {
   ScrollText,
   Settings,
   SquarePen,
+  Timer,
   User2,
   Wrench,
 } from "lucide-react";
@@ -84,6 +86,30 @@ export function getMenuList(
                 label: "Vuelos",
                 active: pathname.includes("/transmandu/administracion/vuelos"),
                 icon: PlaneTakeoff,
+                roles: [
+                  "ANALISTA_PLANIFICACION",
+                  "JEFE_PLANIFICACION",
+                  "SUPERUSER",
+                ],
+                submenus: [],
+              },
+              {
+                href: "/transmandu/administracion/articulos",
+                label: "Articulos",
+                active: pathname.includes("/transmandu/administracion/articulos"),
+                icon: Boxes,
+                roles: [
+                  "ANALISTA_PLANIFICACION",
+                  "JEFE_PLANIFICACION",
+                  "SUPERUSER",
+                ],
+                submenus: [],
+              },
+              {
+                href: "/transmandu/administracion/renta",
+                label: "Renta",
+                active: pathname.includes("/transmandu/administracion/renta"),
+                icon: Timer,
                 roles: [
                   "ANALISTA_PLANIFICACION",
                   "JEFE_PLANIFICACION",

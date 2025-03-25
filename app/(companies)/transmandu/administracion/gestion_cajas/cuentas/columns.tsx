@@ -5,6 +5,16 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { Cash } from "@/types";
 import CashDropdownActions from "@/components/misc/CashDropdownActions";
 
+//función auxiliar para manejar la lógica de los símbolos
+const getCurrencySymbol = (coinType: string) => {
+  switch(coinType) {
+    case "DOLARES": return "$";
+    case "EUROS": return "€";
+    case "BOLIVARES": return "Bs.";
+    default: return "";
+  }
+};
+
 export const columns: ColumnDef<Cash>[] = [
   {
     accessorKey: "name",
@@ -29,21 +39,21 @@ export const columns: ColumnDef<Cash>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.total_amount}
+          {row.original.total_amount } {getCurrencySymbol(row.original.coin)}
         </span>
       </div>
     ),
   },
   {
-    accessorKey: "box_type",
+    accessorKey: "coin",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Tipo de Caja" />
+      <DataTableColumnHeader filter column={column} title="Moneda" />
     ),
-    meta: { title: "Tipo de Caja" },
+    meta: { title: "Moneda" },
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.box_type}
+          {row.original.coin}
         </span>
       </div>
     ),

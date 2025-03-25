@@ -155,11 +155,6 @@ export function EditAdministrationVendorForm({ id, onClose }: EditAdministration
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Tipo" />
-                    </SelectTrigger>
-                  </FormControl>
                   <SelectContent>
                     <SelectItem value="BENEFICIARIO">Beneficiario</SelectItem>
                     <SelectItem value="PROVEEDOR">Proveedor</SelectItem>

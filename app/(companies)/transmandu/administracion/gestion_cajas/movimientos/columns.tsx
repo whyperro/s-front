@@ -8,6 +8,18 @@ import { es } from "date-fns/locale/es";
 import CashMovementDropdownActions from "@/components/misc/CashMovementDropdownActions";
 import CompanyResumeDialog from "@/components/dialogs/AdministrationCompanyResumeDialog";
 import ResponsibleResumeDialog from "@/components/dialogs/ResponsibleResumeDialog";
+import BankAccountResumeDialog from "@/components/dialogs/BankAccountResumeDialog";
+import CashResumeDialog from "@/components/dialogs/CashResumeDialog";
+
+// Función auxiliar para obtener el símbolo de la moneda
+const getCurrencySymbol = (coinType: string) => {
+  switch(coinType) {
+    case "DOLARES": return "$";
+    case "EUROS": return "€";
+    case "BOLIVARES": return "Bs.";
+    default: return "";
+  }
+};
 
 // Función para determinar si solo hay ingresos o solo egresos
 const getColumnVisibility = (data: CashMovement[]) => {
@@ -69,13 +81,7 @@ export const getColumns = (data: CashMovement[]): ColumnDef<CashMovement>[] => {
         <DataTableColumnHeader filter column={column} title="Caja" />
       ),
       meta: { title: "Caja" },
-      cell: ({ row }) => (
-        <div className="flex justify-center">
-          <span className="text-muted-foreground italic">
-            {row.original.cash.name}
-          </span>
-        </div>
-      ),
+      cell: ({ row }) => <CashResumeDialog cash={row.original.cash} />,
     },
     {
       accessorKey: "account",
@@ -140,13 +146,13 @@ export const getColumns = (data: CashMovement[]): ColumnDef<CashMovement>[] => {
     {
       accessorKey: "amount",
       header: ({ column }) => (
-        <DataTableColumnHeader filter column={column} title="Monto Total" />
+        <DataTableColumnHeader filter column={column} title="Monto" />
       ),
-      meta: { title: "Monto Total" },
+      meta: { title: "Monto" },
       cell: ({ row }) => (
         <div className="flex justify-center">
           <span className="text-muted-foreground italic">
-            {row.original.amount}
+            {row.original.amount } {getCurrencySymbol(row.original.cash.coin)}
           </span>
         </div>
       ),
@@ -167,13 +173,19 @@ export const getColumns = (data: CashMovement[]): ColumnDef<CashMovement>[] => {
         <DataTableColumnHeader filter column={column} title="Cuenta de Banco" />
       ),
       meta: { title: "Cuenta de Banco" },
-      cell: ({ row }) => (
-        <div className="flex justify-center">
-          <span className="text-muted-foreground flex justify-center italic">
-            {row.original.bank_account ? row.original.bank_account.name : "N/A"}
-          </span>
-        </div>
-      ),
+      cell: ({ row }) => {
+        if (row.original.bank_account) {
+          return (
+            <BankAccountResumeDialog
+              id={row.original.bank_account.id.toString()}
+            />
+          );
+        } else {
+          return (
+            <p className="text-center italic font-medium cursor-pointer">Efectivo</p>
+          );
+        }
+      },
     },
     {
       id: "actions",

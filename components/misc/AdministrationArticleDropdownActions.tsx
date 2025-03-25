@@ -1,16 +1,20 @@
+import { useDeleteAdministrationArticle } from "@/actions/administracion/articulos/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useGetAdministrationArticleById } from "@/hooks/administracion/useGetAdministrationArticleById";
+import {
+  EyeIcon,
+  Loader2,
+  MoreHorizontal,
+  Trash2,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
-import { useGetFlightPaymentById } from "@/hooks/administracion/useGetFlightPaymentsById";
-import { useDeleteFlightPayments } from "@/actions/administracion/pagos/actions";
 import {
   Dialog,
   DialogContent,
@@ -19,24 +23,22 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { format } from "date-fns";
-import { es } from "date-fns/locale/es";
+import { Separator } from "../ui/separator";
 
-const FlightPaymentsDropdownActions = ({ id }: { id: string }) => {
-  const [open, setOpen] = useState<boolean>(false);
+const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
   const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [openPayments, setOpenPayments] = useState<boolean>(false);
+  const [openAdminArticle, setOpenAdminArticle] = useState<boolean>(false);
   const router = useRouter();
-  const { deleteFlightPayments } = useDeleteFlightPayments();
-  const { data: paymentsDetails, isLoading } = useGetFlightPaymentById(id);
+  const { deleteAdministrationArticle } = useDeleteAdministrationArticle();
+  const { data: articleDetails, isLoading } = useGetAdministrationArticleById(id);
 
   const handleDelete = async (id: number | string) => {
-    await deleteFlightPayments.mutateAsync(id);
+    await deleteAdministrationArticle.mutateAsync(id);
     setOpenDelete(false);
   };
 
   const handleViewDetails = () => {
-    setOpenPayments(true);
+    setOpenAdminArticle(true);
   };
 
   return (
@@ -60,18 +62,20 @@ const FlightPaymentsDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/pagos/${id}`);
+              router.push(`/administracion/articulos/${id}`);
             }}
           ></DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/*Dialog para eliminar el registro de pago de un vuelo*/}
+      {/*Dialog para eliminar un articulo*/}
       <Dialog open={openDelete} onOpenChange={setOpenDelete}>
-        <DialogContent>
+        <DialogContent onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader>
             <DialogTitle className="text-center">
-              ¿Seguro que desea eliminar el registro de pago del vuelo?
+              ¿Seguro que desea eliminar el articulo?
             </DialogTitle>
             <DialogDescription className="text-center p-2 mb-0 pb-0">
               Esta acción es irreversible y estaría eliminando por completo el
@@ -87,11 +91,11 @@ const FlightPaymentsDropdownActions = ({ id }: { id: string }) => {
               Cancelar
             </Button>
             <Button
-              disabled={deleteFlightPayments.isPending}
+              disabled={deleteAdministrationArticle.isPending}
               className="hover:bg-white hover:text-black hover:border hover:border-black transition-all"
               onClick={() => handleDelete(id)}
             >
-              {deleteFlightPayments.isPending ? (
+              {deleteAdministrationArticle.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <p>Confirmar</p>
@@ -100,111 +104,91 @@ const FlightPaymentsDropdownActions = ({ id }: { id: string }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/*Dialog para ver el resumen de un pago de un vuelo*/}
-      <Dialog open={openPayments} onOpenChange={setOpenPayments}>
-        <DialogContent className="sm:max-w-md">
+      
+      {/*Dialog para ver el resumen del articulo*/}
+      <Dialog open={openAdminArticle} onOpenChange={setOpenAdminArticle}>
+        <DialogContent className="sm:max-w-md" onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader className="text-center font-bold">
-            Resumen de Pago
+            Resumen del Articulo 
           </DialogHeader>
           {isLoading ? (
             <div className="flex justify-center py-4">
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
-          ) : paymentsDetails ? (
+          ) : articleDetails ? (
             <div className="space-y-4">
-              <div className="space-y-2">
+                <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Cliente
+                  Serial
                 </h3>
-                <p className="text-lg font-semibold">
-                  {paymentsDetails.client.name}
-                </p>
+                <p className="text-lg font-semibold">{articleDetails.serial}</p>
                 <Separator />
               </div>
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Vuelo
+                  Nombre
                 </h3>
-                <p className="text-lg font-semibold">
-                  {paymentsDetails.flight.id}
-                </p>
+                <p className="text-lg font-semibold">{articleDetails.name}</p>
                 <Separator />
               </div>
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Método de Pago
+                  Estado
                 </h3>
-                <p className="text-lg font-semibold">
-                  {paymentsDetails.pay_method}
-                </p>
+                <p className="text-lg font-semibold">{articleDetails.status}</p>
                 <Separator />
               </div>
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Cuenta de Banco
+                  Precio
                 </h3>
-                <p className="text-lg font-semibold">
-                  {paymentsDetails.bank_account
-                    ? paymentsDetails.bank_account.name
-                    : "N/A"}
-                </p>
+                <p className="text-lg font-semibold">{articleDetails.price}</p>
                 <Separator />
               </div>
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Cantidad Pagada
+                  Marca
                 </h3>
-                <p className="text-lg font-semibold">
-                  {paymentsDetails.pay_amount}
-                </p>
+                <p className="text-lg font-semibold">{articleDetails.brand}</p>
                 <Separator />
               </div>
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Fecha de pago
+                  Tipo
                 </h3>
-                <p className="text-lg font-semibold">
-                  {format(paymentsDetails.payment_date, "PPP", {
-                    locale: es,
-                  })}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Descripción
-                </h3>
-                <p className="text-lg font-semibold">
-                  {paymentsDetails.pay_description}
-                </p>
+                <p className="text-lg font-semibold">{articleDetails.type}</p>
                 <Separator />
               </div>
             </div>
           ) : (
             <p className="text-center text-muted-foreground">
-              No se pudo cargar la información del pago del vuelo.
+              No se pudo cargar la información del articulo.
             </p>
           )}
+
           <DialogFooter className="sm:justify-center">
-            <Button
+          {/*  <Button
               variant="outline"
-              onClick={() => router.push(`/administracion/pagos/${id}`)}
+              onClick={() =>
+                router.push(`/administracion/articulos/${id}`)
+              }
             >
               Ver detalles completos
-            </Button>
-            <Button onClick={() => setOpenPayments(false)}>Cerrar</Button>
+            </Button> */}
+            <Button onClick={() => setOpenAdminArticle(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
     </>
   );
 };
 
-export default FlightPaymentsDropdownActions;
+export default AdministrationArticleDropdownActions;

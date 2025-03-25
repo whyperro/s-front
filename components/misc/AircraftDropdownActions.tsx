@@ -37,7 +37,8 @@ interface AircraftDropdownActionsProps {
 }
 
 export const AircraftDropdownActions = ({ id }: { id: string }) => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
+  const [openActions, setOpenActions] = useState<boolean>(false);
   const [openAircraft, setOpenAircraft] = useState<boolean>(false);
   const router = useRouter();
   const { deleteAircraft } = useDeleteAircraft();
@@ -50,7 +51,7 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
 
   const handleDelete = async (id: number | string) => {
     await deleteAircraft.mutateAsync(id);
-    setOpen(false);
+    setOpenDelete(false);
   };
 
   const handleViewDetails = () => {
@@ -70,7 +71,7 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
           align="center"
           className="flex gap-2 justify-center"
         >
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem onClick={() => setOpenDelete(true)}>
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleViewDetails}>
@@ -86,12 +87,15 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
             onClick={() => {
               router.push(`/administracion/gestion_vuelos/aviones/${id}`);
             }}
-          ></DropdownMenuItem>         
+          ></DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+      {/*Dialog para eliminar una aeronave*/}
+      <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+        <DialogContent onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader>
             <DialogTitle className="text-center">
               ¿Seguro que desea eliminar la aeronave?
@@ -104,7 +108,7 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
           <DialogFooter className="flex gap-2">
             <Button
               className="bg-rose-400 hover:bg-white hover:text-black hover:border hover:border-black"
-              onClick={() => setOpen(false)}
+              onClick={() => setOpenDelete(false)}
               type="submit"
             >
               Cancelar
@@ -124,8 +128,11 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
         </DialogContent>
       </Dialog>
 
+      {/*Dialog para ver el resumen de una aeronave*/}
       <Dialog open={openAircraft} onOpenChange={setOpenAircraft}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md" onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader className="text-center font-bold">
             Resumen de Aeronave
           </DialogHeader>
@@ -228,20 +235,21 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
           )}
 
           <DialogFooter className="sm:justify-center">
-            <Button
+            {/*  <Button
               variant="outline"
               onClick={() =>
                 router.push(`/administracion/gestion_vuelos/aviones/${id}`)
               }
             >
               Ver detalles completos
-            </Button>
+            </Button> */}
             <Button onClick={() => setOpenAircraft(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      {/*Redirige a la page para ver las estadisticas de ganancias mensuales de una aeronave*/}
+      <Dialog open={openActions} onOpenChange={setOpenActions}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Acciones</DialogTitle>
@@ -250,20 +258,14 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
               {aircraftDetails?.acronym || "esta aeronave"}
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="sm:justify-center">
-            <Button variant="outline" onClick={() => setOpen(false)}>
-              Cancelar
-            </Button>
-            <Button onClick={handleViewStats}>Ver Estadísticas</Button>
-            <Button variant="destructive" onClick={() => handleDelete(id)}>
-              Eliminar
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 
+      {/*Dialog para editar una aeronave*/}
       <Dialog open={openEdit} onOpenChange={setOpenEdit}>
-        <DialogContent>
+        <DialogContent onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader>
             <DialogTitle>Editar Aerovane</DialogTitle>
           </DialogHeader>

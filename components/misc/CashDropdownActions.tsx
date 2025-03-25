@@ -18,19 +18,18 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
 
 const CashDropdownActions = ({ id }: { id: string }) => {
-  const [open, setOpen] = useState<boolean>(false);
   const [openCash, setOpenCash] = useState<boolean>(false);
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
   const router = useRouter();
   const { deleteCash } = useDeleteCash();
   const { data: cashDetails, isLoading } = useGetCashById(id)
 
   const handleDelete = async (id: number | string) => {
     await deleteCash.mutateAsync(id);
-    setOpen(false);
+    setOpenDelete(false);
   };
 
   const handleViewDetails = () => {
@@ -50,7 +49,7 @@ const CashDropdownActions = ({ id }: { id: string }) => {
           align="center"
           className="flex gap-2 justify-center"
         >
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem onClick={() => setOpenDelete(true)}>
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleViewDetails}>
@@ -65,8 +64,11 @@ const CashDropdownActions = ({ id }: { id: string }) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+      {/*Dialog para eliminar una caja*/}
+      <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+        <DialogContent onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader>
             <DialogTitle className="text-center">
               ¿Seguro que desea eliminar la caja?
@@ -79,7 +81,7 @@ const CashDropdownActions = ({ id }: { id: string }) => {
           <DialogFooter className="flex gap-2">
             <Button
               className="bg-rose-400 hover:bg-white hover:text-black hover:border hover:border-black"
-              onClick={() => setOpen(false)}
+              onClick={() => setOpenDelete(false)}
               type="submit"
             >
               Cancelar
@@ -99,8 +101,11 @@ const CashDropdownActions = ({ id }: { id: string }) => {
         </DialogContent>
       </Dialog>
 
+      {/*Dialog para mostrar el resumen de una caja*/}
       <Dialog open={openCash} onOpenChange={setOpenCash}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" onInteractOutside={(e) => {
+          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+        }}>
           <DialogHeader className="text-center font-bold">Resumen de Caja</DialogHeader>
 
           {isLoading ? (
@@ -116,8 +121,8 @@ const CashDropdownActions = ({ id }: { id: string }) => {
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">Tipo de Caja</h3>
-                <p className="text-lg font-semibold">{cashDetails.box_type}</p>
+                <h3 className="text-sm font-medium text-muted-foreground">Moneda</h3>
+                <p className="text-lg font-semibold">{cashDetails.coin}</p>
                 <Separator />
               </div>
               
@@ -132,11 +137,10 @@ const CashDropdownActions = ({ id }: { id: string }) => {
           ) : (
             <p className="text-center text-muted-foreground">No se pudo cargar la información de la caja.</p>
           )}
-
           <DialogFooter className="sm:justify-center">
-            <Button variant="outline" onClick={() => router.push(`/administracion/cuentas/${id}`)}>
+          {/*  <Button variant="outline" onClick={() => router.push(`/administracion/cuentas/${id}`)}>
               Ver detalles completos
-            </Button>
+            </Button> */}
             <Button onClick={() => setOpenCash(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>

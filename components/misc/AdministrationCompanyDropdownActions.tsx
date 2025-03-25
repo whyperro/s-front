@@ -4,7 +4,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EditIcon, EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
+import {
+  EditIcon,
+  EyeIcon,
+  Loader2,
+  MoreHorizontal,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
@@ -18,31 +24,20 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
-import { EditAdministrationCompanyForm } from "../forms/EditAdministrationCompanyForm"
-
-interface AdministrationCompanyDropdownActionsProps {
-  id: string;
-  CompanyDetails: any;
-  handleDelete: () => void;
-}
+import { EditAdministrationCompanyForm } from "../forms/EditAdministrationCompanyForm";
 
 const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [openAdminCompany, setOpenAdminCompany] = useState<boolean>(false);
   const router = useRouter();
-  const { DeleteAdministrationCompany } =useDeleteAdministrationCompany();
+  const { DeleteAdministrationCompany } = useDeleteAdministrationCompany();
   const { data: adminCompany, isLoading } = useGetAdministrationCompanyById(id);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
 
-  const handleViewStats = () => {
-    router.push(`/transmandu/administracion/gestion_cajas/empresa/${id}`);
-  };
-
   const handleDelete = async (id: number | string) => {
     await DeleteAdministrationCompany.mutateAsync(id);
-    setOpen(false);
+    setOpenDelete(false);
   };
 
   const handleViewDetails = () => {
@@ -62,7 +57,7 @@ const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
           align="center"
           className="flex gap-2 justify-center"
         >
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem onClick={() => setOpenDelete(true)}>
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleViewDetails}>
@@ -79,8 +74,13 @@ const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+      {/*Dialog para eliminar el registro de la empresa*/}
+      <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+        <DialogContent
+          onInteractOutside={(e) => {
+            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+          }}
+        >
           <DialogHeader>
             <DialogTitle className="text-center">
               ¿Seguro que desea eliminar el registro de la empresa?
@@ -93,7 +93,7 @@ const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
           <DialogFooter className="flex gap-2">
             <Button
               className="bg-rose-400 hover:bg-white hover:text-black hover:border hover:border-black"
-              onClick={() => setOpen(false)}
+              onClick={() => setOpenDelete(false)}
               type="submit"
             >
               Cancelar
@@ -113,8 +113,14 @@ const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
         </DialogContent>
       </Dialog>
 
+      {/*Dialog para ver el resumen de la empresa*/}
       <Dialog open={openAdminCompany} onOpenChange={setOpenAdminCompany}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent
+          className="sm:max-w-md"
+          onInteractOutside={(e) => {
+            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+          }}
+        >
           <DialogHeader className="text-center font-bold">
             Resumen de Empresa
           </DialogHeader>
@@ -128,9 +134,7 @@ const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
                 <h3 className="text-sm font-medium text-muted-foreground">
                   Cliente
                 </h3>
-                <p className="text-lg font-semibold">
-                  {adminCompany.name}
-                </p>
+                <p className="text-lg font-semibold">{adminCompany.name}</p>
                 <Separator />
               </div>
 
@@ -138,9 +142,7 @@ const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
                 <h3 className="text-sm font-medium text-muted-foreground">
                   RIF
                 </h3>
-                <p className="text-lg font-semibold">
-                  {adminCompany.rif}
-                </p>
+                <p className="text-lg font-semibold">{adminCompany.rif}</p>
                 <Separator />
               </div>
 
@@ -171,25 +173,27 @@ const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
           )}
 
           <DialogFooter className="sm:justify-center">
-            <Button
-              variant="outline"
-              onClick={() => router.push(`/administracion/gestion_cajas/empresa/${id}`)}
-            >
-              Ver detalles completos
-            </Button>
             <Button onClick={() => setOpenAdminCompany(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
+      {/*Dialog para editar los datos de una empresa*/}
       <Dialog open={openEdit} onOpenChange={setOpenEdit}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Editar Empresa</DialogTitle>
-                </DialogHeader>
-                <EditAdministrationCompanyForm id={id} onClose={() => setOpenEdit(false)} />
-              </DialogContent>
-            </Dialog>
+        <DialogContent
+          onInteractOutside={(e) => {
+            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle>Editar Empresa</DialogTitle>
+          </DialogHeader>
+          <EditAdministrationCompanyForm
+            id={id}
+            onClose={() => setOpenEdit(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

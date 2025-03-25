@@ -77,7 +77,7 @@ const CashMovementResume = ({ movement }: { movement: CashMovement }) => {
         <h3 className="text-sm font-medium text-muted-foreground">
           Cuenta de Banco
         </h3>
-        <p className="text-lg font-semibold">{movement.bank_account.name}</p>
+        <p className="text-lg font-semibold">{movement.bank_account ? movement.bank_account.name : 'Efectivo'}</p>
         <Separator />
       </div>
 
