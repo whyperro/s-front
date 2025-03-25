@@ -19,6 +19,7 @@ interface DynamicBarChartProps {
   title?: string;
   height: string;
   width: string;
+  activeDecimal?: boolean;
 }
 
 // Array de colores para las barras
@@ -42,6 +43,7 @@ const DynamicBarChart = ({
   title,
   height,
   width,
+  activeDecimal
 }: DynamicBarChartProps) => {
   const { theme } = useTheme();
   const [clickedBarName, setClickedBarName] = useState<string | null>(null);
@@ -76,7 +78,7 @@ const DynamicBarChart = ({
           />
           <YAxis
             domain={[0, "dataMax"]}
-            allowDecimals={false}
+            allowDecimals={activeDecimal ? true : false}
             stroke={theme === "light" ? "black" : "white"}
           />
           <Tooltip />
