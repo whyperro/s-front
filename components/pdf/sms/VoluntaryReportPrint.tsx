@@ -11,6 +11,7 @@ import { VoluntaryReport } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Container } from "postcss";
+import { Bold } from "lucide-react";
 
 const formatDate = (date: Date) => {
   const day = String(date.getDate()).padStart(2, "0");
@@ -58,15 +59,17 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
   },
   cell: {
+    alignItems: "center",
     borderRightWidth: 1,
     borderRightColor: "#000",
     borderRightStyle: "solid",
     padding: 5,
     textAlign: "center",
+    fontFamily: "Helvetica",
     fontSize: 8,
   },
   tableHeader: {
-    backgroundColor: "#abdbe3",
+    backgroundColor: "#e3f4ff",
     fontWeight: "extrabold",
   },
   tableContent: {
@@ -110,7 +113,6 @@ const styles = StyleSheet.create({
   observationContainer: {
     borderWidth: 1,
     padding: 5,
-    // marginTop: 10,
     minHeight: 50,
   },
   observationText: {
@@ -148,7 +150,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "45%",
-    backgroundColor: "#abdbe3",
+    backgroundColor: "#e3f4ff",
   },
 
   Container2: {
@@ -161,7 +163,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#abdbe3",
+    backgroundColor: "#e3f4ff",
   },
 
   ContainerAreaType: { width: "100%" },
@@ -237,6 +239,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     whiteSpace: "normal", // Permitir que el texto se divida en varias líneas
   },
+  blackText: {
+    fontFamily: "Helvetica",
+    fontSize: 12,
+    textAlign: "center",
+    fontWeight: "black",
+  },
   title: {
     fontSize: 12,
     marginBottom: 5,
@@ -264,9 +272,9 @@ const styles = StyleSheet.create({
 
   footerContainer: {
     position: "absolute",
-    bottom: 20,
-    left: 20,
-    right: 20,
+    bottom: 10,
+    left: 30,
+    right: 30,
     borderWidth: 1,
     borderColor: "#000",
   },
@@ -276,7 +284,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#000",
   },
   cellLarge: {
-    flex: 3,
+    flex: 2,
     borderRightWidth: 1,
     borderRightColor: "#000",
     padding: 4,
@@ -292,13 +300,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   lastCellSmall: {
-    flex: 0.4,
+    flex: 0.314,
+    justifyContent: "center",
+    alignItems: "center",
     padding: 4,
     fontSize: 8,
     textAlign: "center",
   },
   doubleRowCell: {
-    flex: 1,
+    flex: 0.7,
     borderRightWidth: 1,
     borderRightColor: "#000",
     padding: 2,
@@ -306,8 +316,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   lastDoubleRowCell: {
-    flex: 1,
+    flex: 0.3,
     padding: 2,
+    margin: 0,
     fontSize: 8,
     textAlign: "center",
   },
@@ -343,7 +354,7 @@ const Footer = () => (
 const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
   <Document>
     {/* Change the Page size and remove or change orientation */}
-    <Page style={styles.page}>
+    <Page size="LETTER" style={styles.page}>
       {/* Primera fila del encabezado */}
       <View style={styles.headerRow}>
         {/* Primera columna (logo) */}
@@ -383,45 +394,50 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
         </View>
       </View>
 
-      {/* TABLA DE ACTIVIDADES */}
+      <Text style={[styles.blackText, { width: "100%" }]}>
+        <Text style={[styles.blackText]}>
+          <Text style={{ textDecoration: "underline" }}>IMPORTANTE </Text>
+        </Text>
+        : EL REPORTE VOLUNTARIO DE
+      </Text>
+      <Text style={[styles.blackText]}>
+        PELIGRO PUEDE SER ANONIMO, ES CONFIDENCIAL Y NO PUNITIVO.
+      </Text>
+
       <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "12%" }]}>FECHA DEL REPORTE</Text>
-        <Text style={[styles.cell, { width: "20%" }]}>
+        <Text style={[styles.cell, { width: "20%" }]}>FECHA DEL REPORTE</Text>
+        <Text style={[styles.cell, { width: "30%" }]}>
           FECHA EN QUE SE IDENTIFICO EL PELIGRO
         </Text>
-        <Text style={[styles.cell, { width: "55%" }]}>
+        <Text style={[styles.cell, { width: "35%" }]}>
           LUGAR DONDE DETECTO EL PELIGRO
         </Text>
-        <Text style={[styles.cell, { width: "13%" }]}>Nº DE REPORTE</Text>
+        <Text style={[styles.cell, { width: "20%" }]}>Nº DE REPORTE</Text>
       </View>
-
       <View style={[styles.row, styles.table, styles.tableContent]}>
-        <Text style={[styles.cell, { width: "12%" }]}>
+        <Text style={[styles.cell, { width: "20%" }]}>
           {format(report.report_date, "dd-MM-yyyy", {
             locale: es,
           })}
         </Text>
-        <Text style={[styles.cell, { width: "20%" }]}>
+        <Text style={[styles.cell, { width: "30%" }]}>
           {format(report.identification_date, "dd-MM-yyyy", {
             locale: es,
           })}
         </Text>
-        <Text style={[styles.cell, { width: "55%" }]}>
+        <Text style={[styles.cell, { width: "35%" }]}>
           {report.airport_location}
         </Text>
-        <Text style={[styles.cell, { width: "13%" }]}>
+        <Text style={[styles.cell, { width: "20%" }]}>
           RVP-{report.report_number}
         </Text>
       </View>
-
       {/* HEADER PARA PRESENTAICON DE UNA TABLA (OPCIONALES)*/}
-
       <View style={[styles.row, styles.table, styles.tableHeader]}>
         <Text style={[styles.cell, { width: "100%" }]}>
           I. DATOS DE QUIEN REPORTA
         </Text>
       </View>
-
       {/* HEADER PARA DATOS PERSONALES (OPCIONALES)*/}
       <View style={[styles.row, styles.table, styles.tableHeader]}>
         <Text style={[styles.cell, { width: "50%" }]}>NOMBRES (OPCIONAL)</Text>
@@ -429,7 +445,6 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
           APELLIDOS (OPCIONAL)
         </Text>
       </View>
-
       {/* CONTENIDO PARA DATOS PERSONALES (OPCIONALES)*/}
       <View style={[styles.row, styles.table, styles.tableContent]}>
         <Text style={[styles.cell, { width: "50%" }]}>
@@ -439,13 +454,11 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
           {report.reporter_last_name ?? "N/A"}
         </Text>
       </View>
-
       {/* HEADER PARA DATOS OPCIONALES DE CONTACTO (OPCIONALES)*/}
       <View style={[styles.row, styles.table, styles.tableHeader]}>
         <Text style={[styles.cell, { width: "50%" }]}>TELEFONO (OPCIONAL)</Text>
         <Text style={[styles.cell, { width: "50%" }]}>EMAIL (OPCIONAL)</Text>
       </View>
-
       {/* CONTENIDO PARA DATOS DE CONTACTO  (OPCIONALES)*/}
       <View style={[styles.row, styles.table, styles.tableContent]}>
         <Text style={[styles.cell, { width: "50%" }]}>
@@ -456,10 +469,13 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
         </Text>
       </View>
 
-      {/* ENCABEZADO PARA PRESENTAR "II. PELIGRO IDENTIFICADO" */}
+      <View style={[styles.row, styles.table, styles.tableHeader]}>
+        <Text style={[styles.cell, { width: "100%" }]}>
+          II. PELIGRO IDENTIFICADO
+        </Text>
+      </View>
 
       {/* SECCIÓN DE OBSERVACIONES */}
-
       <View style={[styles.container]}>
         {/* CONTAINER = ROW */}
 
@@ -495,7 +511,6 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
           </View>
         </View>
       </View>
-
       <View style={styles.observationContainer}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
@@ -511,8 +526,33 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
           ))}
         </View>
       </View>
+      <View style={styles.footerContainer}>
+        {/* Primera fila */}
+        <View style={styles.rowFooter}>
+          <Text style={styles.cellLarge}>
+            DEPENDENCIA: DIRECCIÓN DE GESTIÓN DE LA SEGURIDAD OPERACIONAL{"\n"}
+            (SMS)
+          </Text>
+          <Text style={styles.cellSmall}>REVISIÓN N°: 00</Text>
+          <Text style={styles.lastCellSmall}>SMS</Text>
+        </View>
 
-      <Footer />
+        {/* Segunda fila */}
+        <View style={styles.rowFooter}>
+          <Text style={styles.doubleRowCell}>
+            ELABORADO POR: {"\n"} ASISTENTE DE SMS
+          </Text>
+          <Text style={styles.doubleRowCell}>
+            REVISADO POR: {"\n"} DIRECTOR DE SMS
+          </Text>
+          <Text style={styles.doubleRowCell}>
+            APROBADO POR: {"\n"} DIRECTOR DE OPERACIONES
+          </Text>
+          <Text style={styles.lastDoubleRowCell}>
+            NRO. PÁGINA {"\n"} 1 DE 2
+          </Text>
+        </View>
+      </View>
     </Page>
   </Document>
 );
