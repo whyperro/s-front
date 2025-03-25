@@ -6,12 +6,14 @@ import DoubleDateFilter from "@/components/misc/DoubleDateFilter";
 import { Label } from "@/components/ui/label";
 import { useGetObligatoryReportAverage } from "@/hooks/sms/useGetObligatoryReportAverage";
 import { useGetTotalReportsStatsByYear } from "@/hooks/sms/useGetTotalReportsStatsByYear";
+import { dateFormat } from "@/lib/utils";
 import { pieChartData } from "@/types";
 import { format, startOfMonth, endOfMonth, subMonths, addDays } from "date-fns";
 import { es } from "date-fns/locale";
 import { Loader2 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { date } from "zod";
 
 const ObligatoryReportIndicators = () => {
   const currentDate = new Date();
@@ -42,13 +44,16 @@ const ObligatoryReportIndicators = () => {
   const [params, setParams] = useState<Params>({
     from_first: format(startOfMonth(new Date()), "yyyy-MM-dd"),
     to_first: format(new Date(), "yyyy-MM-dd"),
-    from_second: format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    to_second: format(new Date(), "yyyy-MM-dd"),
+
+    from_second: format(startOfMonth(previousMonth), "yyyy-MM-dd"),
+    to_second: format(endOfMonth(previousMonth), "yyyy-MM-dd"),
   });
 
   useEffect(() => {
     const defaultFrom = format(startOfMonth(new Date()), "yyyy-MM-dd");
     const defaultTo = format(new Date(), "yyyy-MM-dd");
+    const defaultFromSecond = format(startOfMonth(previousMonth), "yyyy-MM-dd");
+    const defaultToSecond = format(endOfMonth(previousMonth), "yyyy-MM-dd");
 
     const newParams: Params = {};
     searchParams.forEach((value, key) => {
@@ -58,8 +63,8 @@ const ObligatoryReportIndicators = () => {
     const finalParams: Params = {
       from_first: newParams.from_first || defaultFrom,
       to_first: newParams.to_first || defaultTo,
-      from_second: newParams.from_second || defaultFrom,
-      to_second: newParams.to_second || defaultTo,
+      from_second: newParams.from_second || defaultFromSecond,
+      to_second: newParams.to_second || defaultToSecond,
     };
     setParams(finalParams);
   }, [searchParams, pathname]);
@@ -91,8 +96,7 @@ const ObligatoryReportIndicators = () => {
   const [result, setResult] = useState<number>();
 
   function formatDate(date: string) {
-    const newDate  = addDays(new Date(date), 1);
-    console.log("THIS IS THE DAAAAAAAAY",newDate);
+    const newDate = addDays(new Date(date), 1);
     return format(newDate, "PPP", {
       locale: es,
     });
@@ -101,21 +105,22 @@ const ObligatoryReportIndicators = () => {
   useEffect(() => {
     refetchBarChart();
     refetchObligatoryAverageData();
-    if (barChartData && obligatoryAverageData) {
+    if (obligatoryAverageData) {
       setResultArrayData([
         {
           name: `${formatDate(params.from_first || "")} - ${formatDate(
             params.to_first || ""
           )}`,
-          value: obligatoryAverageData.first_range.average_per_month,
+          value: obligatoryAverageData.newest_range.average_per_month,
         },
         {
           name: `${formatDate(params.from_second || "")} - ${formatDate(
             params.to_second || ""
           )}`,
-          value: obligatoryAverageData.second_range.average_per_month,
+          value: obligatoryAverageData.oldest_range.average_per_month,
         },
       ]);
+      console.log("THIS IS THE DATA USE USE EFFECT", obligatoryAverageData);
     } else {
       setResultArrayData([]);
     }
@@ -124,19 +129,19 @@ const ObligatoryReportIndicators = () => {
       params.to_first,
       params.from_second,
       params.to_second,
-      "FROMS"
+      "INSIDE OBLIGATORY REPORT DATA"
     );
   }, [
     params.from_first,
     params.to_first,
     params.from_second,
     params.to_second,
-    barChartData,
+    obligatoryAverageData,
   ]); // Agregado barChartData como dependencia
 
   return (
     <>
-      <ContentLayout title="Gráficos Estadísticos de los Reportes">
+      <ContentLayout title="Indicador de Incidentes">
         <div className="flex justify-center items-center mb-4">
           <div className="flex flex-col w-full">
             <Label className="text-lg font-semibold text-center">
@@ -162,6 +167,7 @@ const ObligatoryReportIndicators = () => {
                   width="100%"
                   data={resultArrayData}
                   title="Promedio de Reportes Obligatorios"
+                  activeDecimal={true}
                 />
               )
             ) : (
@@ -171,6 +177,110 @@ const ObligatoryReportIndicators = () => {
               </p>
             )}
           </div>
+        </div>
+        <div className="flex justify-center items-center p-4 rounded-lg shadow border w-full ">
+          {obligatoryAverageData &&
+          obligatoryAverageData.newest_range?.average_per_month >
+            obligatoryAverageData.oldest_range?.average_per_month ? (
+            <div
+              className="bg-red-100 border border-red-400 text-red-700 p-4 rounded-lg justify-center items-center flex w-1/2"
+              role="alert"
+            >
+              <span className="block text-center">
+                <strong className="font-bold text-lg">
+                  ¡Aumento de los Incidentes!
+                </strong>
+              </span>
+              <div className="mt-4 p-4 bg-red-50 rounded-md border border-gray-200 shadow-sm text-black text-left justify-center items-center w-full">
+                <p className="font-bold text-lg text-center">
+                  ¡Aumento de un{" "}
+                  {obligatoryAverageData.newest_range.percentage_change}% de
+                  incidentes!
+                </p>
+                <p className="mb-2">
+                  En numero de incidentes fue mayor durante las fechas:
+                </p>
+                <p className="font-semibold">
+                  {dateFormat(obligatoryAverageData.newest_range.from, "PPP")}{" "}
+                  al {dateFormat(obligatoryAverageData.newest_range.to, "PPP")}
+                </p>
+                <p className="mt-2">en comparacion a las fechas desde:</p>
+                <p className="font-semibold">
+                  {dateFormat(obligatoryAverageData.oldest_range.from, "PPP")}{" "}
+                  al {dateFormat(obligatoryAverageData.oldest_range.to, "PPP")}
+                </p>
+              </div>
+            </div>
+          ) : obligatoryAverageData &&
+            obligatoryAverageData.newest_range?.average_per_month <
+              obligatoryAverageData.oldest_range?.average_per_month ? (
+            <div
+              className="bg-green-100 border border-green-400 text-green-700 p-4 rounded-lg justify-center items-center flex w-1/2"
+              role="alert"
+            >
+              <span className="block text-center">
+                <strong className="font-bold text-lg">
+                  ¡Reducción de los Incidentes!
+                </strong>
+              </span>
+              <div className="mt-4 p-4 bg-green-50 rounded-md border border-gray-200 shadow-sm text-black text-left justify-center items-center w-full">
+                <p className="font-bold text-lg text-center">
+                  ¡Reducción de un{" "}
+                  {Math.abs(
+                    obligatoryAverageData.newest_range.percentage_change
+                  ).toFixed(2)}
+                  % de incidentes!
+                </p>
+                <p className="mb-2">
+                  En numero de incidentes fue menor durante las fechas:
+                </p>
+                <p className="font-semibold">
+                  {dateFormat(obligatoryAverageData.newest_range.from, "PPP")}{" "}
+                  al {dateFormat(obligatoryAverageData.newest_range.to, "PPP")}
+                </p>
+                <p className="mt-2">en comparacion a las fechas desde:</p>
+                <p className="font-semibold">
+                  {dateFormat(obligatoryAverageData.oldest_range.from, "PPP")}{" "}
+                  al {dateFormat(obligatoryAverageData.oldest_range.to, "PPP")}
+                </p>
+              </div>
+            </div>
+          ) : (
+            obligatoryAverageData && (
+              <div
+                className="bg-blue-100 border border-blue-400 text-blue-700 p-4 rounded-lg justify-center items-center flex w-1/2"
+                role="alert"
+              >
+                <span className="block text-center">
+                  <strong className="font-bold text-lg">
+                    ¡Sin Fluctuación!
+                  </strong>
+                </span>
+                <div className="mt-4 p-4 bg-blue-50 rounded-md border border-gray-200 shadow-sm text-black text-left justify-center items-center w-full">
+                  <p className="font-bold text-lg text-center">
+                    ¡Se ha mentenido el numero de incidentes promedio !{" "}
+                  </p>
+                  <p className="mb-2">
+                    En numero de incidentes no tuvo variaciones significativas
+                    durante las fechas:
+                  </p>
+                  <p className="font-semibold">
+                    (
+                    {dateFormat(obligatoryAverageData.newest_range.from, "PPP")}
+                    ) al (
+                    {dateFormat(obligatoryAverageData.newest_range.to, "PPP")})
+                  </p>
+                  <p className="mt-2">en comparacion a las fechas del :</p>
+                  <p className="font-semibold">
+                    (
+                    {dateFormat(obligatoryAverageData.oldest_range.from, "PPP")}
+                    ) al (
+                    {dateFormat(obligatoryAverageData.oldest_range.to, "PPP")})
+                  </p>
+                </div>
+              </div>
+            )
+          )}
         </div>
       </ContentLayout>
     </>
