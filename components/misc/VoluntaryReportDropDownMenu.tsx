@@ -30,7 +30,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
-import VoluntaryReportPdf from "../pdf/sms/VoluntaryReportPrint";
+import VoluntaryReportPdf from "../pdf/sms/VoluntaryReportPdf";
 import { format } from "date-fns";
 
 const VoluntaryReportDropdownActions = ({

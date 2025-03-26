@@ -48,9 +48,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    borderBottomWidth: 1,
-    borderBottomColor: "#000",
-    borderBottomStyle: "solid",
+    alignItems: "stretch",
   },
   table: {
     borderTopWidth: 1,
@@ -59,13 +57,27 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
   },
   cell: {
-    alignItems: "center",
+    display: "flex",
+    justifyContent: "center",
     borderRightWidth: 1,
     borderRightColor: "#000",
     borderRightStyle: "solid",
-    padding: 5,
+    padding: 4,
     textAlign: "center",
     fontFamily: "Helvetica",
+    fontSize: 8,
+  },
+  cellHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRightWidth: 1,
+    borderRightColor: "#000",
+    borderRightStyle: "solid",
+    padding: 4,
+    textAlign: "center",
+    fontFamily: "Helvetica",
+    fontWeight: "black",
     fontSize: 8,
   },
   tableHeader: {
@@ -129,6 +141,8 @@ const styles = StyleSheet.create({
     fontSize: 8,
   },
   cell2: {
+    justifyContent: "center",
+    alignItems: "center",
     borderRightWidth: 1,
     borderRightColor: "#000",
     borderRightStyle: "solid",
@@ -138,8 +152,7 @@ const styles = StyleSheet.create({
 
   container: {
     borderStyle: "solid",
-    borderWidth: 1,
-    borderColor: "#000",
+    borderLeft: "1",
     display: "flex",
     flexDirection: "row",
     alignItems: "stretch", // Asegurar que los hijos ocupen toda la altura
@@ -220,9 +233,6 @@ const styles = StyleSheet.create({
   },
   firstColumn: {
     width: "30%",
-    borderLeftWidth: 1,
-    borderLeftColor: "#000",
-    borderLeftStyle: "solid",
   },
   secondColumn: {
     width: "40%",
@@ -275,26 +285,30 @@ const styles = StyleSheet.create({
     bottom: 10,
     left: 30,
     right: 30,
-    borderWidth: 1,
+    borderTop: 1,
+    borderRight: 1,
     borderColor: "#000",
   },
   rowFooter: {
+    alignItems: "stretch",
     flexDirection: "row",
     borderBottomWidth: 1,
     borderBottomColor: "#000",
   },
   cellLarge: {
+    alignSelf: "stretch",
     flex: 2,
     borderRightWidth: 1,
+    borderLeft: 1,
     borderRightColor: "#000",
     padding: 4,
     fontSize: 8,
     textAlign: "center",
   },
   cellSmall: {
+    alignSelf: "stretch",
     flex: 0.5,
-    borderRightWidth: 1,
-    borderRightColor: "#000",
+    borderRight: 1,
     padding: 4,
     fontSize: 8,
     textAlign: "center",
@@ -302,25 +316,25 @@ const styles = StyleSheet.create({
   lastCellSmall: {
     flex: 0.314,
     justifyContent: "center",
-    alignItems: "center",
     padding: 4,
     fontSize: 8,
+    alignSelf: "stretch",
     textAlign: "center",
   },
   doubleRowCell: {
     flex: 0.7,
-    borderRightWidth: 1,
-    borderRightColor: "#000",
     padding: 2,
     fontSize: 8,
     textAlign: "center",
+    borderLeftWidth: 1,
   },
   lastDoubleRowCell: {
-    flex: 0.3,
+    flex: 0.28,
     padding: 2,
     margin: 0,
     fontSize: 8,
     textAlign: "center",
+    borderLeftWidth: 1,
   },
 });
 
@@ -340,23 +354,26 @@ const Footer = () => (
       <Text style={styles.doubleRowCell}>
         ELABORADO POR: {"\n"} ASISTENTE DE SMS
       </Text>
+
       <Text style={styles.doubleRowCell}>
         REVISADO POR: {"\n"} DIRECTOR DE SMS
       </Text>
+
       <Text style={styles.doubleRowCell}>
         APROBADO POR: {"\n"} DIRECTOR DE OPERACIONES
       </Text>
+
       <Text style={styles.lastDoubleRowCell}>NRO. PÁGINA {"\n"} 1 DE 2</Text>
     </View>
   </View>
 );
 
-const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
+const VoluntaryReportPdf = ({ report }: { report: VoluntaryReport }) => (
   <Document>
     {/* Change the Page size and remove or change orientation */}
     <Page size="LETTER" style={styles.page}>
       {/* Primera fila del encabezado */}
-      <View style={styles.headerRow}>
+      <View style={[styles.headerRow, { marginTop: 40 }]}>
         {/* Primera columna (logo) */}
         <View style={[styles.column, styles.firstColumn]}>
           {/* <Image src="/LOGO_TRD.png" style={styles.logo} /> */}
@@ -405,36 +422,38 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
       </Text>
 
       <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "20%" }]}>FECHA DEL REPORTE</Text>
-        <Text style={[styles.cell, { width: "30%" }]}>
-          FECHA EN QUE SE IDENTIFICO EL PELIGRO
+        <Text style={[styles.cell, { width: "15%" }]}>
+          FECHA DEL{"\n"}REPORTE
         </Text>
-        <Text style={[styles.cell, { width: "35%" }]}>
+        <Text style={[styles.cell, { width: "25%" }]}>
+          FECHA EN QUE SE{"\n"}IDENTIFICO EL PELIGRO
+        </Text>
+        <Text style={[styles.cell, { width: "50%" }]}>
           LUGAR DONDE DETECTO EL PELIGRO
         </Text>
-        <Text style={[styles.cell, { width: "20%" }]}>Nº DE REPORTE</Text>
+        <Text style={[styles.cell, { width: "15%" }]}>Nº DE REPORTE</Text>
       </View>
       <View style={[styles.row, styles.table, styles.tableContent]}>
-        <Text style={[styles.cell, { width: "20%" }]}>
+        <Text style={[styles.cell, { width: "15%" }]}>
           {format(report.report_date, "dd-MM-yyyy", {
             locale: es,
           })}
         </Text>
-        <Text style={[styles.cell, { width: "30%" }]}>
+        <Text style={[styles.cell, { width: "25%" }]}>
           {format(report.identification_date, "dd-MM-yyyy", {
             locale: es,
           })}
         </Text>
-        <Text style={[styles.cell, { width: "35%" }]}>
+        <Text style={[styles.cell, { width: "50%" }]}>
           {report.airport_location}
         </Text>
-        <Text style={[styles.cell, { width: "20%" }]}>
+        <Text style={[styles.cell, { width: "15%" }]}>
           RVP-{report.report_number}
         </Text>
       </View>
       {/* HEADER PARA PRESENTAICON DE UNA TABLA (OPCIONALES)*/}
       <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "100%" }]}>
+        <Text style={[styles.cellHeader, { width: "100%" }]}>
           I. DATOS DE QUIEN REPORTA
         </Text>
       </View>
@@ -457,7 +476,9 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
       {/* HEADER PARA DATOS OPCIONALES DE CONTACTO (OPCIONALES)*/}
       <View style={[styles.row, styles.table, styles.tableHeader]}>
         <Text style={[styles.cell, { width: "50%" }]}>TELEFONO (OPCIONAL)</Text>
-        <Text style={[styles.cell, { width: "50%" }]}>EMAIL (OPCIONAL)</Text>
+        <Text style={[styles.cell, { width: "50%" }]}>
+          CORREO ELECTRONICO (OPCIONAL)
+        </Text>
       </View>
       {/* CONTENIDO PARA DATOS DE CONTACTO  (OPCIONALES)*/}
       <View style={[styles.row, styles.table, styles.tableContent]}>
@@ -470,7 +491,12 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
       </View>
 
       <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "100%" }]}>
+        <Text
+          style={[
+            styles.cellHeader,
+            { width: "100%", borderBottom: 1, borderBottomColor: "#000" },
+          ]}
+        >
           II. PELIGRO IDENTIFICADO
         </Text>
       </View>
@@ -487,7 +513,7 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
           <View style={[styles.Container3, styles.cell2, { width: "100%" }]}>
             <Text>OPERACIONES</Text>
             <View style={[styles.lineContainer]}>
-              <Text>ADMINISTRACION Y RECURSOS HUMANOS</Text>
+              <Text>ADMINISTRACION Y RECURSOS{"\n"}HUMANOS</Text>
             </View>
           </View>
 
@@ -501,7 +527,7 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
           <View style={[styles.Container3, styles.cell2, { width: "100%" }]}>
             <Text>MATENIMIENTO</Text>
             <View style={[styles.lineContainer, { width: "100%" }]}>
-              <Text>CONTROL Y ASEGURAMIENTO DE LA CALIDAD</Text>
+              <Text>CONTROL Y ASEGURAMIENTO DE LA{"\n"}CALIDAD</Text>
             </View>
           </View>
 
@@ -528,13 +554,13 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
       </View>
       <View style={styles.footerContainer}>
         {/* Primera fila */}
-        <View style={styles.rowFooter}>
+        <View style={[styles.rowFooter, { alignItems: "center" }]}>
           <Text style={styles.cellLarge}>
             DEPENDENCIA: DIRECCIÓN DE GESTIÓN DE LA SEGURIDAD OPERACIONAL{"\n"}
             (SMS)
           </Text>
           <Text style={styles.cellSmall}>REVISIÓN N°: 00</Text>
-          <Text style={styles.lastCellSmall}>SMS</Text>
+          <Text style={[styles.lastCellSmall]}>SMS</Text>
         </View>
 
         {/* Segunda fila */}
@@ -554,7 +580,105 @@ const ActivitiesReportPdf = ({ report }: { report: VoluntaryReport }) => (
         </View>
       </View>
     </Page>
+    <Page style={styles.page} size="LETTER">
+      {/* Primera fila del encabezado */}
+      <View style={[styles.headerRow, { marginTop: 40 }]}>
+        {/* Primera columna (logo) */}
+        <View style={[styles.column, styles.firstColumn]}>
+          {/* <Image src="/LOGO_TRD.png" style={styles.logo} /> */}
+        </View>
+
+        {/* Segunda columna */}
+        <View style={[styles.column, styles.secondColumn]}>
+          <View style={styles.secondColumnTop}>
+            <Text style={[styles.text, { width: "100%" }]}>
+              SISTEMA DE GESTIÓN DE SEGURIDAD OPERACIONAL SMS
+            </Text>
+          </View>
+          <View style={styles.secondColumnBottom}>
+            <Text style={[styles.text, { width: "100%" }]}>
+              REPORTE VOLUNTARIO DE PELIGROS
+            </Text>
+          </View>
+        </View>
+
+        {/* Tercera columna */}
+        <View style={[styles.column, styles.thirdColumn]}>
+          <View style={styles.thirdColumnRow}>
+            <Text style={[styles.text, { width: "100%" }]}>EDICIÓN N°: 01</Text>
+          </View>
+          <View style={styles.thirdColumnRow}>
+            <Text style={[styles.text, { width: "100%" }]}>
+              FECHA DE EDICIÓN: 12/10/2023
+            </Text>
+          </View>
+          <View style={styles.thirdColumnLastRow}>
+            <Text style={[styles.text, { width: "100%" }]}>
+              CÓDIGO:{"\n"}TMD-FOR-SMS-002
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {/* HEADER PARA PRESENTAICON DE UNA TABLA (OPCIONALES)*/}
+      <View
+        style={[
+          styles.row,
+          styles.table,
+          styles.tableHeader,
+          { marginTop: 20 },
+        ]}
+      >
+        <Text style={[styles.cellHeader, { width: "100%" }]}>
+          III. RIESGOS (CONSECUENCIAS)
+        </Text>
+      </View>
+
+      <View style={styles.observationContainer}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>
+            A continuación, describa las consecuencias de ese peligro:
+          </Text>
+          <View style={styles.firstLine} />
+        </View>
+
+        {/* Líneas adicionales con interlineado de 1.5 */}
+        <View style={styles.linesContainer}>
+          {[...Array(8)].map((_, index) => (
+            <View key={index} style={styles.line} />
+          ))}
+        </View>
+      </View>
+
+      <View style={styles.footerContainer}>
+        {/* Primera fila */}
+        <View style={[styles.rowFooter, { alignItems: "center" }]}>
+          <Text style={styles.cellLarge}>
+            DEPENDENCIA: DIRECCIÓN DE GESTIÓN DE LA SEGURIDAD OPERACIONAL{"\n"}
+            (SMS)
+          </Text>
+          <Text style={styles.cellSmall}>REVISIÓN N°: 00</Text>
+          <Text style={[styles.lastCellSmall]}>SMS</Text>
+        </View>
+
+        {/* Segunda fila */}
+        <View style={styles.rowFooter}>
+          <Text style={styles.doubleRowCell}>
+            ELABORADO POR: {"\n"} ASISTENTE DE SMS
+          </Text>
+          <Text style={styles.doubleRowCell}>
+            REVISADO POR: {"\n"} DIRECTOR DE SMS
+          </Text>
+          <Text style={styles.doubleRowCell}>
+            APROBADO POR: {"\n"} DIRECTOR DE OPERACIONES
+          </Text>
+          <Text style={styles.lastDoubleRowCell}>
+            NRO. PÁGINA {"\n"} 2 DE 2
+          </Text>
+        </View>
+      </View>
+    </Page>
   </Document>
 );
 
-export default ActivitiesReportPdf;
+export default VoluntaryReportPdf;
