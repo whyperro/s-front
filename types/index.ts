@@ -198,6 +198,21 @@ export interface ComponentArticle extends Article {
   component_id?: number,
 }
 
+export type Credit ={
+  renting: Renting,
+  flight: Flight,
+  vendor: Vendor,
+  client: Client,
+  details: string,
+  type: "PAGAR" | "COBRAR",
+  opening_date: Date,
+  closing_date: Date,
+  deadline: Date,
+  debt: number,
+  payed_amount: number,
+  status: "PENDIENTE" | "PAGADO",
+}
+
 export type Department = {
   id: number,
   address: string,

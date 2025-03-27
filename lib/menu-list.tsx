@@ -130,6 +130,18 @@ export function getMenuList(
                 ],
                 submenus: [],
               },
+              {
+                href: "/transmandu/administracion/credito",
+                label: "Crédito",
+                active: pathname.includes("/transmandu/administracion/credito"),
+                icon: CreditCard,
+                roles: [
+                  "ANALISTA_PLANIFICACION",
+                  "JEFE_PLANIFICACION",
+                  "SUPERUSER",
+                ],
+                submenus: [],
+              },
           // {
           //   href: "/transmandu/administracion/pagos",
           //   label: "Pagos",
