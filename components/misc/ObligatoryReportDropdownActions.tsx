@@ -11,6 +11,7 @@ import {
   EyeIcon,
   Loader2,
   MoreHorizontal,
+  PrinterCheck,
   Trash2,
 } from "lucide-react";
 import { useState } from "react";
@@ -28,6 +29,10 @@ import { useDeleteObligatoryReport } from "@/actions/sms/reporte_obligatorio/act
 import { useRouter } from "next/navigation";
 import { CreateObligatoryReportForm } from "../forms/CreateObligatoryReportForm";
 import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import ObligatoryReportPdf from "../pdf/sms/ObligatoryReportPdf";
+import { format } from "date-fns";
+import VoluntaryReportPdf from "../pdf/sms/VoluntaryReportPdf";
 
 const ObligatoryReportDropdownActions = ({
   obligatoryReport,
@@ -39,6 +44,8 @@ const ObligatoryReportDropdownActions = ({
     useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
+  const [openPrint, setOpenPrint] = useState<boolean>(false);
+
   const router = useRouter();
 
   const { deleteObligatoryReport } = useDeleteObligatoryReport();
@@ -62,15 +69,20 @@ const ObligatoryReportDropdownActions = ({
             align="center"
             className="flex gap-2 justify-center"
           >
-            <DropdownMenuItem onClick={() => setOpenEdit(true)}>
-              <ClipboardPen className="size-5" />
-            </DropdownMenuItem>
-
-            <DialogTrigger asChild>
-              <DropdownMenuItem onClick={() => setOpenDelete(true)}>
-                <Trash2 className="size-5 text-red-500" />
+            {/*Este es el primer icon ode edit */}
+            {obligatoryReport.status !== "CERRADO" && (
+              <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+                <ClipboardPen className="size-5" />
               </DropdownMenuItem>
-            </DialogTrigger>
+            )}
+
+            {obligatoryReport.status !== "CERRADO" && (
+              <DialogTrigger asChild>
+                <DropdownMenuItem onClick={() => setOpenDelete(true)}>
+                  <Trash2 className="size-5 text-red-500" />
+                </DropdownMenuItem>
+              </DialogTrigger>
+            )}
 
             <DropdownMenuItem
               onClick={() => {
@@ -82,17 +94,18 @@ const ObligatoryReportDropdownActions = ({
               <EyeIcon className="size-5" />
             </DropdownMenuItem>
 
-            {!obligatoryReport.danger_identification_id && (
-              <DropdownMenuItem
-                onClick={() => setOpenCreateDangerIdentification(true)}
-              >
-                <ClipboardPenLine className="size-5" />
-              </DropdownMenuItem>
-            )}
+            {!obligatoryReport.danger_identification_id &&
+              obligatoryReport.status !== "CERRADO" && (
+                <DropdownMenuItem
+                  onClick={() => setOpenCreateDangerIdentification(true)}
+                >
+                  <ClipboardPenLine className="size-5" />
+                </DropdownMenuItem>
+              )}
 
-            {!obligatoryReport.id && (
-              <DropdownMenuItem onClick={() => setOpenEdit(true)}>
-                <ClipboardPenLine className="size-5" />
+            {obligatoryReport && obligatoryReport.status === "CERRADO" && (
+              <DropdownMenuItem onClick={() => setOpenPrint(true)}>
+                <PrinterCheck className="size-5" />
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>
@@ -162,6 +175,35 @@ const ObligatoryReportDropdownActions = ({
               id={obligatoryReport.id}
               reportType="ROS"
             />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={openPrint} onOpenChange={setOpenPrint}>
+          <DialogContent className="sm:max-w-[65%] max-h-[80vh]">
+            <DialogHeader>
+              <DialogTitle>Vista Previa del Reporte</DialogTitle>
+              <DialogDescription>
+                Revisa el reporte antes de descargarlo.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="w-full h-screen">
+              {obligatoryReport && (
+                <PDFViewer style={{ width: "100%", height: "60%" }}>
+                  <ObligatoryReportPdf report={obligatoryReport} />
+                </PDFViewer>
+              )}
+            </div>
+            <div className="flex justify-end mt-4">
+              <PDFDownloadLink
+                fileName={`reporte_diario_${format(
+                  new Date(),
+                  "dd-MM-yyyy"
+                )}.pdf`}
+                document={<ObligatoryReportPdf report={obligatoryReport} />}
+              >
+                <Button>Descargar Reporte</Button>
+              </PDFDownloadLink>
+            </div>
           </DialogContent>
         </Dialog>
       </Dialog>
