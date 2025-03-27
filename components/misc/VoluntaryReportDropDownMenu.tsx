@@ -108,7 +108,6 @@ const VoluntaryReportDropdownActions = ({
           </DropdownMenuContent>
         </DropdownMenu>
 
-        
         <Dialog open={openPDF} onOpenChange={setOpenPDF}>
           <DialogContent className="sm:max-w-[65%] max-h-[80vh]">
             <DialogHeader>
