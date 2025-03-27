@@ -100,6 +100,7 @@ const FormSchema = z.object({
       message: "El comentario tiene un máximo 100 caracteres.",
     }),
   location_id: z.string(),
+  status: z.enum(["VENDIDO", "EN POSESION", "RENTADO"]),
 });
 
 type FormSchemaType = z.infer<typeof FormSchema>;
@@ -279,6 +280,32 @@ export function CreateAircraftForm({ onClose }: FormProps) {
                   </PopoverContent>
                 </Popover>
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex gap-2 items-center">
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Estado</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl className="w-[220px]">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Tipo" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="VENDIDO">Vendido</SelectItem>
+                    <SelectItem value="EN POSESION">En Posesión</SelectItem>
+                    <SelectItem value="RENTADO">Rentado</SelectItem>
+                  </SelectContent>
+                </Select>
               </FormItem>
             )}
           />

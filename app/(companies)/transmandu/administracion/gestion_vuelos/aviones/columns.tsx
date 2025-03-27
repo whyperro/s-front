@@ -130,6 +130,20 @@ export const columns: ColumnDef<Aircraft>[] = [
     ),
   },
   {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Estado" />
+    ),
+    meta: { title: "Estado" },
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <span className="text-muted-foreground italic">
+          {row.original.status}
+        </span>
+      </div>
+    ),
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const id = row.original.id;

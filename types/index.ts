@@ -28,6 +28,7 @@ export type Aircraft = {
   number_engine: string,
   comments: string,
   model: string,
+  status: "VENDIDO" | "EN POSESION" | "RENTADO",
 }
 
 export type AdministrationArticle = {
@@ -450,6 +451,16 @@ export type Route = {
   from: string,
   scale: string,
   to: string,
+}
+
+export type Sell ={
+  id: number,
+  client: Client,
+  concept: string,
+  total_price: number,
+  payed_amount: number,
+  date: Date,
+  reference_pick: string,
 }
 
 export interface ToolArticle extends Article {

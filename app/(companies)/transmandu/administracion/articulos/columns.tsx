@@ -6,7 +6,7 @@ import { AdministrationArticle } from "@/types";
 import AdministrationArticleDropdownActions from "@/components/misc/AdministrationArticleDropdownActions";
 
 export const columns: ColumnDef<AdministrationArticle>[] = [
-    {
+  {
     accessorKey: "serial",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Serial" />
@@ -14,22 +14,26 @@ export const columns: ColumnDef<AdministrationArticle>[] = [
     meta: { title: "Serial" },
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <span className="text-muted-foreground italic">{row.original.serial}</span>
+        <span className="text-muted-foreground italic">
+          {row.original.serial}
+        </span>
       </div>
     ),
-    },
-    {
-        accessorKey: "name",
-        header: ({ column }) => (
-          <DataTableColumnHeader filter column={column} title="Nombre" />
-        ),
-        meta: { title: "Nombre" },
-        cell: ({ row }) => (
-          <div className="flex justify-center">
-            <span className="text-muted-foreground italic">{row.original.name} </span>
-          </div>
-        ),
-      },
+  },
+  {
+    accessorKey: "name",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Nombre" />
+    ),
+    meta: { title: "Nombre" },
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <span className="text-muted-foreground italic">
+          {row.original.name}{" "}
+        </span>
+      </div>
+    ),
+  },
   {
     accessorKey: "status",
     header: ({ column }) => (
@@ -38,7 +42,9 @@ export const columns: ColumnDef<AdministrationArticle>[] = [
     meta: { title: "Estado" },
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <span className="text-muted-foreground italic">{row.original.status} </span>
+        <span className="text-muted-foreground italic">
+          {row.original.status}{" "}
+        </span>
       </div>
     ),
   },
@@ -50,7 +56,9 @@ export const columns: ColumnDef<AdministrationArticle>[] = [
     meta: { title: "Precio" },
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <span className="text-muted-foreground italic">{row.original.price}</span>
+        <span className="text-muted-foreground italic">
+          {row.original.price}
+        </span>
       </div>
     ),
   },
@@ -62,7 +70,9 @@ export const columns: ColumnDef<AdministrationArticle>[] = [
     meta: { title: "Marca" },
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <span className="text-muted-foreground italic">{row.original.brand}</span>
+        <span className="text-muted-foreground italic">
+          {row.original.brand}
+        </span>
       </div>
     ),
   },
@@ -74,15 +84,19 @@ export const columns: ColumnDef<AdministrationArticle>[] = [
     meta: { title: "Tipo" },
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <span className="text-muted-foreground italic">{row.original.type}</span>
+        <span className="text-muted-foreground italic">
+          {row.original.type}
+        </span>
       </div>
     ),
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const id = row.original.id;
-      return <AdministrationArticleDropdownActions id={row.original.id.toString()} />;
+      const id = row.original.id.toString();
+      return (
+        <AdministrationArticleDropdownActions id={id} />
+      );
     },
   },
 ];

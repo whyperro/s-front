@@ -101,6 +101,7 @@ const FormSchema = z.object({
       message: "El comentario tiene un máximo 100 caracteres.",
     }),
   location_id: z.string(),
+  status: z.enum(["VENDIDO", "EN POSESION", "RENTADO"]),
 });
 
 type FormSchemaType = z.infer<typeof FormSchema>;
@@ -130,10 +131,11 @@ export function EditAircraftForm({ id, onClose }: EditAircraftFormProps) {
       owner: aircraftDetails?.owner,
       comments: aircraftDetails?.comments,
       location_id: aircraftDetails?.location.id.toString(),
+      status: aircraftDetails?.status,
     },
   });
 
-  const onSubmit =  async (formData: FormSchemaType) => {
+  const onSubmit = async (formData: FormSchemaType) => {
     const data = {
       fabricant: formData.fabricant,
       brand: formData.brand,
@@ -146,6 +148,7 @@ export function EditAircraftForm({ id, onClose }: EditAircraftFormProps) {
       location: {
         id: parseInt(formData.location_id), // Convertir location_id a número
       },
+      status: formData.status,
     };
     await updateAircraft.mutate({ id, data });
     onClose();
@@ -318,6 +321,32 @@ export function EditAircraftForm({ id, onClose }: EditAircraftFormProps) {
             )}
           />
         </div>
+        <div className="flex gap-2 items-center">
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Estado</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl className="w-[220px]">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Tipo" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="VENDIDO">Vendido</SelectItem>
+                    <SelectItem value="EN POSESION">En Posesión</SelectItem>
+                    <SelectItem value="RENTADO">Rentado</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="comments"
@@ -337,9 +366,7 @@ export function EditAircraftForm({ id, onClose }: EditAircraftFormProps) {
           <Separator className="flex-1" />
         </div>
         <Button type="submit" disabled={updateAircraft.isPending}>
-          {updateAircraft.isPending 
-          ? "Actualizando..." 
-          : "Actualizar"}
+          {updateAircraft.isPending ? "Actualizando..." : "Actualizar"}
         </Button>
       </form>
     </Form>

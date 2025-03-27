@@ -4,19 +4,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import {
+  EditIcon,
   EyeIcon,
   Loader2,
   MoreHorizontal,
   Trash2,
-  TrendingUp,
 } from "lucide-react";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
-import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById";
-import { useDeleteAircraft } from "@/actions/administracion/aviones/actions";
 import {
   Dialog,
   DialogContent,
@@ -25,37 +24,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { EditIcon } from "lucide-react";
-import { EditAircraftForm } from "../forms/EditAircraftForm";
+import { useDeleteRenting } from "@/actions/renta/actions";
+import { useGetRentingById } from "@/hooks/administracion/useGetRentingById";
+import { DefineEndDateForm } from "../forms/DefineEndDateForm";
 
-interface AircraftDropdownActionsProps {
-  id: string;
-  aircraftDetails: any;
-  handleDelete: () => void;
-}
-
-export const AircraftDropdownActions = ({ id }: { id: string }) => {
+const RentingDropdownActions = ({ id }: { id: string }) => {
   const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [openActions, setOpenActions] = useState<boolean>(false);
-  const [openAircraft, setOpenAircraft] = useState<boolean>(false);
-  const router = useRouter();
-  const { deleteAircraft } = useDeleteAircraft();
-  const { data: aircraftDetails, isLoading } = useGetAircraftById(id);
+  const [openRenting, setOpenRenting] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
-
-  const handleViewStats = () => {
-    router.push(`/transmandu/administracion/gestion_vuelos/aviones/${id}`);
-  };
+  const router = useRouter();
+  const { deleteRenting } = useDeleteRenting();
+  const { data: rentingDetails, isLoading } = useGetRentingById(id);
 
   const handleDelete = async (id: number | string) => {
-    await deleteAircraft.mutateAsync(id);
+    await deleteRenting.mutateAsync(id);
     setOpenDelete(false);
   };
 
   const handleViewDetails = () => {
-    setOpenAircraft(true);
+    setOpenRenting(true);
   };
 
   return (
@@ -74,33 +61,26 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
           <DropdownMenuItem onClick={() => setOpenDelete(true)}>
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleViewDetails}>
-            <EyeIcon className="size-5" />
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleViewStats}>
-            <TrendingUp className="size-5 text-green-500" />
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpenEdit(true)}>
             <EditIcon className="size-5 text-blue-500" />
           </DropdownMenuItem>
+          {/*  <DropdownMenuItem onClick={handleViewDetails}>
+            <EyeIcon className="size-5" />
+          </DropdownMenuItem> */}
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/gestion_vuelos/aviones/${id}`);
+              router.push(`/administracion/renting/${id}`);
             }}
           ></DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/*Dialog para eliminar una aeronave*/}
+      {/*Dialog para eliminar la renta*/}
       <Dialog open={openDelete} onOpenChange={setOpenDelete}>
-        <DialogContent
-          onInteractOutside={(e) => {
-            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
-          }}
-        >
+        <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center">
-              ¿Seguro que desea eliminar la aeronave?
+              ¿Seguro que desea eliminar la renta?
             </DialogTitle>
             <DialogDescription className="text-center p-2 mb-0 pb-0">
               Esta acción es irreversible y estaría eliminando por completo el
@@ -116,11 +96,11 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
               Cancelar
             </Button>
             <Button
-              disabled={deleteAircraft.isPending}
+              disabled={deleteRenting.isPending}
               className="hover:bg-white hover:text-black hover:border hover:border-black transition-all"
               onClick={() => handleDelete(id)}
             >
-              {deleteAircraft.isPending ? (
+              {deleteRenting.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <p>Confirmar</p>
@@ -130,8 +110,8 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
         </DialogContent>
       </Dialog>
 
-      {/*Dialog para ver el resumen de una aeronave*/}
-      <Dialog open={openAircraft} onOpenChange={setOpenAircraft}>
+      {/*Dialog para ver el resumen de la renta
+      <Dialog open={openRenting} onOpenChange={setOpenRenting}>
         <DialogContent
           className="sm:max-w-md"
           onInteractOutside={(e) => {
@@ -139,96 +119,20 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
           }}
         >
           <DialogHeader className="text-center font-bold">
-            Resumen de Aeronave
+            Resumen de la Renta
           </DialogHeader>
           {isLoading ? (
             <div className="flex justify-center py-4">
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
-          ) : aircraftDetails ? (
+          ) : rentingDetails ? (
             <div className="space-y-4">
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Serial
+                  Descripción
                 </h3>
                 <p className="text-lg font-semibold">
-                  {aircraftDetails.serial}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Matricula
-                </h3>
-                <p className="text-lg font-semibold">
-                  {aircraftDetails.acronym}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Modelo
-                </h3>
-                <p className="text-lg font-semibold">{aircraftDetails.model}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Ubicación
-                </h3>
-                <p className="text-lg font-semibold">
-                  {aircraftDetails.location.address}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Dueño
-                </h3>
-                <p className="text-lg font-semibold">{aircraftDetails.owner}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Marca
-                </h3>
-                <p className="text-lg font-semibold">{aircraftDetails.brand}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Fabricante
-                </h3>
-                <p className="text-lg font-semibold">
-                  {aircraftDetails.fabricant}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Fecha de Fabricación
-                </h3>
-                <p className="text-lg font-semibold">
-                  {format(aircraftDetails.fabricant_date, "PPP", {
-                    locale: es,
-                  })}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Comentarios
-                </h3>
-                <p className="text-lg font-semibold">
-                  {aircraftDetails.comments}
+                  {rentingDetails.description}
                 </p>
                 <Separator />
               </div>
@@ -237,58 +141,137 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
                 <h3 className="text-sm font-medium text-muted-foreground">
                   Estado
                 </h3>
-                <p className="text-lg font-semibold">{aircraftDetails.status}</p>
+                <p className="text-lg font-semibold">{rentingDetails.status}</p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Tipo
+                </h3>
+                <p className="text-lg font-semibold">{rentingDetails.type}</p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Precio
+                </h3>
+                <p className="text-lg font-semibold">{rentingDetails.price}</p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Precio Pagado
+                </h3>
+                <p className="text-lg font-semibold">
+                  {rentingDetails.payed_amount}
+                </p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Fecha de Inicio
+                </h3>
+                <p className="text-lg font-semibold">
+                  {format(rentingDetails.start_date, "PPP", { locale: es })}
+                </p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Fecha Fin
+                </h3>
+                <p className="text-lg font-semibold">
+                  {format(rentingDetails.end_date, "PPP", { locale: es })}
+                </p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Fecha Limite
+                </h3>
+                <p className="text-lg font-semibold">
+                  {format(rentingDetails.deadline, "PPP", { locale: es })}
+                </p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Aeronave
+                </h3>
+                <p className="text-lg font-semibold">
+                  {rentingDetails.aircraft
+                    ? rentingDetails.aircraft.acronym
+                    : "N/A"}
+                </p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Cliente
+                </h3>
+                <p className="text-lg font-semibold">
+                  {rentingDetails.client.name}
+                </p>
+                <Separator />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Articulo
+                </h3>
+                <p className="text-lg font-semibold">
+                  {rentingDetails.article ? rentingDetails.article.name : "N/A"}
+                  -
+                  {rentingDetails.article
+                    ? rentingDetails.article.serial
+                    : "N/A"}
+                </p>
                 <Separator />
               </div>
             </div>
           ) : (
             <p className="text-center text-muted-foreground">
-              No se pudo cargar la información de la aeronave.
+              No se pudo cargar la información de la renta.
             </p>
           )}
 
           <DialogFooter className="sm:justify-center">
-            {/*  <Button
+            {/*    <Button
               variant="outline"
               onClick={() =>
-                router.push(`/administracion/gestion_vuelos/aviones/${id}`)
+                router.push(`/administracion/renting/${id}`)
               }
             >
               Ver detalles completos
-            </Button> */}
-            <Button onClick={() => setOpenAircraft(false)}>Cerrar</Button>
+            </Button> 
+            <Button onClick={() => setOpenRenting(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
-      {/*Redirige a la page para ver las estadisticas de ganancias mensuales de una aeronave*/}
-      <Dialog open={openActions} onOpenChange={setOpenActions}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Acciones</DialogTitle>
-            <DialogDescription>
-              Selecciona una acción para{" "}
-              {aircraftDetails?.acronym || "esta aeronave"}
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-
-      {/*Dialog para editar una aeronave*/}
+      {/*Dialog para editar la fecha final end_date*/}
       <Dialog open={openEdit} onOpenChange={setOpenEdit}>
         <DialogContent
           onInteractOutside={(e) => {
-            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+            e.preventDefault(); 
           }}
         >
           <DialogHeader>
-            <DialogTitle>Editar Aerovane</DialogTitle>
+            <DialogTitle>Definir Fecha Final</DialogTitle>
           </DialogHeader>
-          <EditAircraftForm id={id} onClose={() => setOpenEdit(false)} />
+          <DefineEndDateForm id={id} onClose={() => setOpenEdit(false)} />
         </DialogContent>
       </Dialog>
     </>
   );
 };
 
-export default AircraftDropdownActions;
+export default RentingDropdownActions;

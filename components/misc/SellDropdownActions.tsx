@@ -1,21 +1,14 @@
-import { useDeleteAdministrationArticle } from "@/actions/administracion/articulos/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useGetAdministrationArticleById } from "@/hooks/administracion/useGetAdministrationArticleById";
-import {
-  EyeIcon,
-  HandCoins,
-  Loader2,
-  MoreHorizontal,
-  Trash2,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
+import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 import {
   Dialog,
   DialogContent,
@@ -24,26 +17,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Separator } from "../ui/separator";
-import { SellForm } from "../forms/CreateSellForm";
-import { AdministrationArticle } from "@/types";
+import { format } from "date-fns";
+import { es } from "date-fns/locale/es";
+import { useDeleteSell } from "@/actions/administracion/ventas/actions";
+import { useGetSellById } from "@/hooks/administracion/useGetSellById";
 
-const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
+const SellDropdownActions = ({ id }: { id: string }) => {
   const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [openAdminArticle, setOpenAdminArticle] = useState<boolean>(false);
+  const [openSells, setOpenSells] = useState<boolean>(false);
   const router = useRouter();
-  const [openSell, setOpenSell] = useState<boolean>(false);
-  const { deleteAdministrationArticle } = useDeleteAdministrationArticle();
-  const { data: articleDetails, isLoading } =
-    useGetAdministrationArticleById(id);
+  const { deleteSell } = useDeleteSell();
+  const { data: sellsDetails, isLoading } = useGetSellById(id);
 
   const handleDelete = async (id: number | string) => {
-    await deleteAdministrationArticle.mutateAsync(id);
+    await deleteSell.mutateAsync(id);
     setOpenDelete(false);
   };
 
   const handleViewDetails = () => {
-    setOpenAdminArticle(true);
+    setOpenSells(true);
   };
 
   return (
@@ -59,15 +51,6 @@ const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
           align="center"
           className="flex gap-2 justify-center"
         >
-          {articleDetails && articleDetails.status === "VENDIDO" ? (
-            <DropdownMenuItem disabled>
-              <span className="text-green-500">Vendido</span>
-            </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem onClick={() => setOpenSell(true)}>
-              <HandCoins className="size-5 text-green-500" />
-            </DropdownMenuItem>
-          )}
           <DropdownMenuItem onClick={() => setOpenDelete(true)}>
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
@@ -76,22 +59,18 @@ const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/articulos/${id}`);
+              router.push(`/administracion/ventas/${id}`);
             }}
           ></DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/*Dialog para eliminar un articulo*/}
+      {/*Dialog para eliminar el registro de la venta*/}
       <Dialog open={openDelete} onOpenChange={setOpenDelete}>
-        <DialogContent
-          onInteractOutside={(e) => {
-            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
-          }}
-        >
+        <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center">
-              ¿Seguro que desea eliminar el articulo?
+              ¿Seguro que desea eliminar el registro de la venta?
             </DialogTitle>
             <DialogDescription className="text-center p-2 mb-0 pb-0">
               Esta acción es irreversible y estaría eliminando por completo el
@@ -107,11 +86,11 @@ const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
               Cancelar
             </Button>
             <Button
-              disabled={deleteAdministrationArticle.isPending}
+              disabled={deleteSell.isPending}
               className="hover:bg-white hover:text-black hover:border hover:border-black transition-all"
               onClick={() => handleDelete(id)}
             >
-              {deleteAdministrationArticle.isPending ? (
+              {deleteSell.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <p>Confirmar</p>
@@ -121,44 +100,47 @@ const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
         </DialogContent>
       </Dialog>
 
-      {/*Dialog para ver el resumen del articulo*/}
-      <Dialog open={openAdminArticle} onOpenChange={setOpenAdminArticle}>
-        <DialogContent
-          className="sm:max-w-md"
-          onInteractOutside={(e) => {
-            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
-          }}
-        >
+      {/*Dialog para ver el resumen de la venta*/}
+      <Dialog open={openSells} onOpenChange={setOpenSells}>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader className="text-center font-bold">
-            Resumen del Articulo
+            Resumen de Venta
           </DialogHeader>
           {isLoading ? (
             <div className="flex justify-center py-4">
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
-          ) : articleDetails ? (
+          ) : sellsDetails ? (
             <div className="space-y-4">
-              <div className="space-y-2">
+                <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Serial
+                  Fecha
                 </h3>
-                <p className="text-lg font-semibold">{articleDetails.serial}</p>
+                <p className="text-lg font-semibold">
+                  {format(sellsDetails.date, "PPP", {
+                    locale: es,
+                  })}
+                </p>
                 <Separator />
               </div>
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Nombre
+                  Cliente
                 </h3>
-                <p className="text-lg font-semibold">{articleDetails.name}</p>
+                <p className="text-lg font-semibold">
+                  {sellsDetails.client.name}
+                </p>
                 <Separator />
               </div>
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Estado
+                  Concepto
                 </h3>
-                <p className="text-lg font-semibold">{articleDetails.status}</p>
+                <p className="text-lg font-semibold">
+                  {sellsDetails.concept}
+                </p>
                 <Separator />
               </div>
 
@@ -166,62 +148,51 @@ const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
                 <h3 className="text-sm font-medium text-muted-foreground">
                   Precio
                 </h3>
-                <p className="text-lg font-semibold">{articleDetails.price}</p>
+                <p className="text-lg font-semibold">
+                  {sellsDetails.total_price}
+                </p>
                 <Separator />
               </div>
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Marca
+                  Monto Pagado
                 </h3>
-                <p className="text-lg font-semibold">{articleDetails.brand}</p>
+                <p className="text-lg font-semibold">
+                {sellsDetails.payed_amount}
+                </p>
                 <Separator />
               </div>
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Tipo
+                  Referencia
                 </h3>
-                <p className="text-lg font-semibold">{articleDetails.type}</p>
+                <p className="text-lg font-semibold">
+                  {sellsDetails.reference_pick}
+                </p>
                 <Separator />
               </div>
+
             </div>
           ) : (
             <p className="text-center text-muted-foreground">
-              No se pudo cargar la información del articulo.
+              No se pudo cargar la información de la venta.
             </p>
           )}
-
           <DialogFooter className="sm:justify-center">
-            {/*  <Button
+            <Button
               variant="outline"
-              onClick={() =>
-                router.push(`/administracion/articulos/${id}`)
-              }
+              onClick={() => router.push(`/administracion/ventas/${id}`)}
             >
               Ver detalles completos
-            </Button> */}
-            <Button onClick={() => setOpenAdminArticle(false)}>Cerrar</Button>
+            </Button>
+            <Button onClick={() => setOpenSells(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/*Dialog para registrar una venta*/}
-      {articleDetails && (
-        <Dialog open={openSell} onOpenChange={setOpenSell}>
-          <DialogContent>
-            <DialogHeader className="text-center font-bold">
-              Registrar Venta
-            </DialogHeader>
-            <SellForm
-              article_id={articleDetails!.id.toString()}
-              onClose={() => setOpenSell(false)}
-            />
-          </DialogContent>
-        </Dialog>
-      )}
     </>
   );
 };
 
-export default AdministrationArticleDropdownActions;
+export default SellDropdownActions;

@@ -262,18 +262,18 @@ export default function AircraftReportPage() {
         </Select>
       </div>
 
-      <Card className="mb-8">
+      <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Ganancias Mensuales {selectedYear}</CardTitle>
-          <CardDescription>Haz clic en un mes para ver los detalles de los vuelos</CardDescription>
+          <CardTitle className="text-center">Ganancias Mensuales {selectedYear}</CardTitle>
+          <CardDescription className="text-center">Haz clic en un mes para ver los detalles de los vuelos</CardDescription>
         </CardHeader>
         <CardContent className="p-0 sm:p-6">
           <div className="h-[500px] w-full">
             <ChartContainer>
-              <ResponsiveContainer width="100%" height={450}>
+              <ResponsiveContainer width="100%" height={450} aspect={2}>
                 <BarChart
                   data={monthlyData}
-                  margin={{ top: 20, right: 30, left: 30, bottom: 60 }}
+                  margin={{ top: 20, right: 40, left: 40, bottom: 100 }}
                   onClick={handleBarClick}
                   barCategoryGap={8}
                 >
@@ -329,10 +329,10 @@ export default function AircraftReportPage() {
       {selectedMonth !== null && (
         <Card>
           <CardHeader>
-            <CardTitle>
+            <CardTitle className="text-center">
               Vuelos de {monthNames[selectedMonth]} {selectedYear}
             </CardTitle>
-            <CardDescription>Detalle de los vuelos realizados durante el mes</CardDescription>
+            <CardDescription className="text-center">Detalle de los vuelos realizados durante el mes</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoadingFlights ? (

@@ -5,7 +5,6 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { FlightPayment } from "@/types";
 import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale/es";
-import Link from "next/link";
 import FlightPaymentsDropdownActions from "@/components/misc/FlightPaymentsDropdownActions";
 import ClientResumeDialog from "@/components/dialogs/ClientResumeDialog";
 import FlightResumeDialog from "@/components/dialogs/FlightResumeDialog";

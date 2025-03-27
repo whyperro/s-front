@@ -293,7 +293,7 @@ export function FlightForm({ onClose }: FormProps) {
             name="aircraft_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Avión</FormLabel>
+                <FormLabel>Aeronave</FormLabel>
                 <Select
                   disabled={isAircraftLoading}
                   onValueChange={field.onChange}

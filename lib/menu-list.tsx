@@ -20,6 +20,7 @@ import {
   Receipt,
   ScrollText,
   Settings,
+  ShoppingCart,
   SquarePen,
   Timer,
   User2,
@@ -98,6 +99,18 @@ export function getMenuList(
                 label: "Articulos",
                 active: pathname.includes("/transmandu/administracion/articulos"),
                 icon: Boxes,
+                roles: [
+                  "ANALISTA_PLANIFICACION",
+                  "JEFE_PLANIFICACION",
+                  "SUPERUSER",
+                ],
+                submenus: [],
+              },
+              {
+                href: "/transmandu/administracion/ventas",
+                label: "Ventas",
+                active: pathname.includes("/transmandu/administracion/ventas"),
+                icon: ShoppingCart,
                 roles: [
                   "ANALISTA_PLANIFICACION",
                   "JEFE_PLANIFICACION",
