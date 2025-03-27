@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ObligatoryReport } from "@/types";
 import { format, parse } from "date-fns";
-import { dateFormat } from "@/lib/utils";
+import { dateFormat, timeFormat } from "@/lib/utils";
 
 export const columns: ColumnDef<ObligatoryReport>[] = [
   {
@@ -77,9 +77,7 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
       <DataTableColumnHeader column={column} title="Hora del Vuelo" />
     ),
     cell: ({ row }) => {
-      const timeString = row.original.flight_time.toString();
-      const parsedTime = parse(timeString, "HH:mm:ss", new Date());
-      const flight_time = format(parsedTime, "HH:mm");
+      const flight_time = timeFormat(row.original.flight_time);
       return <p className="font-medium text-center">{flight_time} </p>;
     },
   },
