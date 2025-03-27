@@ -1,32 +1,38 @@
 'use client'
 
-import { useUpdateFinalHour, useDeleteActivity } from "@/actions/desarrollo/reportes_diarios/actions"
+import { useUpdateFinalHour, useDeleteActivity, useEditActivity } from '@/actions/desarrollo/reportes_diarios/actions';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { Clock, MoreHorizontal, Trash2 } from "lucide-react"
+import { Clock, MoreHorizontal, Trash2, Edit } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Button } from "../ui/button"
-import { Checkbox } from "../ui/checkbox"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
+import { Checkbox } from "../ui/checkbox"
 import { useGetUserActivity } from "@/hooks/desarrollo/useGetUserActivities"
 import { useRouter } from "next/navigation"
+import { useEditActivityUser } from '@/hooks/desarrollo/useEditActivity';
 
 const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boolean }) => {
   const router = useRouter()
   const { updateFinalHour } = useUpdateFinalHour()
   const { deleteActivity } = useDeleteActivity()
+  const { editActivity } = useEditActivity()
   const { data: report } = useGetUserActivity(id.toString())
+  const { data: editreport } = useEditActivityUser(id.toString())
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+  const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false)
+  const [startTime, setStartTime] = useState("")
   const [endTime, setEndTime] = useState("")
-  const [result, setResult] = useState("")
+  const [description, setDescription] = useState("")
   const [manualEndTime, setManualEndTime] = useState(false)
-
+  
+  
   useEffect(() => {
     if (!manualEndTime) {
       const now = new Date()
@@ -35,10 +41,20 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
     }
   }, [dialogOpen, manualEndTime])
 
+  useEffect(() => {
+    if (report) {
+      const activity = report.activities.find(act => act.id === id)
+      if (activity) {
+        setStartTime(report.activities[0].start_hour || "")
+        setEndTime(report.activities[0].final_hour || "")
+        setDescription(report.activities[0].description || "")
+      }
+    }
+  }, [editDialogOpen, report, id])
+
   const handleConfirm = async () => {
     const data = {
       final_hour: endTime,
-      result: result,
       id: id.toString(),
     }
     await updateFinalHour.mutateAsync(data)
@@ -57,15 +73,21 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
       setDialogOpen(false)
     }
   }
-  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const timeValue = e.target.value
-    if (timeValue >= "07:00" && timeValue <= "18:00") {
-      setEndTime(timeValue)
+
+  const handleEditConfirm = async () => {
+    const data = {
+      id: id.toString(),
+      start_time: report?.activities[0].start_hour,
+      end_time: report?.activities[0].final_hour,
+      description: report?.activities[0].description,
     }
+    await editActivity.mutateAsync(data)
+    setEditDialogOpen(false)
+    router.refresh()
   }
 
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -83,55 +105,52 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
             <Clock className="size-5 mr-2" /> Finalizar Actividad
           </DropdownMenuItem>
 
-          <DropdownMenuItem
-            onClick={handleDelete}
-            className="cursor-pointer text-red-600"
-          >
+          <DropdownMenuItem onClick={() => setEditDialogOpen(true)} className="cursor-pointer">
+            <Edit className="size-5 mr-2" /> Editar Actividad
+          </DropdownMenuItem>
+
+          <DropdownMenuItem onClick={handleDelete} className="cursor-pointer text-red-600">
             <Trash2 className="size-5 mr-2" /> Eliminar Actividad
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Diálogo para finalizar la actividad */}
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Finalizar Actividad</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              checked={manualEndTime}
-              onCheckedChange={(checked) => setManualEndTime(Boolean(checked))}
-            />
-            <Label>Ingresar hora manualmente</Label>
-          </div>
-          <div>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Finalizar Actividad</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
             <Label>Hora de Finalización</Label>
-            <Input
-              type="time"
-              value={endTime}
-              min="07:00"
-              max="18:00"
-              disabled={!manualEndTime}
-              onChange={handleTimeChange}
-            />
+            <Input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
           </div>
-          <div>
-            <Label>Resultado Obtenido</Label>
-            <Input
-              type="text"
-              placeholder="Describe el resultado..."
-              value={result}
-              onChange={(e) => setResult(e.target.value)}
-            />
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => setDialogOpen(false)}>Cancelar</Button>
+            <Button onClick={handleConfirm}>Confirmar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar Actividad</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Label>Hora de Inicio</Label>
+            <Input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+            <Label>Hora de Finalización</Label>
+            <Input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+            <Label>Descripción</Label>
+            <Input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
           </div>
-        </div>
-        <DialogFooter>
-          <Button variant="secondary" onClick={() => setDialogOpen(false)}>Cancelar</Button>
-          <Button disabled={updateFinalHour.isPending} onClick={handleConfirm}>Confirmar</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => setEditDialogOpen(false)}>Cancelar</Button>
+            <Button onClick={handleEditConfirm}>Guardar Cambios</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 

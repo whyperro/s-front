@@ -89,6 +89,36 @@ export const useDeleteActivity = () => {
     };
 };
 
+export const useEditActivity = () => {
+    const queryClient = useQueryClient();
+
+    const createMutation = useMutation({
+        mutationFn: async (data: {
+            id: string;
+        }) => {
+            await axiosInstance.patch(`/transmandu/update-allActivity/${data.id}`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["activities"] });
+            queryClient.invalidateQueries({ queryKey: ["user-activity"] });
+            queryClient.invalidateQueries({ queryKey: ["update-allActivity"] });
+            toast.success("¡Actividad editada!", {
+                description: "La actividad se ha editado correctamente."
+            });
+        },
+        onError: () => {
+            toast.error("Oops!", {
+                description: "Hubo un error al editar la actividad."
+            });
+        }
+    });
+
+    return {
+        editActivity: createMutation,
+    };
+};
+
+
 export const useUpdateFinalHour = () => {
     const queryClient = useQueryClient();
 
