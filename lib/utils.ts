@@ -1,5 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
-import { addDays, format, subDays } from "date-fns";
+import { addDays, format, parse, subDays } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import { es } from "date-fns/locale";
 
@@ -48,4 +48,11 @@ export function dateFormat(date: string | Date, DateFormat: string) {
   return format(newDate, DateFormat, {
     locale: es,
   });
+}
+
+export function timeFormat(hour: Date, outPutFormat: string = "HH:mm") {
+  const timeString = hour.toString();
+  const parsedTime = parse(timeString, "HH:mm:ss", new Date());
+  const time = format(parsedTime, outPutFormat);
+  return time;
 }
