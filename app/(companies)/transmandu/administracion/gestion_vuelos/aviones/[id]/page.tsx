@@ -270,7 +270,7 @@ export default function AircraftReportPage() {
         <CardContent className="p-0 sm:p-6">
           <div className="h-[500px] w-full">
             <ChartContainer>
-              <ResponsiveContainer width="100%" height={450}>
+              <ResponsiveContainer width="100%" height={450} aspect={3}>
                 <BarChart
                   data={monthlyData}
                   margin={{ top: 20, right: 30, left: 30, bottom: 60 }}
