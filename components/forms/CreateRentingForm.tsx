@@ -44,7 +44,6 @@ const formSchema = z.object({
     .max(100, {
       message: "La descripción tiene un máximo 100 caracteres.",
     }),
-  status: z.enum(["EN PROCESO", "CULMINADO", "RETRASADO"]),
   type: z.enum(["AERONAVE", "ARTICULO"]),
   price: z.string().refine(
     (val) => {
@@ -226,30 +225,6 @@ export function CreateRentingForm({ onClose }: FormProps) {
         <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Estado</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className="w-[150px]">
-                      <SelectValue placeholder="Tipo" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="EN PROCESO">En Proceso</SelectItem>
-                    <SelectItem value="CULMINADO">Culminado</SelectItem>
-                    <SelectItem value="RETRASADO">Retrasado</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="type"
             render={({ field }) => (
               <FormItem>
@@ -259,7 +234,7 @@ export function CreateRentingForm({ onClose }: FormProps) {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger className="w-[150px]">
+                    <SelectTrigger className="w-[130px]">
                       <SelectValue placeholder="Seleccione" />
                     </SelectTrigger>
                   </FormControl>
@@ -271,6 +246,74 @@ export function CreateRentingForm({ onClose }: FormProps) {
               </FormItem>
             )}
           />
+          {form.watch("type") !== "ARTICULO" && (
+            <FormField
+              control={form.control}
+              name="aircraft_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Aeronave</FormLabel>
+                  <Select
+                    disabled={isAircraftLoading}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-[120px]">
+                        <SelectValue placeholder="Seleccione" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {aircrafts &&
+                        aircrafts.map((aircraft) => (
+                          <SelectItem
+                            key={aircraft.id}
+                            value={aircraft.id.toString()}
+                          >
+                            {aircraft.acronym}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+          {form.watch("type") !== "AERONAVE" && (
+            <FormField
+              control={form.control}
+              name="article_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Artículo</FormLabel>
+                  <Select
+                    disabled={isArticlesLoading}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-[120px]">
+                        <SelectValue placeholder="Seleccione" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {articles &&
+                        articles.map((article) => (
+                          <SelectItem
+                            key={article.id}
+                            value={article.id.toString()}
+                          >
+                            {article.name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
         <div className="flex gap-2 items-center justify-center">
           <FormField
@@ -313,7 +356,7 @@ export function CreateRentingForm({ onClose }: FormProps) {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-[250px]">
                       <SelectValue placeholder="Seleccione" />
                     </SelectTrigger>
                   </FormControl>
@@ -333,74 +376,6 @@ export function CreateRentingForm({ onClose }: FormProps) {
               </FormItem>
             )}
           />
-          {form.watch("type") !== "ARTICULO" && (
-            <FormField
-              control={form.control}
-              name="aircraft_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Aeronave</FormLabel>
-                  <Select
-                    disabled={isAircraftLoading}
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccione" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {aircrafts &&
-                        aircrafts.map((aircraft) => (
-                          <SelectItem
-                            key={aircraft.id}
-                            value={aircraft.id.toString()}
-                          >
-                            {aircraft.acronym}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-          {form.watch("type") !== "AERONAVE" && (
-            <FormField
-              control={form.control}
-              name="article_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Artículo</FormLabel>
-                  <Select
-                    disabled={isArticlesLoading}
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccione" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {articles &&
-                        articles.map((article) => (
-                          <SelectItem
-                            key={article.id}
-                            value={article.id.toString()}
-                          >
-                            {article.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
         </div>
         <FormField
           control={form.control}

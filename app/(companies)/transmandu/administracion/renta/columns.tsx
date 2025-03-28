@@ -144,9 +144,7 @@ export const getRentingColumns = (data: Renting[]): ColumnDef<Renting>[] => {
     },
     {
       id: "actions",
-      cell: ({ row }) => (
-        <RentingDropdownActions id={row.original.id.toString()} />
-      ),
+      cell: ({ row }) => <RentingDropdownActions rent={row.original} />,
     },
   ];
 
@@ -192,7 +190,11 @@ export const getRentingColumns = (data: Renting[]): ColumnDef<Renting>[] => {
   }
 
   // Insertar las columnas condicionales en la posición deseada
-  return [...baseColumns.slice(0, 8), ...conditionalColumns, ...baseColumns.slice(8)];
+  return [
+    ...baseColumns.slice(0, 8),
+    ...conditionalColumns,
+    ...baseColumns.slice(8),
+  ];
 };
 
 // Exportar las columnas base para otros usos si es necesario

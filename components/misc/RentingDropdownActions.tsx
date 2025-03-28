@@ -27,14 +27,14 @@ import {
 import { useDeleteRenting } from "@/actions/administracion/renta/actions";
 import { useGetRentingById } from "@/hooks/administracion/useGetRentingById";
 import { DefineEndDateForm } from "../forms/DefineEndDateForm";
+import { Renting } from "@/types";
 
-const RentingDropdownActions = ({ id }: { id: string }) => {
+const RentingDropdownActions = ({ rent }: { rent: Renting }) => {
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [openRenting, setOpenRenting] = useState<boolean>(false);
-  const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [openDefine, setOpenDefine] = useState<boolean>(false);
   const router = useRouter();
   const { deleteRenting } = useDeleteRenting();
-  const { data: rentingDetails, isLoading } = useGetRentingById(id);
 
   const handleDelete = async (id: number | string) => {
     await deleteRenting.mutateAsync(id);
@@ -58,18 +58,21 @@ const RentingDropdownActions = ({ id }: { id: string }) => {
           align="center"
           className="flex gap-2 justify-center"
         >
+          {rent.status === "CULMINADO" ? (
+            <DropdownMenuItem disabled>
+              <span className="text-green-500">Culminado</span>
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem onClick={() => setOpenDefine(true)}>
+              <EditIcon className="size-5 text-blue-500" />
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem onClick={() => setOpenDelete(true)}>
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpenEdit(true)}>
-            <EditIcon className="size-5 text-blue-500" />
-          </DropdownMenuItem>
-          {/*  <DropdownMenuItem onClick={handleViewDetails}>
-            <EyeIcon className="size-5" />
-          </DropdownMenuItem> */}
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/renting/${id}`);
+              router.push(`/administracion/renting/${rent.id}`);
             }}
           ></DropdownMenuItem>
         </DropdownMenuContent>
@@ -98,7 +101,7 @@ const RentingDropdownActions = ({ id }: { id: string }) => {
             <Button
               disabled={deleteRenting.isPending}
               className="hover:bg-white hover:text-black hover:border hover:border-black transition-all"
-              onClick={() => handleDelete(id)}
+              onClick={() => handleDelete(rent.id.toString())}
             >
               {deleteRenting.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
@@ -258,16 +261,19 @@ const RentingDropdownActions = ({ id }: { id: string }) => {
       </Dialog> */}
 
       {/*Dialog para editar la fecha final end_date*/}
-      <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+      <Dialog open={openDefine} onOpenChange={setOpenDefine}>
         <DialogContent
           onInteractOutside={(e) => {
-            e.preventDefault(); 
+            e.preventDefault();
           }}
         >
           <DialogHeader>
             <DialogTitle>Definir Fecha Final</DialogTitle>
           </DialogHeader>
-          <DefineEndDateForm id={id} onClose={() => setOpenEdit(false)} />
+          <DefineEndDateForm
+            id={rent.id.toString()}
+            onClose={() => setOpenDefine(false)}
+          />
         </DialogContent>
       </Dialog>
     </>

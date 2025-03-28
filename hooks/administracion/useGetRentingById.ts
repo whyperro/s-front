@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query"
 import axiosInstance from "@/lib/axios"
 
 const fetchRentingById = async (id: string): Promise<Renting> => {
-  const { data } = await axiosInstance.get(`/transmandu/rentings/${id}`)
+  const { data } = await axiosInstance.patch(`/transmandu/renting-define-end-date/${id}`)
   return data;
 }
 

@@ -55,3 +55,28 @@ export const useDeleteRenting = () => {
     deleteRenting: deleteMutation,
   }
 }
+
+export const useDefineEndDateRenting = () => {
+  const queryClient = useQueryClient();
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      await axiosInstance.patch(`/transmandu/renting-define-end-date/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['renting'] });
+      toast("¡Definido!", {
+        description: "¡La fecha final se ha definido correctamente!",
+      });
+    },
+    onError: (error) => {
+      toast.error("Oops!", {
+        description: `Hubo un error al definir la fecha: ${error}`,
+      });
+    },
+  });
+
+  return {
+    defineEndDateRenting: updateMutation,
+  };
+};
