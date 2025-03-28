@@ -28,12 +28,12 @@ import { es } from "date-fns/locale/es";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useCreateRenting } from "@/actions/administracion/renta/actions";
 import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
 import { useGetClients } from "@/hooks/administracion/useGetClients";
 import { useGetAdministrationArticle } from "@/hooks/administracion/useGetAdministrationArticle";
 import { Calendar } from "../ui/calendar";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCreateRenting } from "@/actions/administracion/renta/actions";
 
 const formSchema = z.object({
   description: z
@@ -181,49 +181,6 @@ export function CreateRentingForm({ onClose }: FormProps) {
               </FormItem>
             )}
           />
-        {/*  <FormField
-            control={form.control}
-            name="end_date"
-            render={({ field }) => (
-              <FormItem className="flex flex-col mt-2.5">
-                <FormLabel>Fecha Final</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[130px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP", {
-                            locale: es,
-                          })
-                        ) : (
-                          <span>Seleccione </span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1999-07-21")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
           <FormField
             control={form.control}
             name="deadline"

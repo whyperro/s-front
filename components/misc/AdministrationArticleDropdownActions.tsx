@@ -59,14 +59,22 @@ const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
           align="center"
           className="flex gap-2 justify-center"
         >
-          {articleDetails && articleDetails.status === "VENDIDO" ? (
-            <DropdownMenuItem disabled>
-              <span className="text-green-500">Vendido</span>
-            </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem onClick={() => setOpenSell(true)}>
-              <HandCoins className="size-5 text-green-500" />
-            </DropdownMenuItem>
+          {articleDetails && (
+            <>
+              {articleDetails.status === "VENDIDO" ? (
+                <DropdownMenuItem disabled>
+                  <span className="text-green-500">Vendido</span>
+                </DropdownMenuItem>
+              ) : articleDetails.status === "RENTADO" ? (
+                <DropdownMenuItem disabled>
+                  <span className="text-blue-500">Rentado</span>
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem onClick={() => setOpenSell(true)}>
+                  <HandCoins className="size-5 text-green-500" />
+                </DropdownMenuItem>
+              )}
+            </>
           )}
           <DropdownMenuItem onClick={() => setOpenDelete(true)}>
             <Trash2 className="size-5 text-red-500" />

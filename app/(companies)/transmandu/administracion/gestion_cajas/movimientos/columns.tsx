@@ -13,11 +13,15 @@ import CashResumeDialog from "@/components/dialogs/CashResumeDialog";
 
 // Función auxiliar para obtener el símbolo de la moneda
 const getCurrencySymbol = (coinType: string) => {
-  switch(coinType) {
-    case "DOLARES": return "$";
-    case "EUROS": return "€";
-    case "BOLIVARES": return "Bs.";
-    default: return "";
+  switch (coinType) {
+    case "DOLARES":
+      return "$";
+    case "EUROS":
+      return "€";
+    case "BOLIVARES":
+      return "Bs.";
+    default:
+      return "";
   }
 };
 
@@ -152,7 +156,7 @@ export const getColumns = (data: CashMovement[]): ColumnDef<CashMovement>[] => {
       cell: ({ row }) => (
         <div className="flex justify-center">
           <span className="text-muted-foreground italic">
-            {row.original.amount } {getCurrencySymbol(row.original.cash.coin)}
+            {row.original.amount} {getCurrencySymbol(row.original.cash.coin)}
           </span>
         </div>
       ),
@@ -182,7 +186,9 @@ export const getColumns = (data: CashMovement[]): ColumnDef<CashMovement>[] => {
           );
         } else {
           return (
-            <p className="text-center italic font-medium cursor-pointer">Efectivo</p>
+            <p className="text-center italic font-medium cursor-pointer">
+              Efectivo
+            </p>
           );
         }
       },

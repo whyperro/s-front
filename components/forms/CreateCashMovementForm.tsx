@@ -56,15 +56,16 @@ const formSchema = z.object({
   cash_id: z.string({
     message: "Debe elegir una caja.",
   }),
-  company_id: z.string({
-    message: "Debe elegir una compañía.",
-  }),
-  vendor_id: z.string({
-    message: "Debe elegir un beneficiario.",
-  }),
-  client_id: z.string({
-    message: "Debe elegir un cliente.",
-  }),
+  vendor_id: z
+    .string({
+      message: "Debe elegir un beneficiario.",
+    })
+    .optional(),
+  client_id: z
+    .string({
+      message: "Debe elegir un cliente.",
+    })
+    .optional(),
   date: z.date({
     required_error: "La fecha es requerida",
   }),
@@ -143,6 +144,8 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
   useEffect(() => {
     mutate("transmandu");
   }, [mutate]);
+
+  console.log(form.getValues());
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await createCashMovement.mutateAsync(values);
@@ -405,16 +408,13 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                               {
                                 employees?.find(
                                   (employee) =>
-                                    `${employee.first_name} ${employee.last_name}` ===
-                                    field.value
+                                    employee.id.toString() === field.value
                                 )?.first_name
                               }{" "}
-                              -{" "}
                               {
                                 employees?.find(
                                   (employee) =>
-                                    `${employee.first_name} ${employee.last_name}` ===
-                                    field.value
+                                    employee.id.toString() === field.value
                                 )?.last_name
                               }
                             </p>

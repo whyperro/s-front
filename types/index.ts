@@ -35,7 +35,7 @@ export type AdministrationArticle = {
   id: number,
   serial: string,
   name: string,
-  status: "VENDIDO" | "EN POSESION" | "ORDENADO" | "RENTADO",
+  status: "VENDIDO" | "EN POSESION" | "RENTADO",
   price: string,
   brand: string,
   type: string,

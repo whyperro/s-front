@@ -8,9 +8,6 @@ import { DataTable } from "./data-table";
 
 const CashMovement = () => {
   const { data, isLoading, isError } = useGetCashMovements();
-
-  console.log(data);
-
   if (isLoading) {
     return <LoadingPage />;
   }
@@ -27,7 +24,7 @@ const CashMovement = () => {
       {data && <DataTable columns={columns} data={data} />}
       {isError && (
         <p className="text-muted-foreground text-sm italic text-center">
-          Ha ocurrido un error al cargar las cajas...
+          Ha ocurrido un error al cargar los movimientos...
         </p>
       )}
     </ContentLayout>

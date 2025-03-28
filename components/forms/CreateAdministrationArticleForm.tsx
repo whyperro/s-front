@@ -19,15 +19,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 const formSchema = z.object({
   serial: z.string().min(2, {
     message: "El serial debe tener al menos 2 caracteres.",
-  }).max(100, {
-    message: "El serial tiene un máximo 100 caracteres.",
+  }).max(8, {
+    message: "El serial tiene un máximo 8 caracteres.",
   }),
   name: z.string().min(2, {
     message: "El nombre debe tener al menos 2 caracteres.",
   }).max(40, {
     message: "El nombre tiene un máximo 40 caracteres.",
   }),
-  status: z.enum(["VENDIDO", "EN POSESION", "ORDENADO", "RENTADO"]),
+  status: z.enum(["VENDIDO", "ORDENADO", "RENTADO"]),
   price: z.string().refine(
     (val) => {
       // Convertir el valor a número y verificar que sea positivo
@@ -116,7 +116,6 @@ export function CreateAdministrationArticleForm({ onClose }: FormProps) {
                   <SelectContent>
                     <SelectItem value="VENDIDO">Vendido</SelectItem>
                     <SelectItem value="EN POSESION">En Posesión</SelectItem>
-                    <SelectItem value="ORDENADO">Ordenado</SelectItem>
                     <SelectItem value="RENTADO">Rentado</SelectItem>
                   </SelectContent>
                 </Select>
