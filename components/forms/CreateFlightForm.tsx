@@ -247,7 +247,7 @@ export function FlightForm({ onClose }: FormProps) {
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) =>
-                        date > new Date() || date < new Date("1999-07-21")
+                        date < new Date("1999-07-21") // Solo deshabilita fechas muy antiguas
                       }
                       initialFocus
                     />
