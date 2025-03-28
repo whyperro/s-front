@@ -27,3 +27,31 @@ export const useCreateRenting = () => {
       createRenting: createMutation,
     }
 }
+
+export const useDeleteRenting = () => {
+
+  const queryRenting = useQueryClient()
+
+  const deleteMutation = useMutation({
+      mutationFn: async (id: number | string) => {
+          await axiosInstance.delete(`/transmandu/rentings/${id}`)
+        },
+      onSuccess: () => {
+
+          queryRenting.invalidateQueries({queryKey: ['renting']})
+          toast.success("¡Eliminado!", {
+              description: `¡La renta ha sido eliminado correctamente!`
+          })
+        },
+      onError: (e) => {
+          toast.error("Oops!", {
+            description: "¡Hubo un error al eliminar la renta!"
+        })
+        },
+      }
+  )
+
+  return {
+    deleteRenting: deleteMutation,
+  }
+}

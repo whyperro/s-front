@@ -24,7 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { useDeleteRenting } from "@/actions/renta/actions";
+import { useDeleteRenting } from "@/actions/administracion/renta/actions";
 import { useGetRentingById } from "@/hooks/administracion/useGetRentingById";
 import { DefineEndDateForm } from "../forms/DefineEndDateForm";
 
