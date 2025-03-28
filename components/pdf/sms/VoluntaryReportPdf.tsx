@@ -372,6 +372,12 @@ const VoluntaryReportPdf = ({ report }: { report: VoluntaryReport }) => (
   <Document>
     {/* Change the Page size and remove or change orientation */}
     <Page size="LETTER" style={styles.page}>
+
+
+
+
+
+
       {/* Primera fila del encabezado */}
       <View style={[styles.headerRow, { marginTop: 40 }]}>
         {/* Primera columna (logo) */}

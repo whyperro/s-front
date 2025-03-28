@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   },
   footerContainer: {
     position: "absolute",
-    bottom: 10,
+    bottom: 35,
     left: 30,
     right: 30,
     borderBottom: 1,
@@ -138,11 +138,81 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "black",
   },
+
+  // ESTILOS PARA EL HEADER DE LA PAGINA
+  tableRowHeader: {
+    flexDirection: "row",
+    marginTop:40,
+    marginBottom:20,
+  },
+  tableCellHeader: {
+    padding: 5,
+    borderWidth: 1,
+    borderColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cellTextHeader: {
+    fontSize: 10,
+    textAlign: "center",
+  },
+  column2Header: {
+    width: "55%",
+    flexDirection: "column",
+    borderTop: 1,
+    borderRight: 1,
+  },
+  column3Header: {
+    width: "25%",
+    flexDirection: "column",
+    borderTop: 1,
+    borderRight: 1,
+  },
+  rowColumnHeader: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderColor: "#000",
+  },
 });
 
 const MyDocument = () => (
   <Document>
     <Page style={styles.page} size={"LETTER"}>
+      <View style={styles.tableRowHeader}>
+        <View style={{ ...styles.tableCellHeader, width: "20%" }}>
+          <Text style={styles.cellTextHeader}>Recuadro 1</Text>
+        </View>
+        <View style={styles.column2Header}>
+          <View style={styles.rowColumnHeader}>
+            <Text style={styles.cellTextHeader}>
+              SISTEMA DE GESTION DE SEGURIDAD OPERACIONAL{"\n"}SMS
+            </Text>
+          </View>
+          <View style={styles.rowColumnHeader}>
+            <Text style={styles.cellTextHeader}>
+              REPORTE VOLUNTARIO DE PELIGROS
+            </Text>
+          </View>
+        </View>
+        <View style={styles.column3Header}>
+          <View style={styles.rowColumnHeader}>
+            <Text style={styles.cellTextHeader}>EDICION N: 01</Text>
+          </View>
+          <View style={styles.rowColumnHeader}>
+            <Text style={styles.cellTextHeader}>
+              FECHA EDICION{"\n"}12/10/2023
+            </Text>
+          </View>
+          <View style={styles.rowColumnHeader}>
+            <Text style={styles.cellTextHeader}>
+              CODIGO:{"\n"}TMD-FOR-SMS-002
+            </Text>
+          </View>
+        </View>
+      </View>
+
       <Text style={[styles.blackText, { width: "100%" }]}>
         <Text style={[styles.blackText]}>
           <Text style={{ textDecoration: "underline" }}>IMPORTANTE </Text>
