@@ -1,25 +1,13 @@
-import React from "react";
+import { dateFormat, timeFormat } from "@/lib/utils";
+import { ObligatoryReport } from "@/types";
 import {
   Document,
-  Image,
   Page,
   StyleSheet,
   Text,
-  View,
+  View
 } from "@react-pdf/renderer";
-import { ObligatoryReport, VoluntaryReport } from "@/types";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { Container } from "postcss";
-import { Bold } from "lucide-react";
-import { dateFormat, timeFormat } from "@/lib/utils";
 
-const formatDate = (date: Date) => {
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Los meses en JS comienzan desde 0
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-};
 // ... (your formatDate function and styles remain the same)
 
 const styles = StyleSheet.create({
@@ -397,8 +385,15 @@ const styles = StyleSheet.create({
   instructiveContainer: {
     display: "flex",
     flexDirection: "row",
+    fontWeight: "bold",
   },
   instructiveText: {
+    textAlign: "left",
+    fontSize: 12,
+    fontFamily: "Helvetica",
+    lineHeight: 1.5,
+  },
+  instructiveTitle: {
     textAlign: "left",
     fontSize: 12,
     fontFamily: "Helvetica",
@@ -406,6 +401,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.15,
   },
   underlinedTTitle: {
+    fontFamily: "Helvetica",
     fontWeight: "bold",
     fontSize: 12,
     textAlign: "center",
@@ -826,10 +822,11 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
         <Text style={styles.underlinedTTitle}>INSTRUCTIVO DE LLENADO</Text>
       </View>
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>
+        <Text style={styles.instructiveTitle}>
           • Fecha del reporte (DD/MM/AAAA):
         </Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar día, mes, año en que se realiza el reporte.
         </Text>
       </View>
@@ -838,6 +835,7 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
           • Fecha del suceso (DD/MM/AAAA):
         </Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar día, mes, año en que ocurrió el suceso.
         </Text>
       </View>
@@ -845,6 +843,7 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
       <View style={styles.instructiveContainer}>
         <Text style={styles.instructiveText}>• Hora del suceso (HLV):</Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar la hora en la que ocurrió el suceso.
         </Text>
       </View>
@@ -854,15 +853,17 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
           • Lugar donde ocurrió el suceso:{" "}
         </Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar el lugar donde ocurrió el suceso.
         </Text>
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>• N° de reporte: </Text>
+        <Text style={styles.instructiveText}>• N° de reporte:</Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar el número correlativo asignado al reporte por la Gerencia del
-          SMS.{" "}
+          SMS.
         </Text>
       </View>
 
@@ -871,8 +872,9 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>• Nombres y Apellidos: </Text>
+        <Text style={styles.instructiveText}>• Nombres y Apellidos:</Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar nombres y apellidos de la persona que realiza el reporte.
         </Text>
       </View>
@@ -880,6 +882,7 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
       <View style={styles.instructiveContainer}>
         <Text style={styles.instructiveText}>• N° de Licencia: </Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar número de licencia de la persona que realiza el reporte.
         </Text>
       </View>
@@ -889,6 +892,7 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
           • Vía de contacto (Teléfono/ Correo electrónico):
         </Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar el número telefónico y/o el correo
         </Text>
       </View>
@@ -905,6 +909,7 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
       <View style={styles.instructiveContainer}>
         <Text style={styles.instructiveText}> • Hora (HLV):</Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar la hora real de despegue.
         </Text>
       </View>
@@ -912,6 +917,7 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
       <View style={styles.instructiveContainer}>
         <Text style={styles.instructiveText}> • Matrícula: (HLV):</Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar la matrícula de la aeronave en que ocurrió el suceso.
         </Text>
       </View>
@@ -919,6 +925,7 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
       <View style={styles.instructiveContainer}>
         <Text style={styles.instructiveText}> • N° de vuelo:</Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar el número de vuelo en que ocurrió el suceso.
         </Text>
       </View>
@@ -926,6 +933,7 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
       <View style={styles.instructiveContainer}>
         <Text style={styles.instructiveText}> • Aeronave:</Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar modelo de la aeronave en que ocurrió el suceso.
         </Text>
       </View>
@@ -933,6 +941,7 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
       <View style={styles.instructiveContainer}>
         <Text style={styles.instructiveText}> • Origen:</Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar estación de origen del vuelo en que ocurrió el suceso.
         </Text>
       </View>
@@ -940,6 +949,7 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
       <View style={styles.instructiveContainer}>
         <Text style={styles.instructiveText}> • Destino:</Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar estación de destino del vuelo en que ocurrió el suceso.
         </Text>
       </View>
@@ -947,7 +957,51 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
       <View style={styles.instructiveContainer}>
         <Text style={styles.instructiveText}> • Alterno:</Text>
         <Text style={styles.instructiveText}>
+          {" "}
           Colocar estación alterna del vuelo en que ocurrió el suceso.
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}>
+          III. Sucesos de obligatorio reporte:{" "}
+        </Text>
+        <Text style={styles.instructiveText}>
+          Marcar con una (X) el suceso obligatorio que se está
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}>
+          {"         "}reportando, en caso de no encontrarse dentro de las
+          opciones, se deberá seleccionar el
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}>
+          {"         "}ítem “otro” y seguidamente especificar a qué suceso se
+          refiere.
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}>IV. Descripción del suceso:</Text>
+        <Text style={styles.instructiveText}>
+          {""}
+          Colocar una descripción de los hechos ocurridos del suceso que
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}>se está reportando. </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}> • Firma: </Text>
+        <Text style={styles.instructiveText}>
+          {""}
+          Colocar firma de la persona que realiza el reporte.{" "}
         </Text>
       </View>
       {Footer(3)}

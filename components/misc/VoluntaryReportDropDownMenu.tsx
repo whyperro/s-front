@@ -32,6 +32,7 @@ import {
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import VoluntaryReportPdf from "../pdf/sms/VoluntaryReportPdf";
 import { format } from "date-fns";
+import SafetyRiskManagementPdf from "../pdf/sms/SafetyRiskManagement";
 
 const VoluntaryReportDropdownActions = ({
   voluntaryReport,
@@ -119,7 +120,7 @@ const VoluntaryReportDropdownActions = ({
             <div className="w-full h-screen">
               {voluntaryReport && (
                 <PDFViewer style={{ width: "100%", height: "60%" }}>
-                  <VoluntaryReportPdf report={voluntaryReport} />
+                  <SafetyRiskManagementPdf report={voluntaryReport} />
                 </PDFViewer>
               )}
             </div>
@@ -129,7 +130,7 @@ const VoluntaryReportDropdownActions = ({
                   new Date(),
                   "dd-MM-yyyy"
                 )}.pdf`}
-                document={<VoluntaryReportPdf report={voluntaryReport} />}
+                document={<SafetyRiskManagementPdf report={voluntaryReport} />}
               >
                 <Button>Descargar Reporte</Button>
               </PDFDownloadLink>
