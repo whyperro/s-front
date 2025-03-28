@@ -11,10 +11,8 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table"
-
 import { DataTablePagination } from "@/components/tables/DataTablePagination"
 import { DataTableViewOptions } from "@/components/tables/DataTableViewOptions"
-import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -23,9 +21,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { CreateMaintenanceAircraftDialog } from "@/components/dialogs/CreateMaintenanceAircraftDialog"
+import { CreateMaintenanceServiceDialog } from "@/components/dialogs/CreateMaintenanceServiceDialog"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -41,13 +40,6 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     []
   )
-
-  const locations = [
-    {
-      label: 'Puerto Ordaz',
-      value: 'pzo'
-    }
-  ]
 
   const table = useReactTable({
     data,
@@ -71,11 +63,7 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <div className="flex gap-x-2 items-center">
-          <Link href={'/hangar74/planificacion/ordenes_trabajo/nueva_orden_trabajo'}>
-            <Button variant={'outline'}>Crear</Button>
-          </Link>
-        </div>
+        <CreateMaintenanceServiceDialog />
         <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-md border mb-4">

@@ -219,6 +219,21 @@ export type FlightControl = {
   aircraft: MaintenanceAircraft,
 }
 
+export type MaintenanceService = {
+  id: number
+  name: string,
+  description: string,
+  manufacturer: Manufacturer,
+  tasks: ServiceTask[],
+}
+
+export type ServiceTask = {
+  id: number,
+  description: string,
+  batch: Batch,
+  service: MaintenanceService,
+}
+
 export type Employee = {
   id: number,
   first_name: string,

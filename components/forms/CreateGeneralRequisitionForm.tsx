@@ -90,11 +90,12 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
 
   const { mutate, data } = useGetBatchesByLocationId();
 
+  const { selectedCompany, selectedStation } = useCompanyStore()
+  
   const { mutate: employeesMutation, data: employees, isPending: employeesLoading } = useGetDepartamentEmployees();
 
   const { data: secondaryUnits, isLoading: secondaryUnitLoading } = useGetSecondaryUnits()
 
-  const { selectedCompany, selectedStation } = useCompanyStore()
 
   const { createRequisition } = useCreateRequisition()
 

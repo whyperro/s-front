@@ -1,5 +1,4 @@
 'use client';
-import { useCreateBank } from "@/actions/ajustes/banco_cuentas/bancos/actions";
 import {
   Form,
   FormControl,
@@ -12,13 +11,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { useGetMaintenanceAircrafts } from "@/hooks/planificacion/useGetMaintenanceAircrafts";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import { CalendarIcon, Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { Calendar } from "../ui/calendar";
+import { useCreateFlightControl } from "@/actions/planificacion/vuelos/actions";
 
 
 const formSchema = z.object({
@@ -26,7 +29,7 @@ const formSchema = z.object({
   aircraft_operator: z.string(),
   origin: z.string(),
   destination: z.string(),
-  flight_date: z.string(),
+  flight_date: z.date(),
   flight_hours: z.coerce.number(),
   flight_cycles: z.coerce.number(),
   aircraft_id: z.string(),
@@ -38,7 +41,7 @@ interface FormProps {
 }
 
 export default function CreateFlightControlForm({ onClose }: FormProps) {
-  const { createBank } = useCreateBank();
+  const { createFlightControl } = useCreateFlightControl()
   const { data: aircrafts, isLoading: isAircraftsLoading, isError: isAircraftsError } = useGetMaintenanceAircrafts()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,7 +56,7 @@ export default function CreateFlightControlForm({ onClose }: FormProps) {
   })
   const { control } = form;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-
+    await createFlightControl.mutateAsync(values)
     onClose()
   }
   return (
@@ -114,7 +117,7 @@ export default function CreateFlightControlForm({ onClose }: FormProps) {
                                 )}
                               />
                               {
-                                <p>{aircraft.acronym}</p>
+                                <p>{aircraft.acronym} - {aircraft.manufacturer.name}</p>
                               }
                             </CommandItem>
                           ))}
@@ -147,16 +150,44 @@ export default function CreateFlightControlForm({ onClose }: FormProps) {
             )}
           />
           <FormField
-            control={control}
+            control={form.control}
             name="flight_date"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-col mt-2.5">
                 <FormLabel>Fecha de Vuelo</FormLabel>
-                <FormControl>
-                  <Input placeholder="EJ: Banesco, BOFA, etc..." {...field} />
-                </FormControl>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP", { locale: es })
+                        ) : (
+                          <span>Seleccione...</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date: Date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
                 <FormDescription className="text-xs">
-                  Fecha en la que se realizó el vuelo.
+                  F. en la que el vuelo se realizó.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -245,8 +276,8 @@ export default function CreateFlightControlForm({ onClose }: FormProps) {
             )}
           />
         </div>
-        <Button className="bg-primary mt-2 text-white hover:bg-blue-900 disabled:bg-primary/70 " disabled={createBank?.isPending} type="submit">
-          {createBank?.isPending ? <Loader2 className="size-4 animate-spin" /> : <p>Crear Vuelo</p>}
+        <Button className="bg-primary mt-2 text-white hover:bg-blue-900 disabled:bg-primary/70 " disabled={createFlightControl?.isPending} type="submit">
+          {createFlightControl?.isPending ? <Loader2 className="size-4 animate-spin" /> : <p>Crear Vuelo</p>}
         </Button>
       </form>
     </Form>

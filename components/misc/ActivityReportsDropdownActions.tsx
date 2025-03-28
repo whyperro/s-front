@@ -30,7 +30,7 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
 
   const handleUpdateObservation = async () => {
 
-    const data ={
+    const data = {
       id: id.toString(),
       observation: observation,
     };

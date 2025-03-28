@@ -47,7 +47,8 @@ const ActivityReportsByIdPage = ({ params }: { params: { id: string } }) => {
         </Breadcrumb>
         <h1 className="text-4xl font-bold text-center">
           Actividades Diarias <br /> {report?.user.first_name}{" "}
-          {report?.user.last_name}
+          {report?.user.last_name} -{" "}
+          {format(addDays(report!.date, 1), "dd-MM-yyyy", { locale: es })}
         </h1>
         <p className="text-sm text-muted-foreground text-center italic">
           Aquí puede observar todas las actividades realizadas el día de hoy por
@@ -68,11 +69,11 @@ const ActivityReportsByIdPage = ({ params }: { params: { id: string } }) => {
 
             {report?.date &&
               report.date === new Date().toISOString().split("T")[0] && (
-                
+
                 <DailyReportDialog
-                report_id={report.id}
-                activities_length={report.activities?.length || 0}
-                onClose={() => setDialogOpen(false)}
+                  report_id={report.id}
+                  activities_length={report.activities?.length || 0}
+                  onClose={() => setDialogOpen(false)}
                 />
               )}
           </div>
