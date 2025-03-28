@@ -71,15 +71,33 @@ const styles = StyleSheet.create({
     fontWeight: "black",
     fontSize: 8,
   },
-  tableHeader: {
-    backgroundColor: "#e3f4ff",
-    fontWeight: "extrabold",
-  },
   tableContent: {
     backgroundColor: "#fff",
     fontWeight: "bold",
   },
+  tableHeader: {
+    backgroundColor: "#e3f4ff",
+    fontWeight: "extrabold",
+  },
   tableHeaderText: {
+    fontSize: 9,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  tableHeaderGray: {
+    backgroundColor: "#e1dfe1",
+    fontSize: 9,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  tableHeaderRed: {
+    backgroundColor: "#ff1111",
+    fontSize: 9,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  tableHeaderGreen: {
+    backgroundColor: "#03b945",
     fontSize: 9,
     fontWeight: "bold",
     textAlign: "center",
@@ -404,6 +422,190 @@ const styles = StyleSheet.create({
   },
 });
 
+const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
+  <Document>
+    <Page size="LETTER" style={styles.page}>
+      {/*Encabezado de la pagina */}
+      <Header />
+
+      <View style={[styles.row, styles.table, styles.tableHeader]}>
+        <Text style={[styles.cellHeader, { width: "100%" }]}>
+          1. NOTIFICACION DE PELIGROS
+        </Text>
+      </View>
+
+      <View style={[styles.row, styles.table, styles.tableHeader]}>
+        <Text style={[styles.cellHeader, { width: "35%" }]}>
+          FECHA DE LA IDENTIFICACION DEL PELIGRO
+        </Text>
+        <Text style={[styles.cellHeader, { width: "65%" }]}>
+          TIPO DE PELIGRO
+        </Text>
+      </View>
+
+      <View>
+        <View style={[styles.row, styles.table, styles.tableContent]}>
+          <Text style={[styles.cellHeader, { width: "35%" }]}>
+            {dateFormat(report.identification_date, "dd-MM-yyyy")}
+          </Text>
+          <Text
+            style={[
+              styles.cellHeader,
+              styles.tableHeaderGray,
+              { width: "16.25%" },
+            ]}
+          >
+            NATURAL
+          </Text>
+          <Text
+            style={[
+              styles.cellHeader,
+              styles.tableHeaderGray,
+              { width: "16.25%" },
+            ]}
+          >
+            TECNICO
+          </Text>
+          <Text
+            style={[
+              styles.cellHeader,
+              styles.tableHeaderGray,
+              { width: "16.25%" },
+            ]}
+          >
+            ORGANIZACIONAL
+          </Text>
+          <Text
+            style={[
+              styles.cellHeader,
+              styles.tableHeaderGray,
+              { width: "16.25%" },
+            ]}
+          >
+            HUMANO
+          </Text>
+        </View>
+      </View>
+
+      <View>
+        <View style={[styles.row, styles.table, styles.tableContent ,{justifyContent: "center"}] }>
+          <Text
+            style={[styles.cellHeader, styles.tableHeader, { width: "25%" }]}
+          >
+            FECHA DE LA RECEPCION DEL PELIGRO
+          </Text>
+          <Text
+            style={[styles.cellHeader, styles.tableHeader, { width: "10%" }]}
+          >
+            N DE CASO
+          </Text>
+          <Text
+            style={[
+              styles.cellHeader,
+              styles.tableHeaderText,
+              { width: "16.25%" },
+            ]}
+          >
+            NATURAL
+          </Text>
+          <Text
+            style={[
+              styles.cellHeader,
+              styles.tableHeaderText,
+              { width: "16.25%" },
+            ]}
+          >
+            TECNICO
+          </Text>
+          <Text
+            style={[
+              styles.cellHeader,
+              styles.tableHeaderText,
+              { width: "16.25%" },
+            ]}
+          >
+            ORGANIZACIONAL
+          </Text>
+          <Text
+            style={[
+              styles.cellHeader,
+              styles.tableHeaderText,
+              { width: "16.25%" },
+            ]}
+          >
+            HUMANO
+          </Text>
+        </View>
+      </View>
+
+      <View>
+        <View style={[styles.row, styles.table, styles.tableContent]}>
+          <Text
+            style={[
+              styles.cellHeader,
+              styles.tableHeaderText,
+              { width: "25%" },
+            ]}
+          >
+            {dateFormat(report.report_date, "dd-MM-yyyy")}
+          </Text>
+          <Text
+            style={[
+              styles.cellHeader,
+              styles.tableHeaderText,
+              { width: "10%" },
+            ]}
+          >
+            {report.report_number}
+          </Text>
+          <Text
+            style={[styles.cellHeader, styles.tableHeader, { width: "65%" }]}
+          >
+            METODO Y FUENTE DE LA IDENTIFICACION DE PELIGROS
+          </Text>
+        </View>
+      </View>
+
+      <View>
+        <View style={[styles.row, styles.table, styles.tableContent]}>
+          <Text
+            style={[styles.cellHeader, styles.tableHeader, { width: "25%" }]}
+          >
+            AREA DONDE FUE IDENTIFICADO EL PELIGRO
+          </Text>
+          <Text
+            style={[styles.cellHeader, styles.tableHeader, { width: "10%" }]}
+          >
+            N DE CASO
+          </Text>
+          <Text
+            style={[
+              styles.cellHeader,
+              styles.tableHeaderGreen,
+              { width: "32.5%" ,fontWeight:"extrabold" },
+            ]}
+          >
+            PROACTIVO
+          </Text>
+          <Text
+            style={[
+              styles.cellHeader,
+              styles.tableHeaderRed,
+              { width: "32.5%", textDecorationColor: "white", color:"#fff" , fontWeight:"bold" },
+            ]}
+          >
+            REACTIVO
+          </Text>
+        </View>
+      </View>
+
+      {Footer(1)}
+    </Page>
+  </Document>
+);
+
+export default SafetyRiskManagementPdf;
+
 const Header = () => (
   <View style={[styles.headerRow, { marginTop: 40 }]}>
     {/* Primera columna (logo) */}
@@ -473,16 +675,3 @@ const Footer = (pageNumber: number, pages: number = 3) => (
     </View>
   </View>
 );
-
-const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
-  <Document>
-    <Page size="LETTER" style={styles.page}>
-      {/*Encabezado de la pagina */}
-      <Header />
-
-      {Footer(1)}
-    </Page>
-  </Document>
-);
-
-export default SafetyRiskManagementPdf;
