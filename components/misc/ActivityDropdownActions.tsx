@@ -55,8 +55,10 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
     const data = {
       final_hour: endTime,
       id: id.toString(),
+      result: result,
     }
     await updateFinalHour.mutateAsync(data)
+    router.refresh();
     setDialogOpen(false)
   }
 
@@ -121,9 +123,11 @@ const handleEditConfirm = async () => {
           <DialogHeader>
             <DialogTitle>Finalizar Actividad</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-2">
             <Label>Hora de Finalización</Label>
-            <Input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+            <Input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} /> <br></br>
+            <Label>Resultado de la actividad</Label>
+            <Input type="text" value={result} onChange={(e) => setResult(e.target.value)} />
           </div>
           <DialogFooter>
             <Button variant="secondary" onClick={() => setDialogOpen(false)}>Cancelar</Button>
