@@ -16,7 +16,6 @@ import { Label } from "../ui/label"
 import { Checkbox } from "../ui/checkbox"
 import { useGetUserActivity } from "@/hooks/desarrollo/useGetUserActivities"
 import { useRouter } from "next/navigation"
-import { useEditActivityUser } from '@/hooks/desarrollo/useEditActivity';
 
 const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boolean }) => {
   const router = useRouter()
@@ -24,12 +23,12 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
   const { deleteActivity } = useDeleteActivity()
   const { editActivity } = useEditActivity()
   const { data: report } = useGetUserActivity(id.toString())
-  const { data: editreport } = useEditActivityUser(id.toString())
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false)
   const [startTime, setStartTime] = useState("")
   const [endTime, setEndTime] = useState("")
   const [description, setDescription] = useState("")
+  const [result, setResult] = useState("")
   const [manualEndTime, setManualEndTime] = useState(false)
   
   
@@ -74,17 +73,19 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
     }
   }
 
-  const handleEditConfirm = async () => {
+const handleEditConfirm = async () => {
     const data = {
-      id: id.toString(),
-      start_time: report?.activities[0].start_hour,
-      end_time: report?.activities[0].final_hour,
-      description: report?.activities[0].description,
-    }
-    await editActivity.mutateAsync(data)
-    setEditDialogOpen(false)
-    router.refresh()
-  }
+        id: id.toString(),
+        start_hour: startTime,
+        final_hour: endTime,
+        description: description,
+        result: result,
+    };
+
+    await editActivity.mutateAsync(data);
+    setEditDialogOpen(false);
+    router.refresh();
+};
 
   return (
     <>
@@ -136,14 +137,16 @@ const ActivityDropdownActions = ({ id, finished }: { id: number, finished: boole
           <DialogHeader>
             <DialogTitle>Editar Actividad</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <Label>Hora de Inicio</Label>
-            <Input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
-            <Label>Hora de Finalización</Label>
-            <Input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
-            <Label>Descripción</Label>
-            <Input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
-          </div>
+            <div className="space-y-4">
+              <Label className="mb-2">Descripción</Label>
+              <Input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+              <Label className="mb-2">Hora de Inicio</Label>
+              <Input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+              <Label className="mb-2">Hora de Finalización</Label>
+              <Input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+              <Label className="mb-2">Resultado</Label>
+              <Input type="text" value={result} onChange={(e) => setResult(e.target.value)} />
+            </div>
           <DialogFooter>
             <Button variant="secondary" onClick={() => setEditDialogOpen(false)}>Cancelar</Button>
             <Button onClick={handleEditConfirm}>Guardar Cambios</Button>

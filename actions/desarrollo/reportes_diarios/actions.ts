@@ -93,15 +93,13 @@ export const useEditActivity = () => {
     const queryClient = useQueryClient();
 
     const createMutation = useMutation({
-        mutationFn: async (data: {
-            id: string;
-        }) => {
-            await axiosInstance.patch(`/transmandu/update-allActivity/${data.id}`);
+        mutationFn: async (data: { id: string; start_hour?: string; final_hour?: string; description?: string }) => {
+            return await axiosInstance.patch(`/transmandu/update-allActivity/${data.id}`, data);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["activities"] });
             queryClient.invalidateQueries({ queryKey: ["user-activity"] });
-            queryClient.invalidateQueries({ queryKey: ["update-allActivity"] });
+            queryClient.invalidateQueries({ queryKey: ["update-activity"] });
             toast.success("¡Actividad editada!", {
                 description: "La actividad se ha editado correctamente."
             });
