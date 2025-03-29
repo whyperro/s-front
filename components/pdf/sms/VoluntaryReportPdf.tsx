@@ -506,8 +506,6 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
         </View>
       </View>
 
-
-      
       {Footer(1, 2)}
     </Page>
 
@@ -533,7 +531,7 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
           </Text>
           <View style={styles.firstLine} />
         </View>
-
+        {/*<Text style={styles.instructiveText}>{report.description}</Text>*/}
         {/* Líneas adicionales con interlineado de 1.5 */}
         <View style={styles.linesContainer}>
           {[...Array(7)].map((_, index) => (
