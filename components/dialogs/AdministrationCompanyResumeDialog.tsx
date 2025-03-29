@@ -2,20 +2,16 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Company } from "@/types";
 import { Separator } from "../ui/separator";
-import { useRouter } from "next/navigation";
 
 const CompanyResumeDialog = ({ company }: { company: Company }) => {
   const [openCompany, setOpenCompany] = useState(false);
-  const router = useRouter();
   return (
     <Dialog open={openCompany} onOpenChange={setOpenCompany}>
       <DialogTrigger className="flex justify-center">

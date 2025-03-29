@@ -97,9 +97,9 @@ export const columns: ColumnDef<Credit>[] = [
   {
     accessorKey: "client.name",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Nombre" />
+      <DataTableColumnHeader filter column={column} title="Cliente" />
     ),
-    meta: { title: "Nombre" },
+    meta: { title: "Cliente" },
     cell: ({ row }) => (
       <div className="flex justify-center font-bold">
         {row.original.client ? row.original.client.name : "N/A"}

@@ -478,10 +478,7 @@ export default function AircraftReportPage() {
                       (sum, flight) => sum + cleanNumber(flight.total_amount),
                       0
                     )
-                    .toLocaleString('es-ES', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              })}
+                    .toLocaleString()}
                 </TableCaption>
               </Table>
             ) : (

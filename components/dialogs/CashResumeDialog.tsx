@@ -11,11 +11,10 @@ import {
 import { Button } from "../ui/button";
 import { Cash } from "@/types";
 import { Separator } from "../ui/separator";
-import { useRouter } from "next/navigation";
 
 const CashResumeDialog = ({ cash }: { cash: Cash }) => {
   const [openCash, setOpenCash] = useState(false);
-  const router = useRouter();
+
   return (
     <Dialog open={openCash} onOpenChange={setOpenCash}>
       <DialogTrigger className="flex justify-center">

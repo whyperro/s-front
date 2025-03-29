@@ -2,20 +2,17 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Client } from "@/types";
 import { Separator } from "../ui/separator";
-import { useRouter } from "next/navigation";
 
 const ClientResumeDialog = ({ client }: { client: Client }) => {
   const [openClient, setOpenClient] = useState(false);
-  const router = useRouter();
+
   return (
     <Dialog open={openClient} onOpenChange={setOpenClient}>
       <DialogTrigger>{client.name}</DialogTrigger>
