@@ -1004,6 +1004,9 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
           Colocar firma de la persona que realiza el reporte.{" "}
         </Text>
       </View>
+
+
+      
       {Footer(3)}
     </Page>
   </Document>
