@@ -830,6 +830,8 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
           Colocar día, mes, año en que se realiza el reporte.
         </Text>
       </View>
+
+      
       <View style={styles.instructiveContainer}>
         <Text style={styles.instructiveText}>
           • Fecha del suceso (DD/MM/AAAA):

@@ -1,5 +1,7 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { VoluntaryReport } from "@/types";
+import { dateFormat } from "@/lib/utils";
 
 const BLUE = "#d6eaf8";
 const RED = "#fc0a0a";
@@ -142,8 +144,8 @@ const styles = StyleSheet.create({
   // ESTILOS PARA EL HEADER DE LA PAGINA
   tableRowHeader: {
     flexDirection: "row",
-    marginTop:40,
-    marginBottom:20,
+    marginTop: 40,
+    marginBottom: 20,
   },
   tableCellHeader: {
     padding: 5,
@@ -175,43 +177,114 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: "#000",
   },
+
+  // ESTILOS PARA EL INSTRUTIVO DE COMO LLENAR EL REPORTE PAGINA 2 / 2
+
+  instructiveContainer: {
+    display: "flex",
+    flexDirection: "row",
+    fontWeight: "bold",
+  },
+  instructiveText: {
+    textAlign: "left",
+    fontSize: 12,
+    fontFamily: "Helvetica",
+    lineHeight: 1.5,
+  },
+  instructiveTitle: {
+    textAlign: "left",
+    fontSize: 12,
+    fontFamily: "Helvetica",
+    fontWeight: "bold",
+    lineHeight: 1.15,
+  },
+  underlinedTTitle: {
+    fontFamily: "Helvetica",
+    fontWeight: "bold",
+    fontSize: 12,
+    textAlign: "center",
+    textDecoration: "underline",
+    marginVertical: 20,
+  },
 });
 
-const MyDocument = () => (
+const Footer = (currentPage: number, pageNumber: number) => (
+  <View style={styles.footerContainer}>
+    <View style={styles.tableRow}>
+      <View style={{ ...styles.tableCell, width: "67%" }}>
+        <Text style={styles.cellText2}>
+          DEPENDENCIA: DIRECCION DE GESTION DE LA SEGURIDAD OPERACIONAL
+          {"\n"}(SMS)
+        </Text>
+      </View>
+      <View style={{ ...styles.tableCell, width: "20%" }}>
+        <Text style={styles.cellText2}>REVISION N:00</Text>
+      </View>
+      <View style={{ ...styles.tableCell, width: "13%" }}>
+        <Text style={styles.cellText2}>SMS</Text>
+      </View>
+    </View>
+
+    <View style={styles.tableRow}>
+      <View style={{ ...styles.tableCell, width: "29%" }}>
+        <Text style={styles.cellText2}>
+          ELABORADO POR:{"\n"}ASISTENTE DE SMS
+        </Text>
+      </View>
+      <View style={{ ...styles.tableCell, width: "29%" }}>
+        <Text style={styles.cellText2}>REVISADO POR:{"\n"}DIRECTOR DE SMS</Text>
+      </View>
+      <View style={{ ...styles.tableCell, width: "29%" }}>
+        <Text style={styles.cellText2}>
+          APROBADO POR:{"\n"}DIRECTOR DE OPERACIONES
+        </Text>
+      </View>
+
+      <View style={{ ...styles.tableCell, width: "13%" }}>
+        <Text style={styles.cellText2}>
+          NRO. PAGINA{"\n"}
+          {currentPage} DE {pageNumber}
+        </Text>
+      </View>
+    </View>
+  </View>
+);
+
+const Header = () => (
+  <View style={styles.tableRowHeader}>
+    <View style={{ ...styles.tableCellHeader, width: "20%" }}>
+      <Text style={styles.cellTextHeader}>Recuadro 1</Text>
+    </View>
+    <View style={styles.column2Header}>
+      <View style={styles.rowColumnHeader}>
+        <Text style={styles.cellTextHeader}>
+          SISTEMA DE GESTION DE SEGURIDAD OPERACIONAL{"\n"}SMS
+        </Text>
+      </View>
+      <View style={styles.rowColumnHeader}>
+        <Text style={styles.cellTextHeader}>
+          REPORTE VOLUNTARIO DE PELIGROS
+        </Text>
+      </View>
+    </View>
+    <View style={styles.column3Header}>
+      <View style={styles.rowColumnHeader}>
+        <Text style={styles.cellTextHeader}>EDICION N: 01</Text>
+      </View>
+      <View style={styles.rowColumnHeader}>
+        <Text style={styles.cellTextHeader}>FECHA EDICION{"\n"}12/10/2023</Text>
+      </View>
+      <View style={styles.rowColumnHeader}>
+        <Text style={styles.cellTextHeader}>CODIGO:{"\n"}TMD-FOR-SMS-002</Text>
+      </View>
+    </View>
+  </View>
+);
+
+const MyDocument = ({ report }: { report: VoluntaryReport }) => (
   <Document>
     <Page style={styles.page} size={"LETTER"}>
-      <View style={styles.tableRowHeader}>
-        <View style={{ ...styles.tableCellHeader, width: "20%" }}>
-          <Text style={styles.cellTextHeader}>Recuadro 1</Text>
-        </View>
-        <View style={styles.column2Header}>
-          <View style={styles.rowColumnHeader}>
-            <Text style={styles.cellTextHeader}>
-              SISTEMA DE GESTION DE SEGURIDAD OPERACIONAL{"\n"}SMS
-            </Text>
-          </View>
-          <View style={styles.rowColumnHeader}>
-            <Text style={styles.cellTextHeader}>
-              REPORTE VOLUNTARIO DE PELIGROS
-            </Text>
-          </View>
-        </View>
-        <View style={styles.column3Header}>
-          <View style={styles.rowColumnHeader}>
-            <Text style={styles.cellTextHeader}>EDICION N: 01</Text>
-          </View>
-          <View style={styles.rowColumnHeader}>
-            <Text style={styles.cellTextHeader}>
-              FECHA EDICION{"\n"}12/10/2023
-            </Text>
-          </View>
-          <View style={styles.rowColumnHeader}>
-            <Text style={styles.cellTextHeader}>
-              CODIGO:{"\n"}TMD-FOR-SMS-002
-            </Text>
-          </View>
-        </View>
-      </View>
+      <Header />
 
       <Text style={[styles.blackText, { width: "100%" }]}>
         <Text style={[styles.blackText]}>
@@ -249,19 +322,31 @@ const MyDocument = () => (
           <Text style={styles.cellText}>N DE REPORTE</Text>
         </View>
       </View>
+      {/*FECHA DEL REPORTE*/}
 
       <View style={styles.tableRow}>
         <View style={{ ...styles.tableCell, width: "15%" }}>
-          <Text style={styles.cellText}>12/10/2025</Text>
+          <Text style={styles.cellText}>
+            {dateFormat(report.report_date, "dd-MM-yyyy")}
+          </Text>
         </View>
+
+        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
         <View style={{ ...styles.tableCell, width: "20%" }}>
-          <Text style={styles.cellText}>12/10/2025</Text>
+          <Text style={styles.cellText}>
+            {dateFormat(report.identification_date, "dd-MM-yyyy")}
+          </Text>
         </View>
+
+        {/*LOCALIZACION DEL REPORTE*/}
         <View style={{ ...styles.tableCell, width: "50%" }}>
-          <Text style={styles.cellText}>HANGAR13B</Text>
+          <Text style={styles.cellText}>{report.airport_location}</Text>
         </View>
+
+        {/*NUMERO DE REPORTE*/}
         <View style={{ ...styles.tableCell, width: "15%" }}>
-          <Text style={styles.cellText}>123</Text>
+          <Text style={styles.cellText}>{report.report_number}</Text>
         </View>
       </View>
 
@@ -287,20 +372,23 @@ const MyDocument = () => (
         </View>
       </View>
 
+      {/*NOMBRE DE QUIEN REPORTA*/}
       <View style={styles.tableRow}>
         <View
           style={{ ...styles.tableCell, width: "50%", backgroundColor: WHITE }}
         >
-          <Text style={styles.cellText}>ALVARO</Text>
+          <Text style={styles.cellText}>{report.reporter_name ?? "N/A"}</Text>
         </View>
-
+        {/*APELLIDO DE QUIEN REPORTA*/}
         <View
           style={{ ...styles.tableCell, width: "50%", backgroundColor: WHITE }}
         >
-          <Text style={styles.cellText}>AGUINAGALDE</Text>
+          <Text style={styles.cellText}>
+            {report.reporter_last_name ?? "N/A"}
+          </Text>
         </View>
       </View>
-
+      {/*APELLIDO DE QUIEN REPORTA*/}
       <View style={styles.tableRow}>
         <View
           style={{ ...styles.tableCell, width: "50%", backgroundColor: BLUE }}
@@ -316,16 +404,19 @@ const MyDocument = () => (
       </View>
 
       <View style={styles.tableRow}>
-        <View
-          style={{ ...styles.tableCell, width: "50%", backgroundColor: WHITE }}
-        >
-          <Text style={styles.cellText}>04129321507</Text>
-        </View>
+        {/*NUMERO DE TELEFONO DE QUIEN REPORTA*/}
 
         <View
           style={{ ...styles.tableCell, width: "50%", backgroundColor: WHITE }}
         >
-          <Text style={styles.cellText}>ALVARO@GMAIL.COM</Text>
+          <Text style={styles.cellText}>{report.reporter_phone ?? "N/A"}</Text>
+        </View>
+        {/*CORREO ELECTRONICO DE QUIEN REPORTA*/}
+
+        <View
+          style={{ ...styles.tableCell, width: "50%", backgroundColor: WHITE }}
+        >
+          <Text style={styles.cellText}>{report.reporter_email ?? "N/A"}</Text>
         </View>
       </View>
 
@@ -359,13 +450,18 @@ const MyDocument = () => (
               <Text style={styles.cellText}>OPERACIONES</Text>
             </View>
             <View style={styles.xCell}>
-              <Text style={styles.cellText}>X</Text>
+              <Text style={styles.cellText}>
+                {" "}
+                {report.danger_area === "OPERACIONES" ? "X" : ""}
+              </Text>
             </View>
             <View style={styles.textCell}>
               <Text style={styles.cellText}>MANTENIMIENTO</Text>
             </View>
             <View style={styles.xCell}>
-              <Text style={styles.cellText}>X</Text>
+              <Text style={styles.cellText}>
+                {report.danger_area === "MANTENIMIENTO" ? "X" : ""}
+              </Text>
             </View>
           </View>
 
@@ -376,7 +472,9 @@ const MyDocument = () => (
               </Text>
             </View>
             <View style={styles.xCell}>
-              <Text style={styles.cellText}>X</Text>
+              <Text style={styles.cellText}>
+                {report.danger_area === "ADMINISTRACION" ? "X" : ""}
+              </Text>
             </View>
             <View style={styles.textCell}>
               <Text style={styles.cellText}>
@@ -384,7 +482,9 @@ const MyDocument = () => (
               </Text>
             </View>
             <View style={styles.xCell}>
-              <Text style={styles.cellText}>X</Text>
+              <Text style={styles.cellText}>
+                {report.danger_area === "CONTROL_CALIDAD" ? "X" : ""}
+              </Text>
             </View>
           </View>
         </View>
@@ -406,44 +506,167 @@ const MyDocument = () => (
         </View>
       </View>
 
-      <View style={styles.footerContainer}>
-        <View style={styles.tableRow}>
-          <View style={{ ...styles.tableCell, width: "67%" }}>
-            <Text style={styles.cellText2}>
-              DEPENDENCIA: DIRECCION DE GESTION DE LA SEGURIDAD OPERACIONAL
-              {"\n"}(SMS)
-            </Text>
-          </View>
-          <View style={{ ...styles.tableCell, width: "20%" }}>
-            <Text style={styles.cellText2}>REVISION N:00</Text>
-          </View>
-          <View style={{ ...styles.tableCell, width: "13%" }}>
-            <Text style={styles.cellText2}>SMS</Text>
-          </View>
-        </View>
 
-        <View style={styles.tableRow}>
-          <View style={{ ...styles.tableCell, width: "29%" }}>
-            <Text style={styles.cellText2}>
-              ELABORADO POR:{"\n"}ASISTENTE DE SMS
-            </Text>
-          </View>
-          <View style={{ ...styles.tableCell, width: "29%" }}>
-            <Text style={styles.cellText2}>
-              REVISADO POR:{"\n"}DIRECTOR DE SMS
-            </Text>
-          </View>
-          <View style={{ ...styles.tableCell, width: "29%" }}>
-            <Text style={styles.cellText2}>
-              APROBADO POR:{"\n"}DIRECTOR DE OPERACIONES
-            </Text>
-          </View>
+      
+      {Footer(1, 2)}
+    </Page>
 
-          <View style={{ ...styles.tableCell, width: "13%" }}>
-            <Text style={styles.cellText2}>NRO. PAGINA{"\n"}1 DE 2</Text>
-          </View>
+    <Page size={"LETTER"} style={styles.page}>
+      <Header />
+
+      <View style={styles.tableRow}>
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "100%",
+            backgroundColor: BLUE,
+            borderBottom: 1,
+          }}
+        >
+          <Text style={styles.cellText}>III. RIESGOS (CONSECUENCIAS)</Text>
         </View>
       </View>
+      <View style={styles.observationContainer}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>
+            A continuación, describa las consecuencias de ese peligro:
+          </Text>
+          <View style={styles.firstLine} />
+        </View>
+
+        {/* Líneas adicionales con interlineado de 1.5 */}
+        <View style={styles.linesContainer}>
+          {[...Array(7)].map((_, index) => (
+            <View key={index} style={styles.line} />
+          ))}
+        </View>
+      </View>
+
+      <View>
+        <Text style={styles.underlinedTTitle}>INSTRUCTIVO DE LLENADO</Text>
+      </View>
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>
+          • Fecha del reporte (DD/MM/AAAA):
+        </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar día, mes, año en que se realiza el reporte.
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>
+          • Fecha en que se identificó el peligro (DD/MM/AAAA):
+        </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar día, mes, año en que se
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}>identificó el peligro.</Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>
+          • Lugar donde se identificó el peligro:{" "}
+        </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar el lugar donde se identificó el peligro que se{" "}
+        </Text>
+      </View>
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}>esta reportando</Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>• N° de reporte:</Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar el número correlativo asignado al reporte por la Gerencia del
+          SMS
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>I. DATOS DE QUIEN REPORTA </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>• Nombres (opcional): </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar nombres de la persona que realiza el reporte, si así lo desea.
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>• Apellido (opcional): </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar apellidos de la persona que realiza el reporte, si así lo
+          desea.{" "}
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>• Teléfono (opcional): </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar el número telefónico de la persona que realiza el reporte, si{" "}
+        </Text>
+      </View>
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}>asi lo desea</Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>
+          • Correo electrónico (opcional)
+        </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar el correo electrónico de la persona que realiza el{" "}
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>II. PELIGRO IDENTIFICADO:</Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar la descripción detallada y clara del peligro observado.{" "}
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>• Área afectada:</Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Seleccionar con una (X) las áreas afectadas por el peligro que se
+          identificó.{" "}
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>
+          III. RIESGOS (CONSECUENCIA):
+        </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar la descripción detallada y clara de las{" "}
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}>
+          consecuencias de este peligro
+        </Text>
+      </View>
+
+      {Footer(2, 2)}
     </Page>
   </Document>
 );

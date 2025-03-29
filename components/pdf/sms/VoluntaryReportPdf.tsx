@@ -1,274 +1,101 @@
 import React from "react";
-import {
-  Document,
-  Image,
-  Page,
-  StyleSheet,
-  Text,
-  View,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import { VoluntaryReport } from "@/types";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { Container } from "postcss";
-import { Bold } from "lucide-react";
+import { dateFormat } from "@/lib/utils";
 
-const formatDate = (date: Date) => {
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Los meses en JS comienzan desde 0
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-};
-// ... (your formatDate function and styles remain the same)
+const BLUE = "#d6eaf8";
+const RED = "#fc0a0a";
+const GREEN = "#0ebe36";
+const WHITE = "#fff";
 
 const styles = StyleSheet.create({
   page: {
     padding: 30,
     backgroundColor: "#FFF",
   },
-  headerContainer: {
+  tableRow: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 10,
-  },
-  logo: {
-    width: 35,
-    height: 35,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "baseline", // Asegura que el texto y la línea estén en la misma línea
-    marginBottom: 10,
-  },
-  titleText: {
-    fontSize: 12,
-    fontWeight: 900,
     textAlign: "center",
+    borderTop: 1,
+    borderLeft: 1,
   },
-  row: {
+  tableCell: {
+    padding: 2,
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
+    borderRight: 1,
+    borderColor: "#000", // Establecemos el color del borde
+  },
+  cellText: {
+    fontSize: 8,
+  },
+  cellText2: {
+    fontSize: 9,
+  },
+  areaContainer: {
     flexDirection: "row",
-    alignItems: "stretch",
+    height: "5%",
+    borderTop: 1,
   },
-  table: {
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
+  areaLeftColumn: {
+    width: "15%",
+  },
+  areaRightColumns: {
+    width: "85%",
+    flexDirection: "column",
+  },
+  areaRow: {
+    flexDirection: "row",
+    flex: 1,
+  },
+  areaSubCell: {
+    flex: 1,
+    padding: 2,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRight: 1,
+    borderBottom: 1,
     borderColor: "#000",
-    borderStyle: "solid",
+    backgroundColor: BLUE,
   },
-  cell: {
-    display: "flex",
+  // Nuevo estilo para celdas con X
+  xCell: {
+    width: "5%", // Ancho fijo pequeño para celdas con X
+    padding: 2,
     justifyContent: "center",
-    borderRightWidth: 1,
-    borderRightColor: "#000",
-    borderRightStyle: "solid",
-    padding: 4,
-    textAlign: "center",
-    fontFamily: "Helvetica",
-    fontSize: 8,
-  },
-  cellHeader: {
-    display: "flex",
     alignItems: "center",
+    borderRight: 1,
+    borderBottom: 1,
+    borderColor: "#000",
+    backgroundColor: WHITE,
+  },
+  // Estilo para celdas de texto (más anchas)
+  textCell: {
+    width: "45%", // Ajusta este valor según necesites
+    padding: 2,
     justifyContent: "center",
-    borderRightWidth: 1,
-    borderRightColor: "#000",
-    borderRightStyle: "solid",
-    padding: 4,
-    textAlign: "center",
-    fontFamily: "Helvetica",
-    fontWeight: "black",
-    fontSize: 8,
-  },
-  tableHeader: {
-    backgroundColor: "#e3f4ff",
-    fontWeight: "extrabold",
-  },
-  tableContent: {
-    backgroundColor: "#fff",
-    fontWeight: "bold",
-  },
-  tableHeaderText: {
-    fontSize: 9,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  footer: {
-    marginTop: 10,
-    fontSize: 9,
-  },
-  inputLine: {
-    borderBottomWidth: 1,
-    width: "20%",
-    marginLeft: 5,
-  },
-  label: {
-    fontSize: 9,
-  },
-  name: {
-    fontSize: 10,
-  },
-  dateContainer: {
-    flexDirection: "row",
     alignItems: "center",
-    position: "absolute",
-    right: 90,
+    borderRight: 1,
+    borderBottom: 1,
+    borderColor: "#000",
+    backgroundColor: BLUE,
   },
-  dateLabel: {
-    fontSize: 10,
-  },
-  dateText: {
-    fontSize: 8,
-    marginLeft: 40,
-    marginTop: 1,
-  },
+
   observationContainer: {
-    borderWidth: 1,
+    borderRight: 1,
+    borderLeft: 1,
     padding: 5,
     minHeight: 50,
+    borderBottom: 1,
+    //FALTA POSIBLE LINEA INFERIOR
   },
+
   observationText: {
     fontSize: 8,
     margin: 5,
   },
-  check: {
-    borderRightWidth: 1,
-    backgroundColor: "#fff",
-    borderRightColor: "#000",
-    borderRightStyle: "solid",
-    padding: "5",
-    textAlign: "center",
-    fontSize: 8,
-  },
-  cell2: {
-    justifyContent: "center",
-    alignItems: "center",
-    borderRightWidth: 1,
-    borderRightColor: "#000",
-    borderRightStyle: "solid",
-    textAlign: "center",
-    fontSize: 8,
-  },
 
-  container: {
-    borderStyle: "solid",
-    borderLeft: "1",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "stretch", // Asegurar que los hijos ocupen toda la altura
-  },
-
-  containerArea: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "45%",
-    backgroundColor: "#e3f4ff",
-  },
-
-  Container2: {
-    display: "flex",
-    flexDirection: "row",
-  },
-
-  Container3: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#e3f4ff",
-  },
-
-  ContainerAreaType: { width: "100%" },
-
-  lineContainer: {
-    borderTop: "1px",
-    width: "100%",
-  },
-  secondColumnTop: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#000",
-    borderBottomStyle: "solid",
-    width: "100%",
-    paddingHorizontal: 5,
-  },
-  secondColumnBottom: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-  thirdColumnRow: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#000",
-    borderBottomStyle: "solid",
-    width: "100%",
-  },
-  thirdColumnLastRow: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-  headerRow: {
-    flexDirection: "row",
-    borderWidth: 1,
-    borderColor: "#000",
-    borderStyle: "solid",
-    marginBottom: 10,
-  },
-  column: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRightWidth: 1,
-    borderRightColor: "#000",
-    borderRightStyle: "solid",
-  },
-  firstColumn: {
-    width: "30%",
-  },
-  secondColumn: {
-    width: "40%",
-    height: 60,
-    alignSelf: "stretch",
-  },
-  thirdColumn: {
-    width: "30%",
-    borderRightWidth: 0,
-  },
-  text: {
-    fontFamily: "Helvetica",
-    fontSize: 10,
-    textAlign: "center",
-    whiteSpace: "normal", // Permitir que el texto se divida en varias líneas
-  },
-  blackText: {
-    fontFamily: "Helvetica",
-    fontSize: 12,
-    textAlign: "center",
-    fontWeight: "black",
-  },
-  title: {
-    fontSize: 12,
-    marginBottom: 5,
-  },
-  lineContainerDescription: {
-    marginBottom: 5,
-  },
-  line: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#000",
-    borderBottomStyle: "solid",
-    width: "100%",
-    marginBottom: 18,
-  },
   firstLine: {
     flexGrow: 1,
     borderBottomWidth: 1,
@@ -280,142 +107,184 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 
-  footerContainer: {
-    position: "absolute",
-    bottom: 10,
-    left: 30,
-    right: 30,
-    borderTop: 1,
-    borderRight: 1,
-    borderColor: "#000",
-  },
-  rowFooter: {
-    alignItems: "stretch",
-    flexDirection: "row",
+  line: {
     borderBottomWidth: 1,
     borderBottomColor: "#000",
+    borderBottomStyle: "solid",
+    width: "100%",
+    marginBottom: 18,
   },
-  cellLarge: {
-    alignSelf: "stretch",
-    flex: 2,
-    borderRightWidth: 1,
-    borderLeft: 1,
-    borderRightColor: "#000",
-    padding: 4,
-    fontSize: 8,
+
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "baseline", // Asegura que el texto y la línea estén en la misma línea
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 10,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  footerContainer: {
+    position: "absolute",
+    bottom: 35,
+    left: 30,
+    right: 30,
+    borderBottom: 1,
+    borderColor: "#000",
+  },
+
+  blackText: {
+    fontFamily: "Helvetica",
+    fontSize: 12,
     textAlign: "center",
+    fontWeight: "black",
   },
-  cellSmall: {
-    alignSelf: "stretch",
-    flex: 0.5,
-    borderRight: 1,
-    padding: 4,
-    fontSize: 8,
-    textAlign: "center",
+
+  // ESTILOS PARA EL HEADER DE LA PAGINA
+  tableRowHeader: {
+    flexDirection: "row",
+    marginTop: 40,
+    marginBottom: 20,
   },
-  lastCellSmall: {
-    flex: 0.314,
+  tableCellHeader: {
+    padding: 5,
+    borderWidth: 1,
+    borderColor: "#000",
     justifyContent: "center",
-    padding: 4,
-    fontSize: 8,
-    alignSelf: "stretch",
+    alignItems: "center",
+  },
+  cellTextHeader: {
+    fontSize: 10,
     textAlign: "center",
   },
-  doubleRowCell: {
-    flex: 0.7,
-    padding: 2,
-    fontSize: 8,
-    textAlign: "center",
-    borderLeftWidth: 1,
+  column2Header: {
+    width: "55%",
+    flexDirection: "column",
+    borderTop: 1,
+    borderRight: 1,
   },
-  lastDoubleRowCell: {
-    flex: 0.28,
-    padding: 2,
-    margin: 0,
-    fontSize: 8,
+  column3Header: {
+    width: "25%",
+    flexDirection: "column",
+    borderTop: 1,
+    borderRight: 1,
+  },
+  rowColumnHeader: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderColor: "#000",
+  },
+
+  // ESTILOS PARA EL INSTRUTIVO DE COMO LLENAR EL REPORTE PAGINA 2 / 2
+
+  instructiveContainer: {
+    display: "flex",
+    flexDirection: "row",
+    fontWeight: "bold",
+  },
+  instructiveText: {
+    textAlign: "left",
+    fontSize: 12,
+    fontFamily: "Helvetica",
+    lineHeight: 1.5,
+  },
+  instructiveTitle: {
+    textAlign: "left",
+    fontSize: 12,
+    fontFamily: "Helvetica",
+    fontWeight: "bold",
+    lineHeight: 1.15,
+  },
+  underlinedTTitle: {
+    fontFamily: "Helvetica",
+    fontWeight: "bold",
+    fontSize: 12,
     textAlign: "center",
-    borderLeftWidth: 1,
+    textDecoration: "underline",
+    marginVertical: 20,
   },
 });
 
-const Footer = () => (
+const Footer = (currentPage: number, pageNumber: number) => (
   <View style={styles.footerContainer}>
-    {/* Primera fila */}
-    <View style={styles.rowFooter}>
-      <Text style={styles.cellLarge}>
-        DEPENDENCIA: DIRECCIÓN DE GESTIÓN DE LA SEGURIDAD OPERACIONAL{"\n"}(SMS)
-      </Text>
-      <Text style={styles.cellSmall}>REVISIÓN N°: 00</Text>
-      <Text style={styles.lastCellSmall}>SMS</Text>
+    <View style={styles.tableRow}>
+      <View style={{ ...styles.tableCell, width: "67%" }}>
+        <Text style={styles.cellText2}>
+          DEPENDENCIA: DIRECCION DE GESTION DE LA SEGURIDAD OPERACIONAL
+          {"\n"}(SMS)
+        </Text>
+      </View>
+      <View style={{ ...styles.tableCell, width: "20%" }}>
+        <Text style={styles.cellText2}>REVISION N:00</Text>
+      </View>
+      <View style={{ ...styles.tableCell, width: "13%" }}>
+        <Text style={styles.cellText2}>SMS</Text>
+      </View>
     </View>
 
-    {/* Segunda fila */}
-    <View style={styles.rowFooter}>
-      <Text style={styles.doubleRowCell}>
-        ELABORADO POR: {"\n"} ASISTENTE DE SMS
-      </Text>
+    <View style={styles.tableRow}>
+      <View style={{ ...styles.tableCell, width: "29%" }}>
+        <Text style={styles.cellText2}>
+          ELABORADO POR:{"\n"}ASISTENTE DE SMS
+        </Text>
+      </View>
+      <View style={{ ...styles.tableCell, width: "29%" }}>
+        <Text style={styles.cellText2}>REVISADO POR:{"\n"}DIRECTOR DE SMS</Text>
+      </View>
+      <View style={{ ...styles.tableCell, width: "29%" }}>
+        <Text style={styles.cellText2}>
+          APROBADO POR:{"\n"}DIRECTOR DE OPERACIONES
+        </Text>
+      </View>
 
-      <Text style={styles.doubleRowCell}>
-        REVISADO POR: {"\n"} DIRECTOR DE SMS
-      </Text>
-
-      <Text style={styles.doubleRowCell}>
-        APROBADO POR: {"\n"} DIRECTOR DE OPERACIONES
-      </Text>
-
-      <Text style={styles.lastDoubleRowCell}>NRO. PÁGINA {"\n"} 1 DE 2</Text>
+      <View style={{ ...styles.tableCell, width: "13%" }}>
+        <Text style={styles.cellText2}>
+          NRO. PAGINA{"\n"}
+          {currentPage} DE {pageNumber}
+        </Text>
+      </View>
     </View>
   </View>
 );
 
-const VoluntaryReportPdf = ({ report }: { report: VoluntaryReport }) => (
-  <Document>
-    {/* Change the Page size and remove or change orientation */}
-    <Page size="LETTER" style={styles.page}>
-
-
-
-
-
-
-      {/* Primera fila del encabezado */}
-      <View style={[styles.headerRow, { marginTop: 40 }]}>
-        {/* Primera columna (logo) */}
-        <View style={[styles.column, styles.firstColumn]}>
-          {/* <Image src="/LOGO_TRD.png" style={styles.logo} /> */}
-        </View>
-
-        {/* Segunda columna */}
-        <View style={[styles.column, styles.secondColumn]}>
-          <View style={styles.secondColumnTop}>
-            <Text style={[styles.text, { width: "100%" }]}>
-              SISTEMA DE GESTIÓN DE SEGURIDAD OPERACIONAL SMS
-            </Text>
-          </View>
-          <View style={styles.secondColumnBottom}>
-            <Text style={[styles.text, { width: "100%" }]}>
-              REPORTE VOLUNTARIO DE PELIGROS
-            </Text>
-          </View>
-        </View>
-
-        {/* Tercera columna */}
-        <View style={[styles.column, styles.thirdColumn]}>
-          <View style={styles.thirdColumnRow}>
-            <Text style={[styles.text, { width: "100%" }]}>EDICIÓN N°: 01</Text>
-          </View>
-          <View style={styles.thirdColumnRow}>
-            <Text style={[styles.text, { width: "100%" }]}>
-              FECHA DE EDICIÓN: 12/10/2023
-            </Text>
-          </View>
-          <View style={styles.thirdColumnLastRow}>
-            <Text style={[styles.text, { width: "100%" }]}>
-              CÓDIGO: TMD-FOR-SMS-002
-            </Text>
-          </View>
-        </View>
+const Header = () => (
+  <View style={styles.tableRowHeader}>
+    <View style={{ ...styles.tableCellHeader, width: "20%" }}>
+      <Text style={styles.cellTextHeader}>Recuadro 1</Text>
+    </View>
+    <View style={styles.column2Header}>
+      <View style={styles.rowColumnHeader}>
+        <Text style={styles.cellTextHeader}>
+          SISTEMA DE GESTION DE SEGURIDAD OPERACIONAL{"\n"}SMS
+        </Text>
       </View>
+      <View style={styles.rowColumnHeader}>
+        <Text style={styles.cellTextHeader}>
+          REPORTE VOLUNTARIO DE PELIGROS
+        </Text>
+      </View>
+    </View>
+    <View style={styles.column3Header}>
+      <View style={styles.rowColumnHeader}>
+        <Text style={styles.cellTextHeader}>EDICION N: 01</Text>
+      </View>
+      <View style={styles.rowColumnHeader}>
+        <Text style={styles.cellTextHeader}>FECHA EDICION{"\n"}12/10/2023</Text>
+      </View>
+      <View style={styles.rowColumnHeader}>
+        <Text style={styles.cellTextHeader}>CODIGO:{"\n"}TMD-FOR-SMS-002</Text>
+      </View>
+    </View>
+  </View>
+);
+
+const MyDocument = ({ report }: { report: VoluntaryReport }) => (
+  <Document>
+    <Page style={styles.page} size={"LETTER"}>
+      <Header />
 
       <Text style={[styles.blackText, { width: "100%" }]}>
         <Text style={[styles.blackText]}>
@@ -427,219 +296,236 @@ const VoluntaryReportPdf = ({ report }: { report: VoluntaryReport }) => (
         PELIGRO PUEDE SER ANONIMO, ES CONFIDENCIAL Y NO PUNITIVO.
       </Text>
 
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "15%" }]}>
-          FECHA DEL{"\n"}REPORTE
-        </Text>
-        <Text style={[styles.cell, { width: "25%" }]}>
-          FECHA EN QUE SE{"\n"}IDENTIFICO EL PELIGRO
-        </Text>
-        <Text style={[styles.cell, { width: "50%" }]}>
-          LUGAR DONDE DETECTO EL PELIGRO
-        </Text>
-        <Text style={[styles.cell, { width: "15%" }]}>Nº DE REPORTE</Text>
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "15%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellText}>FECHA DEL{"\n"}REPORTE</Text>
+        </View>
+        <View
+          style={{ ...styles.tableCell, width: "20%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellText}>
+            FECHA EN QUE SE{"\n"}IDENTIFICO EL PELIGRO{" "}
+          </Text>
+        </View>
+        <View
+          style={{ ...styles.tableCell, width: "50%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellText}>
+            LUGAR DONDE SE IDENTIFICO EL PELIGRO
+          </Text>
+        </View>
+        <View
+          style={{ ...styles.tableCell, width: "15%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellText}>N DE REPORTE</Text>
+        </View>
       </View>
-      <View style={[styles.row, styles.table, styles.tableContent]}>
-        <Text style={[styles.cell, { width: "15%" }]}>
-          {format(report.report_date, "dd-MM-yyyy", {
-            locale: es,
-          })}
-        </Text>
-        <Text style={[styles.cell, { width: "25%" }]}>
-          {format(report.identification_date, "dd-MM-yyyy", {
-            locale: es,
-          })}
-        </Text>
-        <Text style={[styles.cell, { width: "50%" }]}>
-          {report.airport_location}
-        </Text>
-        <Text style={[styles.cell, { width: "15%" }]}>
-          RVP-{report.report_number}
-        </Text>
-      </View>
-      {/* HEADER PARA PRESENTAICON DE UNA TABLA (OPCIONALES)*/}
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cellHeader, { width: "100%" }]}>
-          I. DATOS DE QUIEN REPORTA
-        </Text>
-      </View>
-      {/* HEADER PARA DATOS PERSONALES (OPCIONALES)*/}
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "50%" }]}>NOMBRES (OPCIONAL)</Text>
-        <Text style={[styles.cell, { width: "50%" }]}>
-          APELLIDOS (OPCIONAL)
-        </Text>
-      </View>
-      {/* CONTENIDO PARA DATOS PERSONALES (OPCIONALES)*/}
-      <View style={[styles.row, styles.table, styles.tableContent]}>
-        <Text style={[styles.cell, { width: "50%" }]}>
-          {report.reporter_name ?? "N/A"}
-        </Text>
-        <Text style={[styles.cell, { width: "50%" }]}>
-          {report.reporter_last_name ?? "N/A"}
-        </Text>
-      </View>
-      {/* HEADER PARA DATOS OPCIONALES DE CONTACTO (OPCIONALES)*/}
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "50%" }]}>TELEFONO (OPCIONAL)</Text>
-        <Text style={[styles.cell, { width: "50%" }]}>
-          CORREO ELECTRONICO (OPCIONAL)
-        </Text>
-      </View>
-      {/* CONTENIDO PARA DATOS DE CONTACTO  (OPCIONALES)*/}
-      <View style={[styles.row, styles.table, styles.tableContent]}>
-        <Text style={[styles.cell, { width: "50%" }]}>
-          {report.reporter_phone ?? "N/A"}
-        </Text>
-        <Text style={[styles.cell, { width: "50%" }]}>
-          {report.reporter_email ?? "N/A"}
-        </Text>
+      {/*FECHA DEL REPORTE*/}
+
+      <View style={styles.tableRow}>
+        <View style={{ ...styles.tableCell, width: "15%" }}>
+          <Text style={styles.cellText}>
+            {dateFormat(report.report_date, "dd-MM-yyyy")}
+          </Text>
+        </View>
+
+        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+        <View style={{ ...styles.tableCell, width: "20%" }}>
+          <Text style={styles.cellText}>
+            {dateFormat(report.identification_date, "dd-MM-yyyy")}
+          </Text>
+        </View>
+
+        {/*LOCALIZACION DEL REPORTE*/}
+        <View style={{ ...styles.tableCell, width: "50%" }}>
+          <Text style={styles.cellText}>{report.airport_location}</Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View style={{ ...styles.tableCell, width: "15%" }}>
+          <Text style={styles.cellText}>{report.report_number}</Text>
+        </View>
       </View>
 
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellText}>I. DATOS DE QUIEN REPORTA</Text>
+        </View>
+      </View>
+
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "50%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellText}>NOMBRES (OPCIONAL)</Text>
+        </View>
+
+        <View
+          style={{ ...styles.tableCell, width: "50%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellText}>APELLIDOS (OPCIONAL)</Text>
+        </View>
+      </View>
+
+      {/*NOMBRE DE QUIEN REPORTA*/}
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "50%", backgroundColor: WHITE }}
+        >
+          <Text style={styles.cellText}>{report.reporter_name ?? "N/A"}</Text>
+        </View>
+        {/*APELLIDO DE QUIEN REPORTA*/}
+        <View
+          style={{ ...styles.tableCell, width: "50%", backgroundColor: WHITE }}
+        >
+          <Text style={styles.cellText}>
+            {report.reporter_last_name ?? "N/A"}
+          </Text>
+        </View>
+      </View>
+      {/*APELLIDO DE QUIEN REPORTA*/}
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "50%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellText}>TELEFONO (OPCIONAL)</Text>
+        </View>
+
+        <View
+          style={{ ...styles.tableCell, width: "50%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellText}>CORREO ELECTRONICO (OPCIONAL)</Text>
+        </View>
+      </View>
+
+      <View style={styles.tableRow}>
+        {/*NUMERO DE TELEFONO DE QUIEN REPORTA*/}
+
+        <View
+          style={{ ...styles.tableCell, width: "50%", backgroundColor: WHITE }}
+        >
+          <Text style={styles.cellText}>{report.reporter_phone ?? "N/A"}</Text>
+        </View>
+        {/*CORREO ELECTRONICO DE QUIEN REPORTA*/}
+
+        <View
+          style={{ ...styles.tableCell, width: "50%", backgroundColor: WHITE }}
+        >
+          <Text style={styles.cellText}>{report.reporter_email ?? "N/A"}</Text>
+        </View>
+      </View>
+
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellText}>II. PELIGRO IDENTIFICADO</Text>
+        </View>
+      </View>
+
+      <View style={styles.areaContainer}>
+        <View
           style={[
-            styles.cellHeader,
-            { width: "100%", borderBottom: 1, borderBottomColor: "#000" },
+            styles.tableCell,
+            styles.areaLeftColumn,
+            {
+              backgroundColor: BLUE,
+              height: "100%",
+              borderLeft: 1,
+              borderBottom: 1,
+            },
           ]}
         >
-          II. PELIGRO IDENTIFICADO
-        </Text>
-      </View>
-
-      {/* SECCIÓN DE OBSERVACIONES */}
-      <View style={[styles.container]}>
-        {/* CONTAINER = ROW */}
-
-        <View style={[styles.containerArea, styles.cell2, { height: "100%" }]}>
-          <Text>AREA AFECTADA</Text>
+          <Text style={styles.cellText}>AREA AFECTADA</Text>
         </View>
 
-        <View style={[styles.Container2, { width: "100%" }]}>
-          <View style={[styles.Container3, styles.cell2, { width: "100%" }]}>
-            <Text>OPERACIONES</Text>
-            <View style={[styles.lineContainer]}>
-              <Text>ADMINISTRACION Y RECURSOS{"\n"}HUMANOS</Text>
+        <View style={styles.areaRightColumns}>
+          <View style={styles.areaRow}>
+            <View style={styles.textCell}>
+              <Text style={styles.cellText}>OPERACIONES</Text>
+            </View>
+            <View style={styles.xCell}>
+              <Text style={styles.cellText}>
+                {" "}
+                {report.danger_area === "OPERACIONES" ? "X" : ""}
+              </Text>
+            </View>
+            <View style={styles.textCell}>
+              <Text style={styles.cellText}>MANTENIMIENTO</Text>
+            </View>
+            <View style={styles.xCell}>
+              <Text style={styles.cellText}>
+                {report.danger_area === "MANTENIMIENTO" ? "X" : ""}
+              </Text>
             </View>
           </View>
 
-          <View style={[styles.Container3]}>
-            <Text style={[styles.check]}>X</Text>
-            <Text style={[styles.check]}>_</Text>
-          </View>
-        </View>
-
-        <View style={[styles.Container2, { width: "100%" }]}>
-          <View style={[styles.Container3, styles.cell2, { width: "100%" }]}>
-            <Text>MATENIMIENTO</Text>
-            <View style={[styles.lineContainer, { width: "100%" }]}>
-              <Text>CONTROL Y ASEGURAMIENTO DE LA{"\n"}CALIDAD</Text>
+          <View style={styles.areaRow}>
+            <View style={styles.textCell}>
+              <Text style={styles.cellText}>
+                ADMINISTRACION Y RECURSOS HUMANOS
+              </Text>
             </View>
-          </View>
-
-          <View style={[styles.Container3]}>
-            <Text style={[styles.check]}>X</Text>
-            <Text style={[styles.check]}>_</Text>
+            <View style={styles.xCell}>
+              <Text style={styles.cellText}>
+                {report.danger_area === "ADMINISTRACION" ? "X" : ""}
+              </Text>
+            </View>
+            <View style={styles.textCell}>
+              <Text style={styles.cellText}>
+                CONTROL Y ASEGURAMIENTO DE LA CALIDAD
+              </Text>
+            </View>
+            <View style={styles.xCell}>
+              <Text style={styles.cellText}>
+                {report.danger_area === "CONTROL_CALIDAD" ? "X" : ""}
+              </Text>
+            </View>
           </View>
         </View>
       </View>
+
       <View style={styles.observationContainer}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
-            A continuación, describa claramente el peligro que está reportando:
+            A continuación, describa claramente el peligro que esta reportando:
           </Text>
           <View style={styles.firstLine} />
         </View>
 
         {/* Líneas adicionales con interlineado de 1.5 */}
         <View style={styles.linesContainer}>
-          {[...Array(16)].map((_, index) => (
+          {[...Array(15)].map((_, index) => (
             <View key={index} style={styles.line} />
           ))}
         </View>
       </View>
-      <View style={styles.footerContainer}>
-        {/* Primera fila */}
-        <View style={[styles.rowFooter, { alignItems: "center" }]}>
-          <Text style={styles.cellLarge}>
-            DEPENDENCIA: DIRECCIÓN DE GESTIÓN DE LA SEGURIDAD OPERACIONAL{"\n"}
-            (SMS)
-          </Text>
-          <Text style={styles.cellSmall}>REVISIÓN N°: 00</Text>
-          <Text style={[styles.lastCellSmall]}>SMS</Text>
-        </View>
 
-        {/* Segunda fila */}
-        <View style={styles.rowFooter}>
-          <Text style={styles.doubleRowCell}>
-            ELABORADO POR: {"\n"} ASISTENTE DE SMS
-          </Text>
-          <Text style={styles.doubleRowCell}>
-            REVISADO POR: {"\n"} DIRECTOR DE SMS
-          </Text>
-          <Text style={styles.doubleRowCell}>
-            APROBADO POR: {"\n"} DIRECTOR DE OPERACIONES
-          </Text>
-          <Text style={styles.lastDoubleRowCell}>
-            NRO. PÁGINA {"\n"} 1 DE 2
-          </Text>
-        </View>
-      </View>
+
+      
+      {Footer(1, 2)}
     </Page>
-    <Page style={styles.page} size="LETTER">
-      {/* Primera fila del encabezado */}
-      <View style={[styles.headerRow, { marginTop: 40 }]}>
-        {/* Primera columna (logo) */}
-        <View style={[styles.column, styles.firstColumn]}>
-          {/* <Image src="/LOGO_TRD.png" style={styles.logo} /> */}
-        </View>
 
-        {/* Segunda columna */}
-        <View style={[styles.column, styles.secondColumn]}>
-          <View style={styles.secondColumnTop}>
-            <Text style={[styles.text, { width: "100%" }]}>
-              SISTEMA DE GESTIÓN DE SEGURIDAD OPERACIONAL SMS
-            </Text>
-          </View>
-          <View style={styles.secondColumnBottom}>
-            <Text style={[styles.text, { width: "100%" }]}>
-              REPORTE VOLUNTARIO DE PELIGROS
-            </Text>
-          </View>
-        </View>
+    <Page size={"LETTER"} style={styles.page}>
+      <Header />
 
-        {/* Tercera columna */}
-        <View style={[styles.column, styles.thirdColumn]}>
-          <View style={styles.thirdColumnRow}>
-            <Text style={[styles.text, { width: "100%" }]}>EDICIÓN N°: 01</Text>
-          </View>
-          <View style={styles.thirdColumnRow}>
-            <Text style={[styles.text, { width: "100%" }]}>
-              FECHA DE EDICIÓN: 12/10/2023
-            </Text>
-          </View>
-          <View style={styles.thirdColumnLastRow}>
-            <Text style={[styles.text, { width: "100%" }]}>
-              CÓDIGO:{"\n"}TMD-FOR-SMS-002
-            </Text>
-          </View>
+      <View style={styles.tableRow}>
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "100%",
+            backgroundColor: BLUE,
+            borderBottom: 1,
+          }}
+        >
+          <Text style={styles.cellText}>III. RIESGOS (CONSECUENCIAS)</Text>
         </View>
       </View>
-
-      {/* HEADER PARA PRESENTAICON DE UNA TABLA (OPCIONALES)*/}
-      <View
-        style={[
-          styles.row,
-          styles.table,
-          styles.tableHeader,
-          { marginTop: 20 },
-        ]}
-      >
-        <Text style={[styles.cellHeader, { width: "100%" }]}>
-          III. RIESGOS (CONSECUENCIAS)
-        </Text>
-      </View>
-
       <View style={styles.observationContainer}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
@@ -650,41 +536,139 @@ const VoluntaryReportPdf = ({ report }: { report: VoluntaryReport }) => (
 
         {/* Líneas adicionales con interlineado de 1.5 */}
         <View style={styles.linesContainer}>
-          {[...Array(8)].map((_, index) => (
+          {[...Array(7)].map((_, index) => (
             <View key={index} style={styles.line} />
           ))}
         </View>
       </View>
 
-      <View style={styles.footerContainer}>
-        {/* Primera fila */}
-        <View style={[styles.rowFooter, { alignItems: "center" }]}>
-          <Text style={styles.cellLarge}>
-            DEPENDENCIA: DIRECCIÓN DE GESTIÓN DE LA SEGURIDAD OPERACIONAL{"\n"}
-            (SMS)
-          </Text>
-          <Text style={styles.cellSmall}>REVISIÓN N°: 00</Text>
-          <Text style={[styles.lastCellSmall]}>SMS</Text>
-        </View>
-
-        {/* Segunda fila */}
-        <View style={styles.rowFooter}>
-          <Text style={styles.doubleRowCell}>
-            ELABORADO POR: {"\n"} ASISTENTE DE SMS
-          </Text>
-          <Text style={styles.doubleRowCell}>
-            REVISADO POR: {"\n"} DIRECTOR DE SMS
-          </Text>
-          <Text style={styles.doubleRowCell}>
-            APROBADO POR: {"\n"} DIRECTOR DE OPERACIONES
-          </Text>
-          <Text style={styles.lastDoubleRowCell}>
-            NRO. PÁGINA {"\n"} 2 DE 2
-          </Text>
-        </View>
+      <View>
+        <Text style={styles.underlinedTTitle}>INSTRUCTIVO DE LLENADO</Text>
       </View>
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>
+          • Fecha del reporte (DD/MM/AAAA):
+        </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar día, mes, año en que se realiza el reporte.
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>
+          • Fecha en que se identificó el peligro (DD/MM/AAAA):
+        </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar día, mes, año en que se
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}>identificó el peligro.</Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>
+          • Lugar donde se identificó el peligro:{" "}
+        </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar el lugar donde se identificó el peligro que se{" "}
+        </Text>
+      </View>
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}>esta reportando</Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>• N° de reporte:</Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar el número correlativo asignado al reporte por la Gerencia del
+          SMS
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>I. DATOS DE QUIEN REPORTA </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>• Nombres (opcional): </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar nombres de la persona que realiza el reporte, si así lo desea.
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>• Apellido (opcional): </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar apellidos de la persona que realiza el reporte, si así lo
+          desea.{" "}
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>• Teléfono (opcional): </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar el número telefónico de la persona que realiza el reporte, si{" "}
+        </Text>
+      </View>
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}>asi lo desea</Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>
+          • Correo electrónico (opcional)
+        </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar el correo electrónico de la persona que realiza el{" "}
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>II. PELIGRO IDENTIFICADO:</Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar la descripción detallada y clara del peligro observado.{" "}
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>• Área afectada:</Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Seleccionar con una (X) las áreas afectadas por el peligro que se
+          identificó.{" "}
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveTitle}>
+          III. RIESGOS (CONSECUENCIA):
+        </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar la descripción detallada y clara de las{" "}
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}>
+          consecuencias de este peligro
+        </Text>
+      </View>
+
+      {Footer(2, 2)}
     </Page>
   </Document>
 );
 
-export default VoluntaryReportPdf;
+export default MyDocument;

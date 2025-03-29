@@ -6,6 +6,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { VoluntaryReport } from "@/types";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { format } from "date-fns";
 import {
   ClipboardPen,
   ClipboardPenLine,
@@ -19,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
 import { CreateVoluntaryReportForm } from "../forms/CreateVoluntaryReportForm";
+import VoluntaryReportPdf from "../pdf/sms/VoluntaryReportPdf";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -29,10 +32,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
-import VoluntaryReportPdf from "../pdf/sms/VoluntaryReportPdf";
-import { format } from "date-fns";
-import SafetyRiskManagementPdf from "../pdf/sms/SafetyRiskManagement";
 
 const VoluntaryReportDropdownActions = ({
   voluntaryReport,
@@ -93,13 +92,14 @@ const VoluntaryReportDropdownActions = ({
               <EyeIcon className="size-5" />
             </DropdownMenuItem>
 
-            {!voluntaryReport.danger_identification_id && (
-              <DropdownMenuItem
-                onClick={() => setOpenCreateDangerIdentification(true)}
-              >
-                <ClipboardPenLine className="size-5" />
-              </DropdownMenuItem>
-            )}
+            {!voluntaryReport.danger_identification_id &&
+              voluntaryReport.status !== "CERRADO" && (
+                <DropdownMenuItem
+                  onClick={() => setOpenCreateDangerIdentification(true)}
+                >
+                  <ClipboardPenLine className="size-5" />
+                </DropdownMenuItem>
+              )}
 
             {voluntaryReport && voluntaryReport.status !== "ABIERTO" && (
               <DropdownMenuItem onClick={() => setOpenPDF(true)}>
@@ -120,7 +120,7 @@ const VoluntaryReportDropdownActions = ({
             <div className="w-full h-screen">
               {voluntaryReport && (
                 <PDFViewer style={{ width: "100%", height: "60%" }}>
-                  <SafetyRiskManagementPdf report={voluntaryReport} />
+                  <VoluntaryReportPdf report={voluntaryReport} />
                 </PDFViewer>
               )}
             </div>
@@ -130,7 +130,7 @@ const VoluntaryReportDropdownActions = ({
                   new Date(),
                   "dd-MM-yyyy"
                 )}.pdf`}
-                document={<SafetyRiskManagementPdf report={voluntaryReport} />}
+                document={<VoluntaryReportPdf report={voluntaryReport} />}
               >
                 <Button>Descargar Reporte</Button>
               </PDFDownloadLink>
