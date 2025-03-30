@@ -1,12 +1,12 @@
 import { dateFormat, timeFormat } from "@/lib/utils";
-import { ObligatoryReport } from "@/types";
-import {
-  Document,
-  Page,
-  StyleSheet,
-  Text,
-  View
-} from "@react-pdf/renderer";
+import { ObligatoryReport, VoluntaryReport } from "@/types";
+import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+
+const BLUE = "#d6eaf8";
+const RED = "#fc0a0a";
+const GREEN = "#0ebe36";
+const WHITE = "#fff";
+const GRAY = "#ebebeb";
 
 // ... (your formatDate function and styles remain the same)
 
@@ -408,28 +408,617 @@ const styles = StyleSheet.create({
     textDecoration: "underline",
     marginVertical: 20,
   },
+  tableRow: {
+    flexDirection: "row",
+    textAlign: "center",
+    borderRight: 1,
+    borderLeft: 1,
+  },
+  tableCell: {
+    padding: 2,
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
+    borderTop: 1,
+    borderRight: 1,
+    borderColor: "#000", // Establecemos el color del borde
+  },
+  cellText: {
+    fontSize: 9,
+  },
+  cellText2: {
+    fontSize: 10,
+  },
+  cellTextHeader: {
+    fontSize: 12,
+    fontWeight: "extrabold",
+  },
 });
 
-const LIST = [
-  "LA AEREONAVE ATERRIZA QUEDÁNDOSE SOLO CON EL COMBUSTIBLE DE RESERVA O MENOS",
-  "SALIDA DE PISTA - RUNAWAY INCURSION",
-  "DESPEGUE ABORTADO(REJETED TAKE OFF-RTO)",
-  "ATERRIZAJE FUERTE (HARD LANDING)",
-  "EL AVION ES EVACUADO",
-  "INCURSION EN PISTA O CALLE DE RODAJE ( RUNAWAY INCURSION-RI)",
-  "DERRAME DE COMBUSTIBLE",
-  "FALLA DE MOTOR",
-  "ALERTA DE FUEGO O HUMO",
-  "FALLO EN LOS CONTROLES DE VUELO",
-  "APROXIMACION NO ESTABILIZADA POR DEBAJO DE LOS 500 PIES VRF O 1000 PIES IRF",
-  "ERROR  DE NAVEGACION CON DESVIACION SIGNIFICATIVA DE LA RUTA",
-  "TAIL STRIKE",
-  "WIND SHEAR",
-  "PARAMETROS DE VUELO ANORMALES",
-  "DESPREZURIZACION",
-  "CASI COLISION (RESOLUCION ACVSORY-RA)",
-  "IMPACTO CON AVES",
-];
+const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
+  <Document>
+    <Page size="LETTER" style={styles.page}>
+      {/*Encabezado de la pagina */}
+      <Header />
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellTextHeader}>1. NOTIFICACION DE PELIGROS</Text>
+        </View>
+      </View>
+
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "37%", backgroundColor: BLUE }}
+        >
+          <Text style={[styles.cellText, { textAlign: "left" }]}>
+            FECHA DE LA IDENTIFICACION DEL{"\n"}PELIGRO
+          </Text>
+        </View>
+        <View
+          style={{ ...styles.tableCell, width: "63%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellText2}>TIPO DE PELIGRO</Text>
+        </View>
+      </View>
+
+      <View style={styles.tableRow}>
+        <View style={{ ...styles.tableCell, width: "37%" }}>
+          <Text style={styles.cellText}>
+            {dateFormat(report.report_date, "dd-MM-yyyy")}
+          </Text>
+        </View>
+
+        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "18.75%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={styles.cellText2}>NATURAL</Text>
+        </View>
+
+        {/*LOCALIZACION DEL REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "12.75%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={styles.cellText2}>TECNICO</Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "18.75%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={styles.cellText2}>ORGNIZACIONAL</Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "12.75%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={styles.cellText2}>HUMANO</Text>
+        </View>
+      </View>
+
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "27%", backgroundColor: BLUE }}
+        >
+          <Text style={[styles.cellText, { textAlign: "left" }]}>
+            FECHA DE LA RECEPCION DEL{"\n"}PELIGRO
+          </Text>
+        </View>
+        <View
+          style={{ ...styles.tableCell, width: "10%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellText2}>N CASO</Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "18.75%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText2}></Text>
+        </View>
+
+        {/*LOCALIZACION DEL REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "12.75%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText2}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "18.75%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText2}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "12.75%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText2}>{report.report_number}</Text>
+        </View>
+      </View>
+
+      <View style={styles.tableRow}>
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "27%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText2}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "10%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText2}>X</Text>
+        </View>
+
+        <View
+          style={{ ...styles.tableCell, width: "63%", backgroundColor: BLUE }}
+        >
+          <Text style={[styles.cellText, { textAlign: "left" }]}>
+            METODO Y FUENTE DE LA IDENTIFICACION DE PELIGROS
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.tableRow}>
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "37%",
+            backgroundColor: BLUE,
+          }}
+        >
+          <Text style={[styles.cellText, { textAlign: "left" }]}>
+            AREA DONDE FUE IDENTIFICADO EL{"\n"}EL PELIGRO:
+          </Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "31.5%",
+            backgroundColor: GREEN,
+          }}
+        >
+          <Text style={styles.cellText2}>PROACTIVO</Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "31.5%",
+            backgroundColor: RED,
+            color: WHITE,
+            fontWeight: "extrabold",
+          }}
+        >
+          <Text style={[styles.cellText, { textAlign: "left" }]}>REACTIVO</Text>
+        </View>
+      </View>
+
+      {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
+      <View style={styles.tableRow}>
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "32%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText, { textAlign: "left" }]}>
+            OPERACIONES
+          </Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText2}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "26.5%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText]}>REPORTE{"\n"}VOLUNTARIO</Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText]}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "26.5%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText]}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText]}></Text>
+        </View>
+      </View>
+
+      {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
+      <View style={styles.tableRow}>
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "32%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText, { textAlign: "left" }]}>
+            MANTENIMIENTO
+          </Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText2}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "26.5%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText]}>AUDITORIA</Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText]}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "26.5%",
+            backgroundColor: GRAY,
+            borderTop: 0,
+          }}
+        >
+          <Text style={[styles.cellText]}>REPORTE OBLIGATORIO</Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText]}></Text>
+        </View>
+      </View>
+
+      {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
+      <View style={styles.tableRow}>
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "32%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText, { textAlign: "left" }]}>
+            ADMINISTRACION Y RRHH
+          </Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText2}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "26.5%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText]}>ENCUESTAS</Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText]}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "26.5%",
+            backgroundColor: GRAY,
+            borderTop: 0,
+          }}
+        >
+          <Text style={[styles.cellText]}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText]}></Text>
+        </View>
+      </View>
+
+      {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
+      <View style={styles.tableRow}>
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "32%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText, { textAlign: "left" }]}>
+            GERENCIA DE CONTROL Y{"\n"}CALIDAD
+          </Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText2}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "26.5%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText]}>INSPECCION</Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText]}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "26.5%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText]}>INVESTIGACION INTERNA</Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText]}></Text>
+        </View>
+      </View>
+
+      {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
+      <View style={styles.tableRow}>
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "32%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText, { textAlign: "left" }]}>OTROS</Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText2}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "26.5%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText]}>ENTREVISTA</Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText]}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "26.5%",
+            backgroundColor: GRAY,
+            borderWidth: 0,
+          }}
+        >
+          <Text style={[styles.cellText]}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText]}></Text>
+        </View>
+      </View>
+
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellTextHeader}>BREVE DESCRIPCION DEL PELIGRO</Text>
+        </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
+        >
+          <Text style={styles.cellTextHeader}>{"\n"}</Text>
+        </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
+        >
+          <Text style={styles.cellTextHeader}>{"\n"}</Text>
+        </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
+        >
+          <Text style={styles.cellTextHeader}>{"\n"}</Text>
+        </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
+        >
+          <Text style={styles.cellTextHeader}>{"\n"}</Text>
+        </View>
+      </View>
+      {Footer(1, 5)}
+    </Page>
+  </Document>
+);
 
 const Header = () => (
   <View style={[styles.headerRow, { marginTop: 40 }]}>
@@ -501,515 +1090,4 @@ const Footer = (pageNumber: number, pages: number = 3) => (
   </View>
 );
 
-const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
-  <Document>
-    <Page size="LETTER" style={styles.page}>
-      {/*Encabezado de la pagina */}
-      <Header />
-
-      {/*Datos de la pagina*/}
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "15%" }]}>
-          FECHA DEL{"\n"}REPORTE
-        </Text>
-        <Text style={[styles.cell, { width: "15%" }]}>
-          FECHA DEL{"\n"}SUCESO
-        </Text>
-        <Text style={[styles.cell, { width: "15%" }]}>
-          HORA DEL{"\n"}SUCESO
-        </Text>
-        <Text style={[styles.cell, { width: "40%" }]}>
-          LUGAR DONDE OCURRIO EL SUCESO
-        </Text>
-        <Text style={[styles.cell, { width: "15%" }]}>Nº DE REPORTE</Text>
-      </View>
-
-      <View style={[styles.row, styles.table, styles.tableContent]}>
-        <Text style={[styles.cell, { width: "15%" }]}>
-          {dateFormat(report.report_date, "dd-MM-yyyy")}
-        </Text>
-        <Text style={[styles.cell, { width: "15%" }]}>
-          {dateFormat(report.incident_date, "dd-MM-yyyy")}
-        </Text>
-        <Text style={[styles.cell, { width: "15%" }]}>
-          {timeFormat(report.incident_time)}
-        </Text>
-        <Text style={[styles.cell, { width: "40%" }]}>Pista de Aterrizaje</Text>
-        <Text style={[styles.cell, { width: "15%" }]}>
-          ROS-{report.report_code}
-        </Text>
-      </View>
-
-      {/*ENCABEZADO PARA DATOS DE QUIEN REPORTE */}
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cellHeader, { width: "100%" }]}>
-          I. DATOS DE QUIEN REPORTA
-        </Text>
-      </View>
-      {/* ENCABEZADO PARA NOMBRE, LICENCIA Y VIA DE CONTACTO*/}
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "35%" }]}>NOMBRE Y APELLIDOS</Text>
-        <Text style={[styles.cell, { width: "17%" }]}>N° DE LICENCIA</Text>
-        <Text style={[styles.cell, { width: "48%" }]}>VIA DE CONTACTO</Text>
-      </View>
-
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "10%" }]}>PILOTO</Text>
-
-        <View style={[styles.row, styles.table, styles.tableContent]}>
-          <Text style={[styles.innerCell, { width: "25%" }]}>
-            {report.pilot.first_name} {report.pilot.last_name}
-          </Text>
-        </View>
-
-        <View style={[styles.row, styles.table, styles.tableContent]}>
-          <Text style={[styles.innerCell, { width: "17%" }]}>
-            {report.pilot.license_number}
-          </Text>
-        </View>
-        <Text
-          style={[
-            styles.cell,
-            { width: "24%", borderLeft: 1, borderBottom: 0 },
-          ]}
-        >
-          TELEFONO
-        </Text>
-        <Text style={[styles.cell, { width: "24%", borderBottom: 0 }]}>
-          CORREO ELECTRONICO
-        </Text>
-      </View>
-
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "10%" }]}>COPILOTO</Text>
-
-        <View style={[styles.row, styles.table, styles.tableContent]}>
-          <Text style={[styles.innerCell, { width: "25%", borderWidth: 0 }]}>
-            {report.copilot.first_name} {report.copilot.last_name}
-          </Text>
-        </View>
-
-        <View style={[styles.row, styles.table, styles.tableContent]}>
-          <Text style={[styles.innerCell, { width: "17%", borderWidth: 0 }]}>
-            {report.copilot.license_number}
-          </Text>
-        </View>
-
-        <View style={[styles.row, styles.table, styles.tableContent]}>
-          <Text style={[styles.cell, { width: "24%", borderWidth: 0 }]}>
-            {report.pilot.phone}
-          </Text>
-        </View>
-
-        <View
-          style={[
-            styles.row,
-            styles.table,
-            styles.tableContent,
-            { borderWidth: 1 },
-          ]}
-        >
-          <Text style={[styles.cell, { width: "24%", borderWidth: 0 }]}>
-            {report.pilot.email}
-          </Text>
-        </View>
-      </View>
-
-      {/*ENCABEZADO PARA DATOS DE VUELO */}
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cellHeader, { width: "100%" }]}>
-          II. DATOS DEL VUELO
-        </Text>
-      </View>
-
-      {/*COLUMNA PARA EL ENVABEZADO DE DATOS DE VUELO */}
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "13.33%" }]}>HORA</Text>
-        <Text style={[styles.cell, { width: "19.98%" }]}>MATRICULA</Text>
-        <Text style={[styles.cell, { width: "23.36%" }]}>N° DE VUELO</Text>
-        <Text style={[styles.cell, { width: "43.33%" }]}>AEREONAVE</Text>
-      </View>
-
-      {/*CELDAS PARA MOSTRAR LOS DATOS DEL VUELO*/}
-      <View style={[styles.row, styles.table, styles.tableContent]}>
-        <Text style={[styles.innerCell, { width: "13.33%" }]}>
-          {timeFormat(report.flight_time)}
-        </Text>
-        <Text style={[styles.cell, { width: "19.98%" }]}>
-          {report.aircraft_acronym}
-        </Text>
-        <Text style={[styles.cell, { width: "23.36%" }]}>
-          {report.flight_number}
-        </Text>
-        <Text style={[styles.cell, { width: "43.33%" }]}>
-          {report.aircraft_model}
-        </Text>
-      </View>
-
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cell, { width: "33.33%" }]}>ORIGEN</Text>
-        <Text style={[styles.cell, { width: "33.33%" }]}>DESTINO</Text>
-        <Text style={[styles.cell, { width: "33.33%" }]}>ALTERNO</Text>
-      </View>
-
-      {/*CELDAS PARA MOSTRAR LOS DATOS DEL VUELO - ORGIGEN / DESTINO / ALTERNO*/}
-      <View style={[styles.row, styles.table, styles.tableContent]}>
-        <Text style={[styles.innerCell, { width: "33.33%" }]}>
-          {report.flight_origin}
-        </Text>
-        <Text style={[styles.cell, { width: "33.33%" }]}>
-          {report.flight_destiny}
-        </Text>
-        <Text style={[styles.cell, { width: "33.33%" }]}>
-          {report.flight_alt_destiny}
-        </Text>
-      </View>
-
-      {/*ENCABEZADO PARA PRESENTAR LA LISTA DE POSIBLES INCIDENTES */}
-      <View style={[styles.row, styles.table, styles.tableHeader]}>
-        <Text style={[styles.cellHeader, { width: "100%" }]}>
-          III. SUCESOS DE OBLIGAORIO REPORTE
-        </Text>
-      </View>
-      {/* CUADROS PARA CADA UNO DE LOS POSIBLES INSIDENTES CON SU CHECK BOX*/}
-
-      <View style={[styles.row, styles.table, styles.tableContent]}>
-        <Text style={[styles.innerCell, { width: "25%", borderRight: 1 }]}>
-          LA AEREONAVE ATERRIZA{"\n"}QUEDÁNDOSE SOLO{"\n"}CON EL{"\n"}
-          COMBUSTIBLE DE{"\n"}RESERVA O MENOS
-        </Text>
-
-        <Text style={[styles.innerCell, { width: "19.64%", borderRight: 1 }]}>
-          SALIDA DE{"\n"}PISTA{"\n"}(RUNAWAY INCURSION)
-        </Text>
-        <Text style={[styles.innerCell, { width: "16.66%", borderRight: 1 }]}>
-          DESPEGUE{"\n"}ABORTADO{"\n"}(REJETED{"\n"}TAKE OFF-{"\n"}RTO)
-        </Text>
-        <Text style={[styles.innerCell, { width: "19.64%", borderRight: 1 }]}>
-          ATERRIZAJE{"\n"}FUERTE (HARD{"\n"}LANDING)
-        </Text>
-        <Text style={[styles.innerCell, { width: "18.45%", borderRight: 1 }]}>
-          EL AVION ES{"\n"}EVACUADO
-        </Text>
-      </View>
-
-      <View style={[styles.row, styles.table, styles.tableContent]}>
-        <Text style={[styles.innerCell, { width: "25%", borderRight: 1 }]}>
-          INCURSION EN PISTA{"\n"}O CALLE DE RODAJE{"\n"}(RUNAWAY INCURSION)
-        </Text>
-
-        <Text style={[styles.innerCell, { width: "19.64%", borderRight: 1 }]}>
-          DERRAME DE COMBUSTIBLE
-        </Text>
-        <Text style={[styles.innerCell, { width: "16.66%", borderRight: 1 }]}>
-          FALLA DE UN MOTOR
-        </Text>
-        <Text style={[styles.innerCell, { width: "19.64%", borderRight: 1 }]}>
-          ALERTA DE FUEGO O HUMO
-        </Text>
-        <Text style={[styles.innerCell, { width: "18.45%", borderRight: 1 }]}>
-          FALLO DE CONTROLES DE VUELO
-        </Text>
-      </View>
-
-      <View style={[styles.row, styles.table, styles.tableContent]}>
-        <Text style={[styles.innerCell, { width: "25%", borderRight: 1 }]}>
-          APROXIMACION NO ESTABILIZADA POR DEBAJO DE LOS 500 PIES VRF O 1000
-          PIES IFR
-        </Text>
-
-        <Text style={[styles.innerCell, { width: "19.64%", borderRight: 1 }]}>
-          ERROR DE NAVEGACION CON DESVIACION SIGNIFICATIVA DE LA RUTA
-        </Text>
-        <Text style={[styles.innerCell, { width: "16.66%", borderRight: 1 }]}>
-          TAIL STRIKE
-        </Text>
-        <Text style={[styles.innerCell, { width: "19.64%", borderRight: 1 }]}>
-          WIND SHEAR
-        </Text>
-        <Text style={[styles.innerCell, { width: "18.45%", borderRight: 1 }]}>
-          PARAMETROS DE VUELOS ANORMALES
-        </Text>
-      </View>
-
-      <View
-        style={[
-          styles.row,
-          styles.table,
-          styles.tableContent,
-          { borderBottom: 1 },
-        ]}
-      >
-        <Text style={[styles.innerCell, { width: "25%", borderRight: 1 }]}>
-          DESPREZURIZACION
-        </Text>
-
-        <Text style={[styles.innerCell, { width: "19.64%", borderRight: 1 }]}>
-          CASI COLISION (RESOLUCION ACVESORYRA)
-        </Text>
-        <Text style={[styles.innerCell, { width: "16.66%", borderRight: 1 }]}>
-          IMPACTO CON AVES
-        </Text>
-        <Text style={[styles.innerCell, { width: "38.1%", borderRight: 1 }]}>
-          OTRO
-        </Text>
-      </View>
-
-      <View style={styles.observationContainer}>
-        <Text style={styles.title}>
-          EN CASO DE HABER SELECCIONADO EL ITEM "OTRO", POR FAVOR, ESPECIFIQUE A
-          CONTINUACION,A QUE TIPO DE{"\n"}
-        </Text>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>SUCESO SE REFIERE:</Text>
-          <View style={styles.firstLine} />
-        </View>
-
-        {/* Líneas adicionales con interlineado de 1.5 */}
-        <View style={styles.linesContainer}>
-          {[...Array(2)].map((_, index) => (
-            <View key={index} style={styles.line} />
-          ))}
-        </View>
-      </View>
-      {Footer(1)}
-    </Page>
-
-    <Page size="LETTER" style={styles.page}>
-      <Header />
-      <View
-        style={[
-          styles.row,
-          styles.table,
-          styles.tableHeader,
-          { borderBottom: 1 },
-        ]}
-      >
-        <Text style={[styles.cellHeader, { width: "100%" }]}>
-          IV. DESCRIPCION DEL SUCESO
-        </Text>
-      </View>
-      <View style={styles.observationContainer}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>
-            A continuacion, describa claramentente el suceso que esta
-            reportando:{" "}
-          </Text>
-          <View style={styles.firstLine} />
-        </View>
-
-        {/* Líneas adicionales con interlineado de 1.5 */}
-        <View style={styles.linesContainer}>
-          {[...Array(15)].map((_, index) => (
-            <View key={index} style={styles.line} />
-          ))}
-        </View>
-      </View>
-
-      {/* Línea de firma */}
-
-      <View style={styles.signatureContainer}>
-        <View style={styles.signatureLine} />
-        <Text style={styles.signatureText}>FIRMA</Text>
-      </View>
-
-      {Footer(2)}
-    </Page>
-
-    <Page size={"LETTER"} style={styles.page}>
-      <Header />
-      <View>
-        <Text style={styles.underlinedTTitle}>INSTRUCTIVO DE LLENADO</Text>
-      </View>
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveTitle}>
-          • Fecha del reporte (DD/MM/AAAA):
-        </Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar día, mes, año en que se realiza el reporte.
-        </Text>
-      </View>
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>
-          • Fecha del suceso (DD/MM/AAAA):
-        </Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar día, mes, año en que ocurrió el suceso.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>• Hora del suceso (HLV):</Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar la hora en la que ocurrió el suceso.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>
-          • Lugar donde ocurrió el suceso:{" "}
-        </Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar el lugar donde ocurrió el suceso.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>• N° de reporte:</Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar el número correlativo asignado al reporte por la Gerencia del
-          SMS.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}> I. DATOS DE QUIEN REPORTA </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>• Nombres y Apellidos:</Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar nombres y apellidos de la persona que realiza el reporte.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>• N° de Licencia: </Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar número de licencia de la persona que realiza el reporte.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>
-          • Vía de contacto (Teléfono/ Correo electrónico):
-        </Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar el número telefónico y/o el correo
-        </Text>
-      </View>
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>
-          electrónico de la persona que realiza el reporte.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>II. DATOS DE VUELO</Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}> • Hora (HLV):</Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar la hora real de despegue.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}> • Matrícula: (HLV):</Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar la matrícula de la aeronave en que ocurrió el suceso.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}> • N° de vuelo:</Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar el número de vuelo en que ocurrió el suceso.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}> • Aeronave:</Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar modelo de la aeronave en que ocurrió el suceso.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}> • Origen:</Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar estación de origen del vuelo en que ocurrió el suceso.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}> • Destino:</Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar estación de destino del vuelo en que ocurrió el suceso.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}> • Alterno:</Text>
-        <Text style={styles.instructiveText}>
-          {" "}
-          Colocar estación alterna del vuelo en que ocurrió el suceso.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>
-          III. Sucesos de obligatorio reporte:{" "}
-        </Text>
-        <Text style={styles.instructiveText}>
-          Marcar con una (X) el suceso obligatorio que se está
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>
-          {"         "}reportando, en caso de no encontrarse dentro de las
-          opciones, se deberá seleccionar el
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>
-          {"         "}ítem “otro” y seguidamente especificar a qué suceso se
-          refiere.
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>IV. Descripción del suceso:</Text>
-        <Text style={styles.instructiveText}>
-          {""}
-          Colocar una descripción de los hechos ocurridos del suceso que
-        </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>se está reportando. </Text>
-      </View>
-
-      <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}> • Firma: </Text>
-        <Text style={styles.instructiveText}>
-          {""}
-          Colocar firma de la persona que realiza el reporte.{" "}
-        </Text>
-      </View>
-
-
-      
-      {Footer(3)}
-    </Page>
-  </Document>
-);
-
-export default ObligatoryReportPdf;
+export default SafetyRiskManagementPdf;

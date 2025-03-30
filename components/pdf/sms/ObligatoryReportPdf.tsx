@@ -507,7 +507,7 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
           <Text style={styles.cellText}>LUGAR DONDE OCURRIO EL SUCESO</Text>
         </View>
 
-        <View
+          <View
           style={{ ...styles.tableCell, width: "15%", backgroundColor: BLUE }}
         >
           <Text style={styles.cellText}>N DE REPORTE</Text>
