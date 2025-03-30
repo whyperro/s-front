@@ -409,6 +409,7 @@ const Instructive = () => (
 
 const Footer = (currentPage: number, pageNumber: number) => (
   <View style={styles.footerContainer}>
+    
     <View style={styles.tableRow}>
       <View style={{ ...styles.tableCell, width: "67%" }}>
         <Text style={styles.cellText2}>
@@ -416,6 +417,8 @@ const Footer = (currentPage: number, pageNumber: number) => (
           {"\n"}(SMS)
         </Text>
       </View>
+
+
       <View style={{ ...styles.tableCell, width: "20%" }}>
         <Text style={styles.cellText2}>REVISION N:00</Text>
       </View>

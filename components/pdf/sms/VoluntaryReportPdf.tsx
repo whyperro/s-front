@@ -18,6 +18,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     borderTop: 1,
     borderLeft: 1,
+    alignContent: "stretch",
+    alignItems:"stretch"
   },
   tableCell: {
     padding: 2,

@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
   footerContainer: {
     position: "absolute",
     bottom: 10,
-    marginBottom: 40,
+    marginBottom: 30,
     left: 30,
     right: 30,
     borderTop: 1,
@@ -429,6 +429,9 @@ const styles = StyleSheet.create({
   cellText2: {
     fontSize: 10,
   },
+  cellText3: {
+    fontSize: 8,
+  },
   cellTextHeader: {
     fontSize: 12,
     fontWeight: "extrabold",
@@ -440,7 +443,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
     <Page size="LETTER" style={styles.page}>
       {/*Encabezado de la pagina */}
       <Header />
-      <View style={styles.tableRow}>
+      <View style={[styles.tableRow, { marginTop: 8 }]}>
         <View
           style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
         >
@@ -452,7 +455,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
         <View
           style={{ ...styles.tableCell, width: "37%", backgroundColor: BLUE }}
         >
-          <Text style={[styles.cellText, { textAlign: "left" }]}>
+          <Text style={[styles.cellText]}>
             FECHA DE LA IDENTIFICACION DEL{"\n"}PELIGRO
           </Text>
         </View>
@@ -520,7 +523,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
         <View
           style={{ ...styles.tableCell, width: "27%", backgroundColor: BLUE }}
         >
-          <Text style={[styles.cellText, { textAlign: "left" }]}>
+          <Text style={[styles.cellText]}>
             FECHA DE LA RECEPCION DEL{"\n"}PELIGRO
           </Text>
         </View>
@@ -600,7 +603,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
         <View
           style={{ ...styles.tableCell, width: "63%", backgroundColor: BLUE }}
         >
-          <Text style={[styles.cellText, { textAlign: "left" }]}>
+          <Text style={[styles.cellText]}>
             METODO Y FUENTE DE LA IDENTIFICACION DE PELIGROS
           </Text>
         </View>
@@ -615,7 +618,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: BLUE,
           }}
         >
-          <Text style={[styles.cellText, { textAlign: "left" }]}>
+          <Text style={[styles.cellText]}>
             AREA DONDE FUE IDENTIFICADO EL{"\n"}EL PELIGRO:
           </Text>
         </View>
@@ -640,7 +643,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             fontWeight: "extrabold",
           }}
         >
-          <Text style={[styles.cellText, { textAlign: "left" }]}>REACTIVO</Text>
+          <Text style={[styles.cellText]}>REACTIVO</Text>
         </View>
       </View>
 
@@ -652,11 +655,11 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             ...styles.tableCell,
             width: "32%",
             backgroundColor: GRAY,
+            alignItems: "flex-start",
+            paddingLeft: 4,
           }}
         >
-          <Text style={[styles.cellText, { textAlign: "left" }]}>
-            OPERACIONES
-          </Text>
+          <Text style={[styles.cellText]}>OPERACIONES</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -675,9 +678,15 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             ...styles.tableCell,
             width: "26.5%",
             backgroundColor: GRAY,
+            alignItems: "flex-start",
           }}
         >
-          <Text style={[styles.cellText]}>REPORTE{"\n"}VOLUNTARIO</Text>
+          <Text style={[styles.cellText, { paddingLeft: 2 }]}>
+            REPORTE
+          </Text>
+          <Text style={[styles.cellText, { paddingLeft: 2 }]}>
+            VOLUNTARIO
+          </Text>
         </View>
 
         <View
@@ -719,11 +728,11 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             ...styles.tableCell,
             width: "32%",
             backgroundColor: GRAY,
+            alignItems: "flex-start",
+            paddingLeft: 4,
           }}
         >
-          <Text style={[styles.cellText, { textAlign: "left" }]}>
-            MANTENIMIENTO
-          </Text>
+          <Text style={[styles.cellText]}>MANTENIMIENTO</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -742,6 +751,8 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             ...styles.tableCell,
             width: "26.5%",
             backgroundColor: GRAY,
+            alignItems: "flex-start",
+            paddingLeft: 4,
           }}
         >
           <Text style={[styles.cellText]}>AUDITORIA</Text>
@@ -763,6 +774,8 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             width: "26.5%",
             backgroundColor: GRAY,
             borderTop: 0,
+            alignItems: "flex-start",
+            paddingLeft: 4,
           }}
         >
           <Text style={[styles.cellText]}>REPORTE OBLIGATORIO</Text>
@@ -787,11 +800,11 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             ...styles.tableCell,
             width: "32%",
             backgroundColor: GRAY,
+            alignItems: "flex-start",
+            paddingLeft: 4,
           }}
         >
-          <Text style={[styles.cellText, { textAlign: "left" }]}>
-            ADMINISTRACION Y RRHH
-          </Text>
+          <Text style={[styles.cellText]}>ADMINISTRACION Y RRHH</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -810,6 +823,8 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             ...styles.tableCell,
             width: "26.5%",
             backgroundColor: GRAY,
+            alignItems: "flex-start",
+            paddingLeft: 4,
           }}
         >
           <Text style={[styles.cellText]}>ENCUESTAS</Text>
@@ -855,10 +870,15 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             ...styles.tableCell,
             width: "32%",
             backgroundColor: GRAY,
+            alignItems: "flex-start",
+            paddingLeft: 4,
           }}
         >
-          <Text style={[styles.cellText, { textAlign: "left" }]}>
-            GERENCIA DE CONTROL Y{"\n"}CALIDAD
+          <Text style={[styles.cellText]}>
+            GERENCIA DE CONTROL Y
+          </Text>
+          <Text style={[styles.cellText]}>
+           CALIDAD
           </Text>
         </View>
 
@@ -878,6 +898,8 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             ...styles.tableCell,
             width: "26.5%",
             backgroundColor: GRAY,
+            alignItems: "flex-start",
+            paddingLeft: 4,
           }}
         >
           <Text style={[styles.cellText]}>INSPECCION</Text>
@@ -898,6 +920,8 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             ...styles.tableCell,
             width: "26.5%",
             backgroundColor: GRAY,
+            alignItems: "flex-start",
+            paddingLeft: 4,
           }}
         >
           <Text style={[styles.cellText]}>INVESTIGACION INTERNA</Text>
@@ -922,9 +946,11 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             ...styles.tableCell,
             width: "32%",
             backgroundColor: GRAY,
+            alignItems: "flex-start",
+            paddingLeft: 4,
           }}
         >
-          <Text style={[styles.cellText, { textAlign: "left" }]}>OTROS</Text>
+          <Text style={[styles.cellText]}>OTROS</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -943,6 +969,8 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             ...styles.tableCell,
             width: "26.5%",
             backgroundColor: GRAY,
+            alignItems: "flex-start",
+            paddingLeft: 4,
           }}
         >
           <Text style={[styles.cellText]}>ENTREVISTA</Text>
@@ -984,7 +1012,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
         <View
           style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
         >
-          <Text style={styles.cellTextHeader}>BREVE DESCRIPCION DEL PELIGRO</Text>
+          <Text style={styles.cellTextHeader}>
+            BREVE DESCRIPCION DEL PELIGRO
+          </Text>
         </View>
       </View>
       <View style={styles.tableRow}>
@@ -1008,11 +1038,228 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
           <Text style={styles.cellTextHeader}>{"\n"}</Text>
         </View>
       </View>
-      <View style={styles.tableRow}>
+      <View style={[styles.tableRow, { borderBottom: 1 }]}>
         <View
           style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
         >
           <Text style={styles.cellTextHeader}>{"\n"}</Text>
+        </View>
+      </View>
+
+      <View style={[styles.tableRow, { marginTop: 15 }]}>
+        <View
+          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellTextHeader}>ANALISIS CAUSA RAIZ</Text>
+        </View>
+      </View>
+
+      <View style={styles.tableRow}>
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "100%",
+            backgroundColor: WHITE,
+            alignItems: "flex-start",
+            paddingLeft: 4,
+          }}
+        >
+          <Text style={[styles.cellTextHeader]}>Por que Sucedio?</Text>
+        </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "100%",
+            backgroundColor: WHITE,
+            alignItems: "flex-start",
+            paddingLeft: 4,
+          }}
+        >
+          <Text style={[styles.cellTextHeader]}>Por que</Text>
+        </View>
+      </View>
+      <View style={[styles.tableRow]}>
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "100%",
+            backgroundColor: WHITE,
+            alignItems: "flex-start",
+            paddingLeft: 4,
+          }}
+        >
+          <Text style={[styles.cellTextHeader]}>Por que</Text>
+        </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "100%",
+            backgroundColor: WHITE,
+            alignItems: "flex-start",
+            paddingLeft: 4,
+          }}
+        >
+          <Text style={[styles.cellTextHeader]}>Por que</Text>
+        </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "100%",
+            backgroundColor: WHITE,
+            alignItems: "flex-start",
+            paddingLeft: 4,
+          }}
+        >
+          <Text style={[styles.cellTextHeader]}>Por que</Text>
+        </View>
+      </View>
+      <View style={[styles.tableRow]}>
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "100%",
+            backgroundColor: WHITE,
+            alignItems: "flex-start",
+            paddingLeft: 4,
+          }}
+        >
+          <Text style={styles.cellTextHeader}>
+            Si el porque final no tiene una solucion controlable, vuelva al
+            "porque" anterior
+          </Text>
+        </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellTextHeader}>2. GESTION DE RIESGOS</Text>
+        </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View
+          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellTextHeader}>
+            AREA RESPONSABLE DE LA MITIGACION
+          </Text>
+        </View>
+      </View>
+
+      {/* FILA PARA LOS DATOS DEL AREA RESPONSABLE DE LA MITIGACION*/}
+
+      <View style={[styles.tableRow, { borderBottom: 1, textAlign: "left" }]}>
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "12%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText3]}>DIRECCION{"\n"}SMS</Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "15%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText3]}>OPERACIONES</Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText3]}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "20%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText3]}>
+            MANTENIMIENTO Y{"\n"}PLANIFICACION
+          </Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText3]}></Text>
+        </View>
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "18%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText3]}>
+            GERENCIA DE{"\n"}ADMINISTRACION Y{"\n"}RRHH
+          </Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText3]}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "15%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={[styles.cellText3]}>
+            GERENCIA DE{"\n"}CONTROL DE{"\n"}CALIDAD
+          </Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "5%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText3]}></Text>
         </View>
       </View>
       {Footer(1, 5)}
