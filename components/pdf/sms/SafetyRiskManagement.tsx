@@ -1557,7 +1557,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
         </View>
       </View>
 
-      <View style={[styles.tableRow]}>
+      <View style={[styles.tableRow, { borderBottom: 1 }]}>
         {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
 
         <View
@@ -1567,7 +1567,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText2}>PROBABILIDAD</Text>
+          <Text style={styles.cellText}>PROBABILIDAD</Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -1578,7 +1578,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText2}>SEVERIDAD</Text>
+          <Text style={styles.cellText}>SEVERIDAD</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1589,7 +1589,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText2}>INDICE DE RIESGO INICIAL</Text>
+          <Text style={styles.cellText}>INDICE DE RIESGO INICIAL</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1600,7 +1600,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText2}>TOLERABILIDAD DEL{"\n"}RIESGO</Text>
+          <Text style={styles.cellText}>TOLERABILIDAD DEL{"\n"}RIESGO</Text>
         </View>
       </View>
 
@@ -2236,6 +2236,442 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
           <Text style={styles.cellText3}>FIRMA</Text>
         </View>
       </View>
+
+      <View style={[styles.tableRow]}>
+        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "17%",
+            backgroundColor: WHITE,
+            alignItems: "flex-start",
+            paddingLeft: 4,
+          }}
+        >
+          <Text style={styles.cellText3}>1.</Text>
+        </View>
+
+        {/*LOCALIZACION DEL REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "17%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "19%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "12%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "23%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "14%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+      </View>
+      <View style={[styles.tableRow]}>
+        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "17%",
+            backgroundColor: WHITE,
+            alignItems: "flex-start",
+            paddingLeft: 4,
+          }}
+        >
+          <Text style={styles.cellText3}>2.</Text>
+        </View>
+
+        {/*LOCALIZACION DEL REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "17%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "19%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "12%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "23%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "14%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+      </View>
+      <View style={[styles.tableRow]}>
+        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "17%",
+            backgroundColor: WHITE,
+            alignItems: "flex-start",
+            paddingLeft: 4,
+          }}
+        >
+          <Text style={styles.cellText3}>3.</Text>
+        </View>
+
+        {/*LOCALIZACION DEL REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "17%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "19%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "12%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "23%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "14%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+      </View>
+      <View style={[styles.tableRow]}>
+        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "17%",
+            backgroundColor: WHITE,
+            alignItems: "flex-start",
+            paddingLeft: 4,
+          }}
+        >
+          <Text style={styles.cellText3}>4.</Text>
+        </View>
+
+        {/*LOCALIZACION DEL REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "17%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "19%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "12%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "23%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "14%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+      </View>
+      <View style={[styles.tableRow]}>
+        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "17%",
+            backgroundColor: WHITE,
+            alignItems: "flex-start",
+            paddingLeft: 4,
+          }}
+        >
+          <Text style={styles.cellText3}>5.</Text>
+        </View>
+
+        {/*LOCALIZACION DEL REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "17%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "19%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "12%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "23%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "14%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}></Text>
+        </View>
+      </View>
+
+      <View style={[styles.tableRow]}>
+        <View
+          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        >
+          <Text style={styles.cellTextHeader}>4. CIERRE DEL CASO</Text>
+        </View>
+      </View>
+
+      <View style={[styles.tableRow]}>
+        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "33.33%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={styles.cellText3}>FECHA DE CIERRE</Text>
+        </View>
+
+        {/*LOCALIZACION DEL REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "33.33%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={styles.cellText3}>
+            FIRMA DEL REPRESENTANTE DE{"\n"}SMS
+          </Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "33.33%",
+            backgroundColor: GRAY,
+          }}
+        >
+          <Text style={styles.cellText3}>
+            FIRMA DEL JEFE DEL AREA{"\n"}RESPONSABLE DE LA{"\n"}MITIGACION
+          </Text>
+        </View>
+      </View>
+
+      <View style={[styles.tableRow, { borderBottom: 1 }]}>
+        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "33.33%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}>{"\n"}{"\n"}</Text>
+        </View>
+
+        {/*LOCALIZACION DEL REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "33.33%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}>{"\n"}{"\n"}</Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "33.33%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={styles.cellText3}>{"\n"}{"\n"}</Text>
+        </View>
+      </View>
+
       {Footer(3, 5)}
     </Page>
   </Document>
