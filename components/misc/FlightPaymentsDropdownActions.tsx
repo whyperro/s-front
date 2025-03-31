@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { useGetFlightPaymentById } from "@/hooks/administracion/useGetFlightPaymentsById";
-import { useDeleteFlightPayments } from "@/actions/administracion/pagos/actions";
+import { useDeleteFlightPayments } from "@/actions/administracion/pagos_vuelos/actions";
 import {
   Dialog,
   DialogContent,
@@ -193,12 +193,12 @@ const FlightPaymentsDropdownActions = ({ id }: { id: string }) => {
             </p>
           )}
           <DialogFooter className="sm:justify-center">
-            <Button
+         {/*  <Button
               variant="outline"
               onClick={() => router.push(`/administracion/pagos/${id}`)}
             >
               Ver detalles completos
-            </Button>
+            </Button>  */}
             <Button onClick={() => setOpenPayments(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>

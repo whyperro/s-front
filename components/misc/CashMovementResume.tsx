@@ -85,7 +85,7 @@ const CashMovementResume = ({ movement }: { movement: CashMovement }) => {
         <h3 className="font-medium mb-2">Resumen</h3>
         <div className="flex justify-between items-center">
           <span>Monto Total:</span>
-          <span className="font-bold text-xl">${movement.amount}</span>
+          <span className="font-bold text-xl">$ {movement.amount}</span>
         </div>
       </div>
     </div>

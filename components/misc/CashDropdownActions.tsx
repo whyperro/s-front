@@ -20,6 +20,16 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 
+//función auxiliar para manejar la lógica de los símbolos
+const getCurrencySymbol = (coinType: string) => {
+  switch(coinType) {
+    case "DOLARES": return "$";
+    case "EUROS": return "€";
+    case "BOLIVARES": return "Bs.";
+    default: return "";
+  }
+};
+
 const CashDropdownActions = ({ id }: { id: string }) => {
   const [openCash, setOpenCash] = useState<boolean>(false);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
@@ -130,7 +140,7 @@ const CashDropdownActions = ({ id }: { id: string }) => {
                 <h3 className="font-medium mb-2">Resumen</h3>
                 <div className="flex justify-between items-center">
                   <span>Monto Total:</span>
-                  <span className="font-bold text-xl">${cashDetails.total_amount}</span>
+                  <span className="font-bold text-xl">{getCurrencySymbol(cashDetails.coin)} {cashDetails.total_amount}</span>
                 </div>
               </div>
             </div>
@@ -138,9 +148,6 @@ const CashDropdownActions = ({ id }: { id: string }) => {
             <p className="text-center text-muted-foreground">No se pudo cargar la información de la caja.</p>
           )}
           <DialogFooter className="sm:justify-center">
-          {/*  <Button variant="outline" onClick={() => router.push(`/administracion/cuentas/${id}`)}>
-              Ver detalles completos
-            </Button> */}
             <Button onClick={() => setOpenCash(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>

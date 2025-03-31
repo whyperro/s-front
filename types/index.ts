@@ -199,6 +199,7 @@ export interface ComponentArticle extends Article {
 }
 
 export type Credit ={
+  id: number,
   renting: Renting,
   flight: Flight,
   vendor: Vendor,
@@ -211,6 +212,15 @@ export type Credit ={
   debt: number,
   payed_amount: number,
   status: "PENDIENTE" | "PAGADO",
+}
+
+export type CreditPayment = {
+  id: number,
+  bank_account: BankAccount,
+  pay_method: "EFECTIVO" | "TRANSFERENCIA",
+  pay_amount: string,
+  payment_date: Date,
+  pay_description: string,
 }
 
 export type Department = {

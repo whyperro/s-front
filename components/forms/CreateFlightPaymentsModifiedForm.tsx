@@ -1,6 +1,6 @@
 "use client";
 
-import { useCreateFlightPayments } from "@/actions/administracion/pagos/actions";
+import { useCreateFlightPayments } from "@/actions/administracion/pagos_vuelos/actions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";

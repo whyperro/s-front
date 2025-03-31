@@ -1,6 +1,5 @@
 "use client";
 
-import { useCreateFlightPayments } from "@/actions/administracion/pagos_vuelos/actions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
@@ -31,53 +30,76 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetClients } from "@/hooks/administracion/useGetClients";
-import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
+import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
+import { Loader2 } from "lucide-react";
+import { Credit } from "@/types";
+import { useCreateCreditPayment } from "@/actions/administracion/pagos_creditos/actions";
 
-const formSchema = z.object({
-  bank_account_id: z.string().optional(),
-  flight_id: z.string({
-    message: "Debe elegir un vuelo.",
-  }),
-  client_id: z.string({
-    message: "Debe elegir un cliente.",
-  }),
-  pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"], {
-    message: "Debe elegir un método de pago.",
-  }),
-  pay_amount: z.string(),
-  payment_date: z.date({
-    required_error: "La fecha de vuelo es requerida",
-  }),
-  pay_description: z
-    .string()
-    .min(3, {
-      message: "Los detalles del pago deben tener al menos 3 caracteres.",
-    })
-    .max(100, {
-      message: "Los detalles del pago tiene un máximo 100 caracteres.",
+const formSchema = z
+  .object({
+    bank_account_id: z
+      .string({
+        message: "Debe elegir una cuenta de banco.",
+      })
+      .optional(), // Por defecto es opcional
+    pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"], {
+      message: "Debe elegir un método de pago.",
     }),
-});
+    pay_amount: z.string().refine(
+      (val) => {
+        // Convertir el valor a número y verificar que sea positivo
+        const number = parseFloat(val);
+        return !isNaN(number) && number >= 0;
+      },
+      {
+        message: "La cantidad pagada debe ser mayor a cero.",
+      }
+    ),
+    payment_date: z.date({
+      required_error: "La fecha de vuelo es requerida",
+    }),
+    pay_description: z
+      .string()
+      .min(3, {
+        message: "Los detalles del pago deben tener al menos 3 caracteres.",
+      })
+      .max(100, {
+        message: "Los detalles del pago tiene un máximo 100 caracteres.",
+      }),
+  })
+  .refine(
+    (data) => {
+      // Si el método de pago es "TRANSFERENCIA", entonces `bank_account_id` es obligatorio
+      if (data.pay_method === "TRANSFERENCIA" && !data.bank_account_id) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "La cuenta de banco es requerida para transferencias.",
+      path: ["bank_account_id"], // Especifica el campo al que se aplica el error
+    }
+  );
 
 interface FormProps {
   onClose: () => void;
+  credit: Credit;
 }
 
-export function FlightPaymentsForm({ onClose }: FormProps) {
-  const { createFlightPayments } = useCreateFlightPayments();
-  const { data: clients, isLoading: isClientsLoading } = useGetClients();
-  const {
-    data: aircrafts,
-    isLoading: isAircraftLoading,
-    isError: isAircraftError,
-  } = useGetAircrafts();
+export function CreditPaymentForm({ onClose, credit }: FormProps) {
+  const { createCreditPayment } = useCreateCreditPayment();
+  const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createFlightPayments.mutateAsync(values);
+    const formattedValues = {
+      ...values,
+      id: credit.id,
+      client_id: credit.client.id,
+    };
+    await createCreditPayment.mutateAsync(formattedValues);
     onClose();
   }
   return (
@@ -86,72 +108,6 @@ export function FlightPaymentsForm({ onClose }: FormProps) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col space-y-3"
       >
-        <div className="flex gap-2 items-center justify-center">
-          <FormField
-            control={form.control}
-            name="client_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Cliente</FormLabel>
-                <Select
-                  disabled={isClientsLoading}
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione un Cliente" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {clients &&
-                      clients.map((client) => (
-                        <SelectItem
-                          key={client.id}
-                          value={client.id.toString()}
-                        >
-                          {client.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="flight_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Vuelo</FormLabel>
-                <Select
-                  disabled={isAircraftLoading}
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione un Vuelo" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {aircrafts &&
-                      aircrafts.map((aircraft) => (
-                        <SelectItem
-                          key={aircraft.id}
-                          value={aircraft.id.toString()}
-                        >
-                          {aircraft.acronym}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
         <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
@@ -165,7 +121,7 @@ export function FlightPaymentsForm({ onClose }: FormProps) {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleccione el tipo de vuelo" />
+                      <SelectValue placeholder="Seleccione método de pago" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -183,12 +139,33 @@ export function FlightPaymentsForm({ onClose }: FormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cuenta de Banco</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Ingrese la cuenta de banco "
-                      {...field}
-                    />
-                  </FormControl>
+                  <Select
+                    disabled={isAccLoading}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={
+                            isAccLoading ? (
+                              <Loader2 className="animate-spin" />
+                            ) : (
+                              "Seleccione el tipo..."
+                            )
+                          }
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {accounts &&
+                        accounts.map((acc) => (
+                          <SelectItem value={acc.id.toString()} key={acc.id}>
+                            {acc.name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -264,8 +241,8 @@ export function FlightPaymentsForm({ onClose }: FormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={createFlightPayments.isPending}>
-          {createFlightPayments.isPending ? "Enviando..." : "Enviar"}
+        <Button type="submit" disabled={createCreditPayment.isPending}>
+          {createCreditPayment.isPending ? "Enviando..." : "Enviar"}
         </Button>
       </form>
     </Form>

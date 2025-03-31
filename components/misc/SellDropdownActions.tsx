@@ -181,12 +181,12 @@ const SellDropdownActions = ({ id }: { id: string }) => {
             </p>
           )}
           <DialogFooter className="sm:justify-center">
-            <Button
+        {/*    <Button
               variant="outline"
               onClick={() => router.push(`/administracion/ventas/${id}`)}
             >
               Ver detalles completos
-            </Button>
+            </Button>  */}
             <Button onClick={() => setOpenSells(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>

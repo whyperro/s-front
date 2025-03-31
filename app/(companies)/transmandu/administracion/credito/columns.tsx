@@ -5,6 +5,7 @@ import { Credit } from "@/types";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale/es";
+import CreditDropdownActions from "@/components/misc/CreditDropdownActions";
 
 export const columns: ColumnDef<Credit>[] = [
   {
@@ -173,5 +174,12 @@ export const columns: ColumnDef<Credit>[] = [
         </span>
       </div>
     ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const id = row.original.id;
+      return <CreditDropdownActions credit={row.original} />;
+    },
   },
 ];

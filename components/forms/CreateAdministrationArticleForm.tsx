@@ -27,7 +27,7 @@ const formSchema = z.object({
   }).max(40, {
     message: "El nombre tiene un máximo 40 caracteres.",
   }),
-  status: z.enum(["VENDIDO", "ORDENADO", "RENTADO"]),
+  status: z.enum(["VENDIDO", "EN POSESION", "RENTADO"]),
   price: z.string().refine(
     (val) => {
       // Convertir el valor a número y verificar que sea positivo

@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Flight } from "@/types";
 import { format } from "date-fns";
-import { es, id } from "date-fns/locale";
+import { es } from "date-fns/locale";
 import {
   EyeIcon,
   HandCoins,
@@ -221,14 +221,14 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
           </div>
 
           <DialogFooter className="sm:justify-center">
-            <Button
+          {/* <Button
               variant="outline"
               onClick={() =>
                 router.push(`/administracion/gestion_vuelos/vuelos/${id}`)
               }
             >
               Ver detalles completos
-            </Button>
+            </Button> */}
             <Button onClick={() => setOpenFlight(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>
