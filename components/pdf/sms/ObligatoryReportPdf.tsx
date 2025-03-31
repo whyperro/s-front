@@ -1,6 +1,13 @@
 import React from "react";
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
-import { ObligatoryReport, VoluntaryReport } from "@/types";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Image,
+} from "@react-pdf/renderer";
+import { ObligatoryReport } from "@/types";
 import { dateFormat, timeFormat } from "@/lib/utils";
 
 const BLUE = "#d6eaf8";
@@ -8,7 +15,33 @@ const RED = "#fc0a0a";
 const GREEN = "#0ebe36";
 const WHITE = "#fff";
 
+const LIST = [
+  "La aereonave aterriza quedándose solo con el combustible de reserva o menos",
+  "Incursion en pista o calle de rodaje ( RUNAWAY INCURSION-RI)",
+  "Aproximacion no estabilizada por debajo de los 500 pies VRF o 1000 PIES IRF",
+  "Desprezurizacion",
+  "Salida de pista - RUNAWAY INCURSION",
+  "Derrame de combustible",
+  "Error  de navegacion con desviacion significativa de la ruta",
+  "Casi colision (RESOLUCION ACVSORY-RA)",
+  "Despegue abortado(REJETED TAKE OFF-RTO)",
+  "Falla de motor",
+  "Tail Strike",
+  "Impacto con aves",
+  "Aterrizaje fuerte (HARD LANDING)",
+  "Alerta de fuego o humo",
+  "Wind Shear",
+  "El avion es evacuado",
+  "Fallo en los controles de vuelo",
+  "Parametros de vuelo anormales",
+];
+
 const styles = StyleSheet.create({
+  logo: {
+    width: 102,
+    height: 43,
+    position: "relative",
+  },
   page: {
     padding: 30,
     backgroundColor: "#FFF",
@@ -211,8 +244,11 @@ const styles = StyleSheet.create({
     marginBottom: 2, // Espacio entre la línea y "firma"
   },
   signatureText: {
-    fontSize: 11, // Tamaño de letra 1
+    fontSize: 10, // Tamaño de letra 1
     textAlign: "center", // Centrar el texto
+  },
+  boldTitle: {
+    fontFamily: "Helvetica-Bold",
   },
 });
 
@@ -268,7 +304,10 @@ const Instructive = () => (
     </View>
 
     <View style={styles.instructiveContainer}>
-      <Text style={styles.instructiveText}> I. DATOS DE QUIEN REPORTA </Text>
+      <Text style={[styles.instructiveText, styles.boldTitle]}>
+        {" "}
+        I. DATOS DE QUIEN REPORTA{" "}
+      </Text>
     </View>
 
     <View style={styles.instructiveContainer}>
@@ -409,7 +448,6 @@ const Instructive = () => (
 
 const Footer = (currentPage: number, pageNumber: number) => (
   <View style={styles.footerContainer}>
-    
     <View style={styles.tableRow}>
       <View style={{ ...styles.tableCell, width: "67%" }}>
         <Text style={styles.cellText2}>
@@ -417,7 +455,6 @@ const Footer = (currentPage: number, pageNumber: number) => (
           {"\n"}(SMS)
         </Text>
       </View>
-
 
       <View style={{ ...styles.tableCell, width: "20%" }}>
         <Text style={styles.cellText2}>REVISION N:00</Text>
@@ -455,7 +492,7 @@ const Footer = (currentPage: number, pageNumber: number) => (
 const Header = () => (
   <View style={styles.tableRowHeader}>
     <View style={{ ...styles.tableCellHeader, width: "20%" }}>
-      <Text style={styles.cellTextHeader}>Recuadro 1</Text>
+      <Image src="/tmd_sms_header.jpg" style={styles.logo} />
     </View>
     <View style={styles.column2Header}>
       <View style={styles.rowColumnHeader}>
@@ -477,7 +514,7 @@ const Header = () => (
         <Text style={styles.cellTextHeader}>FECHA EDICION{"\n"}12/10/2023</Text>
       </View>
       <View style={styles.rowColumnHeader}>
-        <Text style={styles.cellTextHeader}>CODIGO:{"\n"}TMD-FOR-SMS-002</Text>
+        <Text style={styles.cellTextHeader}>CODIGO:{"\n"}TMD-FOR-SMS-003</Text>
       </View>
     </View>
   </View>
@@ -492,28 +529,36 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
         <View
           style={{ ...styles.tableCell, width: "15%", backgroundColor: BLUE }}
         >
-          <Text style={styles.cellText}>FECHA DEL{"\n"}REPORTE</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>
+            FECHA DEL{"\n"}REPORTE
+          </Text>
         </View>
         <View
           style={{ ...styles.tableCell, width: "15%", backgroundColor: BLUE }}
         >
-          <Text style={styles.cellText}>FECHA DEL{"\n"}SUCESO </Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>
+            FECHA DEL{"\n"}SUCESO{" "}
+          </Text>
         </View>
         <View
           style={{ ...styles.tableCell, width: "15%", backgroundColor: BLUE }}
         >
-          <Text style={styles.cellText}>HORA DEL{"\n"}SUCESO</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>
+            HORA DEL{"\n"}SUCESO
+          </Text>
         </View>
         <View
           style={{ ...styles.tableCell, width: "40%", backgroundColor: BLUE }}
         >
-          <Text style={styles.cellText}>LUGAR DONDE OCURRIO EL SUCESO</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>
+            LUGAR DONDE OCURRIO EL SUCESO
+          </Text>
         </View>
 
-          <View
+        <View
           style={{ ...styles.tableCell, width: "15%", backgroundColor: BLUE }}
         >
-          <Text style={styles.cellText}>N DE REPORTE</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>N DE REPORTE</Text>
         </View>
       </View>
 
@@ -555,7 +600,9 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
         <View
           style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
         >
-          <Text style={styles.cellText}>I. DATOS DE QUIEN REPORTA</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>
+            I. DATOS DE QUIEN REPORTA
+          </Text>
         </View>
       </View>
 
@@ -642,7 +689,9 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
             backgroundColor: BLUE,
           }}
         >
-          <Text style={styles.cellText}>II. DATOS DEL VUELO</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>
+            II. DATOS DEL VUELO
+          </Text>
         </View>
       </View>
 
@@ -742,7 +791,7 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
             backgroundColor: BLUE,
           }}
         >
-          <Text style={[styles.cellText2, { fontWeight: "bold" }]}>
+          <Text style={[styles.cellText2, styles.boldTitle]}>
             III. SUCESOS DE OBLIGATORIO REPORTE
           </Text>
         </View>
@@ -759,7 +808,11 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
           </Text>
 
           <View style={styles.checkbox}>
-            <Text style={styles.xMark}>X</Text>
+            <Text style={styles.xMark}>
+              {report.incidents.includes(
+                "La aereonave aterriza quedándose solo con el combustible de reserva o menos"
+              )? "X" :""}
+            </Text>
           </View>
         </View>
         <View style={{ ...styles.tableIncidentCell, width: "20%" }}>
@@ -925,7 +978,6 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
         </View>
         <View style={{ ...styles.tableIncidentCell, width: "20%" }}>
           <Text style={styles.cellTextIncident}>
-            
             CASI COLISION{"\n"}(RESOLUCION{"\n"}ACVESORY - {"\n"}A) DE LA RUTA.
           </Text>
           <View style={styles.checkbox}>
@@ -950,16 +1002,27 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
 
       <View style={styles.observationContainer}>
         <View style={styles.titleContainer}>
-          <Text style={[styles.title, { marginTop: 5 }]}>
+          <Text style={[styles.title, styles.boldTitle, { marginTop: 5 }]}>
             EN CASO DE HABER SELECCIONADO EL ITEM "OTRO", POR FAVOR, ESPECIFIQUE
             A CONTINUACION, A QUE TIPO DE{"\n"}SUCESO SE REFIERE:
           </Text>
-          <View style={styles.firstLine} />
+        </View>
+
+        <View
+          style={{
+            position: "absolute",
+            top: 30,
+            left: 5,
+            right: 5,
+            lineHeight: 1,
+          }}
+        >
+          <Text style={styles.cellText}>{report.aircraft_model}</Text>
         </View>
 
         {/* Líneas adicionales con interlineado de 1.5 */}
         <View style={styles.linesContainer}>
-          {[...Array(2)].map((_, index) => (
+          {[...Array(3)].map((_, index) => (
             <View key={index} style={styles.line} />
           ))}
         </View>
@@ -977,7 +1040,7 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
             backgroundColor: BLUE,
           }}
         >
-          <Text style={[styles.cellText2, { fontWeight: "bold" }]}>
+          <Text style={[styles.cellText2, styles.boldTitle]}>
             IV. DESCRIPCION DEL SUCESO
           </Text>
         </View>
@@ -1007,7 +1070,7 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
 
     <Page size={"LETTER"} style={styles.page}>
       <Header />
-      <Instructive/>
+      <Instructive />
       {Footer(3, 3)}
     </Page>
   </Document>

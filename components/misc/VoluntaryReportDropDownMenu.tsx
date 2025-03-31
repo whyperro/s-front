@@ -121,7 +121,7 @@ const VoluntaryReportDropdownActions = ({
             <div className="w-full h-screen">
               {voluntaryReport && (
                 <PDFViewer style={{ width: "100%", height: "60%" }}>
-                  <SafetyRiskManagementPdf report={voluntaryReport} />
+                  <VoluntaryReportPdf report={voluntaryReport} />
                 </PDFViewer>
               )}
             </div>
@@ -131,7 +131,7 @@ const VoluntaryReportDropdownActions = ({
                   new Date(),
                   "dd-MM-yyyy"
                 )}.pdf`}
-                document={<SafetyRiskManagementPdf report={voluntaryReport} />}
+                document={<VoluntaryReportPdf report={voluntaryReport} />}
               >
                 <Button>Descargar Reporte</Button>
               </PDFDownloadLink>

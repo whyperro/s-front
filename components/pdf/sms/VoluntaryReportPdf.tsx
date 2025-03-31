@@ -1,5 +1,12 @@
 import React from "react";
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Image,
+} from "@react-pdf/renderer";
 import { VoluntaryReport } from "@/types";
 import { dateFormat } from "@/lib/utils";
 
@@ -9,6 +16,11 @@ const GREEN = "#0ebe36";
 const WHITE = "#fff";
 
 const styles = StyleSheet.create({
+  logo: {
+    width: 102,
+    height: 43,
+    position: "relative",
+  },
   page: {
     padding: 30,
     backgroundColor: "#FFF",
@@ -19,7 +31,7 @@ const styles = StyleSheet.create({
     borderTop: 1,
     borderLeft: 1,
     alignContent: "stretch",
-    alignItems:"stretch"
+    alignItems: "stretch",
   },
   tableCell: {
     padding: 2,
@@ -35,9 +47,12 @@ const styles = StyleSheet.create({
   cellText2: {
     fontSize: 9,
   },
+  cellText3: {
+    fontSize: 10,
+  },
   areaContainer: {
     flexDirection: "row",
-    height: "5%",
+    height: "8%",
     borderTop: 1,
   },
   areaLeftColumn: {
@@ -137,10 +152,9 @@ const styles = StyleSheet.create({
   },
 
   blackText: {
-    fontFamily: "Helvetica",
+    fontFamily: "Helvetica-Bold",
     fontSize: 12,
     textAlign: "center",
-    fontWeight: "black",
   },
 
   // ESTILOS PARA EL HEADER DE LA PAGINA
@@ -208,6 +222,9 @@ const styles = StyleSheet.create({
     textDecoration: "underline",
     marginVertical: 20,
   },
+  boldTitle: {
+    fontFamily: "Helvetica-Bold",
+  },
 });
 
 const Footer = (currentPage: number, pageNumber: number) => (
@@ -255,7 +272,7 @@ const Footer = (currentPage: number, pageNumber: number) => (
 const Header = () => (
   <View style={styles.tableRowHeader}>
     <View style={{ ...styles.tableCellHeader, width: "20%" }}>
-      <Text style={styles.cellTextHeader}>Recuadro 1</Text>
+      <Image src="/tmd_sms_header.jpg" style={styles.logo} />
     </View>
     <View style={styles.column2Header}>
       <View style={styles.rowColumnHeader}>
@@ -356,7 +373,9 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
         <View
           style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
         >
-          <Text style={styles.cellText}>I. DATOS DE QUIEN REPORTA</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>
+            I. DATOS DE QUIEN REPORTA
+          </Text>
         </View>
       </View>
 
@@ -426,7 +445,9 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
         <View
           style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
         >
-          <Text style={styles.cellText}>II. PELIGRO IDENTIFICADO</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>
+            II. PELIGRO IDENTIFICADO
+          </Text>
         </View>
       </View>
 
@@ -443,7 +464,7 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
             },
           ]}
         >
-          <Text style={styles.cellText}>AREA AFECTADA</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>AREA AFECTADA</Text>
         </View>
 
         <View style={styles.areaRightColumns}>
@@ -478,6 +499,7 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
                 {report.danger_area === "ADMINISTRACION" ? "X" : ""}
               </Text>
             </View>
+
             <View style={styles.textCell}>
               <Text style={styles.cellText}>
                 CONTROL Y ASEGURAMIENTO DE LA CALIDAD
@@ -489,15 +511,47 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
               </Text>
             </View>
           </View>
+
+
+          <View style={styles.areaRow}>
+            <View style={styles.textCell}>
+              <Text style={styles.cellText}>INFORMATICA Y TECNOLOGIA</Text>
+            </View>
+            <View style={styles.xCell}>
+              <Text style={styles.cellText}>
+                {" "}
+                {report.danger_area === "INFORMATICA_TECNOLOGIA" ? "X" : ""}
+              </Text>
+            </View>
+            <View style={styles.textCell}>
+              <Text style={styles.cellText}>AVSEC</Text>
+            </View>
+            <View style={styles.xCell}>
+              <Text style={styles.cellText}>
+                {report.danger_area === "AVSEC" ? "X" : ""}
+              </Text>
+            </View>
+          </View>
         </View>
       </View>
 
       <View style={styles.observationContainer}>
+        <View
+          style={{
+            position: "absolute",
+            top: 25,
+            left: 5,
+            right: 5,
+            lineHeight: 1,
+          }}
+        >
+          <Text style={styles.cellText3}>{report.description}</Text>
+        </View>
+
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
             A continuación, describa claramente el peligro que esta reportando:
           </Text>
-          <View style={styles.firstLine} />
         </View>
 
         {/* Líneas adicionales con interlineado de 1.5 */}
@@ -531,10 +585,18 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
           <Text style={styles.title}>
             A continuación, describa las consecuencias de ese peligro:
           </Text>
-          <View style={styles.firstLine} />
         </View>
-        {/*<Text style={styles.instructiveText}>{report.description}</Text>*/}
-        {/* Líneas adicionales con interlineado de 1.5 */}
+        <View
+          style={{
+            position: "absolute",
+            top: 25,
+            left: 5,
+            right: 5,
+            lineHeight: 1.1,
+          }}
+        >
+          <Text style={styles.cellText3}>{report.possible_consequences}</Text>
+        </View>
         <View style={styles.linesContainer}>
           {[...Array(7)].map((_, index) => (
             <View key={index} style={styles.line} />
@@ -543,10 +605,12 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
       </View>
 
       <View>
-        <Text style={styles.underlinedTTitle}>INSTRUCTIVO DE LLENADO</Text>
+        <Text style={[styles.underlinedTTitle, styles.boldTitle]}>
+          INSTRUCTIVO DE LLENADO
+        </Text>
       </View>
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveTitle}>
+        <Text style={[styles.instructiveTitle, styles.boldTitle]}>
           • Fecha del reporte (DD/MM/AAAA):
         </Text>
         <Text style={styles.instructiveText}>
@@ -556,21 +620,22 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveTitle}>
+        <Text style={[styles.instructiveTitle, styles.boldTitle]}>
           • Fecha en que se identificó el peligro (DD/MM/AAAA):
         </Text>
         <Text style={styles.instructiveText}>
-          {" "}
           Colocar día, mes, año en que se
         </Text>
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>identificó el peligro.</Text>
+        <Text style={[styles.instructiveText, { paddingLeft: 8 }]}>
+          identificó el peligro.
+        </Text>
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveTitle}>
+        <Text style={[styles.instructiveTitle, styles.boldTitle]}>
           • Lugar donde se identificó el peligro:{" "}
         </Text>
         <Text style={styles.instructiveText}>
@@ -579,11 +644,15 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
         </Text>
       </View>
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>esta reportando</Text>
+        <Text style={[styles.instructiveText, { paddingLeft: 8 }]}>
+          esta reportando
+        </Text>
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveTitle}>• N° de reporte:</Text>
+        <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+          • N° de reporte:
+        </Text>
         <Text style={styles.instructiveText}>
           {" "}
           Colocar el número correlativo asignado al reporte por la Gerencia del
@@ -592,11 +661,21 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveTitle}>I. DATOS DE QUIEN REPORTA </Text>
+        <Text
+          style={[
+            styles.instructiveTitle,
+            styles.boldTitle,
+            { marginBottom: 5 },
+          ]}
+        >
+          I. DATOS DE QUIEN REPORTA{" "}
+        </Text>
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveTitle}>• Nombres (opcional): </Text>
+        <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+          • Nombres (opcional):{" "}
+        </Text>
         <Text style={styles.instructiveText}>
           {" "}
           Colocar nombres de la persona que realiza el reporte, si así lo desea.
@@ -604,7 +683,9 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveTitle}>• Apellido (opcional): </Text>
+        <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+          • Apellido (opcional):{" "}
+        </Text>
         <Text style={styles.instructiveText}>
           {" "}
           Colocar apellidos de la persona que realiza el reporte, si así lo
@@ -613,18 +694,22 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveTitle}>• Teléfono (opcional): </Text>
+        <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+          • Teléfono (opcional):{" "}
+        </Text>
         <Text style={styles.instructiveText}>
           {" "}
           Colocar el número telefónico de la persona que realiza el reporte, si{" "}
         </Text>
       </View>
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>asi lo desea</Text>
+        <Text style={[styles.instructiveText, { paddingLeft: 8 }]}>
+          asi lo desea
+        </Text>
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveTitle}>
+        <Text style={[styles.instructiveTitle, styles.boldTitle]}>
           • Correo electrónico (opcional)
         </Text>
         <Text style={styles.instructiveText}>
@@ -634,7 +719,9 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveTitle}>II. PELIGRO IDENTIFICADO:</Text>
+        <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+          II. PELIGRO IDENTIFICADO:
+        </Text>
         <Text style={styles.instructiveText}>
           {" "}
           Colocar la descripción detallada y clara del peligro observado.{" "}
@@ -642,7 +729,9 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveTitle}>• Área afectada:</Text>
+        <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+          • Área afectada:
+        </Text>
         <Text style={styles.instructiveText}>
           {" "}
           Seleccionar con una (X) las áreas afectadas por el peligro que se
@@ -651,7 +740,7 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveTitle}>
+        <Text style={[styles.instructiveTitle, styles.boldTitle]}>
           III. RIESGOS (CONSECUENCIA):
         </Text>
         <Text style={styles.instructiveText}>
@@ -661,7 +750,7 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
       </View>
 
       <View style={styles.instructiveContainer}>
-        <Text style={styles.instructiveText}>
+        <Text style={[styles.instructiveText, { paddingLeft: 14 }]}>
           consecuencias de este peligro
         </Text>
       </View>

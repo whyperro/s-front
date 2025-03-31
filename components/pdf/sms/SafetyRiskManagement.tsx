@@ -11,6 +11,7 @@ const GRAY = "#ebebeb";
 // ... (your formatDate function and styles remain the same)
 
 const styles = StyleSheet.create({
+  
   page: {
     padding: 30,
     backgroundColor: "#FFF",
@@ -302,6 +303,9 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 
+  boldTitle: {
+    fontFamily: "Helvetica-Bold",
+  },
   rowFooter: {
     alignItems: "stretch",
     flexDirection: "row",
@@ -410,13 +414,17 @@ const styles = StyleSheet.create({
   instructiveTitle: {
     textAlign: "left",
     fontSize: 12,
-    fontFamily: "Helvetica",
-    fontWeight: "bold",
+    fontFamily: "Helvetica-Bold",
+    lineHeight: 1.15,
+  },
+  instructiveSubTitle: {
+    textAlign: "left",
+    fontSize: 12,
+    fontFamily: "Helvetica-Bold",
     lineHeight: 1.15,
   },
   underlinedTTitle: {
-    fontFamily: "Helvetica",
-    fontWeight: "bold",
+    fontFamily: "Helvetica-Bold",
     fontSize: 12,
     textAlign: "center",
     textDecoration: "underline",
@@ -432,11 +440,84 @@ const styles = StyleSheet.create({
   cellText3: {
     fontSize: 8,
   },
+  cellText4: {
+    fontSize: 7,
+  },
   cellTextHeader: {
     fontSize: 12,
-    fontWeight: "extrabold",
+    fontFamily: "Helvetica-Bold",
   },
 });
+
+const InstructiveFirstPart = () => (
+  <View>
+    <View style={{ marginTop: 10 }}>
+      <Text style={styles.underlinedTTitle}>INSTRUCTIVO DE LLENADO</Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { marginBottom: 10 }]}>
+      <Text style={styles.instructiveSubTitle}>
+        1. NOTIFICACION DE PELIGROS
+      </Text>
+    </View>
+
+    <View style={styles.instructiveContainer}>
+      <Text style={styles.instructiveSubTitle}>
+        • Fecha de la identificación del peligro (DD/MM/AAAA):
+      </Text>
+      <Text style={styles.instructiveText}> Colocar el día, mes y año que</Text>
+    </View>
+    <View style={styles.instructiveContainer}>
+      <Text style={styles.instructiveText}>se identifica el peligro.</Text>
+    </View>
+
+    <View style={styles.instructiveContainer}>
+      <Text style={styles.instructiveSubTitle}>
+        • Fecha de la recepción del peligro (DD/MM/AAAA):
+      </Text>
+      <Text style={styles.instructiveText}> Colocar día, mes y año que se</Text>
+    </View>
+    <View style={styles.instructiveContainer}>
+      <Text style={styles.instructiveText}>
+        realizó la apertura del caso en el departamento de SMS.
+      </Text>
+    </View>
+
+    <View style={styles.instructiveContainer}>
+      <Text style={styles.instructiveSubTitle}>• N° Caso: </Text>
+      <Text style={styles.instructiveText}>
+        Colocar el número correlativo a los casos
+      </Text>
+    </View>
+
+    <View style={styles.instructiveContainer}>
+      <Text style={styles.instructiveSubTitle}>• Tipo de peligro: </Text>
+      <Text style={styles.instructiveText}>
+        Marcar con una (X) el tipo de peligro que se identificó.
+      </Text>
+    </View>
+
+    <View style={styles.instructiveContainer}>
+      <Text style={styles.instructiveSubTitle}>
+        • Área donde fue identificado el peligro:{" "}
+      </Text>
+      <Text style={styles.instructiveText}>
+        Marcar con una (X) el área donde fue identificado
+      </Text>
+    </View>
+    <Text style={styles.instructiveText}>el peligro.</Text>
+
+    <View style={styles.instructiveContainer}>
+      <Text style={styles.instructiveSubTitle}>
+        • Método y fuente de la identificación de peligros:
+      </Text>
+      <Text style={styles.instructiveText}>
+        Marcar con una (X) la(s) fuente(s) con
+      </Text>
+    </View>
+    <Text style={styles.instructiveText}>que se identificó el peligro.</Text>
+  </View>
+);
 
 const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
   <Document>
@@ -453,23 +534,32 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
 
       <View style={styles.tableRow}>
         <View
-          style={{ ...styles.tableCell, width: "37%", backgroundColor: BLUE }}
+          style={{
+            ...styles.tableCell,
+            width: "37%",
+            backgroundColor: BLUE,
+            alignItems: "flex-start",
+            paddingLeft: 6,
+          }}
         >
-          <Text style={[styles.cellText]}>
-            FECHA DE LA IDENTIFICACION DEL{"\n"}PELIGRO
+          <Text style={[styles.cellText, styles.boldTitle]}>
+            FECHA DE LA IDENTIFICACION DEL
           </Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>PELIGRO:</Text>
         </View>
         <View
           style={{ ...styles.tableCell, width: "63%", backgroundColor: BLUE }}
         >
-          <Text style={styles.cellText2}>TIPO DE PELIGRO</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>
+            TIPO DE PELIGRO
+          </Text>
         </View>
       </View>
 
       <View style={styles.tableRow}>
         <View style={{ ...styles.tableCell, width: "37%" }}>
           <Text style={styles.cellText}>
-            {dateFormat(report.report_date, "dd-MM-yyyy")}
+            {dateFormat(report.identification_date, "dd-MM-yyyy")}
           </Text>
         </View>
 
@@ -482,7 +572,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText2}>NATURAL</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>NATURAL</Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -493,7 +583,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText2}>TECNICO</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>TECNICO</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -504,7 +594,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText2}>ORGNIZACIONAL</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>
+            ORGNIZACIONAL
+          </Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -515,22 +607,29 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText2}>HUMANO</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>HUMANO</Text>
         </View>
       </View>
 
       <View style={styles.tableRow}>
         <View
-          style={{ ...styles.tableCell, width: "27%", backgroundColor: BLUE }}
+          style={{
+            ...styles.tableCell,
+            width: "27%",
+            backgroundColor: BLUE,
+            paddingLeft: 6,
+            alignItems: "flex-start",
+          }}
         >
-          <Text style={[styles.cellText]}>
-            FECHA DE LA RECEPCION DEL{"\n"}PELIGRO
+          <Text style={[styles.cellText, styles.boldTitle]}>
+            FECHA DE LA RECEPCION DEL
           </Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>PELIGRO</Text>
         </View>
         <View
           style={{ ...styles.tableCell, width: "10%", backgroundColor: BLUE }}
         >
-          <Text style={styles.cellText2}>N CASO</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>N° CASO</Text>
         </View>
 
         <View
@@ -540,7 +639,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText2}></Text>
+          <Text style={styles.cellText2}>
+            {report.danger_identification?.danger_type === "NATURAL" ? "X" : ""}
+          </Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -551,7 +652,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText2}></Text>
+          <Text style={styles.cellText2}>
+            {report.danger_identification?.danger_type === "TECNICO" ? "X" : ""}
+          </Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -562,7 +665,11 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText2}></Text>
+          <Text style={styles.cellText2}>
+            {report.danger_identification?.danger_type === "ORGANIZACIONAL"
+              ? "X"
+              : ""}
+          </Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -573,7 +680,12 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText2}>{report.report_number}</Text>
+          <Text style={styles.cellText2}>
+            {" "}
+            {report.danger_identification?.danger_type === "HUMANO"
+              ? "X"
+              : ""}{" "}
+          </Text>
         </View>
       </View>
 
@@ -586,7 +698,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText2}></Text>
+          <Text style={styles.cellText2}>
+            {dateFormat(report.report_date, "dd-MM-yyy")}
+          </Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -597,13 +711,13 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText2}>X</Text>
+          <Text style={styles.cellText2}>{report.report_number}</Text>
         </View>
 
         <View
           style={{ ...styles.tableCell, width: "63%", backgroundColor: BLUE }}
         >
-          <Text style={[styles.cellText]}>
+          <Text style={[styles.cellText, styles.boldTitle]}>
             METODO Y FUENTE DE LA IDENTIFICACION DE PELIGROS
           </Text>
         </View>
@@ -618,7 +732,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: BLUE,
           }}
         >
-          <Text style={[styles.cellText]}>
+          <Text style={[styles.cellText, styles.boldTitle]}>
             AREA DONDE FUE IDENTIFICADO EL{"\n"}EL PELIGRO:
           </Text>
         </View>
@@ -631,7 +745,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GREEN,
           }}
         >
-          <Text style={styles.cellText2}>PROACTIVO</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>PROACTIVO</Text>
         </View>
 
         <View
@@ -643,7 +757,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             fontWeight: "extrabold",
           }}
         >
-          <Text style={[styles.cellText]}>REACTIVO</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>REACTIVO</Text>
         </View>
       </View>
 
@@ -983,7 +1097,6 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             ...styles.tableCell,
             width: "26.5%",
             backgroundColor: GRAY,
-            borderWidth: 0,
           }}
         >
           <Text style={[styles.cellText]}></Text>
@@ -1056,7 +1169,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={[styles.cellTextHeader]}>Por que Sucedio?</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>
+            Por que Sucedio?
+          </Text>
         </View>
       </View>
       <View style={styles.tableRow}>
@@ -1069,7 +1184,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={[styles.cellTextHeader]}>Por que</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1082,7 +1197,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={[styles.cellTextHeader]}>Por que</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
         </View>
       </View>
       <View style={styles.tableRow}>
@@ -1095,7 +1210,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={[styles.cellTextHeader]}>Por que</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
         </View>
       </View>
       <View style={styles.tableRow}>
@@ -1108,7 +1223,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={[styles.cellTextHeader]}>Por que</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1121,7 +1236,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellTextHeader}>
+          <Text style={[styles.cellText2, styles.boldTitle]}>
             Si el porque final no tiene una solucion controlable, vuelva al
             "porque" anterior
           </Text>
@@ -1146,7 +1261,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
 
       {/* FILA PARA LOS DATOS DEL AREA RESPONSABLE DE LA MITIGACION*/}
 
-      <View style={[styles.tableRow, { borderBottom: 1, textAlign: "left" }]}>
+      <View style={[styles.tableRow, { borderBottom: 1 }]}>
         {/*NUMERO DE REPORTE*/}
         <View
           style={{
@@ -1155,7 +1270,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={[styles.cellText3]}>DIRECCION{"\n"}SMS</Text>
+          <Text style={[styles.cellText3, styles.boldTitle]}>
+            DIRECCION{"\n"}SMS
+          </Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1166,7 +1283,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText3, styles.boldTitle]}></Text>
         </View>
 
         <View
@@ -1176,7 +1293,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={[styles.cellText3]}>OPERACIONES</Text>
+          <Text style={[styles.cellText3, styles.boldTitle]}>OPERACIONES</Text>
         </View>
 
         <View
@@ -1186,7 +1303,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={[styles.cellText3]}></Text>
+          <Text style={[styles.cellText3, styles.boldTitle]}></Text>
         </View>
 
         <View
@@ -1196,7 +1313,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={[styles.cellText3]}>
+          <Text style={[styles.cellText3, styles.boldTitle]}>
             MANTENIMIENTO Y{"\n"}PLANIFICACION
           </Text>
         </View>
@@ -1208,7 +1325,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={[styles.cellText3]}></Text>
+          <Text style={[styles.cellText3, styles.boldTitle]}></Text>
         </View>
         <View
           style={{
@@ -1217,7 +1334,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={[styles.cellText3]}>
+          <Text style={[styles.cellText3, styles.boldTitle]}>
             GERENCIA DE{"\n"}ADMINISTRACION Y{"\n"}RRHH
           </Text>
         </View>
@@ -1229,7 +1346,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={[styles.cellText3]}></Text>
+          <Text style={[styles.cellText3, styles.boldTitle]}></Text>
         </View>
 
         <View
@@ -1239,7 +1356,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={[styles.cellText3]}>
+          <Text style={[styles.cellText3, styles.boldTitle]}>
             GERENCIA DE{"\n"}CONTROL DE{"\n"}CALIDAD
           </Text>
         </View>
@@ -1251,7 +1368,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={[styles.cellText3]}></Text>
+          <Text style={[styles.cellText3, styles.boldTitle]}></Text>
         </View>
       </View>
       {Footer(1, 5)}
@@ -1270,7 +1387,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>
+          <Text style={[styles.cellText2, styles.boldTitle]}>
             {"\n"}
             FECHA DE INICIO DE LA GESTION:
             {"\n"}
@@ -1297,7 +1414,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>1.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1310,7 +1427,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>2.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1323,7 +1440,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>3.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1336,7 +1453,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>4.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1349,7 +1466,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>5.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
         </View>
       </View>
 
@@ -1371,7 +1488,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>1.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1384,7 +1501,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>2.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1397,7 +1514,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>3.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1410,7 +1527,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>4.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1423,7 +1540,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>5.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1436,7 +1553,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>6.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>6.</Text>
         </View>
       </View>
 
@@ -1460,7 +1577,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText2}>1</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>1</Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -1471,7 +1588,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText2}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1482,7 +1599,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText2}>2</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>2</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1493,7 +1610,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText2}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         <View
@@ -1503,7 +1620,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText2}>3</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>3</Text>
         </View>
 
         <View
@@ -1513,7 +1630,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText2}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         <View
@@ -1523,7 +1640,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText2}>4</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>4</Text>
         </View>
 
         <View
@@ -1533,7 +1650,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText2}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         <View
@@ -1543,7 +1660,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText2}>5</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>5</Text>
         </View>
 
         <View
@@ -1567,7 +1684,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText}>PROBABILIDAD</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>PROBABILIDAD</Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -1578,7 +1695,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText}>SEVERIDAD</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>SEVERIDAD</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1589,7 +1706,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText}>INDICE DE RIESGO INICIAL</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>
+            INDICE DE RIESGO{"\n"}INICIAL
+          </Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1600,7 +1719,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText}>TOLERABILIDAD DEL{"\n"}RIESGO</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>
+            TOLERABILIDAD DEL{"\n"}RIESGO
+          </Text>
         </View>
       </View>
 
@@ -1624,7 +1745,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>1.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1637,7 +1758,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>2.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1650,7 +1771,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>3.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1663,7 +1784,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>4.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -1676,7 +1797,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText2}>5.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
         </View>
       </View>
 
@@ -1690,8 +1811,12 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText}>RESPONSABLE DE LA</Text>
-          <Text style={styles.cellText}>IMPLEMENTACION</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>
+            RESPONSABLE DE LA
+          </Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>
+            IMPLEMENTACION
+          </Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -1702,7 +1827,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText}>FIRMA</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>FIRMA</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1713,9 +1838,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText}>RESPONSABLE</Text>
-          <Text style={styles.cellText}>DEL</Text>
-          <Text style={styles.cellText}>SEGUIMIENTO</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>RESPONSABLE</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>DEL</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>SEGUIMIENTO</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1726,7 +1851,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText}>FIRMA</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>FIRMA</Text>
         </View>
 
         <View
@@ -1736,9 +1861,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText}>FECHA</Text>
-          <Text style={styles.cellText}>ESTIMADA DE</Text>
-          <Text style={styles.cellText}>EJECUCION</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>FECHA</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>ESTIMADA DE</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>EJECUCION</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1749,79 +1874,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText}>FECHA</Text>
-          <Text style={styles.cellText}>REAL DE</Text>
-          <Text style={styles.cellText}>EJECUCION</Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={styles.cellText}>1.</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "18%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "21%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>FECHA</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>REAL DE</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>EJECUCION</Text>
         </View>
       </View>
 
@@ -1837,7 +1892,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText}>2.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -1848,7 +1903,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1859,7 +1914,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1870,7 +1925,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         <View
@@ -1880,7 +1935,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1891,7 +1946,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
       </View>
 
@@ -1907,7 +1962,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText}>3.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -1918,7 +1973,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1929,7 +1984,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1940,7 +1995,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         <View
@@ -1950,7 +2005,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1961,7 +2016,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
       </View>
 
@@ -1977,7 +2032,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText}>4.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -1988,7 +2043,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -1999,7 +2054,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2010,7 +2065,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         <View
@@ -2020,7 +2075,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2031,7 +2086,77 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+        </View>
+      </View>
+
+      <View style={[styles.tableRow]}>
+        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "25%",
+            backgroundColor: WHITE,
+            alignItems: "flex-start",
+            paddingLeft: 4,
+          }}
+        >
+          <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
+        </View>
+
+        {/*LOCALIZACION DEL REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "12%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "18%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "12%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+        </View>
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "21%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "12%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
       </View>
 
@@ -2047,7 +2172,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             paddingLeft: 4,
           }}
         >
-          <Text style={styles.cellText}>5.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -2058,7 +2183,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2069,7 +2194,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2080,7 +2205,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         <View
@@ -2090,7 +2215,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2101,7 +2226,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
       </View>
       {Footer(2, 5)}
@@ -2119,7 +2244,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText}>PROBABILIDAD</Text>
+          <Text style={[styles.cellText3, styles.boldTitle]}>PROBABILIDAD</Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -2130,7 +2255,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText}>SEVERIDAD</Text>
+          <Text style={[styles.cellText3, styles.boldTitle]}>SEVERIDAD</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2141,7 +2266,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText}>INDICE DE RIESGO INICIAL</Text>
+          <Text style={[styles.cellText3, styles.boldTitle]}>
+            INDICE DE RIESGO RESIDUAL
+          </Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2152,7 +2279,68 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText}>TOLERABILIDAD DEL{"\n"}RIESGO</Text>
+          <Text style={[styles.cellText3, styles.boldTitle]}>
+            TOLERABILIDAD DEL{"\n"}RIESGO RESIDUAL
+          </Text>
+        </View>
+      </View>
+
+      <View style={[styles.tableRow]}>
+        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "25%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText3, styles.boldTitle]}>
+            {"\n"}
+            {"\n"}
+          </Text>
+        </View>
+
+        {/*LOCALIZACION DEL REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "25%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText3, styles.boldTitle]}>
+            {"\n"}
+            {"\n"}
+          </Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "25%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText3, styles.boldTitle]}>
+            {"\n"}
+            {"\n"}
+          </Text>
+        </View>
+
+        {/*NUMERO DE REPORTE*/}
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "25%",
+            backgroundColor: WHITE,
+          }}
+        >
+          <Text style={[styles.cellText3, styles.boldTitle]}>
+            {"\n"}
+            {"\n"}
+          </Text>
         </View>
       </View>
 
@@ -2160,7 +2348,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
         <View
           style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
         >
-          <Text style={styles.cellTextHeader}>3. CONTROL DE SEGUIMIENTO</Text>
+          <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+            3. CONTROL DE SEGUIMIENTO
+          </Text>
         </View>
       </View>
 
@@ -2174,7 +2364,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText3}>
+          <Text style={[styles.cellText4, styles.boldTitle]}>
             FECHA DE{"\n"}SEGUIMIENTO DE{"\n"}LAS MEDIDAS DE{"\n"}MITIGACION
           </Text>
         </View>
@@ -2187,7 +2377,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText3}>OBSERVACIONES</Text>
+          <Text style={[styles.cellText4, styles.boldTitle]}>
+            OBSERVACIONES
+          </Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2198,7 +2390,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText3}>
+          <Text style={[styles.cellText4, styles.boldTitle]}>
             RESPONSABLE DE{"\n"}LA{"\n"}IMPLEMENTACION
           </Text>
         </View>
@@ -2211,7 +2403,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText3}>FIRMA</Text>
+          <Text style={[styles.cellText4, styles.boldTitle]}>FIRMA</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2222,7 +2414,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText3}>RESPONSABLE DEL{"\n"}SEGUIMIENTO</Text>
+          <Text style={[styles.cellText4, styles.boldTitle]}>
+            RESPONSABLE DEL{"\n"}SEGUIMIENTO
+          </Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2233,7 +2427,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText3}>FIRMA</Text>
+          <Text style={[styles.cellText4, styles.boldTitle]}>FIRMA</Text>
         </View>
       </View>
 
@@ -2246,10 +2440,10 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             width: "17%",
             backgroundColor: WHITE,
             alignItems: "flex-start",
-            paddingLeft: 4,
+            padding: 4,
           }}
         >
-          <Text style={styles.cellText3}>1.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -2260,7 +2454,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2271,7 +2465,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2282,7 +2476,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2293,7 +2487,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2304,7 +2498,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -2316,10 +2510,10 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             width: "17%",
             backgroundColor: WHITE,
             alignItems: "flex-start",
-            paddingLeft: 4,
+            padding: 4,
           }}
         >
-          <Text style={styles.cellText3}>2.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -2330,7 +2524,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2341,7 +2535,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2352,7 +2546,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2363,7 +2557,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2374,7 +2568,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -2386,10 +2580,10 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             width: "17%",
             backgroundColor: WHITE,
             alignItems: "flex-start",
-            paddingLeft: 4,
+            padding: 4,
           }}
         >
-          <Text style={styles.cellText3}>3.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -2400,7 +2594,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2411,7 +2605,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2422,7 +2616,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2433,7 +2627,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2444,7 +2638,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -2456,10 +2650,10 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             width: "17%",
             backgroundColor: WHITE,
             alignItems: "flex-start",
-            paddingLeft: 4,
+            padding: 4,
           }}
         >
-          <Text style={styles.cellText3}>4.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -2470,7 +2664,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2481,7 +2675,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2492,7 +2686,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2503,7 +2697,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2514,7 +2708,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
       </View>
       <View style={[styles.tableRow]}>
@@ -2526,10 +2720,10 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             width: "17%",
             backgroundColor: WHITE,
             alignItems: "flex-start",
-            paddingLeft: 4,
+            padding: 4,
           }}
         >
-          <Text style={styles.cellText3}>5.</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -2540,7 +2734,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2551,7 +2745,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2562,7 +2756,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2573,7 +2767,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2584,7 +2778,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}></Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
         </View>
       </View>
 
@@ -2592,7 +2786,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
         <View
           style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
         >
-          <Text style={styles.cellTextHeader}>4. CIERRE DEL CASO</Text>
+          <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+            4. CIERRE DEL CASO
+          </Text>
         </View>
       </View>
 
@@ -2606,7 +2802,9 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText3}>FECHA DE CIERRE</Text>
+          <Text style={[styles.cellText, styles.boldTitle]}>
+            FECHA DE CIERRE
+          </Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -2617,7 +2815,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText3}>
+          <Text style={[styles.cellText, styles.boldTitle]}>
             FIRMA DEL REPRESENTANTE DE{"\n"}SMS
           </Text>
         </View>
@@ -2630,7 +2828,7 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: GRAY,
           }}
         >
-          <Text style={styles.cellText3}>
+          <Text style={[styles.cellText, styles.boldTitle]}>
             FIRMA DEL JEFE DEL AREA{"\n"}RESPONSABLE DE LA{"\n"}MITIGACION
           </Text>
         </View>
@@ -2646,7 +2844,10 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}>{"\n"}{"\n"}</Text>
+          <Text style={styles.cellText3}>
+            {"\n"}
+            {"\n"}
+          </Text>
         </View>
 
         {/*LOCALIZACION DEL REPORTE*/}
@@ -2657,7 +2858,10 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}>{"\n"}{"\n"}</Text>
+          <Text style={styles.cellText3}>
+            {"\n"}
+            {"\n"}
+          </Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
@@ -2668,10 +2872,13 @@ const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
             backgroundColor: WHITE,
           }}
         >
-          <Text style={styles.cellText3}>{"\n"}{"\n"}</Text>
+          <Text style={styles.cellText3}>
+            {"\n"}
+            {"\n"}
+          </Text>
         </View>
       </View>
-
+      <InstructiveFirstPart />
       {Footer(3, 5)}
     </Page>
   </Document>
@@ -2705,12 +2912,12 @@ const Header = () => (
       </View>
       <View style={styles.thirdColumnRow}>
         <Text style={[styles.text, { width: "100%" }]}>
-          FECHA DE EDICIÓN: 12/10/2023
+          FECHA DE EDICIÓN: 06/04/2024
         </Text>
       </View>
       <View style={styles.thirdColumnLastRow}>
         <Text style={[styles.text, { width: "100%" }]}>
-          CÓDIGO: TMD-FOR-SMS-003
+          CÓDIGO: TMD-FOR-SMS-005
         </Text>
       </View>
     </View>
@@ -2728,7 +2935,7 @@ const Footer = (currentPage: number, pageNumber: number) => (
       </View>
 
       <View style={{ ...styles.tableCell, width: "20%" }}>
-        <Text style={styles.cellText}>REVISION N:00</Text>
+        <Text style={styles.cellText}>REVISION N: 0</Text>
       </View>
       <View style={{ ...styles.tableCell, width: "13%" }}>
         <Text style={styles.cellText}>SMS</Text>
@@ -2738,21 +2945,27 @@ const Footer = (currentPage: number, pageNumber: number) => (
     <View style={styles.tableRow}>
       <View style={{ ...styles.tableCell, width: "29%" }}>
         <Text style={styles.cellText}>
-          ELABORADO POR:{"\n"}ASISTENTE DE SMS
+          ELABORADO POR:{"\n"}
+          {"\n"}ASISTENTE DE SMS{"\n"}
         </Text>
       </View>
       <View style={{ ...styles.tableCell, width: "29%" }}>
-        <Text style={styles.cellText}>REVISADO POR:{"\n"}DIRECTOR DE SMS</Text>
+        <Text style={styles.cellText}>
+          REVISADO POR:{"\n"}
+          {"\n"}DIRECTOR DE SMS{"\n"}
+        </Text>
       </View>
       <View style={{ ...styles.tableCell, width: "29%" }}>
         <Text style={styles.cellText}>
-          APROBADO POR:{"\n"}DIRECTOR DE OPERACIONES
+          APROBADO POR:{"\n"}
+          {"\n"}DIRECTOR DE OPERACIONES{"\n"}
         </Text>
       </View>
 
       <View style={{ ...styles.tableCell, width: "13%" }}>
         <Text style={styles.cellText}>
           NRO. PAGINA{"\n"}
+          {"\n"}
           {currentPage} DE {pageNumber}
         </Text>
       </View>
