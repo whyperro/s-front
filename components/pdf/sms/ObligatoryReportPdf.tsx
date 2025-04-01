@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 8,
-    fontWeight: "bold",
+    fontFamily:"Helvetica-Bold"
   },
 
   footerContainer: {
@@ -586,12 +586,12 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
         </View>
         {/*LUGAR DEL SUCESO DEL REPORTE*/}
         <View style={{ ...styles.tableCell, width: "40%" }}>
-          <Text style={styles.cellText}>{report.aircraft_acronym}</Text>
+          <Text style={styles.cellText}>{report.incident_location}</Text>
         </View>
 
         {/*NUMERO DE REPORTE*/}
         <View style={{ ...styles.tableCell, width: "15%" }}>
-          <Text style={styles.cellText}>{report.report_code}</Text>
+          <Text style={styles.cellText}>{report.report_number}</Text>
         </View>
       </View>
 
@@ -1117,7 +1117,18 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
           <Text style={[styles.title, { marginTop: 10 }]}>
             A continuación, describa claramente el suceso que esta reportando:
           </Text>
-          <View style={styles.firstLine} />
+        </View>
+
+        <View
+          style={{
+            position: "absolute",
+            top: 25,
+            left: 5,
+            right: 5,
+            lineHeight: 0.6,
+          }}
+        >
+          <Text style={styles.cellText2}>{report.description}</Text>
         </View>
         {/* Líneas adicionales con interlineado de 1.5 */}
         <View style={styles.linesContainer}>

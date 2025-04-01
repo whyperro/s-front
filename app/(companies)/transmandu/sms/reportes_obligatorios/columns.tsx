@@ -42,7 +42,7 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
     meta: { title: "Nro. de Reporte" },
     cell: ({ row }) => {
       return (
-        <div className="flex justify-center">RSO-{row.original.report_code}</div>
+        <div className="flex justify-center">RSO-{row.original.report_number}</div>
       );
     },
   },

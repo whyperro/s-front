@@ -45,9 +45,13 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useGetPilots } from "@/hooks/sms/useGetPilots";
-import { useCreateObligatoryReport, useUpdateObligatoryReport } from "@/actions/sms/reporte_obligatorio/actions";
+import {
+  useCreateObligatoryReport,
+  useUpdateObligatoryReport,
+} from "@/actions/sms/reporte_obligatorio/actions";
 import { ObligatoryReport } from "@/types";
 import { dataTagSymbol } from "@tanstack/react-query";
+import { description } from "../misc/TestChart";
 
 //Falta añadir validaciones
 
@@ -59,7 +63,9 @@ function timeFormat(date: Date) {
 
 const FormSchema = z
   .object({
-    report_code: z.string(),
+    report_number: z.string(),
+    incident_location: z.string(),
+    description: z.string(),
     report_date: z
       .date()
       .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
@@ -103,6 +109,7 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 interface FormProps {
   isEditing?: boolean;
   initialData?: ObligatoryReport;
+
   onClose: () => void;
 }
 
@@ -159,6 +166,9 @@ export function CreateObligatoryReportForm({
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      report_number: initialData?.report_number,
+      description: initialData?.description,
+      incident_location: initialData?.incident_location,
       aircraft_acronym: initialData?.aircraft_acronym,
       aircraft_model: initialData?.aircraft_model,
       pilot_id: initialData?.pilot_id.toString(),
@@ -168,7 +178,6 @@ export function CreateObligatoryReportForm({
       flight_number: initialData?.flight_number,
       flight_origin: initialData?.flight_origin,
       other_incidents: initialData?.other_incidents,
-      report_code: initialData?.report_code,
       report_date: initialData?.report_date
         ? new Date(initialData?.report_date)
         : new Date(),
@@ -186,30 +195,34 @@ export function CreateObligatoryReportForm({
   });
 
   const onSubmit = async (data: FormSchemaType) => {
-    if (isEditing && initialData){
-        const value = {
-          id: initialData.id,
-          report_code: data.report_code,
-          incident_date: data.incident_date,
-          report_date: data.report_date,
-          incident_time: format(data.incident_time, "HH:mm:ss"),
-          flight_time: format(data.flight_time, "HH:mm:ss"),
-          pilot_id: data.pilot_id,
-          copilot_id: data.pilot_id,
-          aircraft_acronym: data.aircraft_acronym,
-          aircraft_model: data.aircraft_model,
-          flight_number: data.flight_number,
-          flight_origin: data.flight_origin,
-          flight_destiny: data.flight_destiny,
-          flight_alt_destiny: data.flight_alt_destiny,
-          incidents: data.incidents,
-          other_incidents: data.other_incidents,
-        }
-        console.log("THIS IS VALUE FROM EDIT AND INITIAL DATA", value);
-        await updateObligatoryReport.mutateAsync(value);
+    if (isEditing && initialData) {
+      const value = {
+        id: initialData.id,
+        report_number: data.report_number,
+        incident_location: data.incident_location,
+        description: data.description,
+        incident_date: data.incident_date,
+        report_date: data.report_date,
+        incident_time: format(data.incident_time, "HH:mm:ss"),
+        flight_time: format(data.flight_time, "HH:mm:ss"),
+        pilot_id: data.pilot_id,
+        copilot_id: data.pilot_id,
+        aircraft_acronym: data.aircraft_acronym,
+        aircraft_model: data.aircraft_model,
+        flight_number: data.flight_number,
+        flight_origin: data.flight_origin,
+        flight_destiny: data.flight_destiny,
+        flight_alt_destiny: data.flight_alt_destiny,
+        incidents: data.incidents,
+        other_incidents: data.other_incidents,
+      };
+      console.log("THIS IS VALUE FROM EDIT AND INITIAL DATA", value);
+      await updateObligatoryReport.mutateAsync(value);
     } else {
       const value = {
-        report_code: data.report_code,
+        report_number: data.report_number,
+        incident_location: data.incident_location,
+        description: data.description,
         incident_date: data.incident_date,
         report_date: data.report_date,
         incident_time: format(data.incident_time, "HH:mm:ss"),
@@ -255,14 +268,43 @@ export function CreateObligatoryReportForm({
           Reporte Obligatorio de suceso
         </FormLabel>
 
+        <div className="flex gap-2 items-center justify-evenly">
+          <FormField
+            control={form.control}
+            name="report_number"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Codigo del Reporte</FormLabel>
+                <FormControl>
+                  <Input placeholder="RSO-123" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="incident_location"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Lugar del Incidente</FormLabel>
+                <FormControl>
+                  <Input placeholder="" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
-          name="report_code"
+          name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Codigo del Reporte</FormLabel>
+              <FormLabel>Descripcion del Suceso</FormLabel>
               <FormControl>
-                <Input placeholder="RSO-123" {...field} />
+                <Input placeholder="" {...field} />
               </FormControl>
               <FormMessage className="text-xs" />
             </FormItem>

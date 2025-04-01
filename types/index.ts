@@ -364,7 +364,9 @@ export type InformationSource = {
 
 export type ObligatoryReport = {
   id: number;
-  report_code: string;
+  report_number: string;
+  incident_location: string;
+  description: string;
   report_date: Date;
   incident_date: Date;
   incident_time: Date;

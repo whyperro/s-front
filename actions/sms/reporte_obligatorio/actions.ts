@@ -5,7 +5,9 @@ import { Update } from "next/dist/build/swc";
 import { toast } from "sonner";
 
 interface ObligatoryReportData {
-  report_code: string;
+  report_number: string;
+  description: string;
+  incident_location: string;
   report_date: Date;
   incident_date: Date;
   incident_time: string;
@@ -25,7 +27,9 @@ interface ObligatoryReportData {
 
 interface UpdateObligatoryReportData {
   id: number | string;
-  report_code: string;
+  report_number: string;
+  description: string;
+  incident_location: string;
   report_date: Date;
   incident_date: Date;
   incident_time: string;
