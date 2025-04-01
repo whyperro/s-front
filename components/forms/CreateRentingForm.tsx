@@ -29,75 +29,85 @@ import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
-import { useGetClients } from "@/hooks/administracion/useGetClients";
+import { useGetClients } from "@/hooks/administracion/clientes/useGetClients";
 import { useGetAdministrationArticle } from "@/hooks/administracion/useGetAdministrationArticle";
 import { Calendar } from "../ui/calendar";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateRenting } from "@/actions/administracion/renta/actions";
 
-const formSchema = z.object({
-  description: z
-    .string()
-    .min(2, {
-      message: "La descripción debe tener al menos 2 caracteres.",
-    })
-    .max(100, {
-      message: "La descripción tiene un máximo 100 caracteres.",
+const formSchema = z
+  .object({
+    description: z
+      .string()
+      .min(2, {
+        message: "La descripción debe tener al menos 2 caracteres.",
+      })
+      .max(100, {
+        message: "La descripción tiene un máximo 100 caracteres.",
+      }),
+    type: z.enum(["AERONAVE", "ARTICULO"]),
+    price: z.string().refine(
+      (val) => {
+        const number = parseFloat(val);
+        return !isNaN(number) && number > 0;
+      },
+      {
+        message: "El monto debe ser mayor a cero.",
+      }
+    ),
+    payed_amount: z.string().refine(
+      (val) => {
+        const number = parseFloat(val);
+        return !isNaN(number) && number >= 0;
+      },
+      {
+        message: "El monto debe ser un número válido.",
+      }
+    ),
+    start_date: z.date({
+      required_error: "La fecha de inicio es requerida",
     }),
-  type: z.enum(["AERONAVE", "ARTICULO"]),
-  price: z.string().refine(
-    (val) => {
-      const number = parseFloat(val);
-      return !isNaN(number) && number > 0;
+    end_date: z
+      .date({
+        required_error: "La fecha final es requerida",
+      })
+      .optional(),
+    deadline: z.date({
+      required_error: "La fecha límite es requerida",
+    }),
+    client_id: z.string({
+      message: "Debe elegir un cliente.",
+    }),
+    aircraft_id: z
+      .string({
+        message: "Debe elegir una aeronave.",
+      })
+      .optional(),
+    article_id: z
+      .string({
+        message: "Debe elegir un articulo.",
+      })
+      .optional(),
+  })
+  .refine(
+    (data) => {
+      const price = parseFloat(data.price);
+      const payedAmount = parseFloat(data.payed_amount);
+      return payedAmount <= price;
     },
     {
-      message: "El monto debe ser mayor a cero.",
+      message: "El monto pagado no puede ser mayor que el precio total",
+      path: ["payed_amount"],
     }
-  ),
-  payed_amount: z.string().refine(
-    (val) => {
-      const number = parseFloat(val);
-      return !isNaN(number) && number >= 0;
-    },
+  )
+  .refine(
+    (data) =>
+      !data.start_date || !data.deadline || data.deadline >= data.start_date,
     {
-      message: "El monto debe ser un número válido.",
+      message: "La fecha límite debe ser posterior a la fecha de inicio",
+      path: ["deadline"],
     }
-  ),
-  start_date: z.date({
-    required_error: "La fecha de inicio es requerida",
-  }),
-  end_date: z.date({
-    required_error: "La fecha final es requerida",
-  }).optional(),
-  deadline: z.date({
-    required_error: "La fecha límite es requerida",
-  }),
-  client_id: z.string({
-    message: "Debe elegir un cliente.",
-  }),
-  aircraft_id: z.string({
-    message: "Debe elegir una aeronave.",
-  }).optional(),
-  article_id: z.string({
-    message: "Debe elegir un articulo.",
-  }).optional(),
-}).refine(
-  (data) => {
-    const price = parseFloat(data.price);
-    const payedAmount = parseFloat(data.payed_amount);
-    return payedAmount <= price;
-  },
-  {
-    message: "El monto pagado no puede ser mayor que el precio total",
-    path: ["payed_amount"],
-  }
-).refine(
-  (data) => !data.start_date || !data.deadline || data.deadline >= data.start_date,
-  {
-    message: "La fecha límite debe ser posterior a la fecha de inicio",
-    path: ["deadline"],
-  }
-);
+  );
 
 interface FormProps {
   onClose: () => void;
@@ -212,7 +222,7 @@ export function CreateRentingForm({ onClose }: FormProps) {
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) => false}  // Permite TODAS las fechas (pasadas y futuras)
+                      disabled={(date) => false} // Permite TODAS las fechas (pasadas y futuras)
                       initialFocus
                     />
                   </PopoverContent>

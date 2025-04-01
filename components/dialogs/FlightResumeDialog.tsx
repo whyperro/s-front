@@ -1,4 +1,4 @@
-import { useGetFlightById } from "@/hooks/administracion/useGetFlightsById";
+import { useGetFlightById } from "@/hooks/administracion/vuelos/useGetFlightsById";
 import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import { useState } from "react";

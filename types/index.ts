@@ -485,7 +485,7 @@ export type Sell ={
   total_price: number,
   payed_amount: number,
   date: Date,
-  reference_pick: string,
+  reference_pic: string,
 }
 
 export interface ToolArticle extends Article {

@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useGetClientById } from "@/hooks/administracion/useGetClientsById";
+import { useGetClientById } from "@/hooks/administracion/clientes/useGetClientsById";
 import { useUpdateClient } from "@/actions/administracion/clientes/actions";
 import { Separator } from "../ui/separator";
 
@@ -176,9 +176,7 @@ export function EditClientForm({ id, onClose }: EditClientFormProps) {
           <Separator className="flex-1" />
         </div>
         <Button type="submit" disabled={updateClient.isPending}>
-          {updateClient.isPending 
-          ? "Actualizando..." 
-          : "Actualizar"}
+          {updateClient.isPending ? "Actualizando..." : "Actualizar"}
         </Button>
       </form>
     </Form>

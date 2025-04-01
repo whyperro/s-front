@@ -4,7 +4,7 @@ import { ContentLayout } from "@/components/layout/ContentLayout";
 import { columns } from "./columns";
 import LoadingPage from "@/components/misc/LoadingPage";
 import { DataTable } from "./date-table";
-import { useGetCreditRent } from "@/hooks/administracion/useGetCreditRent";
+import { useGetCreditRent } from "@/hooks/administracion/creditos/useGetCreditRent";
 
 const CreditPage = () => {
   const { data, isLoading, isError } = useGetCreditRent();

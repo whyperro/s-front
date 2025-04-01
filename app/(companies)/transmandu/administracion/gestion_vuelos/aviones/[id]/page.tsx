@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById";
-import { useGetFlightsByAircraft } from "@/hooks/administracion/useGetFlightsByAircraft";
+import { useGetFlightsByAircraft } from "@/hooks/administracion/vuelos/useGetFlightsByAircraft";
 import { useState, useEffect } from "react";
 import {
   Card,

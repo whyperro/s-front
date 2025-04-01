@@ -31,7 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetClients } from "@/hooks/administracion/useGetClients";
+import { useGetClients } from "@/hooks/administracion/clientes/useGetClients";
 import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
 
 const formSchema = z.object({

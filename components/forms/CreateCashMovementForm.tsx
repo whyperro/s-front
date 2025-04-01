@@ -39,7 +39,7 @@ import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 import { Loader2 } from "lucide-react";
 import { AdministrationCompany } from "@/types";
 import { useGetVendors } from "@/hooks/ajustes/globales/proveedores/useGetVendors";
-import { useGetClients } from "@/hooks/administracion/useGetClients";
+import { useGetClients } from "@/hooks/administracion/clientes/useGetClients";
 import {
   Command,
   CommandEmpty,

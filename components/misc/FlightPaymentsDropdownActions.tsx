@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { useGetFlightPaymentById } from "@/hooks/administracion/useGetFlightPaymentsById";
+import { useGetFlightPaymentById } from "@/hooks/administracion/vuelos/useGetFlightPaymentsById";
 import { useDeleteFlightPayments } from "@/actions/administracion/pagos_vuelos/actions";
 import {
   Dialog,

@@ -33,7 +33,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { AmountInput } from "../misc/AmountInput";
 import { useGetRoute } from "@/hooks/administracion/useGetRoutes";
-import { useGetClients } from "@/hooks/administracion/useGetClients";
+import { useGetClients } from "@/hooks/administracion/clientes/useGetClients";
 import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
 import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 import { Label } from "../ui/label";
@@ -246,8 +246,8 @@ export function FlightForm({ onClose }: FormProps) {
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < new Date("1999-07-21") // Solo deshabilita fechas muy antiguas
+                      disabled={
+                        (date) => date < new Date("1999-07-21") // Solo deshabilita fechas muy antiguas
                       }
                       initialFocus
                     />

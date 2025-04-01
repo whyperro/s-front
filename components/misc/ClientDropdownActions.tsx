@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useGetClientById } from "@/hooks/administracion/useGetClientsById";
+import { useGetClientById } from "@/hooks/administracion/clientes/useGetClientsById";
 import {
   EditIcon,
   EyeIcon,
@@ -86,9 +86,11 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
 
       {/*Dialog para eliminar un cliente*/}
       <Dialog open={openDelete} onOpenChange={setOpenDelete}>
-        <DialogContent onInteractOutside={(e) => {
-          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
-        }}>
+        <DialogContent
+          onInteractOutside={(e) => {
+            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+          }}
+        >
           <DialogHeader>
             <DialogTitle className="text-center">
               ¿Seguro que desea eliminar al cliente?
@@ -120,12 +122,15 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
+
       {/*Dialog para ver el resumen de un cliente*/}
       <Dialog open={openClient} onOpenChange={setOpenClient}>
-        <DialogContent className="sm:max-w-md" onInteractOutside={(e) => {
-          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
-        }}>
+        <DialogContent
+          className="sm:max-w-md"
+          onInteractOutside={(e) => {
+            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+          }}
+        >
           <DialogHeader className="text-center font-bold">
             Resumen del Cliente
           </DialogHeader>
@@ -183,7 +188,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           )}
 
           <DialogFooter className="sm:justify-center">
-          {/*  <Button
+            {/*  <Button
               variant="outline"
               onClick={() =>
                 router.push(`/administracion/gestion_vuelos/clientes/${id}`)
@@ -198,9 +203,11 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
 
       {/*Dialog para editar un cliente*/}
       <Dialog open={openEdit} onOpenChange={setOpenEdit}>
-        <DialogContent onInteractOutside={(e) => {
-          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
-        }}>
+        <DialogContent
+          onInteractOutside={(e) => {
+            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+          }}
+        >
           <DialogHeader>
             <DialogTitle>Editar Cliente</DialogTitle>
           </DialogHeader>
@@ -210,9 +217,11 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
 
       {/*Dialog para Registrar un saldo a favor para un cliente*/}
       <Dialog open={openAddBalance} onOpenChange={setOpenAddBalance}>
-        <DialogContent onInteractOutside={(e) => {
-          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
-        }}>
+        <DialogContent
+          onInteractOutside={(e) => {
+            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+          }}
+        >
           <DialogHeader>
             <DialogTitle>Registrar Saldo a Favor</DialogTitle>
           </DialogHeader>
