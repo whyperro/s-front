@@ -162,9 +162,11 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   observationContainer: {
-    borderWidth: 1,
+    borderBottom: 1,
+    borderRight: 1,
+    borderLeft: 1,
     borderTop: 0,
-    padding: 5,
+    padding: 4,
     minHeight: 50,
   },
   observationText: {
@@ -299,15 +301,13 @@ const styles = StyleSheet.create({
     fontSize: 8,
     marginBottom: 5,
   },
-  lineContainerDescription: {
-    marginBottom: 5,
-  },
+
   line: {
     borderBottomWidth: 1,
     borderBottomColor: "#000",
     borderBottomStyle: "solid",
     width: "100%",
-    marginBottom: 18,
+    marginBottom: 13,
   },
   firstLine: {
     flexGrow: 1,
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     marginLeft: 5, // Espacio entre el texto y la primera línea
   },
   linesContainer: {
-    marginTop: 5,
+    marginTop: 10,
   },
 
   boldTitle: {
@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
   },
   tableRowHeader: {
     flexDirection: "row",
-    marginTop: 40,
+    marginTop: 15,
     marginBottom: 20,
   },
   tableCellHeader: {
@@ -578,7 +578,7 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
       <View
         style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
       >
-        <Text style={styles.cellTextHeader}>
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
           1. NOTIFICACION DE PELIGROS{"\n"}
         </Text>
       </View>
@@ -690,7 +690,7 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
         }}
       >
         <Text style={styles.cellText2}>
-          {report.danger_identification?.danger_type === "NATURAL" ? "X" : ""}
+          {identification.danger_type === "NATURAL" ? "X" : ""}
         </Text>
       </View>
 
@@ -703,7 +703,7 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
         }}
       >
         <Text style={styles.cellText2}>
-          {report.danger_identification?.danger_type === "TECNICO" ? "X" : ""}
+          {identification.danger_type === "TECNICO" ? "X" : ""}
         </Text>
       </View>
 
@@ -716,9 +716,7 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
         }}
       >
         <Text style={styles.cellText2}>
-          {report.danger_identification?.danger_type === "ORGANIZACIONAL"
-            ? "X"
-            : ""}
+          {identification.danger_type === "ORGANIZACIONAL" ? "X" : ""}
         </Text>
       </View>
 
@@ -731,7 +729,7 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
         }}
       >
         <Text style={styles.cellText2}>
-          {report.danger_identification?.danger_type === "HUMANO" ? "X" : ""}
+          {identification.danger_type === "HUMANO" ? "X" : ""}
         </Text>
       </View>
     </View>
@@ -1198,124 +1196,77 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
       </View>
     </View>
 
-    <View style={styles.tableRow}>
-      <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
-      >
-        <Text style={styles.cellTextHeader}>BREVE DESCRIPCION DEL PELIGRO</Text>
-      </View>
-    </View>
-    <View style={styles.tableRow}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 8
-        }}
-      >
-        <Text style={styles.cellTextHeader}>{identification.description} </Text>
-      </View>
-    </View>
-    <View style={styles.tableRow}>
-      <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
-      >
-        <Text style={styles.cellTextHeader}>{"\n"}</Text>
-      </View>
-    </View>
-    <View style={styles.tableRow}>
-      <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
-      >
-        <Text style={styles.cellTextHeader}>{"\n"}</Text>
-      </View>
-    </View>
     <View style={[styles.tableRow, { borderBottom: 1 }]}>
       <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
-      >
-        <Text style={styles.cellTextHeader}>{"\n"}</Text>
-      </View>
-    </View>
-
-    <View style={[styles.tableRow, { marginTop: 15 }]}>
-      <View
         style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
       >
-        <Text style={styles.cellTextHeader}>ANALISIS CAUSA RAIZ</Text>
-      </View>
-    </View>
-
-    <View style={styles.tableRow}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>
-          Por que Sucedio?
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          BREVE DESCRIPCION DEL PELIGRO
         </Text>
       </View>
     </View>
-    <View style={styles.tableRow}>
+
+    <View style={styles.observationContainer}>
       <View
         style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
+          position: "absolute",
+          top: 4,
+          left: 5,
+          right: 5,
+          lineHeight: 0.8,
         }}
       >
-        <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
+        <Text style={styles.cellText}>{identification.description}</Text>
+      </View>
+
+      {/* Líneas adicionales con interlineado de 1.5 */}
+      <View style={styles.linesContainer}>
+        {[...Array(3)].map((_, index) => (
+          <View key={index} style={styles.line} />
+        ))}
       </View>
     </View>
-    <View style={[styles.tableRow]}>
+
+    <View style={[styles.tableRow, { marginTop: 15, borderBottom: 1 }]}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          ANALISIS CAUSA RAIZ
+        </Text>
+      </View>
+    </View>
+
+    <View style={styles.observationContainer}>
       <View
         style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
+          position: "absolute",
+          top: 3,
+          left: 5,
+          right: 5,
+          lineHeight: 0.8,
         }}
       >
-        <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
+        {/* Dividimos el string por comas y mapeamos cada elemento */}
+        {identification.root_cause_analysis.split(",").map((cause, index) => (
+          <Text key={index} style={styles.cellText}>
+            <Text style={[styles.cellText2, styles.boldTitle]}>Porque? </Text>
+            {cause.trim()}
+          </Text>
+        ))}
+      </View>
+
+      {/* Líneas adicionales con interlineado de 1.5 */}
+      <View style={styles.linesContainer}>
+        {[...Array(5)].map((_, index) => (
+          <View key={index} style={styles.line}>
+            <Text style={[styles.cellText3]}></Text>
+          </View>
+        ))}
       </View>
     </View>
-    <View style={styles.tableRow}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
-      </View>
-    </View>
-    <View style={styles.tableRow}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
+
+    <View style={[styles.tableRow, { borderTop: 0 }]}>
       <View
         style={{
           ...styles.tableCell,
@@ -1331,18 +1282,21 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
         </Text>
       </View>
     </View>
+
     <View style={styles.tableRow}>
       <View
         style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
       >
-        <Text style={styles.cellTextHeader}>2. GESTION DE RIESGOS</Text>
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          2. GESTION DE RIESGOS
+        </Text>
       </View>
     </View>
     <View style={styles.tableRow}>
       <View
         style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
       >
-        <Text style={styles.cellTextHeader}>
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
           AREA RESPONSABLE DE LA MITIGACION
         </Text>
       </View>
@@ -1372,7 +1326,9 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
           backgroundColor: WHITE,
         }}
       >
-        <Text style={[styles.cellText3, styles.boldTitle]}></Text>
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {identification.mitigation_plan?.responsible === "SMS" ? "X" : ""}
+        </Text>
       </View>
 
       <View
@@ -1392,7 +1348,11 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
           backgroundColor: WHITE,
         }}
       >
-        <Text style={[styles.cellText3, styles.boldTitle]}></Text>
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {identification.mitigation_plan?.responsible === "OPERACIONES"
+            ? "X"
+            : ""}
+        </Text>
       </View>
 
       <View
@@ -1414,7 +1374,12 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
           backgroundColor: WHITE,
         }}
       >
-        <Text style={[styles.cellText3, styles.boldTitle]}></Text>
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {identification.mitigation_plan?.responsible ===
+          "MATENIMIENTO_PLANIFICACION"
+            ? "X"
+            : ""}
+        </Text>
       </View>
       <View
         style={{
@@ -1435,7 +1400,11 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
           backgroundColor: WHITE,
         }}
       >
-        <Text style={[styles.cellText3, styles.boldTitle]}></Text>
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {identification.mitigation_plan?.responsible === "ADMINISTRACION_RRHH"
+            ? "X"
+            : ""}
+        </Text>
       </View>
 
       <View
@@ -1457,18 +1426,21 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
           backgroundColor: WHITE,
         }}
       >
-        <Text style={[styles.cellText3, styles.boldTitle]}></Text>
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {identification.mitigation_plan?.responsible === "CONTROL_CALIDAD"
+            ? "X"
+            : ""}
+        </Text>
       </View>
     </View>
     {Footer(1, 5)}
   </Page>
 );
 
-export const SecondPage = ({ report }: { report: VoluntaryReport }) => (
+export const SecondPage = ({ report, identification }: MyDocumentProps) => (
   <Page size={"LETTER"} style={styles.page}>
     <Header />
-
-    <View style={[styles.tableRow, { marginTop: 6 }]}>
+    <View style={[styles.tableRow]}>
       <View
         style={{
           ...styles.tableCell,
@@ -1480,7 +1452,8 @@ export const SecondPage = ({ report }: { report: VoluntaryReport }) => (
       >
         <Text style={[styles.cellText2, styles.boldTitle]}>
           {"\n"}
-          FECHA DE INICIO DE LA GESTION:
+          FECHA DE INICIO DE LA GESTION:{" "}
+          {dateFormat(report.report_date, "dd-MM-yyyy")}
           {"\n"}
           {"\n"}
         </Text>
@@ -1489,75 +1462,47 @@ export const SecondPage = ({ report }: { report: VoluntaryReport }) => (
 
     <View style={[styles.tableRow]}>
       <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: BLUE,
+          borderBottom: 1,
+        }}
       >
-        <Text style={styles.cellTextHeader}>POSIBLES CONSECUENCIAS:</Text>
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          POSIBLES CONSECUENCIAS:
+        </Text>
       </View>
     </View>
 
-    <View style={[styles.tableRow]}>
+    <View style={[styles.observationContainer, { borderBottom: 0 }]}>
       <View
         style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
+          position: "absolute",
+          top: 3,
+          left: 5,
+          right: 5,
+          lineHeight: 0.8,
         }}
       >
-        <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
+        {/* Dividimos el string por comas y mapeamos cada elemento */}
+        {identification.possible_consequences.split(",").map((cause, index) => (
+          <Text key={index} style={styles.cellText}>
+            <Text style={[styles.cellText, styles.boldTitle]}>
+              {index + 1}.{" "}
+            </Text>
+            {cause.trim()}
+          </Text>
+        ))}
       </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
+
+      {/* Líneas adicionales con interlineado de 1.5 */}
+      <View style={styles.linesContainer}>
+        {[...Array(5)].map((_, index) => (
+          <View key={index} style={styles.line}>
+            <Text style={[styles.cellText3]}></Text>
+          </View>
+        ))}
       </View>
     </View>
 
@@ -1565,7 +1510,9 @@ export const SecondPage = ({ report }: { report: VoluntaryReport }) => (
       <View
         style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
       >
-        <Text style={styles.cellTextHeader}>DEFENSAS ACTUALES</Text>
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          DEFENSAS ACTUALES
+        </Text>
       </View>
     </View>
 
@@ -1652,15 +1599,21 @@ export const SecondPage = ({ report }: { report: VoluntaryReport }) => (
       <View
         style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
       >
-        <Text style={styles.cellTextHeader}>
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
           CONSECUENCIA A EVALUAR PARA ESTABLECER LAS MEDIDAS DE MITIGACION:
         </Text>
       </View>
     </View>
 
+    {identification.possible_consequences.split(",").map((cause, index) => (
+      <Text key={index} style={styles.cellText}>
+        <Text style={[styles.cellText, styles.boldTitle]}>{index + 1}. </Text>
+        {cause.trim()}
+      </Text>
+    ))}
+
     <View style={styles.tableRow}>
       {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
       <View
         style={{
           ...styles.tableCell,
@@ -1765,7 +1718,7 @@ export const SecondPage = ({ report }: { report: VoluntaryReport }) => (
       </View>
     </View>
 
-    <View style={[styles.tableRow, { borderBottom: 1 }]}>
+    <View style={[styles.tableRow]}>
       {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
 
       <View
@@ -1815,12 +1768,70 @@ export const SecondPage = ({ report }: { report: VoluntaryReport }) => (
         </Text>
       </View>
     </View>
+    <View style={[styles.tableRow, { borderBottom: 1 }]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {"\n"}
+          {"\n"}
+        </Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {"\n"}
+          {"\n"}
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {"\n"}
+          {"\n"}
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {"\n"}
+          {"\n"}
+        </Text>
+      </View>
+    </View>
 
     <View style={[styles.tableRow, { marginTop: 15 }]}>
       <View
         style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
       >
-        <Text style={styles.cellTextHeader}>
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
           MEDIDAS DE MITIGACION A IMPLEMENTAR
         </Text>
       </View>

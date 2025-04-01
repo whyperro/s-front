@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 10,
-    fontWeight: "bold",
+    fontFamily: "Helvetica-Bold",
     marginBottom: 5,
   },
   footerContainer: {
@@ -378,7 +378,7 @@ const MyDocument = ({ report, identification }: MyDocumentProps) => (
         <View
           style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
         >
-          <Text style={[styles.cellText, styles.boldTitle]}>
+          <Text style={[styles.cellText2, styles.boldTitle]}>
             I. DATOS DE QUIEN REPORTA
           </Text>
         </View>
@@ -450,7 +450,7 @@ const MyDocument = ({ report, identification }: MyDocumentProps) => (
         <View
           style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
         >
-          <Text style={[styles.cellText, styles.boldTitle]}>
+          <Text style={[styles.cellText2, styles.boldTitle]}>
             II. PELIGRO IDENTIFICADO
           </Text>
         </View>
@@ -581,7 +581,9 @@ const MyDocument = ({ report, identification }: MyDocumentProps) => (
             borderBottom: 1,
           }}
         >
-          <Text style={styles.cellText}>III. RIESGOS (CONSECUENCIAS)</Text>
+          <Text style={[styles.cellText2, styles.boldTitle]}>
+            III. RIESGOS (CONSECUENCIAS)
+          </Text>
         </View>
       </View>
       <View style={styles.observationContainer}>
@@ -762,7 +764,10 @@ const MyDocument = ({ report, identification }: MyDocumentProps) => (
       {Footer(2, 2)}
     </Page>
     {report && identification && (
-      <FirstPage report={report} identification={identification} />
+      <>
+        <FirstPage report={report} identification={identification} />
+        <SecondPage report={report} identification={identification} />
+      </>
     )}
   </Document>
 );
