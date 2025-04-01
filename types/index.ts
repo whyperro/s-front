@@ -464,6 +464,7 @@ export type MitigationTable = {
   danger_type: string;
   root_cause_analysis: string;
   information_source_id: number;
+  information_source: InformationSource;
   analysis: Analysis;
   mitigation_plan: MitigationPlan | null;
 };

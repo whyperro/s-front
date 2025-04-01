@@ -1,6 +1,17 @@
 import { dateFormat, timeFormat } from "@/lib/utils";
-import { DangerIdentificationWithAll, MitigationTable, VoluntaryReport } from "@/types";
-import { Document, Page, StyleSheet, Text, View ,Image} from "@react-pdf/renderer";
+import {
+  DangerIdentificationWithAll,
+  MitigationTable,
+  VoluntaryReport,
+} from "@/types";
+import {
+  Document,
+  Page,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+} from "@react-pdf/renderer";
 
 const BLUE = "#d6eaf8";
 const RED = "#fc0a0a";
@@ -9,6 +20,11 @@ const WHITE = "#fff";
 const GRAY = "#ebebeb";
 
 // ... (your formatDate function and styles remain the same)
+
+interface MyDocumentProps {
+  report: VoluntaryReport;
+  identification: MitigationTable;
+}
 
 const styles = StyleSheet.create({
   logo: {
@@ -547,19 +563,24 @@ export const InstructiveFirstPart = () => (
         Marcar con una (X) la(s) fuente(s) con
       </Text>
     </View>
-    <Text style={[styles.instructiveText,{paddingLeft:8}]}>que se identificó el peligro.</Text>
+    <Text style={[styles.instructiveText, { paddingLeft: 8 }]}>
+      que se identificó el peligro.
+    </Text>
   </View>
 );
 
-export const FirstPage = ({ report }: { report: VoluntaryReport },{ identification }: { identification: DangerIdentificationWithAll }) => (
+export const FirstPage = ({ report, identification }: MyDocumentProps) => (
   <Page size="LETTER" style={styles.page}>
     {/*Encabezado de la pagina */}
     <Header />
+
     <View style={[styles.tableRow, { marginTop: 8 }]}>
       <View
         style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
       >
-        <Text style={styles.cellTextHeader}>1. NOTIFICACION DE PELIGROS</Text>
+        <Text style={styles.cellTextHeader}>
+          1. NOTIFICACION DE PELIGROS{"\n"}
+        </Text>
       </View>
     </View>
 
@@ -710,10 +731,7 @@ export const FirstPage = ({ report }: { report: VoluntaryReport },{ identificati
         }}
       >
         <Text style={styles.cellText2}>
-          {" "}
-          {report.danger_identification?.danger_type === "HUMANO"
-            ? "X"
-            : ""}{" "}
+          {report.danger_identification?.danger_type === "HUMANO" ? "X" : ""}
         </Text>
       </View>
     </View>
@@ -813,7 +831,9 @@ export const FirstPage = ({ report }: { report: VoluntaryReport },{ identificati
           backgroundColor: WHITE,
         }}
       >
-        <Text style={styles.cellText2}></Text>
+        <Text style={styles.cellText2}>
+          {identification.danger_area === "OPERACIONES" ? "X" : ""}
+        </Text>
       </View>
 
       <View
@@ -835,7 +855,11 @@ export const FirstPage = ({ report }: { report: VoluntaryReport },{ identificati
           backgroundColor: WHITE,
         }}
       >
-        <Text style={[styles.cellText]}></Text>
+        <Text style={[styles.cellText]}>
+          {identification.information_source.name === "Reporte Voluntario"
+            ? "X"
+            : ""}
+        </Text>
       </View>
 
       <View
@@ -882,7 +906,10 @@ export const FirstPage = ({ report }: { report: VoluntaryReport },{ identificati
           backgroundColor: WHITE,
         }}
       >
-        <Text style={styles.cellText2}></Text>
+        <Text style={styles.cellText2}>
+          {" "}
+          {identification.danger_area === "MANTENIMIENTO" ? "X" : ""}
+        </Text>
       </View>
 
       <View
@@ -904,7 +931,10 @@ export const FirstPage = ({ report }: { report: VoluntaryReport },{ identificati
           backgroundColor: WHITE,
         }}
       >
-        <Text style={[styles.cellText]}></Text>
+        <Text style={[styles.cellText]}>
+          {" "}
+          {identification.information_source.name === "Auditoria" ? "X" : ""}
+        </Text>
       </View>
 
       <View
@@ -927,7 +957,12 @@ export const FirstPage = ({ report }: { report: VoluntaryReport },{ identificati
           backgroundColor: WHITE,
         }}
       >
-        <Text style={[styles.cellText]}></Text>
+        <Text style={[styles.cellText]}>
+          {" "}
+          {identification.information_source.name === "Reporte Obligatorio"
+            ? "X"
+            : ""}
+        </Text>
       </View>
     </View>
 
@@ -954,7 +989,10 @@ export const FirstPage = ({ report }: { report: VoluntaryReport },{ identificati
           backgroundColor: WHITE,
         }}
       >
-        <Text style={styles.cellText2}></Text>
+        <Text style={styles.cellText2}>
+          {" "}
+          {identification.danger_area === "ADMINISTRACION" ? "X" : ""}
+        </Text>
       </View>
 
       <View
@@ -976,7 +1014,9 @@ export const FirstPage = ({ report }: { report: VoluntaryReport },{ identificati
           backgroundColor: WHITE,
         }}
       >
-        <Text style={[styles.cellText]}></Text>
+        <Text style={[styles.cellText]}>
+          {identification.information_source.name === "Encuesta" ? "X" : ""}
+        </Text>
       </View>
 
       <View
@@ -1025,7 +1065,10 @@ export const FirstPage = ({ report }: { report: VoluntaryReport },{ identificati
           backgroundColor: WHITE,
         }}
       >
-        <Text style={styles.cellText2}></Text>
+        <Text style={styles.cellText2}>
+          {" "}
+          {identification.danger_area === "CONTROL_CALIDAD" ? "X" : ""}
+        </Text>
       </View>
 
       <View
@@ -1047,7 +1090,10 @@ export const FirstPage = ({ report }: { report: VoluntaryReport },{ identificati
           backgroundColor: WHITE,
         }}
       >
-        <Text style={[styles.cellText]}></Text>
+        <Text style={[styles.cellText]}>
+          {" "}
+          {identification.information_source.name === "Inspeccion" ? "X" : ""}
+        </Text>
       </View>
 
       <View
@@ -1069,7 +1115,11 @@ export const FirstPage = ({ report }: { report: VoluntaryReport },{ identificati
           backgroundColor: WHITE,
         }}
       >
-        <Text style={[styles.cellText]}></Text>
+        <Text style={[styles.cellText]}>
+          {identification.information_source.name === "Investigacion Interna"
+            ? "X"
+            : ""}
+        </Text>
       </View>
     </View>
 
@@ -1096,7 +1146,10 @@ export const FirstPage = ({ report }: { report: VoluntaryReport },{ identificati
           backgroundColor: WHITE,
         }}
       >
-        <Text style={styles.cellText2}></Text>
+        <Text style={styles.cellText2}>
+          {" "}
+          {identification.danger_area === "OTROS" ? "X" : ""}
+        </Text>
       </View>
 
       <View
@@ -1118,7 +1171,10 @@ export const FirstPage = ({ report }: { report: VoluntaryReport },{ identificati
           backgroundColor: WHITE,
         }}
       >
-        <Text style={[styles.cellText]}></Text>
+        <Text style={[styles.cellText]}>
+          {" "}
+          {identification.information_source.name === "Entrevista" ? "X" : ""}
+        </Text>
       </View>
 
       <View
@@ -1151,9 +1207,15 @@ export const FirstPage = ({ report }: { report: VoluntaryReport },{ identificati
     </View>
     <View style={styles.tableRow}>
       <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 8
+        }}
       >
-        <Text style={styles.cellTextHeader}>{"\n"}</Text>
+        <Text style={styles.cellTextHeader}>{identification.description} </Text>
       </View>
     </View>
     <View style={styles.tableRow}>
@@ -2913,11 +2975,10 @@ const FourthPage = ({ report }: { report: VoluntaryReport }) => (
 
 )
 */
-const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport },{ identification }: { identification?: MitigationTable }) => (
-  <Document>
-    
-  </Document>
-);
+const SafetyRiskManagementPdf = (
+  { report }: { report: VoluntaryReport },
+  { identification }: { identification?: MitigationTable }
+) => <Document></Document>;
 
 const Header = () => (
   <View style={styles.tableRowHeader}>
@@ -2944,7 +3005,9 @@ const Header = () => (
         <Text style={styles.cellTextHeader}>FECHA EDICION{"\n"}12/10/2023</Text>
       </View>
       <View style={styles.rowColumnHeader}>
-        <Text style={[styles.cellTextHeader,{paddingTop:1}]}>CODIGO:{"\n"}TMD-FOR-SMS-002</Text>
+        <Text style={[styles.cellTextHeader, { paddingTop: 1 }]}>
+          CODIGO:{"\n"}TMD-FOR-SMS-002
+        </Text>
       </View>
     </View>
   </View>
