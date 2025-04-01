@@ -18,6 +18,7 @@ import {
   Plane,
   PlaneIcon,
   PlaneLanding,
+  PlaneLandingIcon,
   PlaneTakeoff,
   Receipt,
   ScrollText,
@@ -132,6 +133,42 @@ export function getMenuList(
               //   ],
               //   submenus: [],
               // },
+              {
+                href: "/transmandu/administracion/gestion_vuelos",
+                label: "Gestión de Vuelos",
+                active: pathname.includes(
+                  "/transmandu/administracion/gestion_vuelos"
+                ),
+                icon: PlaneIcon,
+                roles: [
+                  "ANALISTA_PLANIFICACION",
+                  "JEFE_PLANIFICACION",
+                  "SUPERUSER",
+                ],
+                submenus: [
+                  {
+                    href: "/transmandu/administracion/gestion_vuelos/aviones",
+                    label: "Aeronaves",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/gestion_vuelos/aviones",
+                  },
+                  {
+                    href: "/transmandu/administracion/gestion_vuelos/rutas",
+                    label: "Rutas",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/gestion_vuelos/rutas",
+                  },
+                  {
+                    href: "/transmandu/administracion/gestion_vuelos/vuelos",
+                    label: "Vuelos",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/gestion_vuelos/vuelos",
+                  },
+                ],
+              },
               {
                 href: "/transmandu/administracion/creditos",
                 label: "Gestión de Créditos",
