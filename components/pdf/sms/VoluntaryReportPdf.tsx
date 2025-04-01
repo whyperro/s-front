@@ -1,18 +1,16 @@
-import React from "react";
+import { dateFormat } from "@/lib/utils";
+import { MitigationTable, VoluntaryReport } from "@/types";
 import {
   Document,
+  Image,
   Page,
+  StyleSheet,
   Text,
   View,
-  StyleSheet,
-  Image,
 } from "@react-pdf/renderer";
-import { VoluntaryReport } from "@/types";
-import { dateFormat } from "@/lib/utils";
+import { FirstPage, SecondPage, ThirdPage } from "./SafetyRiskManagement";
 
 const BLUE = "#d6eaf8";
-const RED = "#fc0a0a";
-const GREEN = "#0ebe36";
 const WHITE = "#fff";
 
 const styles = StyleSheet.create({
@@ -294,13 +292,20 @@ const Header = () => (
         <Text style={styles.cellTextHeader}>FECHA EDICION{"\n"}12/10/2023</Text>
       </View>
       <View style={styles.rowColumnHeader}>
-        <Text style={styles.cellTextHeader}>CODIGO:{"\n"}TMD-FOR-SMS-002</Text>
+        <Text style={[styles.cellTextHeader, { paddingTop: 1 }]}>
+          CODIGO:{"\n"}TMD-FOR-SMS-002
+        </Text>
       </View>
     </View>
   </View>
 );
 
-const MyDocument = ({ report }: { report: VoluntaryReport }) => (
+interface MyDocumentProps {
+  report: VoluntaryReport;
+  identification?: MitigationTable;
+}
+
+const MyDocument = ({ report, identification }: MyDocumentProps) => (
   <Document>
     <Page style={styles.page} size={"LETTER"}>
       <Header />
@@ -511,7 +516,6 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
               </Text>
             </View>
           </View>
-
 
           <View style={styles.areaRow}>
             <View style={styles.textCell}>
@@ -757,6 +761,11 @@ const MyDocument = ({ report }: { report: VoluntaryReport }) => (
 
       {Footer(2, 2)}
     </Page>
+
+    <FirstPage report={report} {...(identification && { identification })} />
+
+    <SecondPage report={report} />
+    <ThirdPage report={report} />
   </Document>
 );
 

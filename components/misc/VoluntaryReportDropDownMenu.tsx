@@ -33,6 +33,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import SafetyRiskManagementPdf from "../pdf/sms/SafetyRiskManagement";
+import { useGetDangerIdentificationWithAllById } from "@/hooks/sms/useGetDangerIdentificationWithAllById";
 
 const VoluntaryReportDropdownActions = ({
   voluntaryReport,
@@ -52,10 +53,15 @@ const VoluntaryReportDropdownActions = ({
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const router = useRouter();
 
+  const { data: dangerIdentification } = useGetDangerIdentificationWithAllById(
+    voluntaryReport.danger_identification_id
+  );
+
   const handleDelete = async (id: number | string) => {
     await deleteVoluntaryReport.mutateAsync(id);
     setOpenDelete(false);
   };
+
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -119,10 +125,22 @@ const VoluntaryReportDropdownActions = ({
               </DialogDescription>
             </DialogHeader>
             <div className="w-full h-screen">
-              {voluntaryReport && (
+              {voluntaryReport && dangerIdentification ? (
+                <>
+                  {console.log("Entrando en la primera rama condicional",dangerIdentification)}
+                  <PDFViewer style={{ width: "100%", height: "60%" }}>
+                    <VoluntaryReportPdf
+                      report={voluntaryReport}
+                      identification={dangerIdentification}
+                    />
+                  </PDFViewer>
+                </>
+              ) : (
+                <>
+                {console.log("Entrando enel segundo rama condicional",dangerIdentification)}
                 <PDFViewer style={{ width: "100%", height: "60%" }}>
                   <VoluntaryReportPdf report={voluntaryReport} />
-                </PDFViewer>
+                </PDFViewer></>
               )}
             </div>
             <div className="flex justify-end mt-4">

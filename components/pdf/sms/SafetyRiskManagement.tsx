@@ -1,6 +1,6 @@
 import { dateFormat, timeFormat } from "@/lib/utils";
-import { ObligatoryReport, VoluntaryReport } from "@/types";
-import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { DangerIdentificationWithAll, MitigationTable, VoluntaryReport } from "@/types";
+import { Document, Page, StyleSheet, Text, View ,Image} from "@react-pdf/renderer";
 
 const BLUE = "#d6eaf8";
 const RED = "#fc0a0a";
@@ -11,7 +11,11 @@ const GRAY = "#ebebeb";
 // ... (your formatDate function and styles remain the same)
 
 const styles = StyleSheet.create({
-  
+  logo: {
+    width: 102,
+    height: 43,
+    position: "relative",
+  },
   page: {
     padding: 30,
     backgroundColor: "#FFF",
@@ -46,10 +50,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 10,
   },
-  logo: {
-    width: 35,
-    height: 35,
-  },
+
   titleContainer: {
     flexDirection: "row",
     alignItems: "baseline", // Asegura que el texto y la línea estén en la misma línea
@@ -444,12 +445,43 @@ const styles = StyleSheet.create({
     fontSize: 7,
   },
   cellTextHeader: {
-    fontSize: 12,
-    fontFamily: "Helvetica-Bold",
+    fontSize: 10,
+    textAlign: "center",
+  },
+  column2Header: {
+    width: "55%",
+    flexDirection: "column",
+    borderTop: 1,
+    borderRight: 1,
+  },
+  column3Header: {
+    width: "25%",
+    flexDirection: "column",
+    borderTop: 1,
+    borderRight: 1,
+  },
+  rowColumnHeader: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderColor: "#000",
+  },
+  tableRowHeader: {
+    flexDirection: "row",
+    marginTop: 40,
+    marginBottom: 20,
+  },
+  tableCellHeader: {
+    padding: 5,
+    borderWidth: 1,
+    borderColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
-const InstructiveFirstPart = () => (
+export const InstructiveFirstPart = () => (
   <View>
     <View style={{ marginTop: 10 }}>
       <Text style={styles.underlinedTTitle}>INSTRUCTIVO DE LLENADO</Text>
@@ -515,2410 +547,2404 @@ const InstructiveFirstPart = () => (
         Marcar con una (X) la(s) fuente(s) con
       </Text>
     </View>
-    <Text style={styles.instructiveText}>que se identificó el peligro.</Text>
+    <Text style={[styles.instructiveText,{paddingLeft:8}]}>que se identificó el peligro.</Text>
   </View>
 );
 
-const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport }) => (
+export const FirstPage = ({ report }: { report: VoluntaryReport },{ identification }: { identification: DangerIdentificationWithAll }) => (
+  <Page size="LETTER" style={styles.page}>
+    {/*Encabezado de la pagina */}
+    <Header />
+    <View style={[styles.tableRow, { marginTop: 8 }]}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+      >
+        <Text style={styles.cellTextHeader}>1. NOTIFICACION DE PELIGROS</Text>
+      </View>
+    </View>
+
+    <View style={styles.tableRow}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "37%",
+          backgroundColor: BLUE,
+          alignItems: "flex-start",
+          paddingLeft: 6,
+        }}
+      >
+        <Text style={[styles.cellText, styles.boldTitle]}>
+          FECHA DE LA IDENTIFICACION DEL
+        </Text>
+        <Text style={[styles.cellText, styles.boldTitle]}>PELIGRO:</Text>
+      </View>
+      <View
+        style={{ ...styles.tableCell, width: "63%", backgroundColor: BLUE }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>
+          TIPO DE PELIGRO
+        </Text>
+      </View>
+    </View>
+
+    <View style={styles.tableRow}>
+      <View style={{ ...styles.tableCell, width: "37%" }}>
+        <Text style={styles.cellText}>
+          {dateFormat(report.identification_date, "dd-MM-yyyy")}
+        </Text>
+      </View>
+
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "18.75%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>NATURAL</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12.75%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>TECNICO</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "18.75%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>ORGNIZACIONAL</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12.75%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>HUMANO</Text>
+      </View>
+    </View>
+
+    <View style={styles.tableRow}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "27%",
+          backgroundColor: BLUE,
+          paddingLeft: 6,
+          alignItems: "flex-start",
+        }}
+      >
+        <Text style={[styles.cellText, styles.boldTitle]}>
+          FECHA DE LA RECEPCION DEL
+        </Text>
+        <Text style={[styles.cellText, styles.boldTitle]}>PELIGRO</Text>
+      </View>
+      <View
+        style={{ ...styles.tableCell, width: "10%", backgroundColor: BLUE }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>N° CASO</Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "18.75%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText2}>
+          {report.danger_identification?.danger_type === "NATURAL" ? "X" : ""}
+        </Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12.75%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText2}>
+          {report.danger_identification?.danger_type === "TECNICO" ? "X" : ""}
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "18.75%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText2}>
+          {report.danger_identification?.danger_type === "ORGANIZACIONAL"
+            ? "X"
+            : ""}
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12.75%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText2}>
+          {" "}
+          {report.danger_identification?.danger_type === "HUMANO"
+            ? "X"
+            : ""}{" "}
+        </Text>
+      </View>
+    </View>
+
+    <View style={styles.tableRow}>
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "27%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText2}>
+          {dateFormat(report.report_date, "dd-MM-yyy")}
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "10%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText2}>{report.report_number}</Text>
+      </View>
+
+      <View
+        style={{ ...styles.tableCell, width: "63%", backgroundColor: BLUE }}
+      >
+        <Text style={[styles.cellText, styles.boldTitle]}>
+          METODO Y FUENTE DE LA IDENTIFICACION DE PELIGROS
+        </Text>
+      </View>
+    </View>
+
+    <View style={styles.tableRow}>
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "37%",
+          backgroundColor: BLUE,
+        }}
+      >
+        <Text style={[styles.cellText, styles.boldTitle]}>
+          AREA DONDE FUE IDENTIFICADO EL{"\n"}EL PELIGRO:
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "31.5%",
+          backgroundColor: GREEN,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>PROACTIVO</Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "31.5%",
+          backgroundColor: RED,
+          color: WHITE,
+          fontWeight: "extrabold",
+        }}
+      >
+        <Text style={[styles.cellText, styles.boldTitle]}>REACTIVO</Text>
+      </View>
+    </View>
+
+    {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
+    <View style={styles.tableRow}>
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "32%",
+          backgroundColor: GRAY,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText]}>OPERACIONES</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText2}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "26.5%",
+          backgroundColor: GRAY,
+          alignItems: "flex-start",
+        }}
+      >
+        <Text style={[styles.cellText, { paddingLeft: 2 }]}>REPORTE</Text>
+        <Text style={[styles.cellText, { paddingLeft: 2 }]}>VOLUNTARIO</Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "26.5%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText]}></Text>
+      </View>
+    </View>
+
+    {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
+    <View style={styles.tableRow}>
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "32%",
+          backgroundColor: GRAY,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText]}>MANTENIMIENTO</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText2}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "26.5%",
+          backgroundColor: GRAY,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText]}>AUDITORIA</Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "26.5%",
+          backgroundColor: GRAY,
+          borderTop: 0,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText]}>REPORTE OBLIGATORIO</Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText]}></Text>
+      </View>
+    </View>
+
+    {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
+    <View style={styles.tableRow}>
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "32%",
+          backgroundColor: GRAY,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText]}>ADMINISTRACION Y RRHH</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText2}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "26.5%",
+          backgroundColor: GRAY,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText]}>ENCUESTAS</Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "26.5%",
+          backgroundColor: GRAY,
+          borderTop: 0,
+        }}
+      >
+        <Text style={[styles.cellText]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText]}></Text>
+      </View>
+    </View>
+
+    {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
+    <View style={styles.tableRow}>
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "32%",
+          backgroundColor: GRAY,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText]}>GERENCIA DE CONTROL Y</Text>
+        <Text style={[styles.cellText]}>CALIDAD</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText2}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "26.5%",
+          backgroundColor: GRAY,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText]}>INSPECCION</Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "26.5%",
+          backgroundColor: GRAY,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText]}>INVESTIGACION INTERNA</Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText]}></Text>
+      </View>
+    </View>
+
+    {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
+    <View style={styles.tableRow}>
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "32%",
+          backgroundColor: GRAY,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText]}>OTROS</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText2}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "26.5%",
+          backgroundColor: GRAY,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText]}>ENTREVISTA</Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "26.5%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText]}></Text>
+      </View>
+    </View>
+
+    <View style={styles.tableRow}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+      >
+        <Text style={styles.cellTextHeader}>BREVE DESCRIPCION DEL PELIGRO</Text>
+      </View>
+    </View>
+    <View style={styles.tableRow}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
+      >
+        <Text style={styles.cellTextHeader}>{"\n"}</Text>
+      </View>
+    </View>
+    <View style={styles.tableRow}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
+      >
+        <Text style={styles.cellTextHeader}>{"\n"}</Text>
+      </View>
+    </View>
+    <View style={styles.tableRow}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
+      >
+        <Text style={styles.cellTextHeader}>{"\n"}</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow, { borderBottom: 1 }]}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
+      >
+        <Text style={styles.cellTextHeader}>{"\n"}</Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow, { marginTop: 15 }]}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+      >
+        <Text style={styles.cellTextHeader}>ANALISIS CAUSA RAIZ</Text>
+      </View>
+    </View>
+
+    <View style={styles.tableRow}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>
+          Por que Sucedio?
+        </Text>
+      </View>
+    </View>
+    <View style={styles.tableRow}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
+      </View>
+    </View>
+    <View style={styles.tableRow}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
+      </View>
+    </View>
+    <View style={styles.tableRow}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>
+          Si el porque final no tiene una solucion controlable, vuelva al
+          "porque" anterior
+        </Text>
+      </View>
+    </View>
+    <View style={styles.tableRow}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+      >
+        <Text style={styles.cellTextHeader}>2. GESTION DE RIESGOS</Text>
+      </View>
+    </View>
+    <View style={styles.tableRow}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+      >
+        <Text style={styles.cellTextHeader}>
+          AREA RESPONSABLE DE LA MITIGACION
+        </Text>
+      </View>
+    </View>
+
+    {/* FILA PARA LOS DATOS DEL AREA RESPONSABLE DE LA MITIGACION*/}
+
+    <View style={[styles.tableRow, { borderBottom: 1 }]}>
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          DIRECCION{"\n"}SMS
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "15%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>OPERACIONES</Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "20%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          MANTENIMIENTO Y{"\n"}PLANIFICACION
+        </Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}></Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "18%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          GERENCIA DE{"\n"}ADMINISTRACION Y{"\n"}RRHH
+        </Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "15%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          GERENCIA DE{"\n"}CONTROL DE{"\n"}CALIDAD
+        </Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}></Text>
+      </View>
+    </View>
+    {Footer(1, 5)}
+  </Page>
+);
+
+export const SecondPage = ({ report }: { report: VoluntaryReport }) => (
+  <Page size={"LETTER"} style={styles.page}>
+    <Header />
+
+    <View style={[styles.tableRow, { marginTop: 6 }]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>
+          {"\n"}
+          FECHA DE INICIO DE LA GESTION:
+          {"\n"}
+          {"\n"}
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+      >
+        <Text style={styles.cellTextHeader}>POSIBLES CONSECUENCIAS:</Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+      >
+        <Text style={styles.cellTextHeader}>DEFENSAS ACTUALES</Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>6.</Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+      >
+        <Text style={styles.cellTextHeader}>
+          CONSECUENCIA A EVALUAR PARA ESTABLECER LAS MEDIDAS DE MITIGACION:
+        </Text>
+      </View>
+    </View>
+
+    <View style={styles.tableRow}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "10%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>1</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "10%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "10%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>2</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "10%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "10%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>3</Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "10%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "10%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>4</Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "10%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "10%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>5</Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "10%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText2}></Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow, { borderBottom: 1 }]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>PROBABILIDAD</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>SEVERIDAD</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>
+          INDICE DE RIESGO{"\n"}INICIAL
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>
+          TOLERABILIDAD DEL{"\n"}RIESGO
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow, { marginTop: 15 }]}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+      >
+        <Text style={styles.cellTextHeader}>
+          MEDIDAS DE MITIGACION A IMPLEMENTAR
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText, styles.boldTitle]}>
+          RESPONSABLE DE LA
+        </Text>
+        <Text style={[styles.cellText, styles.boldTitle]}>IMPLEMENTACION</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText, styles.boldTitle]}>FIRMA</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "18%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText, styles.boldTitle]}>RESPONSABLE</Text>
+        <Text style={[styles.cellText, styles.boldTitle]}>DEL</Text>
+        <Text style={[styles.cellText, styles.boldTitle]}>SEGUIMIENTO</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText, styles.boldTitle]}>FIRMA</Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "21%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText, styles.boldTitle]}>FECHA</Text>
+        <Text style={[styles.cellText, styles.boldTitle]}>ESTIMADA DE</Text>
+        <Text style={[styles.cellText, styles.boldTitle]}>EJECUCION</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText, styles.boldTitle]}>FECHA</Text>
+        <Text style={[styles.cellText, styles.boldTitle]}>REAL DE</Text>
+        <Text style={[styles.cellText, styles.boldTitle]}>EJECUCION</Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "18%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "21%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "18%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "21%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "18%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "21%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "18%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "21%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow, { borderBottom: 1 }]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          paddingLeft: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "18%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "21%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+    </View>
+    {Footer(2, 5)}
+  </Page>
+);
+
+export const ThirdPage = ({ report }: { report: VoluntaryReport }) => (
+  <Page size={"LETTER"} style={styles.page}>
+    <Header />
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>PROBABILIDAD</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>SEVERIDAD</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          INDICE DE RIESGO RESIDUAL
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          TOLERABILIDAD DEL{"\n"}RIESGO RESIDUAL
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {"\n"}
+          {"\n"}
+        </Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {"\n"}
+          {"\n"}
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {"\n"}
+          {"\n"}
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {"\n"}
+          {"\n"}
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          3. CONTROL DE SEGUIMIENTO
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "17%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText4, styles.boldTitle]}>
+          FECHA DE{"\n"}SEGUIMIENTO DE{"\n"}LAS MEDIDAS DE{"\n"}MITIGACION
+        </Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "17%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText4, styles.boldTitle]}>OBSERVACIONES</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "19%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText4, styles.boldTitle]}>
+          RESPONSABLE DE{"\n"}LA{"\n"}IMPLEMENTACION
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText4, styles.boldTitle]}>FIRMA</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "23%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText4, styles.boldTitle]}>
+          RESPONSABLE DEL{"\n"}SEGUIMIENTO
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText4, styles.boldTitle]}>FIRMA</Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "17%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          padding: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "17%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "19%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "23%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "17%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          padding: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "17%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "19%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "23%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "17%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          padding: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "17%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "19%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "23%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "17%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          padding: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "17%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "19%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "23%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "17%",
+          backgroundColor: WHITE,
+          alignItems: "flex-start",
+          padding: 4,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "17%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "19%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "12%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "23%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          4. CIERRE DEL CASO
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "33.33%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText, styles.boldTitle]}>FECHA DE CIERRE</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "33.33%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText, styles.boldTitle]}>
+          FIRMA DEL REPRESENTANTE DE{"\n"}SMS
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "33.33%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText, styles.boldTitle]}>
+          FIRMA DEL JEFE DEL AREA{"\n"}RESPONSABLE DE LA{"\n"}MITIGACION
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow, { borderBottom: 1 }]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "33.33%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText3}>
+          {"\n"}
+          {"\n"}
+        </Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "33.33%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText3}>
+          {"\n"}
+          {"\n"}
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "33.33%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={styles.cellText3}>
+          {"\n"}
+          {"\n"}
+        </Text>
+      </View>
+    </View>
+    <InstructiveFirstPart />
+    {Footer(3, 5)}
+  </Page>
+);
+
+/*
+const FourthPage = ({ report }: { report: VoluntaryReport }) => (
+
+)
+*/
+const SafetyRiskManagementPdf = ({ report }: { report: VoluntaryReport },{ identification }: { identification?: MitigationTable }) => (
   <Document>
-    <Page size="LETTER" style={styles.page}>
-      {/*Encabezado de la pagina */}
-      <Header />
-      <View style={[styles.tableRow, { marginTop: 8 }]}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
-        >
-          <Text style={styles.cellTextHeader}>1. NOTIFICACION DE PELIGROS</Text>
-        </View>
-      </View>
-
-      <View style={styles.tableRow}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "37%",
-            backgroundColor: BLUE,
-            alignItems: "flex-start",
-            paddingLeft: 6,
-          }}
-        >
-          <Text style={[styles.cellText, styles.boldTitle]}>
-            FECHA DE LA IDENTIFICACION DEL
-          </Text>
-          <Text style={[styles.cellText, styles.boldTitle]}>PELIGRO:</Text>
-        </View>
-        <View
-          style={{ ...styles.tableCell, width: "63%", backgroundColor: BLUE }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>
-            TIPO DE PELIGRO
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.tableRow}>
-        <View style={{ ...styles.tableCell, width: "37%" }}>
-          <Text style={styles.cellText}>
-            {dateFormat(report.identification_date, "dd-MM-yyyy")}
-          </Text>
-        </View>
-
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "18.75%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>NATURAL</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12.75%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>TECNICO</Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "18.75%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>
-            ORGNIZACIONAL
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12.75%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>HUMANO</Text>
-        </View>
-      </View>
-
-      <View style={styles.tableRow}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "27%",
-            backgroundColor: BLUE,
-            paddingLeft: 6,
-            alignItems: "flex-start",
-          }}
-        >
-          <Text style={[styles.cellText, styles.boldTitle]}>
-            FECHA DE LA RECEPCION DEL
-          </Text>
-          <Text style={[styles.cellText, styles.boldTitle]}>PELIGRO</Text>
-        </View>
-        <View
-          style={{ ...styles.tableCell, width: "10%", backgroundColor: BLUE }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>N° CASO</Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "18.75%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText2}>
-            {report.danger_identification?.danger_type === "NATURAL" ? "X" : ""}
-          </Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12.75%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText2}>
-            {report.danger_identification?.danger_type === "TECNICO" ? "X" : ""}
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "18.75%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText2}>
-            {report.danger_identification?.danger_type === "ORGANIZACIONAL"
-              ? "X"
-              : ""}
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12.75%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText2}>
-            {" "}
-            {report.danger_identification?.danger_type === "HUMANO"
-              ? "X"
-              : ""}{" "}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.tableRow}>
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "27%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText2}>
-            {dateFormat(report.report_date, "dd-MM-yyy")}
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "10%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText2}>{report.report_number}</Text>
-        </View>
-
-        <View
-          style={{ ...styles.tableCell, width: "63%", backgroundColor: BLUE }}
-        >
-          <Text style={[styles.cellText, styles.boldTitle]}>
-            METODO Y FUENTE DE LA IDENTIFICACION DE PELIGROS
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.tableRow}>
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "37%",
-            backgroundColor: BLUE,
-          }}
-        >
-          <Text style={[styles.cellText, styles.boldTitle]}>
-            AREA DONDE FUE IDENTIFICADO EL{"\n"}EL PELIGRO:
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "31.5%",
-            backgroundColor: GREEN,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>PROACTIVO</Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "31.5%",
-            backgroundColor: RED,
-            color: WHITE,
-            fontWeight: "extrabold",
-          }}
-        >
-          <Text style={[styles.cellText, styles.boldTitle]}>REACTIVO</Text>
-        </View>
-      </View>
-
-      {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
-      <View style={styles.tableRow}>
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "32%",
-            backgroundColor: GRAY,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText]}>OPERACIONES</Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText2}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "26.5%",
-            backgroundColor: GRAY,
-            alignItems: "flex-start",
-          }}
-        >
-          <Text style={[styles.cellText, { paddingLeft: 2 }]}>REPORTE</Text>
-          <Text style={[styles.cellText, { paddingLeft: 2 }]}>VOLUNTARIO</Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "26.5%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText]}></Text>
-        </View>
-      </View>
-
-      {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
-      <View style={styles.tableRow}>
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "32%",
-            backgroundColor: GRAY,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText]}>MANTENIMIENTO</Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText2}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "26.5%",
-            backgroundColor: GRAY,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText]}>AUDITORIA</Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "26.5%",
-            backgroundColor: GRAY,
-            borderTop: 0,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText]}>REPORTE OBLIGATORIO</Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText]}></Text>
-        </View>
-      </View>
-
-      {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
-      <View style={styles.tableRow}>
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "32%",
-            backgroundColor: GRAY,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText]}>ADMINISTRACION Y RRHH</Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText2}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "26.5%",
-            backgroundColor: GRAY,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText]}>ENCUESTAS</Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "26.5%",
-            backgroundColor: GRAY,
-            borderTop: 0,
-          }}
-        >
-          <Text style={[styles.cellText]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText]}></Text>
-        </View>
-      </View>
-
-      {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
-      <View style={styles.tableRow}>
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "32%",
-            backgroundColor: GRAY,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText]}>GERENCIA DE CONTROL Y</Text>
-          <Text style={[styles.cellText]}>CALIDAD</Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText2}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "26.5%",
-            backgroundColor: GRAY,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText]}>INSPECCION</Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "26.5%",
-            backgroundColor: GRAY,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText]}>INVESTIGACION INTERNA</Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText]}></Text>
-        </View>
-      </View>
-
-      {/* ESTA ES LA FILA EXTR*A QUE UAN NO SE SI FUNCIONARA*/}
-      <View style={styles.tableRow}>
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "32%",
-            backgroundColor: GRAY,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText]}>OTROS</Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText2}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "26.5%",
-            backgroundColor: GRAY,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText]}>ENTREVISTA</Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "26.5%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText]}></Text>
-        </View>
-      </View>
-
-      <View style={styles.tableRow}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
-        >
-          <Text style={styles.cellTextHeader}>
-            BREVE DESCRIPCION DEL PELIGRO
-          </Text>
-        </View>
-      </View>
-      <View style={styles.tableRow}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
-        >
-          <Text style={styles.cellTextHeader}>{"\n"}</Text>
-        </View>
-      </View>
-      <View style={styles.tableRow}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
-        >
-          <Text style={styles.cellTextHeader}>{"\n"}</Text>
-        </View>
-      </View>
-      <View style={styles.tableRow}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
-        >
-          <Text style={styles.cellTextHeader}>{"\n"}</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow, { borderBottom: 1 }]}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: WHITE }}
-        >
-          <Text style={styles.cellTextHeader}>{"\n"}</Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow, { marginTop: 15 }]}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
-        >
-          <Text style={styles.cellTextHeader}>ANALISIS CAUSA RAIZ</Text>
-        </View>
-      </View>
-
-      <View style={styles.tableRow}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>
-            Por que Sucedio?
-          </Text>
-        </View>
-      </View>
-      <View style={styles.tableRow}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
-        </View>
-      </View>
-      <View style={styles.tableRow}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
-        </View>
-      </View>
-      <View style={styles.tableRow}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>Por que</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>
-            Si el porque final no tiene una solucion controlable, vuelva al
-            "porque" anterior
-          </Text>
-        </View>
-      </View>
-      <View style={styles.tableRow}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
-        >
-          <Text style={styles.cellTextHeader}>2. GESTION DE RIESGOS</Text>
-        </View>
-      </View>
-      <View style={styles.tableRow}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
-        >
-          <Text style={styles.cellTextHeader}>
-            AREA RESPONSABLE DE LA MITIGACION
-          </Text>
-        </View>
-      </View>
-
-      {/* FILA PARA LOS DATOS DEL AREA RESPONSABLE DE LA MITIGACION*/}
-
-      <View style={[styles.tableRow, { borderBottom: 1 }]}>
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}>
-            DIRECCION{"\n"}SMS
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "15%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}>OPERACIONES</Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "20%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}>
-            MANTENIMIENTO Y{"\n"}PLANIFICACION
-          </Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}></Text>
-        </View>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "18%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}>
-            GERENCIA DE{"\n"}ADMINISTRACION Y{"\n"}RRHH
-          </Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "15%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}>
-            GERENCIA DE{"\n"}CONTROL DE{"\n"}CALIDAD
-          </Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "5%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}></Text>
-        </View>
-      </View>
-      {Footer(1, 5)}
-    </Page>
-
-    <Page size={"LETTER"} style={styles.page}>
-      <Header />
-
-      <View style={[styles.tableRow, { marginTop: 6 }]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>
-            {"\n"}
-            FECHA DE INICIO DE LA GESTION:
-            {"\n"}
-            {"\n"}
-          </Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
-        >
-          <Text style={styles.cellTextHeader}>POSIBLES CONSECUENCIAS:</Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
-        >
-          <Text style={styles.cellTextHeader}>DEFENSAS ACTUALES</Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>6.</Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
-        >
-          <Text style={styles.cellTextHeader}>
-            CONSECUENCIA A EVALUAR PARA ESTABLECER LAS MEDIDAS DE MITIGACION:
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.tableRow}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "10%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>1</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "10%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "10%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>2</Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "10%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "10%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>3</Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "10%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "10%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>4</Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "10%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "10%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>5</Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "10%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText2}></Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow, { borderBottom: 1 }]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>PROBABILIDAD</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>SEVERIDAD</Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>
-            INDICE DE RIESGO{"\n"}INICIAL
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>
-            TOLERABILIDAD DEL{"\n"}RIESGO
-          </Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow, { marginTop: 15 }]}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
-        >
-          <Text style={styles.cellTextHeader}>
-            MEDIDAS DE MITIGACION A IMPLEMENTAR
-          </Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "100%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText, styles.boldTitle]}>
-            RESPONSABLE DE LA
-          </Text>
-          <Text style={[styles.cellText, styles.boldTitle]}>
-            IMPLEMENTACION
-          </Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText, styles.boldTitle]}>FIRMA</Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "18%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText, styles.boldTitle]}>RESPONSABLE</Text>
-          <Text style={[styles.cellText, styles.boldTitle]}>DEL</Text>
-          <Text style={[styles.cellText, styles.boldTitle]}>SEGUIMIENTO</Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText, styles.boldTitle]}>FIRMA</Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "21%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText, styles.boldTitle]}>FECHA</Text>
-          <Text style={[styles.cellText, styles.boldTitle]}>ESTIMADA DE</Text>
-          <Text style={[styles.cellText, styles.boldTitle]}>EJECUCION</Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText, styles.boldTitle]}>FECHA</Text>
-          <Text style={[styles.cellText, styles.boldTitle]}>REAL DE</Text>
-          <Text style={[styles.cellText, styles.boldTitle]}>EJECUCION</Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "18%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "21%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "18%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "21%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "18%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "21%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "18%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "21%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow, { borderBottom: 1 }]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            paddingLeft: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "18%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "21%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-      </View>
-      {Footer(2, 5)}
-    </Page>
-
-    <Page size={"LETTER"} style={styles.page}>
-      <Header />
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}>PROBABILIDAD</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}>SEVERIDAD</Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}>
-            INDICE DE RIESGO RESIDUAL
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}>
-            TOLERABILIDAD DEL{"\n"}RIESGO RESIDUAL
-          </Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}>
-            {"\n"}
-            {"\n"}
-          </Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}>
-            {"\n"}
-            {"\n"}
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}>
-            {"\n"}
-            {"\n"}
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText3, styles.boldTitle]}>
-            {"\n"}
-            {"\n"}
-          </Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
-        >
-          <Text style={[styles.cellTextHeader, styles.boldTitle]}>
-            3. CONTROL DE SEGUIMIENTO
-          </Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "17%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText4, styles.boldTitle]}>
-            FECHA DE{"\n"}SEGUIMIENTO DE{"\n"}LAS MEDIDAS DE{"\n"}MITIGACION
-          </Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "17%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText4, styles.boldTitle]}>
-            OBSERVACIONES
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "19%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText4, styles.boldTitle]}>
-            RESPONSABLE DE{"\n"}LA{"\n"}IMPLEMENTACION
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText4, styles.boldTitle]}>FIRMA</Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "23%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText4, styles.boldTitle]}>
-            RESPONSABLE DEL{"\n"}SEGUIMIENTO
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "14%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText4, styles.boldTitle]}>FIRMA</Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "17%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            padding: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "17%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "19%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "23%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "14%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "17%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            padding: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "17%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "19%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "23%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "14%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "17%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            padding: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "17%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "19%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "23%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "14%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "17%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            padding: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "17%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "19%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "23%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "14%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-      </View>
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "17%",
-            backgroundColor: WHITE,
-            alignItems: "flex-start",
-            padding: 4,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "17%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "19%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "12%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "23%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "14%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        <View
-          style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
-        >
-          <Text style={[styles.cellTextHeader, styles.boldTitle]}>
-            4. CIERRE DEL CASO
-          </Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "33.33%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText, styles.boldTitle]}>
-            FECHA DE CIERRE
-          </Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "33.33%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText, styles.boldTitle]}>
-            FIRMA DEL REPRESENTANTE DE{"\n"}SMS
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "33.33%",
-            backgroundColor: GRAY,
-          }}
-        >
-          <Text style={[styles.cellText, styles.boldTitle]}>
-            FIRMA DEL JEFE DEL AREA{"\n"}RESPONSABLE DE LA{"\n"}MITIGACION
-          </Text>
-        </View>
-      </View>
-
-      <View style={[styles.tableRow, { borderBottom: 1 }]}>
-        {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "33.33%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText3}>
-            {"\n"}
-            {"\n"}
-          </Text>
-        </View>
-
-        {/*LOCALIZACION DEL REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "33.33%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText3}>
-            {"\n"}
-            {"\n"}
-          </Text>
-        </View>
-
-        {/*NUMERO DE REPORTE*/}
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "33.33%",
-            backgroundColor: WHITE,
-          }}
-        >
-          <Text style={styles.cellText3}>
-            {"\n"}
-            {"\n"}
-          </Text>
-        </View>
-      </View>
-      <InstructiveFirstPart />
-      {Footer(3, 5)}
-    </Page>
+    
   </Document>
 );
 
 const Header = () => (
-  <View style={[styles.headerRow, { marginTop: 40 }]}>
-    {/* Primera columna (logo) */}
-    <View style={[styles.column, styles.firstColumn]}>
-      {/* <Image src="/LOGO_TRD.png" style={styles.logo} /> */}
+  <View style={styles.tableRowHeader}>
+    <View style={{ ...styles.tableCellHeader, width: "20%" }}>
+      <Image src="/tmd_sms_header.jpg" style={styles.logo} />
     </View>
-
-    {/* Segunda columna */}
-    <View style={[styles.column, styles.secondColumn]}>
-      <View style={styles.secondColumnTop}>
-        <Text style={[styles.text, { width: "100%" }]}>
-          SISTEMA DE GESTIÓN DE SEGURIDAD OPERACIONAL SMS
+    <View style={styles.column2Header}>
+      <View style={styles.rowColumnHeader}>
+        <Text style={styles.cellTextHeader}>
+          SISTEMA DE GESTION DE SEGURIDAD OPERACIONAL{"\n"}SMS
         </Text>
       </View>
-      <View style={styles.secondColumnBottom}>
-        <Text style={[styles.text, { width: "100%" }]}>
+      <View style={styles.rowColumnHeader}>
+        <Text style={styles.cellTextHeader}>
           REPORTE VOLUNTARIO DE PELIGROS
         </Text>
       </View>
     </View>
-
-    {/* Tercera columna */}
-    <View style={[styles.column, styles.thirdColumn]}>
-      <View style={styles.thirdColumnRow}>
-        <Text style={[styles.text, { width: "100%" }]}>EDICIÓN N°: 01</Text>
+    <View style={styles.column3Header}>
+      <View style={styles.rowColumnHeader}>
+        <Text style={styles.cellTextHeader}>EDICION N: 01</Text>
       </View>
-      <View style={styles.thirdColumnRow}>
-        <Text style={[styles.text, { width: "100%" }]}>
-          FECHA DE EDICIÓN: 06/04/2024
-        </Text>
+      <View style={styles.rowColumnHeader}>
+        <Text style={styles.cellTextHeader}>FECHA EDICION{"\n"}12/10/2023</Text>
       </View>
-      <View style={styles.thirdColumnLastRow}>
-        <Text style={[styles.text, { width: "100%" }]}>
-          CÓDIGO: TMD-FOR-SMS-005
-        </Text>
+      <View style={styles.rowColumnHeader}>
+        <Text style={[styles.cellTextHeader,{paddingTop:1}]}>CODIGO:{"\n"}TMD-FOR-SMS-002</Text>
       </View>
     </View>
   </View>

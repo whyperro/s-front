@@ -139,7 +139,7 @@ export function CreateObligatoryReportForm({
     "La aereonave aterriza quedándose solo con el combustible de reserva o menos",
     "Incursion en pista o calle de rodaje ( RUNAWAY INCURSION-RI)",
     "Aproximacion no estabilizada por debajo de los 500 pies VRF o 1000 PIES IRF",
-    "Desprezurizacion",
+    "Despresurizacion",
     "Salida de pista - RUNAWAY INCURSION",
     "Derrame de combustible",
     "Error  de navegacion con desviacion significativa de la ruta",

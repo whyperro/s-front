@@ -507,3 +507,10 @@ export type AverageReportsResponse = {
   oldest_range: StatsByMonth;
   newest_range: StatsByMonth;
 };
+
+export type DangerIdentificationWithAll = {
+  id: number;
+  description: string;
+  measures: MitigationMeasure[];
+  analysis: Analysis;
+};
