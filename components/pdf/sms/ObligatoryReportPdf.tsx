@@ -501,7 +501,7 @@ const Header = () => (
       </View>
       <View style={styles.rowColumnHeader}>
         <Text style={styles.cellTextHeader}>
-          REPORTE VOLUNTARIO DE PELIGROS
+          REPORTE OBLIGATORIO DE SUCESOS
         </Text>
       </View>
     </View>

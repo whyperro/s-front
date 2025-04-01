@@ -1,4 +1,4 @@
-import { dateFormat, timeFormat } from "@/lib/utils";
+import { dateFormat, getResult, timeFormat } from "@/lib/utils";
 import {
   DangerIdentificationWithAll,
   MitigationTable,
@@ -1605,231 +1605,249 @@ export const SecondPage = ({ report, identification }: MyDocumentProps) => (
       </View>
     </View>
 
-    {identification.possible_consequences.split(",").map((cause, index) => (
-      <Text key={index} style={styles.cellText}>
-        <Text style={[styles.cellText, styles.boldTitle]}>{index + 1}. </Text>
-        {cause.trim()}
-      </Text>
-    ))}
+    {identification.possible_consequences.split(",").map((cause, index) => {
+      const trimmedCause = cause.trim();
+      const isMatch =
+        trimmedCause === identification.consequence_to_evaluate?.trim();
 
-    <View style={styles.tableRow}>
-      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "10%",
-          backgroundColor: GRAY,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>1</Text>
-      </View>
+      return isMatch ? (
+        <>
+          <View style={styles.tableRow}>
+            {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "10%",
+                backgroundColor: GRAY,
+              }}
+            >
+              <Text style={[styles.cellText2, styles.boldTitle]}>1</Text>
+            </View>
 
-      {/*LOCALIZACION DEL REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "10%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
+            {/*LOCALIZACION DEL REPORTE*/}
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "10%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, styles.boldTitle]}>
+                {index + 1 == 1 ? "X" : ""}
+              </Text>
+            </View>
 
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "10%",
-          backgroundColor: GRAY,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>2</Text>
-      </View>
+            {/*NUMERO DE REPORTE*/}
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "10%",
+                backgroundColor: GRAY,
+              }}
+            >
+              <Text style={[styles.cellText2, styles.boldTitle]}>2</Text>
+            </View>
 
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "10%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
+            {/*NUMERO DE REPORTE*/}
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "10%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, styles.boldTitle]}>
+                {" "}
+                {index + 1 == 2 ? "X" : ""}
+              </Text>
+            </View>
 
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "10%",
-          backgroundColor: GRAY,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>3</Text>
-      </View>
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "10%",
+                backgroundColor: GRAY,
+              }}
+            >
+              <Text style={[styles.cellText2, styles.boldTitle]}>3</Text>
+            </View>
 
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "10%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "10%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, styles.boldTitle]}>
+                {" "}
+                {index + 1 == 3 ? "X" : ""}
+              </Text>
+            </View>
 
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "10%",
-          backgroundColor: GRAY,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>4</Text>
-      </View>
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "10%",
+                backgroundColor: GRAY,
+              }}
+            >
+              <Text style={[styles.cellText2, styles.boldTitle]}>4</Text>
+            </View>
 
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "10%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "10%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, styles.boldTitle]}>
+                {" "}
+                {index + 1 == 4 ? "X" : ""}
+              </Text>
+            </View>
 
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "10%",
-          backgroundColor: GRAY,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>5</Text>
-      </View>
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "10%",
+                backgroundColor: GRAY,
+              }}
+            >
+              <Text style={[styles.cellText2, styles.boldTitle]}>5</Text>
+            </View>
 
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "10%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={styles.cellText2}></Text>
-      </View>
-    </View>
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "10%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={styles.cellText2}> {index + 1 == 5 ? "X" : ""}</Text>
+            </View>
+          </View>
 
-    <View style={[styles.tableRow]}>
-      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+          <View style={[styles.tableRow]}>
+            {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
 
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "25%",
-          backgroundColor: GRAY,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>PROBABILIDAD</Text>
-      </View>
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "25%",
+                backgroundColor: GRAY,
+              }}
+            >
+              <Text style={[styles.cellText2, styles.boldTitle]}>
+                PROBABILIDAD
+              </Text>
+            </View>
 
-      {/*LOCALIZACION DEL REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "25%",
-          backgroundColor: GRAY,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>SEVERIDAD</Text>
-      </View>
+            {/*LOCALIZACION DEL REPORTE*/}
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "25%",
+                backgroundColor: GRAY,
+              }}
+            >
+              <Text style={[styles.cellText2, styles.boldTitle]}>
+                SEVERIDAD
+              </Text>
+            </View>
 
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "25%",
-          backgroundColor: GRAY,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>
-          INDICE DE RIESGO{"\n"}INICIAL
-        </Text>
-      </View>
+            {/*NUMERO DE REPORTE*/}
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "25%",
+                backgroundColor: GRAY,
+              }}
+            >
+              <Text style={[styles.cellText2, styles.boldTitle]}>
+                INDICE DE RIESGO{"\n"}INICIAL
+              </Text>
+            </View>
 
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "25%",
-          backgroundColor: GRAY,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>
-          TOLERABILIDAD DEL{"\n"}RIESGO
-        </Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow, { borderBottom: 1 }]}>
-      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+            {/*NUMERO DE REPORTE*/}
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "25%",
+                backgroundColor: GRAY,
+              }}
+            >
+              <Text style={[styles.cellText2, styles.boldTitle]}>
+                TOLERABILIDAD DEL{"\n"}RIESGO
+              </Text>
+            </View>
+          </View>
+          <View style={[styles.tableRow, { borderBottom: 1 }]}>
+            {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
 
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "25%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText3, styles.boldTitle]}>
-          {"\n"}
-          {"\n"}
-        </Text>
-      </View>
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "25%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText3, styles.boldTitle]}>
+                {identification.analysis.probability}
+              </Text>
+            </View>
 
-      {/*LOCALIZACION DEL REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "25%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText3, styles.boldTitle]}>
-          {"\n"}
-          {"\n"}
-        </Text>
-      </View>
+            {/*LOCALIZACION DEL REPORTE*/}
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "25%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText3, styles.boldTitle]}>
+                {identification.analysis.severity}
+              </Text>
+            </View>
 
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "25%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText3, styles.boldTitle]}>
-          {"\n"}
-          {"\n"}
-        </Text>
-      </View>
+            {/*NUMERO DE REPORTE*/}
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "25%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText3, styles.boldTitle]}>
+                {identification.analysis.result}
+              </Text>
+            </View>
 
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "25%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText3, styles.boldTitle]}>
-          {"\n"}
-          {"\n"}
-        </Text>
-      </View>
-    </View>
+            {/*NUMERO DE REPORTE*/}
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "25%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText3, styles.boldTitle]}>
+                {getResult(identification.analysis.result)}
+              </Text>
+            </View>
+          </View>
+        </>
+      ) : null;
+    })}
 
     <View style={[styles.tableRow, { marginTop: 15 }]}>
       <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: BLUE,
+        }}
       >
         <Text style={[styles.cellTextHeader, styles.boldTitle]}>
           MEDIDAS DE MITIGACION A IMPLEMENTAR
@@ -1837,69 +1855,37 @@ export const SecondPage = ({ report, identification }: MyDocumentProps) => (
       </View>
     </View>
 
-    <View style={[styles.tableRow]}>
+    <View style={[styles.observationContainer, { borderBottom: 0 }]}>
       <View
         style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
+          position: "absolute",
+          top: 3,
+          left: 5,
+          right: 5,
+          lineHeight: 0.8,
         }}
       >
-        <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
+        {/* Tomamos solo los primeros 5 elementos con .slice(0, 5) */}
+
+        {identification.mitigation_plan?.measures
+          .slice(0, 5)
+          .map((measure, index) => (
+            <Text key={measure.id} style={styles.cellText}>
+              <Text style={[styles.cellText, styles.boldTitle]}>
+                {index + 1}.{" "}
+              </Text>
+              {measure.description} {/* Usamos directamente la descripción */}
+            </Text>
+          ))}
       </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
+
+      {/* Líneas adicionales (manteniendo 5 líneas para coincidir con el máximo) */}
+      <View style={styles.linesContainer}>
+        {[...Array(5)].map((_, index) => (
+          <View key={index} style={styles.line}>
+            <Text style={[styles.cellText3]}></Text>
+          </View>
+        ))}
       </View>
     </View>
 
@@ -1980,360 +1966,96 @@ export const SecondPage = ({ report, identification }: MyDocumentProps) => (
       </View>
     </View>
 
-    <View style={[styles.tableRow]}>
-      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+    {identification.mitigation_plan?.measures.slice(0, 5).map(
+      (
+        measure,
+        index,
+        array // <-- Nota el tercer parámetro 'array'
+      ) => (
+        <View
+          key={measure.id}
+          style={[
+            styles.tableRow,
+            index === array.length - 1 ? { borderBottom: 1 } : {}, // <-- Border solo en último
+          ]}
+        >
+          {/* Contenido de la fila */}
+          <View
+            style={{
+              ...styles.tableCell,
+              width: "25%",
+              backgroundColor: WHITE,
+            }}
+          >
+            <Text style={[styles.cellText2]}>
+              {index + 1}. {measure.implementation_responsible}
+            </Text>
+          </View>
 
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "25%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
-      </View>
+          <View
+            style={{
+              ...styles.tableCell,
+              width: "12%",
+              backgroundColor: WHITE,
+            }}
+          >
+            <Text style={[styles.cellText2]}></Text>
+          </View>
 
-      {/*LOCALIZACION DEL REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
+          <View
+            style={{
+              ...styles.tableCell,
+              width: "18%",
+              backgroundColor: WHITE,
+            }}
+          >
+            <Text style={[styles.cellText2]}>
+              {measure.implementation_supervisor}
+            </Text>
+          </View>
 
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "18%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
+          <View
+            style={{
+              ...styles.tableCell,
+              width: "12%",
+              backgroundColor: WHITE,
+            }}
+          >
+            <Text style={[styles.cellText2]}></Text>
+          </View>
 
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
+          <View
+            style={{
+              ...styles.tableCell,
+              width: "21%",
+              backgroundColor: WHITE,
+            }}
+          >
+            <Text style={[styles.cellText2]}>
+              {dateFormat(measure.estimated_date, "dd-MM-yyyy")}
+            </Text>
+          </View>
 
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "21%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
+          <View
+            style={{
+              ...styles.tableCell,
+              width: "12%",
+              backgroundColor: WHITE,
+            }}
+          >
+            <Text style={[styles.cellText2]}>
+              {dateFormat(measure.execution_date, "dd-MM-yyyy")}
+            </Text>
+          </View>
+        </View>
+      )
+    )}
 
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-    </View>
-
-    <View style={[styles.tableRow]}>
-      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "25%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
-      </View>
-
-      {/*LOCALIZACION DEL REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "18%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "21%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-    </View>
-
-    <View style={[styles.tableRow]}>
-      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "25%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
-      </View>
-
-      {/*LOCALIZACION DEL REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "18%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "21%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-    </View>
-
-    <View style={[styles.tableRow]}>
-      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "25%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
-      </View>
-
-      {/*LOCALIZACION DEL REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "18%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "21%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-    </View>
-
-    <View style={[styles.tableRow, { borderBottom: 1 }]}>
-      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "25%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
-      </View>
-
-      {/*LOCALIZACION DEL REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "18%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "21%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-    </View>
     {Footer(2, 5)}
   </Page>
 );
 
-export const ThirdPage = ({ report }: { report: VoluntaryReport }) => (
+export const ThirdPage = ({ report, identification }: MyDocumentProps) => (
   <Page size={"LETTER"} style={styles.page}>
     <Header />
     <View style={[styles.tableRow]}>
@@ -2398,8 +2120,7 @@ export const ThirdPage = ({ report }: { report: VoluntaryReport }) => (
         }}
       >
         <Text style={[styles.cellText3, styles.boldTitle]}>
-          {"\n"}
-          {"\n"}
+          {identification.mitigation_plan?.analysis.probability}
         </Text>
       </View>
 
@@ -2412,8 +2133,7 @@ export const ThirdPage = ({ report }: { report: VoluntaryReport }) => (
         }}
       >
         <Text style={[styles.cellText3, styles.boldTitle]}>
-          {"\n"}
-          {"\n"}
+          {identification.mitigation_plan?.analysis.severity}
         </Text>
       </View>
 
@@ -2426,8 +2146,7 @@ export const ThirdPage = ({ report }: { report: VoluntaryReport }) => (
         }}
       >
         <Text style={[styles.cellText3, styles.boldTitle]}>
-          {"\n"}
-          {"\n"}
+          {identification.mitigation_plan?.analysis.result}
         </Text>
       </View>
 
@@ -2440,8 +2159,8 @@ export const ThirdPage = ({ report }: { report: VoluntaryReport }) => (
         }}
       >
         <Text style={[styles.cellText3, styles.boldTitle]}>
-          {"\n"}
-          {"\n"}
+          {identification.mitigation_plan &&
+            getResult(identification.mitigation_plan?.analysis.result)}
         </Text>
       </View>
     </View>
@@ -2462,7 +2181,7 @@ export const ThirdPage = ({ report }: { report: VoluntaryReport }) => (
       <View
         style={{
           ...styles.tableCell,
-          width: "17%",
+          width: "33.33%",
           backgroundColor: GRAY,
         }}
       >
@@ -2475,7 +2194,7 @@ export const ThirdPage = ({ report }: { report: VoluntaryReport }) => (
       <View
         style={{
           ...styles.tableCell,
-          width: "17%",
+          width: "33.33%",
           backgroundColor: GRAY,
         }}
       >
@@ -2486,44 +2205,7 @@ export const ThirdPage = ({ report }: { report: VoluntaryReport }) => (
       <View
         style={{
           ...styles.tableCell,
-          width: "19%",
-          backgroundColor: GRAY,
-        }}
-      >
-        <Text style={[styles.cellText4, styles.boldTitle]}>
-          RESPONSABLE DE{"\n"}LA{"\n"}IMPLEMENTACION
-        </Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: GRAY,
-        }}
-      >
-        <Text style={[styles.cellText4, styles.boldTitle]}>FIRMA</Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "23%",
-          backgroundColor: GRAY,
-        }}
-      >
-        <Text style={[styles.cellText4, styles.boldTitle]}>
-          RESPONSABLE DEL{"\n"}SEGUIMIENTO
-        </Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "14%",
+          width: "33.33%",
           backgroundColor: GRAY,
         }}
       >
@@ -2531,356 +2213,67 @@ export const ThirdPage = ({ report }: { report: VoluntaryReport }) => (
       </View>
     </View>
 
-    <View style={[styles.tableRow]}>
-      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+    {(() => {
+      let remainingControls = 5;
+      let renderedControls = 0;
 
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "17%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          padding: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
-      </View>
+      return identification.mitigation_plan?.measures.flatMap((measure) => {
+        if (remainingControls <= 0) return [];
 
-      {/*LOCALIZACION DEL REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "17%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
+        const controlsToRender = measure.follow_up_control.slice(
+          0,
+          remainingControls
+        );
+        remainingControls -= controlsToRender.length;
 
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "19%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
+        return controlsToRender.map((control, index) => {
+          renderedControls++;
+          return (
+            <View
+              key={`${measure.id}-${control.id}`}
+              style={[
+                styles.tableRow,
+                renderedControls === 5 ? { borderBottom: 1 } : {},
+              ]}
+            >
+              <View
+                style={{
+                  ...styles.tableCell,
+                  width: "33.33%",
+                  backgroundColor: WHITE,
+                  alignItems: "center",
+                  padding: 4,
+                }}
+              >
+                <Text style={[styles.cellText2]}>
+                  {renderedControls}. {dateFormat(control.date, "dd-MM-yyyy")}
+                </Text>
+              </View>
 
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
+              <View
+                style={{
+                  ...styles.tableCell,
+                  width: "33.33%",
+                  backgroundColor: WHITE,
+                }}
+              >
+                <Text style={[styles.cellText2]}>{control.description}</Text>
+              </View>
 
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "23%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "14%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "17%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          padding: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
-      </View>
-
-      {/*LOCALIZACION DEL REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "17%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "19%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "23%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "14%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "17%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          padding: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
-      </View>
-
-      {/*LOCALIZACION DEL REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "17%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "19%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "23%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "14%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "17%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          padding: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
-      </View>
-
-      {/*LOCALIZACION DEL REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "17%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "19%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "23%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "14%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "17%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          padding: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
-      </View>
-
-      {/*LOCALIZACION DEL REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "17%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "19%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "12%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "23%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-
-      {/*NUMERO DE REPORTE*/}
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "14%",
-          backgroundColor: WHITE,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}></Text>
-      </View>
-    </View>
+              <View
+                style={{
+                  ...styles.tableCell,
+                  width: "33.33%",
+                  backgroundColor: WHITE,
+                }}
+              >
+                <Text style={[styles.cellText2]}></Text>
+              </View>
+            </View>
+          );
+        });
+      });
+    })()}
 
     <View style={[styles.tableRow]}>
       <View
@@ -3003,9 +2396,7 @@ const Header = () => (
         </Text>
       </View>
       <View style={styles.rowColumnHeader}>
-        <Text style={styles.cellTextHeader}>
-          REPORTE VOLUNTARIO DE PELIGROS
-        </Text>
+        <Text style={styles.cellTextHeader}>GESTION DE RIESGO</Text>
       </View>
     </View>
     <View style={styles.column3Header}>

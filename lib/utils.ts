@@ -56,3 +56,29 @@ export function timeFormat(hour: Date, outPutFormat: string = "HH:mm") {
   const time = format(parsedTime, outPutFormat);
   return time;
 }
+
+export function getResult(index: string) {
+  const INTOLERABLE: string[] = ["5A", "5B", "5C", "4A", "4B", "3A"];
+  const TOLERABLE: string[] = [
+    "5D",
+    "5E",
+    "4C",
+    "4D",
+    "4E",
+    "3B",
+    "3C",
+    "3D",
+    "2A",
+    "2B",
+    "2C",
+  ];
+  const ACCEPTABLE: string[] = ["3E", "2D", "2E", "1A", "1B", "1C", "1D", "1E"];
+
+  if (INTOLERABLE.includes(index)) {
+    return "INTOLERABLE";
+  } else if (TOLERABLE.includes(index)) {
+    return "TOLERABLE";
+  } else if (ACCEPTABLE.includes(index)) {
+    return "ACEPTABLE";
+  }
+}

@@ -767,6 +767,7 @@ const MyDocument = ({ report, identification }: MyDocumentProps) => (
       <>
         <FirstPage report={report} identification={identification} />
         <SecondPage report={report} identification={identification} />
+        <ThirdPage report={report} identification={identification} />
       </>
     )}
   </Document>
