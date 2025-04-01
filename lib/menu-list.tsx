@@ -5,6 +5,7 @@ import {
   Building,
   ClipboardCopy,
   CreditCard,
+  CreditCardIcon,
   Globe,
   HandCoins,
   Landmark,
@@ -15,6 +16,7 @@ import {
   PackagePlus,
   PackageSearch,
   Plane,
+  PlaneIcon,
   PlaneLanding,
   PlaneTakeoff,
   Receipt,
@@ -83,82 +85,10 @@ export function getMenuList(
             groupLabel: "Administración",
             menus: [
               {
-                href: "/transmandu/administracion/vuelos",
-                label: "Vuelos",
-                active: pathname.includes("/transmandu/administracion/vuelos"),
-                icon: PlaneTakeoff,
-                roles: [
-                  "ANALISTA_PLANIFICACION",
-                  "JEFE_PLANIFICACION",
-                  "SUPERUSER",
-                ],
-                submenus: [],
-              },
-              {
-                href: "/transmandu/administracion/articulos",
-                label: "Articulos",
-                active: pathname.includes("/transmandu/administracion/articulos"),
-                icon: Boxes,
-                roles: [
-                  "ANALISTA_PLANIFICACION",
-                  "JEFE_PLANIFICACION",
-                  "SUPERUSER",
-                ],
-                submenus: [],
-              },
-              {
-                href: "/transmandu/administracion/ventas",
-                label: "Ventas",
-                active: pathname.includes("/transmandu/administracion/ventas"),
-                icon: ShoppingCart,
-                roles: [
-                  "ANALISTA_PLANIFICACION",
-                  "JEFE_PLANIFICACION",
-                  "SUPERUSER",
-                ],
-                submenus: [],
-              },
-              {
-                href: "/transmandu/administracion/renta",
-                label: "Renta",
-                active: pathname.includes("/transmandu/administracion/renta"),
-                icon: Timer,
-                roles: [
-                  "ANALISTA_PLANIFICACION",
-                  "JEFE_PLANIFICACION",
-                  "SUPERUSER",
-                ],
-                submenus: [],
-              },
-              {
-                href: "/transmandu/administracion/credito",
-                label: "Crédito",
-                active: pathname.includes("/transmandu/administracion/credito"),
-                icon: CreditCard,
-                roles: [
-                  "ANALISTA_PLANIFICACION",
-                  "JEFE_PLANIFICACION",
-                  "SUPERUSER",
-                ],
-                submenus: [],
-              },
-          // {
-          //   href: "/transmandu/administracion/pagos",
-          //   label: "Pagos",
-          //   active: pathname.includes("/transmandu/administracion/pagos"),
-          //   icon: CreditCard,
-          //   roles: [
-          //     "ANALISTA_PLANIFICACION",
-          //     "JEFE_PLANIFICACION",
-          //     "SUPERUSER",
-          //   ],
-          //   submenus: [],
-          // },
-              {
-                href: "/transmandu/administracion/gestion_vuelos",
-                label: "Gestión",
+                href: "/transmandu/administracion/operaciones",
+                label: "Operanciones",
                 active: pathname.includes(
-                  "/transmandu/administracion/gestion_vuelos"
+                  "/transmandu/administracion/operaciones"
                 ),
                 icon: BookUser,
                 roles: [
@@ -168,47 +98,118 @@ export function getMenuList(
                 ],
                 submenus: [
                   {
-                    href: "/transmandu/administracion/gestion_vuelos/aviones",
-                    label: "Gestionar Aviones",
+                    href: "/transmandu/administracion/operaciones/renta",
+                    label: "Renta",
                     active:
                       pathname ===
-                      "/transmandu/administracion/gestion_vuelos/aviones",
+                      "/transmandu/administracion/operaciones/renta",
                   },
                   {
-                    href: "/transmandu/administracion/gestion_vuelos/clientes",
-                    label: "Gestionar Clientes",
+                    href: "/transmandu/administracion/operaciones/ventas",
+                    label: "Ventas",
                     active:
                       pathname ===
-                      "/transmandu/administracion/gestion_vuelos/clientes",
+                      "/transmandu/administracion/operaciones/ventas",
                   },
                   {
-                    href: "/transmandu/administracion/gestion_vuelos/proveedor",
-                    label: "Gestionar Proveedor",
+                    href: "/transmandu/administracion/operaciones/articulos",
+                    label: "Artículos",
                     active:
                       pathname ===
-                      "/transmandu/administracion/gestion_vuelos/proveedor",
+                      "/transmandu/administracion/operaciones/articulos",
+                  },
+                ],
+              },
+              // {
+              //   href: "/transmandu/administracion/pagos",
+              //   label: "Pagos",
+              //   active: pathname.includes("/transmandu/administracion/pagos"),
+              //   icon: CreditCard,
+              //   roles: [
+              //     "ANALISTA_PLANIFICACION",
+              //     "JEFE_PLANIFICACION",
+              //     "SUPERUSER",
+              //   ],
+              //   submenus: [],
+              // },
+              {
+                href: "/transmandu/administracion/creditos",
+                label: "Gestión de Créditos",
+                active: pathname.includes(
+                  "/transmandu/administracion/creditos"
+                ),
+                icon: CreditCardIcon,
+                roles: [
+                  "ANALISTA_PLANIFICACION",
+                  "JEFE_PLANIFICACION",
+                  "SUPERUSER",
+                ],
+                submenus: [
+                  {
+                    href: "/transmandu/administracion/creditos/credito_renta",
+                    label: "Crédito de Rentas",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/creditos/credito_renta",
                   },
                   {
-                    href: "/transmandu/administracion/gestion_vuelos/empresa",
+                    href: "/transmandu/administracion/creditos/credito_venta",
+                    label: "Crédito de Ventas",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/creditos/credito_venta",
+                  },
+                  {
+                    href: "/transmandu/administracion/creditos/credito_vuelo",
+                    label: "Crédito de Vuelos",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/creditos/credito_vuelo",
+                  },
+                ],
+              },
+              {
+                href: "/transmandu/administracion/gestion_general",
+                label: "Gestión General",
+                active: pathname.includes(
+                  "/transmandu/administracion/gestion_general"
+                ),
+                icon: BookUser,
+                roles: [
+                  "ANALISTA_PLANIFICACION",
+                  "JEFE_PLANIFICACION",
+                  "SUPERUSER",
+                ],
+                submenus: [
+                  {
+                    href: "/transmandu/administracion/gestion_general/empresa",
                     label: "Gestionar Empresa",
                     active:
                       pathname ===
-                      "/transmandu/administracion/gestion_vuelos/empresa",
+                      "/transmandu/administracion/gestion_general/empresa",
                   },
                   {
-                    href: "/transmandu/administracion/gestion_vuelos/rutas",
-                    label: "Gestionar Rutas",
+                    href: "/transmandu/administracion/gestion_general/proveedor",
+                    label: "Gestionar Proveedor",
                     active:
                       pathname ===
-                      "/transmandu/administracion/gestion_vuelos/rutas",
+                      "/transmandu/administracion/gestion_general/proveedor",
                   },
-                  
+                  {
+                    href: "/transmandu/administracion/gestion_general/clientes",
+                    label: "Gestionar Clientes",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/gestion_general/clientes",
+                  },
                 ],
               },
               {
                 href: "/transmandu/administracion/gestion_cajas",
-                label: "Gestion de Cajas",
-                active: pathname.includes("/transmandu/administracion/gestion_cajas"),
+                label: "Finanzas",
+                active: pathname.includes(
+                  "/transmandu/administracion/gestion_cajas"
+                ),
                 icon: Landmark,
                 roles: [
                   "ANALISTA_PLANIFICACION",
@@ -232,7 +233,6 @@ export function getMenuList(
                   },
                 ],
               },
-              
             ],
           },
           {

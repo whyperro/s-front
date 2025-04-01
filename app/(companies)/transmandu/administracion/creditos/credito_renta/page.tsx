@@ -1,37 +1,35 @@
 "use client";
 
 import { ContentLayout } from "@/components/layout/ContentLayout";
-import { useGetFlightsPayments } from "@/hooks/administracion/useGetFlightsPayments";
 import { columns } from "./columns";
-import { DataTable } from "./data-table";
 import LoadingPage from "@/components/misc/LoadingPage";
-import { FlightPaymentsDialog } from "@/components/dialogs/CreateFlightPaymentsDialog";
+import { DataTable } from "./date-table";
+import { useGetCreditRent } from "@/hooks/administracion/useGetCreditRent";
 
-const FlightPaymentsPage = () => {
-  const { data, isLoading, isError } = useGetFlightsPayments();
+const CreditPage = () => {
+  const { data, isLoading, isError } = useGetCreditRent();
 
   if (isLoading) {
     return <LoadingPage />;
   }
   console.log(data);
   return (
-    <ContentLayout title="Clientes">
+    <ContentLayout title="Crédito">
       {" "}
       <h1 className="text-5xl font-bold text-center mt-2">
-        Control de Pagos de los Vuelos
+        Control de Crédito de la Renta
       </h1>
       <p className="text-sm text-muted-foreground text-center italic mt-2">
-        Aquí puede llevar el control de los pagos de los vuelos que han sido
-        registrados.
+        Aquí puede llevar el control de los créditos de las rentas que han sido registrados.
       </p>
       {data && <DataTable columns={columns} data={data} />}
       {isError && (
         <p className="text-muted-foreground text-sm italic text-center">
-          Ha ocurrido un error al cargar los pagos...
+          Ha ocurrido un error al cargar los créditos de las rentas...
         </p>
       )}
     </ContentLayout>
   );
 };
 
-export default FlightPaymentsPage;
+export default CreditPage;

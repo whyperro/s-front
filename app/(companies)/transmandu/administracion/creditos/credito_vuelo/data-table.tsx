@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/table";
 import { ListRestart } from "lucide-react";
 import { useState } from "react";
-import { FlightPaymentsDialog } from "@/components/dialogs/CreateFlightPaymentsDialog";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -56,7 +55,6 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="flex items-center py-4">
         <div className="flex gap-x-2 items-center">
-          <FlightPaymentsDialog />
           {isFiltered && (
             <Button
               variant="ghost"
