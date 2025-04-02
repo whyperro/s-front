@@ -32,6 +32,12 @@ import { DangerIdentification } from "@/types";
 import { Separator } from "@radix-ui/react-select";
 import { useEffect, useState } from "react";
 import { Textarea } from "../ui/textarea";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "../ui/calendar";
+import { es } from "date-fns/locale";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 // HAY DATOS QUE VIENEN DEL REPORTE
 // COMO FECHA DE REPORTE E IDENTIFICACION
@@ -43,6 +49,14 @@ const FormSchema = z.object({
   danger: z.string().min(3, "Debe contener al menos 3 dígitos caracteres"),
 
   danger_area: z.string(),
+
+  risk_management_start_date: z
+    .date()
+    .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
+
+  current_defenses: z
+    .string()
+    .min(3, "Debe contener al menos 3 dígitos caracteres"),
 
   description: z.string().min(3, "Debe contener al menos 3 dígitos caracteres"),
 
@@ -82,12 +96,14 @@ export default function CreateDangerIdentificationForm({
   const { createDangerIdentification } = useCreateDangerIdentification();
   const { updateDangerIdentification } = useUpdateDangerIdentification();
   const { data: voluntaryReport } = useGetVoluntaryReportById(id); // Para mostrar los datos reporte como referencia en este formulario
+
   const AREAS = [
     "OPERACIONES",
     "MANTENIMIENTO",
     "ADMINISTRACION",
     "CONTROL_CALIDAD",
     "IT",
+    "OTROS",
   ];
   const DANGER_TYPES = ["ORGANIZACIONAL", "TECNICO", "HUMANO", "NATURAL"];
 
@@ -95,6 +111,8 @@ export default function CreateDangerIdentificationForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       danger: initialData?.danger,
+      current_defenses: initialData?.current_defenses,
+      risk_management_start_date: initialData?.risk_management_start_date,
       consequence_to_evaluate: initialData?.consequence_to_evaluate,
       danger_area: initialData?.danger_area,
       danger_type: initialData?.danger_type,
@@ -121,10 +139,14 @@ export default function CreateDangerIdentificationForm({
   }, [initialData, form.reset]);
 
   const onSubmit = async (data: FormSchemaType) => {
+    console.log("DANGER IDETIFICATION DATA", data);
+
     if (initialData && isEditing) {
       const values = {
         id: initialData.id,
         danger: initialData.danger,
+        risk_management_start_date: initialData.risk_management_start_date,
+        current_defenses: initialData.current_defenses,
         danger_area: initialData.danger_area,
         danger_type: initialData.danger_type,
         description: initialData.description,
@@ -152,22 +174,70 @@ export default function CreateDangerIdentificationForm({
         className="flex flex-col space-y-3"
       >
         <FormLabel className="text-lg text-center m-2">
-          Identificación de peligro
+          Identificación de Peligro
         </FormLabel>
 
-        <FormField
-          control={form.control}
-          name="danger"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Peligro Identificado</FormLabel>
-              <FormControl>
-                <Input placeholder="Cual es el peligro" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
+        <div className="flex gap-2 justify-center items-center">
+          <FormField
+            control={form.control}
+            name="danger"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Peligro Identificado</FormLabel>
+                <FormControl>
+                  <Input placeholder="Cual es el peligro" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="risk_management_start_date"
+            render={({ field }) => (
+              <FormItem className="flex flex-col mt-2.5">
+                <FormLabel>Fecha de Inicio de Gestion</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP", {
+                            locale: es,
+                          })
+                        ) : (
+                          <span>Seleccione una fecha...</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                      locale={es}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <FormField
           control={form.control}
           name="description"
@@ -210,7 +280,22 @@ export default function CreateDangerIdentificationForm({
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="current_defenses"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Defensas Actuales</FormLabel>
+                <FormControl>
+                  <Input placeholder="Separar por una (,) " {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
         </div>
+
         <FormField
           control={form.control}
           name="possible_consequences"
@@ -277,7 +362,7 @@ export default function CreateDangerIdentificationForm({
                 initialData?.information_source.id.toString();
               return (
                 <FormItem className="w-full">
-                  <FormLabel>Método de identificación</FormLabel>
+                  <FormLabel>Método de Identification</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     value={field.value || defaultValue}
@@ -304,8 +389,7 @@ export default function CreateDangerIdentificationForm({
               );
             }}
           />
-        </div>
-        <div className="flex gap-2 justify-center items-center">
+
           <FormField
             control={form.control}
             name="danger_type"
@@ -335,6 +419,7 @@ export default function CreateDangerIdentificationForm({
             )}
           />
         </div>
+
         <FormField
           control={form.control}
           name="root_cause_analysis"
@@ -353,7 +438,7 @@ export default function CreateDangerIdentificationForm({
           <p className="text-muted-foreground">SIGEAC</p>
           <Separator className="flex-1" />
         </div>
-        <Button>Enviar reporte</Button>
+        <Button>Enviar</Button>
       </form>
     </Form>
   );

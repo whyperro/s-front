@@ -13,6 +13,8 @@ import { toast } from "sonner";
 interface DangerIdentificationData {
   id: string | number; // Este id es el del reporte al cual sera asignado la identificacion (CREO)
   danger: string;
+  current_defenses: string;
+  risk_management_start_date: Date;
   danger_area: string;
   description: string;
   possible_consequences: string;
@@ -24,6 +26,8 @@ interface DangerIdentificationData {
 
 interface UpdateDangerIdentification {
   id: number;
+  current_defenses: string;
+  risk_management_start_date: Date;
   danger: string;
   danger_area: string;
   danger_type: string;
