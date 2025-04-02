@@ -39,8 +39,8 @@ const ShowObligatoryReport = () => {
           <div className="w-full max-w-2xl space-y-4">
             <div className="bg-gray-100 p-4 rounded-lg">
               <p className="text-lg text-gray-700">
-                <span className="font-semibold">Codigo: </span>{" "}
-                {obligatoryReport.report_code}
+                <span className="font-semibold">Codigo: </span> RVP-
+                {obligatoryReport.report_number}
               </p>
             </div>
             <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
@@ -51,6 +51,14 @@ const ShowObligatoryReport = () => {
                 })}
               </p>
             </div>
+
+            <div className="bg-gray-100 p-4 rounded-lg">
+              <p className="text-lg text-gray-700">
+                <span className="font-semibold">Lugar Donde Ocurrio el Suceso: </span> 
+                {obligatoryReport.incident_location}
+              </p>
+            </div>
+ 
 
             <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
               <p className="text-lg font-medium text-gray-700">
@@ -100,6 +108,17 @@ const ShowObligatoryReport = () => {
                 })()}
               </div>
             )}
+
+            <div className="bg-gray-100 p-4 rounded-lg">
+              <p className="text-xl font-semibold text-center text-gray-800 mb-2">
+                Descripcion
+              </p>
+              <p className="text-lg text-gray-700">
+                <span className="font-semibold">Matricula de Aereonave: </span>
+                {obligatoryReport.description}
+              </p>
+
+            </div>
 
             <div className="bg-gray-100 p-4 rounded-lg">
               <p className="text-xl font-semibold text-center text-gray-800 mb-2">
