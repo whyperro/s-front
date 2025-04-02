@@ -7,8 +7,15 @@ import {
   StyleSheet,
   Image,
 } from "@react-pdf/renderer";
-import { ObligatoryReport } from "@/types";
+import { MitigationTable, ObligatoryReport } from "@/types";
 import { dateFormat, timeFormat } from "@/lib/utils";
+import {
+  FifthPage,
+  FirstPage,
+  FourthPage,
+  SecondPage,
+  ThirdPage,
+} from "./SafetyRiskManagement";
 
 const BLUE = "#d6eaf8";
 const RED = "#fc0a0a";
@@ -148,7 +155,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 8,
-    fontFamily:"Helvetica-Bold"
+    fontFamily: "Helvetica-Bold",
   },
 
   footerContainer: {
@@ -519,7 +526,12 @@ const Header = () => (
   </View>
 );
 
-const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
+interface MyDocumentProps {
+  report: ObligatoryReport;
+  identification?: MitigationTable;
+}
+
+const ObligatoryReportPdf = ({ report, identification }: MyDocumentProps) => (
   <Document>
     <Page style={styles.page} size={"LETTER"}>
       <Header />
@@ -1150,6 +1162,22 @@ const ObligatoryReportPdf = ({ report }: { report: ObligatoryReport }) => (
       <Instructive />
       {Footer(3, 3)}
     </Page>
+
+    {report && identification && (
+      <>
+        <FirstPage
+          reportDate={report.report_date}
+          identificationDate={report.incident_date}
+          reportNumber={report.report_number}
+          reportType="ROS"
+          identification={identification}
+        />
+        <SecondPage identification={identification} />
+        <ThirdPage identification={identification} />
+        <FourthPage />
+        <FifthPage />
+      </>
+    )}
   </Document>
 );
 

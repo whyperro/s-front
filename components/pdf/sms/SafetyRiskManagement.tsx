@@ -13,11 +13,12 @@ import {
   Image,
 } from "@react-pdf/renderer";
 
-const BLUE = "#d6eaf8";
-const RED = "#fc0a0a";
-const GREEN = "#0ebe36";
+const BLUE = "#daeef3";
+const BLUE_HEADER = "#b6dde8";
+const RED = "#ff0000";
+const GREEN = "#00b050";
 const WHITE = "#fff";
-const GRAY = "#ebebeb";
+const GRAY = "#d9d9d9";
 
 // ... (your formatDate function and styles remain the same)
 
@@ -486,7 +487,7 @@ const styles = StyleSheet.create({
   tableRowHeader: {
     flexDirection: "row",
     marginTop: 15,
-    marginBottom: 20,
+    marginBottom: 9,
   },
   tableCellHeader: {
     padding: 5,
@@ -499,7 +500,7 @@ const styles = StyleSheet.create({
 
 export const InstructiveFirstPart = () => (
   <View>
-    <View style={{ marginTop: 10 }}>
+    <View>
       <Text style={styles.underlinedTTitle}>INSTRUCTIVO DE LLENADO</Text>
     </View>
 
@@ -569,14 +570,32 @@ export const InstructiveFirstPart = () => (
   </View>
 );
 
-export const FirstPage = ({ report, identification }: MyDocumentProps) => (
+interface FirstPageProps {
+  identificationDate: Date;
+  reportDate: Date;
+  reportType: string;
+  reportNumber: string;
+  identification: MitigationTable;
+}
+
+export const FirstPage = ({
+  reportType,
+  reportDate,
+  identificationDate,
+  reportNumber,
+  identification,
+}: FirstPageProps) => (
   <Page size="LETTER" style={styles.page}>
     {/*Encabezado de la pagina */}
     <Header />
 
     <View style={[styles.tableRow, { marginTop: 8 }]}>
       <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: BLUE_HEADER,
+        }}
       >
         <Text style={[styles.cellTextHeader, styles.boldTitle]}>
           1. NOTIFICACION DE PELIGROS{"\n"}
@@ -611,7 +630,7 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
     <View style={styles.tableRow}>
       <View style={{ ...styles.tableCell, width: "37%" }}>
         <Text style={styles.cellText}>
-          {dateFormat(report.identification_date, "dd-MM-yyyy")}
+          {dateFormat(identificationDate, "dd-MM-yyyy")}
         </Text>
       </View>
 
@@ -744,7 +763,7 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
         }}
       >
         <Text style={styles.cellText2}>
-          {dateFormat(report.report_date, "dd-MM-yyy")}
+          {dateFormat(reportDate, "dd-MM-yyy")}
         </Text>
       </View>
 
@@ -756,7 +775,9 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
           backgroundColor: WHITE,
         }}
       >
-        <Text style={styles.cellText2}>{report.report_number}</Text>
+        <Text style={styles.cellText2}>
+          {reportType}-{reportNumber}
+        </Text>
       </View>
 
       <View
@@ -1198,7 +1219,11 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
 
     <View style={[styles.tableRow, { borderBottom: 1 }]}>
       <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: BLUE_HEADER,
+        }}
       >
         <Text style={[styles.cellTextHeader, styles.boldTitle]}>
           BREVE DESCRIPCION DEL PELIGRO
@@ -1229,7 +1254,11 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
 
     <View style={[styles.tableRow, { marginTop: 15, borderBottom: 1 }]}>
       <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: BLUE_HEADER,
+        }}
       >
         <Text style={[styles.cellTextHeader, styles.boldTitle]}>
           ANALISIS CAUSA RAIZ
@@ -1248,17 +1277,21 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
         }}
       >
         {/* Dividimos el string por comas y mapeamos cada elemento */}
-        {identification.root_cause_analysis.split(",").map((cause, index) => (
-          <Text key={index} style={styles.cellText}>
-            <Text style={[styles.cellText2, styles.boldTitle]}>Porque? </Text>
-            {cause.trim()}
-          </Text>
-        ))}
+        {identification.root_cause_analysis
+          .split(",")
+          .concat(Array(5).fill("")) // Asegura que haya al menos 5 elementos
+          .slice(0, 5) // Toma solo los primeros 5 elementos
+          .map((cause, index) => (
+            <Text key={index} style={styles.cellText}>
+              <Text style={[styles.cellText2, styles.boldTitle]}>Porque? </Text>
+              {cause.trim()}
+            </Text>
+          ))}
       </View>
 
       {/* Líneas adicionales con interlineado de 1.5 */}
       <View style={styles.linesContainer}>
-        {[...Array(5)].map((_, index) => (
+        {[...Array(4)].map((_, index) => (
           <View key={index} style={styles.line}>
             <Text style={[styles.cellText3]}></Text>
           </View>
@@ -1304,7 +1337,7 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
 
     {/* FILA PARA LOS DATOS DEL AREA RESPONSABLE DE LA MITIGACION*/}
 
-    <View style={[styles.tableRow, { borderBottom: 1 }]}>
+    <View style={[styles.tableRow, { borderBottom: 0 }]}>
       {/*NUMERO DE REPORTE*/}
       <View
         style={{
@@ -1358,7 +1391,7 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
       <View
         style={{
           ...styles.tableCell,
-          width: "20%",
+          width: "30%",
           backgroundColor: GRAY,
         }}
       >
@@ -1384,12 +1417,12 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
       <View
         style={{
           ...styles.tableCell,
-          width: "18%",
+          width: "28%",
           backgroundColor: GRAY,
         }}
       >
         <Text style={[styles.cellText3, styles.boldTitle]}>
-          GERENCIA DE{"\n"}ADMINISTRACION Y{"\n"}RRHH
+          GERENCIA DE ADMINISTRACION Y{"\n"}RRHH
         </Text>
       </View>
 
@@ -1406,16 +1439,20 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
             : ""}
         </Text>
       </View>
+    </View>
+
+    <View style={[styles.tableRow, { borderBottom: 1 }]}>
+      {/*NUMERO DE REPORTE*/}
 
       <View
         style={{
           ...styles.tableCell,
-          width: "15%",
+          width: "34%",
           backgroundColor: GRAY,
         }}
       >
         <Text style={[styles.cellText3, styles.boldTitle]}>
-          GERENCIA DE{"\n"}CONTROL DE{"\n"}CALIDAD
+          GERENCIA DE CONTROL{"\n"}DE CALIDAD
         </Text>
       </View>
 
@@ -1427,9 +1464,54 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
         }}
       >
         <Text style={[styles.cellText3, styles.boldTitle]}>
-          {identification.mitigation_plan?.responsible === "CONTROL_CALIDAD"
-            ? "X"
-            : ""}
+          {identification.mitigation_plan?.responsible === "IT" ? "X" : ""}
+        </Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "22%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>AVSEC</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {identification.mitigation_plan?.responsible === "AVSEC" ? "X" : ""}
+        </Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "29%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          INFORMATICA Y TECNOLOGIA
+        </Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "5%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {identification.mitigation_plan?.responsible === "IT" ? "X" : ""}
         </Text>
       </View>
     </View>
@@ -1437,7 +1519,11 @@ export const FirstPage = ({ report, identification }: MyDocumentProps) => (
   </Page>
 );
 
-export const SecondPage = ({ report, identification }: MyDocumentProps) => (
+export const SecondPage = ({
+  identification,
+}: {
+  identification: MitigationTable;
+}) => (
   <Page size={"LETTER"} style={styles.page}>
     <Header />
     <View style={[styles.tableRow]}>
@@ -1453,7 +1539,12 @@ export const SecondPage = ({ report, identification }: MyDocumentProps) => (
         <Text style={[styles.cellText2, styles.boldTitle]}>
           {"\n"}
           FECHA DE INICIO DE LA GESTION:{" "}
-          {dateFormat(report.report_date, "dd-MM-yyyy")}
+          <Text style={[styles.cellText2]}>
+            {dateFormat(
+              identification.risk_management_start_date,
+              "dd-MM-yyyy"
+            )}
+          </Text>
           {"\n"}
           {"\n"}
         </Text>
@@ -1465,7 +1556,7 @@ export const SecondPage = ({ report, identification }: MyDocumentProps) => (
         style={{
           ...styles.tableCell,
           width: "100%",
-          backgroundColor: BLUE,
+          backgroundColor: BLUE_HEADER,
           borderBottom: 1,
         }}
       >
@@ -1485,13 +1576,35 @@ export const SecondPage = ({ report, identification }: MyDocumentProps) => (
           lineHeight: 0.8,
         }}
       >
-        {/* Dividimos el string por comas y mapeamos cada elemento */}
-        {identification.possible_consequences.split(",").map((cause, index) => (
-          <Text key={index} style={styles.cellText}>
-            <Text style={[styles.cellText, styles.boldTitle]}>
-              {index + 1}.{" "}
+        {/* Tomamos solo los primeros 5 elementos del array dividido */}
+        {identification.possible_consequences
+          .split(",")
+          .slice(0, 5)
+          .map((cause, index) => (
+            <Text key={index} style={styles.cellText}>
+              <Text style={[styles.cellText, styles.boldTitle]}>
+                {index + 1}.{" "}
+              </Text>
+              {cause.trim()}
             </Text>
-            {cause.trim()}
+          ))}
+
+        {/* Rellenamos con líneas vacías si hay menos de 5 elementos */}
+        {[
+          ...Array(
+            Math.max(
+              0,
+              5 - identification.possible_consequences.split(",").length
+            )
+          ),
+        ].map((_, index) => (
+          <Text key={`empty-${index}`} style={styles.cellText}>
+            <Text style={[styles.cellText, styles.boldTitle]}>
+              {identification.possible_consequences.split(",").length +
+                index +
+                1}
+              .{" "}
+            </Text>
           </Text>
         ))}
       </View>
@@ -1508,7 +1621,12 @@ export const SecondPage = ({ report, identification }: MyDocumentProps) => (
 
     <View style={[styles.tableRow]}>
       <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: BLUE_HEADER,
+          borderBottom: 1,
+        }}
       >
         <Text style={[styles.cellTextHeader, styles.boldTitle]}>
           DEFENSAS ACTUALES
@@ -1516,88 +1634,60 @@ export const SecondPage = ({ report, identification }: MyDocumentProps) => (
       </View>
     </View>
 
-    <View style={[styles.tableRow]}>
+    <View style={[styles.observationContainer, { borderBottom: 0 }]}>
       <View
         style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
+          position: "absolute",
+          top: 3,
+          left: 5,
+          right: 5,
+          lineHeight: 0.8,
         }}
       >
-        <Text style={[styles.cellText2, styles.boldTitle]}>1.</Text>
+        {/* Tomamos solo los primeros 5 elementos del array dividido */}
+        {identification.current_defenses
+          .split(",")
+          .slice(0, 5)
+          .map((cause, index) => (
+            <Text key={index} style={styles.cellText}>
+              <Text style={[styles.cellText, styles.boldTitle]}>
+                {index + 1}.{" "}
+              </Text>
+              {cause.trim()}
+            </Text>
+          ))}
+
+        {/* Rellenamos con líneas vacías si hay menos de 5 elementos */}
+        {[
+          ...Array(
+            Math.max(0, 5 - identification.current_defenses.split(",").length)
+          ),
+        ].map((_, index) => (
+          <Text key={`empty-${index}`} style={styles.cellText}>
+            <Text style={[styles.cellText, styles.boldTitle]}>
+              {identification.current_defenses.split(",").length + index + 1}.{" "}
+            </Text>
+          </Text>
+        ))}
       </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>2.</Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>3.</Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>4.</Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>5.</Text>
-      </View>
-    </View>
-    <View style={[styles.tableRow]}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>6.</Text>
+
+      {/* Líneas adicionales con interlineado de 1.5 (se mantienen igual) */}
+      <View style={styles.linesContainer}>
+        {[...Array(5)].map((_, index) => (
+          <View key={index} style={styles.line}>
+            <Text style={[styles.cellText3]}></Text>
+          </View>
+        ))}
       </View>
     </View>
 
     <View style={[styles.tableRow]}>
       <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: BLUE_HEADER,
+        }}
       >
         <Text style={[styles.cellTextHeader, styles.boldTitle]}>
           CONSECUENCIA A EVALUAR PARA ESTABLECER LAS MEDIDAS DE MITIGACION:
@@ -1728,125 +1818,121 @@ export const SecondPage = ({ report, identification }: MyDocumentProps) => (
               <Text style={styles.cellText2}> {index + 1 == 5 ? "X" : ""}</Text>
             </View>
           </View>
-
-          <View style={[styles.tableRow]}>
-            {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "25%",
-                backgroundColor: GRAY,
-              }}
-            >
-              <Text style={[styles.cellText2, styles.boldTitle]}>
-                PROBABILIDAD
-              </Text>
-            </View>
-
-            {/*LOCALIZACION DEL REPORTE*/}
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "25%",
-                backgroundColor: GRAY,
-              }}
-            >
-              <Text style={[styles.cellText2, styles.boldTitle]}>
-                SEVERIDAD
-              </Text>
-            </View>
-
-            {/*NUMERO DE REPORTE*/}
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "25%",
-                backgroundColor: GRAY,
-              }}
-            >
-              <Text style={[styles.cellText2, styles.boldTitle]}>
-                INDICE DE RIESGO{"\n"}INICIAL
-              </Text>
-            </View>
-
-            {/*NUMERO DE REPORTE*/}
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "25%",
-                backgroundColor: GRAY,
-              }}
-            >
-              <Text style={[styles.cellText2, styles.boldTitle]}>
-                TOLERABILIDAD DEL{"\n"}RIESGO
-              </Text>
-            </View>
-          </View>
-          <View style={[styles.tableRow, { borderBottom: 1 }]}>
-            {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "25%",
-                backgroundColor: WHITE,
-              }}
-            >
-              <Text style={[styles.cellText3, styles.boldTitle]}>
-                {identification.analysis.probability}
-              </Text>
-            </View>
-
-            {/*LOCALIZACION DEL REPORTE*/}
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "25%",
-                backgroundColor: WHITE,
-              }}
-            >
-              <Text style={[styles.cellText3, styles.boldTitle]}>
-                {identification.analysis.severity}
-              </Text>
-            </View>
-
-            {/*NUMERO DE REPORTE*/}
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "25%",
-                backgroundColor: WHITE,
-              }}
-            >
-              <Text style={[styles.cellText3, styles.boldTitle]}>
-                {identification.analysis.result}
-              </Text>
-            </View>
-
-            {/*NUMERO DE REPORTE*/}
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "25%",
-                backgroundColor: WHITE,
-              }}
-            >
-              <Text style={[styles.cellText3, styles.boldTitle]}>
-                {getResult(identification.analysis.result)}
-              </Text>
-            </View>
-          </View>
         </>
       ) : null;
     })}
 
+    <View style={[styles.tableRow]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>PROBABILIDAD</Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>SEVERIDAD</Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>
+          INDICE DE RIESGO{"\n"}INICIAL
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: GRAY,
+        }}
+      >
+        <Text style={[styles.cellText2, styles.boldTitle]}>
+          TOLERABILIDAD DEL{"\n"}RIESGO
+        </Text>
+      </View>
+    </View>
+    <View style={[styles.tableRow, { borderBottom: 1 }]}>
+      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {identification.analysis.probability}
+        </Text>
+      </View>
+
+      {/*LOCALIZACION DEL REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {identification.analysis.severity}
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {identification.analysis.result}
+        </Text>
+      </View>
+
+      {/*NUMERO DE REPORTE*/}
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellText3, styles.boldTitle]}>
+          {getResult(identification.analysis.result)}
+        </Text>
+      </View>
+    </View>
     <View style={[styles.tableRow, { marginTop: 15 }]}>
       <View
         style={{
           ...styles.tableCell,
           width: "100%",
-          backgroundColor: BLUE,
+          backgroundColor: BLUE_HEADER,
+          borderBottom: 1,
         }}
       >
         <Text style={[styles.cellTextHeader, styles.boldTitle]}>
@@ -1865,25 +1951,42 @@ export const SecondPage = ({ report, identification }: MyDocumentProps) => (
           lineHeight: 0.8,
         }}
       >
-        {/* Tomamos solo los primeros 5 elementos con .slice(0, 5) */}
-
-        {identification.mitigation_plan?.measures
+        {/* 1. Mostrar medidas existentes (hasta 5) */}
+        {(identification.mitigation_plan?.measures || [])
           .slice(0, 5)
           .map((measure, index) => (
-            <Text key={measure.id} style={styles.cellText}>
+            <Text key={measure.id || index} style={styles.cellText}>
               <Text style={[styles.cellText, styles.boldTitle]}>
                 {index + 1}.{" "}
               </Text>
-              {measure.description} {/* Usamos directamente la descripción */}
+              {measure.description}
             </Text>
           ))}
+
+        {/* 2. Completar con líneas numeradas si hay menos de 5 medidas */}
+        {Array.from({
+          length: Math.max(
+            0,
+            5 - (identification.mitigation_plan?.measures?.length || 0)
+          ),
+        }).map((_, index) => {
+          const currentIndex =
+            (identification.mitigation_plan?.measures?.length || 0) + index + 1;
+          return (
+            <Text key={`empty-${index}`} style={styles.cellText}>
+              <Text style={[styles.cellText, styles.boldTitle]}>
+                {currentIndex}.{" "}
+              </Text>
+            </Text>
+          );
+        })}
       </View>
 
-      {/* Líneas adicionales (manteniendo 5 líneas para coincidir con el máximo) */}
+      {/* 3. Líneas de guía (opcional, según tu diseño) */}
       <View style={styles.linesContainer}>
         {[...Array(5)].map((_, index) => (
-          <View key={index} style={styles.line}>
-            <Text style={[styles.cellText3]}></Text>
+          <View key={`line-${index}`} style={styles.line}>
+            <Text style={styles.cellText3}></Text>
           </View>
         ))}
       </View>
@@ -1966,96 +2069,191 @@ export const SecondPage = ({ report, identification }: MyDocumentProps) => (
       </View>
     </View>
 
-    {identification.mitigation_plan?.measures.slice(0, 5).map(
-      (
-        measure,
-        index,
-        array // <-- Nota el tercer parámetro 'array'
-      ) => (
-        <View
-          key={measure.id}
-          style={[
-            styles.tableRow,
-            index === array.length - 1 ? { borderBottom: 1 } : {}, // <-- Border solo en último
-          ]}
-        >
-          {/* Contenido de la fila */}
-          <View
-            style={{
-              ...styles.tableCell,
-              width: "25%",
-              backgroundColor: WHITE,
-            }}
-          >
-            <Text style={[styles.cellText2]}>
-              {index + 1}. {measure.implementation_responsible}
-            </Text>
-          </View>
+    <>
+      {/* Muestra las medidas existentes (hasta 5) */}
+      {identification.mitigation_plan?.measures
+        .slice(0, 5)
+        .map((measure, index) => (
+          <View key={measure.id} style={styles.tableRow}>
+            {/* Celda de responsable */}
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "25%",
+                backgroundColor: WHITE,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={[styles.cellText2, { width: 25, textAlign: "left" }]}
+              >
+                {index + 1}.
+              </Text>
+              <Text
+                style={[styles.cellText2, { flex: 1, textAlign: "center" }]}
+              >
+                {measure.implementation_responsible}
+              </Text>
+            </View>
 
-          <View
-            style={{
-              ...styles.tableCell,
-              width: "12%",
-              backgroundColor: WHITE,
-            }}
-          >
-            <Text style={[styles.cellText2]}></Text>
-          </View>
+            {/* Celdas restantes */}
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "12%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+            </View>
 
-          <View
-            style={{
-              ...styles.tableCell,
-              width: "18%",
-              backgroundColor: WHITE,
-            }}
-          >
-            <Text style={[styles.cellText2]}>
-              {measure.implementation_supervisor}
-            </Text>
-          </View>
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "18%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}>
+                {measure.implementation_supervisor}
+              </Text>
+            </View>
 
-          <View
-            style={{
-              ...styles.tableCell,
-              width: "12%",
-              backgroundColor: WHITE,
-            }}
-          >
-            <Text style={[styles.cellText2]}></Text>
-          </View>
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "12%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+            </View>
 
-          <View
-            style={{
-              ...styles.tableCell,
-              width: "21%",
-              backgroundColor: WHITE,
-            }}
-          >
-            <Text style={[styles.cellText2]}>
-              {dateFormat(measure.estimated_date, "dd-MM-yyyy")}
-            </Text>
-          </View>
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "21%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}>
+                {dateFormat(measure.estimated_date, "dd-MM-yyyy")}
+              </Text>
+            </View>
 
-          <View
-            style={{
-              ...styles.tableCell,
-              width: "12%",
-              backgroundColor: WHITE,
-            }}
-          >
-            <Text style={[styles.cellText2]}>
-              {dateFormat(measure.execution_date, "dd-MM-yyyy")}
-            </Text>
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "12%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}>
+                {dateFormat(measure.execution_date, "dd-MM-yyyy")}
+              </Text>
+            </View>
           </View>
-        </View>
-      )
-    )}
+        ))}
+
+      {/* Rellena con líneas vacías si hay menos de 5 */}
+      {Array.from({
+        length: Math.max(
+          0,
+          5 - (identification.mitigation_plan?.measures?.length || 0)
+        ),
+      }).map((_, i) => {
+        const emptyIndex =
+          (identification.mitigation_plan?.measures?.length || 0) + i;
+        const isLastRow = emptyIndex === 4; // Última línea (índice 4)
+
+        return (
+          <View
+            key={`empty-${emptyIndex}`}
+            style={[styles.tableRow, isLastRow ? { borderBottom: 1 } : {}]}
+          >
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "25%",
+                backgroundColor: WHITE,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={[styles.cellText2, { width: 25, textAlign: "left" }]}
+              >
+                {emptyIndex + 1}.
+              </Text>
+              <Text
+                style={[styles.cellText2, { flex: 1, textAlign: "center" }]}
+              ></Text>
+            </View>
+
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "12%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+            </View>
+
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "18%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+            </View>
+
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "12%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+            </View>
+
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "21%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+            </View>
+
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "12%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+            </View>
+          </View>
+        );
+      })}
+    </>
 
     {Footer(2, 5)}
   </Page>
 );
 
-export const ThirdPage = ({ report, identification }: MyDocumentProps) => (
+export const ThirdPage = ({
+  identification,
+}: {
+  identification: MitigationTable;
+}) => (
   <Page size={"LETTER"} style={styles.page}>
     <Header />
     <View style={[styles.tableRow]}>
@@ -2167,7 +2365,11 @@ export const ThirdPage = ({ report, identification }: MyDocumentProps) => (
 
     <View style={[styles.tableRow]}>
       <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: BLUE_HEADER,
+        }}
       >
         <Text style={[styles.cellTextHeader, styles.boldTitle]}>
           3. CONTROL DE SEGUIMIENTO
@@ -2214,39 +2416,42 @@ export const ThirdPage = ({ report, identification }: MyDocumentProps) => (
     </View>
 
     {(() => {
-      let remainingControls = 5;
-      let renderedControls = 0;
+      // 1. Obtener todos los controles (máximo 5)
+      const allControls =
+        identification.mitigation_plan?.measures
+          .flatMap((measure) => measure.follow_up_control || [])
+          .slice(0, 5) || [];
 
-      return identification.mitigation_plan?.measures.flatMap((measure) => {
-        if (remainingControls <= 0) return [];
+      // 2. Calcular controles vacíos necesarios
+      const emptyControlsCount = Math.max(0, 5 - allControls.length);
 
-        const controlsToRender = measure.follow_up_control.slice(
-          0,
-          remainingControls
-        );
-        remainingControls -= controlsToRender.length;
-
-        return controlsToRender.map((control, index) => {
-          renderedControls++;
-          return (
+      return (
+        <>
+          {/* Controles existentes */}
+          {allControls.map((control, index) => (
             <View
-              key={`${measure.id}-${control.id}`}
-              style={[
-                styles.tableRow,
-                renderedControls === 5 ? { borderBottom: 1 } : {},
-              ]}
+              key={`control-${control.id || index}`}
+              style={styles.tableRow} // Eliminado el borderBottom
             >
               <View
                 style={{
                   ...styles.tableCell,
                   width: "33.33%",
                   backgroundColor: WHITE,
+                  flexDirection: "row",
                   alignItems: "center",
                   padding: 4,
                 }}
               >
-                <Text style={[styles.cellText2]}>
-                  {renderedControls}. {dateFormat(control.date, "dd-MM-yyyy")}
+                <Text
+                  style={[styles.cellText2, { width: 20, textAlign: "left" }]}
+                >
+                  {index + 1}.
+                </Text>
+                <Text
+                  style={[styles.cellText2, { flex: 1, textAlign: "center" }]}
+                >
+                  {control.date ? dateFormat(control.date, "dd-MM-yyyy") : ""}
                 </Text>
               </View>
 
@@ -2255,9 +2460,12 @@ export const ThirdPage = ({ report, identification }: MyDocumentProps) => (
                   ...styles.tableCell,
                   width: "33.33%",
                   backgroundColor: WHITE,
+                  justifyContent: "center",
                 }}
               >
-                <Text style={[styles.cellText2]}>{control.description}</Text>
+                <Text style={[styles.cellText2, { textAlign: "left" }]}>
+                  {control.description || ""}
+                </Text>
               </View>
 
               <View
@@ -2265,19 +2473,83 @@ export const ThirdPage = ({ report, identification }: MyDocumentProps) => (
                   ...styles.tableCell,
                   width: "33.33%",
                   backgroundColor: WHITE,
+                  justifyContent: "center",
                 }}
               >
-                <Text style={[styles.cellText2]}></Text>
+                <Text
+                  style={[styles.cellText2, { textAlign: "center" }]}
+                ></Text>
               </View>
             </View>
-          );
-        });
-      });
+          ))}
+
+          {/* Controles vacíos */}
+          {Array.from({ length: emptyControlsCount }).map((_, i) => {
+            const emptyIndex = allControls.length + i;
+            return (
+              <View
+                key={`empty-${emptyIndex}`}
+                style={styles.tableRow} // Sin borde
+              >
+                <View
+                  style={{
+                    ...styles.tableCell,
+                    width: "33.33%",
+                    backgroundColor: WHITE,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    padding: 4,
+                  }}
+                >
+                  <Text
+                    style={[styles.cellText2, { width: 20, textAlign: "left" }]}
+                  >
+                    {emptyIndex + 1}.
+                  </Text>
+                  <Text
+                    style={[styles.cellText2, { flex: 1, textAlign: "center" }]}
+                  ></Text>
+                </View>
+
+                <View
+                  style={{
+                    ...styles.tableCell,
+                    width: "33.33%",
+                    backgroundColor: WHITE,
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text
+                    style={[styles.cellText2, { textAlign: "center" }]}
+                  ></Text>
+                </View>
+
+                <View
+                  style={{
+                    ...styles.tableCell,
+                    width: "33.33%",
+                    backgroundColor: WHITE,
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text
+                    style={[styles.cellText2, { textAlign: "center" }]}
+                  ></Text>
+                </View>
+              </View>
+            );
+          })}
+        </>
+      );
     })()}
 
     <View style={[styles.tableRow]}>
       <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: BLUE_HEADER,
+        }}
       >
         <Text style={[styles.cellTextHeader, styles.boldTitle]}>
           4. CIERRE DEL CASO
@@ -2369,16 +2641,347 @@ export const ThirdPage = ({ report, identification }: MyDocumentProps) => (
         </Text>
       </View>
     </View>
+
     <InstructiveFirstPart />
     {Footer(3, 5)}
   </Page>
 );
 
-/*
-const FourthPage = ({ report }: { report: VoluntaryReport }) => (
+export const FourthPage = () => (
+  <Page size={"LETTER"} style={styles.page}>
+    <Header />
 
-)
-*/
+    <View
+      style={[styles.instructiveContainer, { marginTop: 15, paddingLeft: 20 }]}
+    >
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        2. ANALISIS CAUSA RAIZ Utilizar método de causa raíz de los cinco porque
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        Este método emplea un solo paso, que se repite una y otra vez. El
+        procedimiento es
+        {"\n"}
+        empezar con un planteamiento del problema y luego preguntar “¿Por qué?”
+        5 veces,
+        {"\n"}y cada “¿Por qué?” llevará más cerca de
+        {"\n"}
+        la causa raíz
+      </Text>
+    </View>
+
+    <View
+      style={[styles.instructiveContainer, { marginTop: 0, paddingLeft: 20 }]}
+    >
+      <Text
+        style={[
+          styles.instructiveTitle,
+          styles.boldTitle,
+          { marginTop: 10, marginBottom: 10 },
+        ]}
+      >
+        3. GESTION DE RIESGOS
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Área responsable de la mitigación:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Marcar con una (X) el área que fue designada para
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Fecha de inicio de la gestión (DD/MM/AAAA):{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar día, mes y año del inicio de la
+      </Text>
+      <Text style={[styles.instructiveText]}>gestión.</Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Posibles consecuencias:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar las posibles consecuencias del peligro identificado.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Consecuencia a evaluar para establecer las medidas de mitigación:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>Marcar con una</Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 40 }]}>
+      <Text style={[styles.instructiveText]}>
+        (X) la consecuencia de mayor gravedad.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Probabilidad:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar la probabilidad obtenida de la matriz de riesgo
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Severidad:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar la severidad obtenida de la matriz de riesgo.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Índice de riesgo inicial:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar el indie de riesgo inicial obtenida.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Tolerabilidad del riesgo:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar la tolerabilidad de riesgo obtenida.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Medidas de mitigación a implementar:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar las medidas de mitigación a
+      </Text>
+
+      <Text style={[styles.instructiveText]}>implementar.</Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Responsable de la implementación:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar nombre y apellido de la persona
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 40 }]}>
+      <Text style={[styles.instructiveText]}>
+        responsable de implementar las medidas de mitigación.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>• Firma: </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar firma de la persona responsable de la implementación.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Responsable del seguimiento:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar nombre y apellido de la persona responsable del
+      </Text>
+    </View>
+    <View style={[styles.instructiveContainer, { paddingLeft: 40 }]}>
+      <Text style={[styles.instructiveText]}>
+        seguimiento de las medidas de mitigación.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Firmar:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar firma de la persona responsable del seguimiento de las medidas
+        de
+      </Text>
+    </View>
+    <View style={[styles.instructiveContainer, { paddingLeft: 40 }]}>
+      <Text style={[styles.instructiveText]}>mitigación.</Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Fecha estimada de ejecución (DD/MM/AAAA):{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar día, mes y año estimada para la
+      </Text>
+    </View>
+    <View style={[styles.instructiveContainer, { paddingLeft: 40 }]}>
+      <Text style={[styles.instructiveText]}>
+        ejecución de las medidas de mitigación.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Fecha real de la ejecución (DD/MM/AAAA):{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar día, mes y año de la ejecución de
+      </Text>
+    </View>
+    <View style={[styles.instructiveContainer, { paddingLeft: 40 }]}>
+      <Text style={[styles.instructiveText]}>las medidas de mitigación.</Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Probabilidad:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>Colocar la probabilidad</Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Severidad:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar la severidad obtenida de la matriz de riesgo.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Índice de riesgo residual:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar el indie de riesgo residual obtenida.
+      </Text>
+    </View>
+    {Footer(4, 5)}
+  </Page>
+);
+
+export const FifthPage = () => (
+  <Page size={"LETTER"} style={styles.page}>
+    <Header />
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Tolerabilidad del riesgo residual:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar la tolerabilidad de riesgo residual obtenida.
+      </Text>
+    </View>
+
+    <View
+      style={[styles.instructiveContainer, { marginTop: 0, paddingLeft: 20 }]}
+    >
+      <Text
+        style={[
+          styles.instructiveTitle,
+          styles.boldTitle,
+          { marginTop: 10, marginBottom: 10 },
+        ]}
+      >
+        4. CONTROL DE SEGUIMIENTO.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Fecha de seguimiento de las medidas de mitigación (DD/MM/AAAA):{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>Colocar día, mes</Text>
+    </View>
+    <View style={[styles.instructiveContainer, { paddingLeft: 40 }]}>
+      <Text style={[styles.instructiveText]}>
+        y año del seguimiento de las medidas de mitigación.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Observaciones:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar observaciones de haberse encontrado.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>• Firma: </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar firma de la persona responsable de la implementación.
+      </Text>
+    </View>
+
+    <View
+      style={[styles.instructiveContainer, { marginTop: 0, paddingLeft: 20 }]}
+    >
+      <Text
+        style={[
+          styles.instructiveTitle,
+          styles.boldTitle,
+          { marginTop: 10, marginBottom: 10 },
+        ]}
+      >
+        5. CIERRE DEL CASO
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Fecha de cierre (DD/MM/AAAA):{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar día, mes y año del cierre del caso.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Firma del Director de SMS:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar firma del Director de SMS.
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
+      <Text style={[styles.instructiveTitle, styles.boldTitle]}>
+        • Firma del jefe del área responsable de la mitigación:{" "}
+      </Text>
+      <Text style={[styles.instructiveText]}>
+        Colocar firma del jefe del área
+      </Text>
+    </View>
+
+    <View style={[styles.instructiveContainer, { paddingLeft: 40 }]}>
+      <Text style={[styles.instructiveText]}>
+        responsable de la mitigación.
+      </Text>
+    </View>
+    {Footer(5, 5)}
+  </Page>
+);
+
 const SafetyRiskManagementPdf = (
   { report }: { report: VoluntaryReport },
   { identification }: { identification?: MitigationTable }
@@ -2437,26 +3040,25 @@ const Footer = (currentPage: number, pageNumber: number) => (
       <View style={{ ...styles.tableCell, width: "29%" }}>
         <Text style={styles.cellText}>
           ELABORADO POR:{"\n"}
-          {"\n"}ASISTENTE DE SMS{"\n"}
+          ASISTENTE DE SMS{"\n"}
         </Text>
       </View>
       <View style={{ ...styles.tableCell, width: "29%" }}>
         <Text style={styles.cellText}>
           REVISADO POR:{"\n"}
-          {"\n"}DIRECTOR DE SMS{"\n"}
+          DIRECTOR DE SMS{"\n"}
         </Text>
       </View>
       <View style={{ ...styles.tableCell, width: "29%" }}>
         <Text style={styles.cellText}>
           APROBADO POR:{"\n"}
-          {"\n"}DIRECTOR DE OPERACIONES{"\n"}
+          DIRECTOR DE OPERACIONES{"\n"}
         </Text>
       </View>
 
       <View style={{ ...styles.tableCell, width: "13%" }}>
         <Text style={styles.cellText}>
           NRO. PAGINA{"\n"}
-          {"\n"}
           {currentPage} DE {pageNumber}
         </Text>
       </View>

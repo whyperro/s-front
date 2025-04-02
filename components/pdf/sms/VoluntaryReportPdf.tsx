@@ -8,7 +8,13 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import { FirstPage, SecondPage, ThirdPage } from "./SafetyRiskManagement";
+import {
+  FifthPage,
+  FirstPage,
+  FourthPage,
+  SecondPage,
+  ThirdPage,
+} from "./SafetyRiskManagement";
 
 const BLUE = "#d6eaf8";
 const WHITE = "#fff";
@@ -301,8 +307,8 @@ const Header = () => (
 );
 
 interface MyDocumentProps {
-  report: VoluntaryReport;
-  identification?: MitigationTable;
+report: VoluntaryReport;
+identification?: MitigationTable;
 }
 
 const MyDocument = ({ report, identification }: MyDocumentProps) => (
@@ -765,9 +771,17 @@ const MyDocument = ({ report, identification }: MyDocumentProps) => (
     </Page>
     {report && identification && (
       <>
-        <FirstPage report={report} identification={identification} />
-        <SecondPage report={report} identification={identification} />
-        <ThirdPage report={report} identification={identification} />
+        <FirstPage
+          reportDate={report.report_date}
+          identificationDate={report.identification_date}
+          reportNumber={report.report_number}
+          reportType="RVP"
+          identification={identification}
+        />
+        <SecondPage identification={identification} />
+        <ThirdPage identification={identification} />
+        <FourthPage />
+        <FifthPage />
       </>
     )}
   </Document>
