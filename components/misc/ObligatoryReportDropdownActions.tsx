@@ -33,6 +33,7 @@ import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import ObligatoryReportPdf from "../pdf/sms/ObligatoryReportPdf";
 import { format } from "date-fns";
 import VoluntaryReportPdf from "../pdf/sms/VoluntaryReportPdf";
+import { useGetDangerIdentificationWithAllById } from "@/hooks/sms/useGetDangerIdentificationWithAllById";
 
 const ObligatoryReportDropdownActions = ({
   obligatoryReport,
@@ -50,6 +51,9 @@ const ObligatoryReportDropdownActions = ({
 
   const { deleteObligatoryReport } = useDeleteObligatoryReport();
 
+  const { data: dangerIdentification } = useGetDangerIdentificationWithAllById(
+    obligatoryReport.danger_identification_id
+  );
   const handleDelete = async (id: number | string) => {
     await deleteObligatoryReport.mutateAsync(id);
     setOpenDelete(false);
@@ -187,10 +191,19 @@ const ObligatoryReportDropdownActions = ({
               </DialogDescription>
             </DialogHeader>
             <div className="w-full h-screen">
-              {obligatoryReport && (
+              {obligatoryReport && dangerIdentification ? (
                 <PDFViewer style={{ width: "100%", height: "60%" }}>
-                  <ObligatoryReportPdf report={obligatoryReport} />
+                  <ObligatoryReportPdf
+                    report={obligatoryReport}
+                    identification={dangerIdentification}
+                  />
                 </PDFViewer>
+              ) : (
+                <>
+                  <PDFViewer style={{ width: "100%", height: "60%" }}>
+                    <ObligatoryReportPdf report={obligatoryReport} />
+                  </PDFViewer>
+                </>
               )}
             </div>
             <div className="flex justify-end mt-4">
