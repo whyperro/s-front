@@ -182,8 +182,8 @@ const MitigationTableDropdownActions = ({
         <Dialog open={openCreateAnalysis} onOpenChange={setOpenCreateAnalysis}>
           <DialogContent className="flex flex-col max-w-2xl m-2">
             <DialogHeader>
-              <DialogTitle></DialogTitle>
-              <DialogDescription></DialogDescription>
+              <DialogTitle>Analisis Post Mitigacion</DialogTitle>
+              <DialogDescription>Analisis Post Mitigacion</DialogDescription>
             </DialogHeader>
 
             {mitigationTable.mitigation_plan?.id !== undefined ? (
@@ -199,7 +199,7 @@ const MitigationTableDropdownActions = ({
         <Dialog open={openEditAnalyses} onOpenChange={setOpenEditAnalyses}>
           <DialogContent className="flex flex-col max-w-2xl m-2">
             <DialogHeader>
-              <DialogTitle></DialogTitle>
+              <DialogTitle className="text-center">Editar Analisis Post Mitigacion</DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
 

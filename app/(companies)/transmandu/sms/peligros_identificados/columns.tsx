@@ -21,8 +21,8 @@ export const columns: ColumnDef<DangerIdentification>[] = [
           row.original.voluntary_report.report_number ? (
             <p>RVP-{row.original.voluntary_report.report_number}</p>
           ) : row.original.obligatory_report &&
-            row.original.obligatory_report.report_code ? (
-            <p>ROS-{row.original.obligatory_report.report_code}</p>
+            row.original.obligatory_report.report_number ? (
+            <p>ROS-{row.original.obligatory_report.report_number}</p>
           ) : (
             <p>-</p> // Or any other placeholder if both are missing
           )}

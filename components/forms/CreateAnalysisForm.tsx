@@ -131,9 +131,7 @@ export default function CreateAnalysisForm({
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col space-y-3"
       >
-        <FormLabel className="text-lg text-center m-2">
-          Análisis del peligro
-        </FormLabel>
+        <FormLabel className="text-lg text-center m-2"></FormLabel>
 
         <FormField
           control={form.control}
