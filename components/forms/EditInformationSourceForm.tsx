@@ -108,7 +108,7 @@ export function EditInformationSourceForm({ onClose, initialData }: FormProps) {
           {updateInformationSource.isPending ? (
             <Loader2 className="animate-spin size-4" />
           ) : (
-            "Actualizar Caja "
+            "Actualizar Fuente "
           )}
         </Button>
       </form>

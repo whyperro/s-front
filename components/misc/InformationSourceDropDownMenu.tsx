@@ -6,12 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { InformationSource } from "@/types";
-import {
-  ClipboardPen,
-  Loader2,
-  MoreHorizontal,
-  Trash2
-} from "lucide-react";
+import { ClipboardPen, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { EditInformationSourceForm } from "../forms/EditInformationSourceForm";
@@ -22,7 +17,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "../ui/dialog";
 
 const InformationSourceDropdownActions = ({
@@ -56,11 +51,11 @@ const InformationSourceDropdownActions = ({
           align="center"
           className="flex gap-2 justify-center"
         >
-          <DropdownMenuItem onClick={() => setOpenEdit(true)}>
-            <ClipboardPen className="size-5" />
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpenDelete(true)}>
             <Trash2 className="size-5 text-red-500" />
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+            <ClipboardPen className="size-5" />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -108,10 +103,8 @@ const InformationSourceDropdownActions = ({
           <DialogHeader>
             <DialogTitle className="text-center">Edicion de Fuente</DialogTitle>
             <DialogDescription className="text-center p-2 mb-0 pb-0">
-              Edicion de fuentes.
+              Edicion de Fuente de Informacion
             </DialogDescription>
-            PONES AQUI TU FORMULARIO AL QUE LE VAS A PASAR COMO
-            initialData=informationSource
 
             <EditInformationSourceForm
               initialData={informationSource}

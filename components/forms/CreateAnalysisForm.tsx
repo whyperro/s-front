@@ -194,7 +194,7 @@ export default function CreateAnalysisForm({
           <p className="text-muted-foreground">SIGEAC</p>
           <Separator className="flex-1" />
         </div>
-        <Button>Enviar reporte</Button>
+        <Button>Enviar</Button>
       </form>
     </Form>
   );
