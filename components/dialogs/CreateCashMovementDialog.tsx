@@ -12,11 +12,20 @@ import {
 import { useState } from "react";
 import { CreateCashMovementForm } from "../forms/CreateCashMovementForm";
 import DateFilter from "@/components/forms/CreateFilterDates";
+import { useRouter } from "next/navigation";
 
-export function CashMovementDialog() {
+export function CashMovementDialog({ id }: { id?: string }) {
   const [openMovementDialog, setOpenMovementDialog] = useState(false);
+  const [openActions, setOpenActions] = useState(false);
+  const router = useRouter();
+
+  const handleViewStats = () => {
+  router.push(`/transmandu/administracion/gestion_cajas/movimientos/${id}`);
+};
+
   return (
     <>
+      {/*Dialogo para registrar un movimiento de caja*/}
       <Dialog open={openMovementDialog} onOpenChange={setOpenMovementDialog}>
         <DialogTrigger asChild>
           <Button
@@ -24,7 +33,7 @@ export function CashMovementDialog() {
             variant={"outline"}
             className="flex items-center justify-center gap-2 h-8 border-dashed"
           >
-            Registrar Movimiento
+            Registrar Movimiento de Caja
           </Button>
         </DialogTrigger>
         <DialogContent
@@ -41,6 +50,19 @@ export function CashMovementDialog() {
             onClose={() => setOpenMovementDialog(false)}
           />
         </DialogContent>
+      </Dialog>
+
+      {/*Dialogo para ver el resumen de ingresos*/}
+      <Dialog open={openActions} onOpenChange={setOpenActions}>
+        <DialogTrigger asChild>
+          <Button
+            onClick={handleViewStats}
+            variant={"outline"}
+            className="flex items-center justify-center gap-2 h-8 border-dashed"
+          >
+            Resumen de Ingresos
+          </Button>
+        </DialogTrigger>
       </Dialog>
       <DateFilter />
     </>

@@ -68,7 +68,7 @@ const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/gestion_cajas/empresa/${id}`);
+              router.push(`/administracion/gestion_general/empresa/${id}`);
             }}
           ></DropdownMenuItem>
         </DropdownMenuContent>

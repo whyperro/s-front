@@ -115,7 +115,7 @@ const formSchema = z.object({
   ),
   bank_account_id: z.string({
     message: "Debe elegir una cuenta de banco.",
-  }),
+  }).optional(),
 });
 
 interface FormProps {

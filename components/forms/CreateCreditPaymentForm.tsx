@@ -35,7 +35,16 @@ import { Loader2 } from "lucide-react";
 import { Credit } from "@/types";
 import { useCreateCreditPayment } from "@/actions/administracion/pagos_creditos/actions";
 
-const formSchema = z
+interface FormProps {
+  onClose: () => void;
+  credit: Credit;
+}
+
+export function CreditPaymentForm({ onClose, credit }: FormProps) {
+  const { createCreditPayment } = useCreateCreditPayment();
+  const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts();
+  
+  const formSchema = z
   .object({
     bank_account_id: z
       .string({
@@ -68,8 +77,7 @@ const formSchema = z
       }),
   })
   .refine(
-    (data) => {
-      // Si el método de pago es "TRANSFERENCIA", entonces `bank_account_id` es obligatorio
+    (data: { pay_method: string; bank_account_id?: string }) => {
       if (data.pay_method === "TRANSFERENCIA" && !data.bank_account_id) {
         return false;
       }
@@ -77,18 +85,20 @@ const formSchema = z
     },
     {
       message: "La cuenta de banco es requerida para transferencias.",
-      path: ["bank_account_id"], // Especifica el campo al que se aplica el error
+      path: ["bank_account_id"],
+    }
+  )
+  .refine(
+    (data: { pay_amount: string }) => {
+      const payAmount = parseFloat(data.pay_amount);
+      return payAmount <= credit.debt;
+    },
+    {
+      message: "El monto a pagar no puede ser mayor que la deuda.",
+      path: ["pay_amount"],
     }
   );
-
-interface FormProps {
-  onClose: () => void;
-  credit: Credit;
-}
-
-export function CreditPaymentForm({ onClose, credit }: FormProps) {
-  const { createCreditPayment } = useCreateCreditPayment();
-  const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
@@ -98,6 +108,7 @@ export function CreditPaymentForm({ onClose, credit }: FormProps) {
       ...values,
       id: credit.id,
       client_id: credit.client.id,
+      pay_amount: parseFloat(values.pay_amount),
     };
     await createCreditPayment.mutateAsync(formattedValues);
     onClose();

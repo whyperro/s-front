@@ -84,7 +84,7 @@ const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/articulos/${id}`);
+              router.push(`/administracion/operaciones/articulos/${id}`);
             }}
           ></DropdownMenuItem>
         </DropdownMenuContent>
@@ -201,14 +201,6 @@ const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
           )}
 
           <DialogFooter className="sm:justify-center">
-            {/*  <Button
-              variant="outline"
-              onClick={() =>
-                router.push(`/administracion/articulos/${id}`)
-              }
-            >
-              Ver detalles completos
-            </Button> */}
             <Button onClick={() => setOpenAdminArticle(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>

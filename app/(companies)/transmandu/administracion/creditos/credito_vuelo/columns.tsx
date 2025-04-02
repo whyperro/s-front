@@ -6,6 +6,7 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import CreditDropdownActions from "@/components/misc/CreditDropdownActions";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<Credit>[] = [
   {
@@ -96,14 +97,22 @@ export const columns: ColumnDef<Credit>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Estado" />
     ),
-    meta: { title: "Estado" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.status}
-        </span>
-      </div>
-    ),
+    meta: { title: "Estado actual" },
+    cell: ({ row }) => {
+      const status = row.original.status;
+      const backgroundColor =
+        status === "PENDIENTE" ? "bg-yellow-500" : "bg-green-500";
+
+      return (
+        <div>
+          <div className="flex justify-center">
+            <Badge className={backgroundColor}>
+              {row.original.status}
+            </Badge>
+          </div>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "debt",

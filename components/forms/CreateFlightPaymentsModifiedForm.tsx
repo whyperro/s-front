@@ -1,6 +1,5 @@
 "use client";
 
-import { useCreateFlightPayments } from "@/actions/administracion/pagos_vuelos/actions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
@@ -34,8 +33,18 @@ import {
 import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 import { Loader2 } from "lucide-react";
 import { Flight } from "@/types";
+import { useCreateCreditPayment } from "@/actions/administracion/pagos_creditos/actions";
 
-const formSchema = z
+interface FormProps {
+  onClose: () => void;
+  flight: Flight;
+}
+
+export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
+  const { createCreditPayment } = useCreateCreditPayment();
+  const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts();
+  
+  const formSchema = z
   .object({
     bank_account_id: z
       .string({
@@ -45,7 +54,7 @@ const formSchema = z
     pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"], {
       message: "Debe elegir un método de pago.",
     }),
-    pay_amount: z.string().refine(
+    payed_amount: z.string().refine(
       (val) => {
         // Convertir el valor a número y verificar que sea positivo
         const number = parseFloat(val);
@@ -68,8 +77,7 @@ const formSchema = z
       }),
   })
   .refine(
-    (data) => {
-      // Si el método de pago es "TRANSFERENCIA", entonces `bank_account_id` es obligatorio
+    (data: { pay_method: string; bank_account_id?: string }) => {
       if (data.pay_method === "TRANSFERENCIA" && !data.bank_account_id) {
         return false;
       }
@@ -77,18 +85,20 @@ const formSchema = z
     },
     {
       message: "La cuenta de banco es requerida para transferencias.",
-      path: ["bank_account_id"], // Especifica el campo al que se aplica el error
+      path: ["bank_account_id"],
+    }
+  )
+  .refine(
+    (data: { payed_amount: string }) => {
+      const payedAmount = parseFloat(data.payed_amount);
+      return payedAmount <= flight.total_amount;
+    },
+    {
+      message: "El monto a pagar no puede ser mayor que la deuda.",
+      path: ["payed_amount"],
     }
   );
-
-interface FormProps {
-  onClose: () => void;
-  flight: Flight;
-}
-
-export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
-  const { createFlightPayments } = useCreateFlightPayments();
-  const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
@@ -96,10 +106,12 @@ export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const formattedValues = {
       ...values,
+      id: flight.id,
       client_id: flight.client.id,
       flight_id: flight.id,
+      payed_amount: parseFloat(values.payed_amount),
     };
-    await createFlightPayments.mutateAsync(formattedValues);
+    await createCreditPayment.mutateAsync(formattedValues);
     onClose();
   }
   return (
@@ -174,7 +186,7 @@ export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
         </div>
         <FormField
           control={form.control}
-          name="pay_amount"
+          name="payed_amount"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Cantidad Pagada</FormLabel>
@@ -241,8 +253,8 @@ export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={createFlightPayments.isPending}>
-          {createFlightPayments.isPending ? "Enviando..." : "Enviar"}
+        <Button type="submit" disabled={createCreditPayment.isPending}>
+          {createCreditPayment.isPending ? "Enviando..." : "Enviar"}
         </Button>
       </form>
     </Form>

@@ -30,7 +30,7 @@ const AdministrationVendorDropdownActions = ({ id }: { id: string }) => {
   const [openEdit, setOpenEdit] = useState<boolean>(false);
 
   const handleViewStats = () => {
-    router.push(`/transmandu/administracion/gestion_vuelos/proveedor/${id}`);
+    router.push(`/transmandu/administracion/gestion_general/proveedor/${id}`);
   };
 
   const handleDelete = async (id: number | string) => {
@@ -66,7 +66,7 @@ const AdministrationVendorDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/gestion_vuelos/proveedor/${id}`); 
+              router.push(`/administracion/gestion_general/proveedor/${id}`); 
             }}
           ></DropdownMenuItem>
         </DropdownMenuContent>
@@ -170,14 +170,6 @@ const AdministrationVendorDropdownActions = ({ id }: { id: string }) => {
           )}
 
           <DialogFooter className="sm:justify-center">
-         { /*  <Button
-              variant="outline"
-              onClick={() =>
-                router.push(`/administracion/gestion_vuelos/proveedor/${id}`)
-              }
-            >
-              Ver detalles completos
-            </Button> */ }
             <Button onClick={() => setOpenVendor(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>

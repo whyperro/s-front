@@ -6,7 +6,6 @@ import { Flight } from "@/types";
 import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import FlightDropdownActions from "@/components/misc/FlightDropdownActions";
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import ClientResumeDialog from "@/components/dialogs/ClientResumeDialog";
 

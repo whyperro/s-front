@@ -39,7 +39,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
   const [openAddBalance, setOpenAddBalance] = useState<boolean>(false);
 
   const handleViewStats = () => {
-    router.push(`/transmandu/administracion/gestion_vuelos/clientes/${id}`);
+    router.push(`/transmandu/administracion/gestion_general/clientes/${id}`);
   };
 
   const handleDelete = async (id: number | string) => {
@@ -86,7 +86,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           ) : null}
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/gestion_vuelos/clientes/${id}`);
+              router.push(`/administracion/gestion_general/clientes/${id}`);
             }}
           ></DropdownMenuItem>
         </DropdownMenuContent>

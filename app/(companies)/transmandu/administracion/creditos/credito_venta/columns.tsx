@@ -6,6 +6,7 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import CreditDropdownActions from "@/components/misc/CreditDropdownActions";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<Credit>[] = [
   {
@@ -56,34 +57,6 @@ export const columns: ColumnDef<Credit>[] = [
     },
   },
   {
-    accessorKey: "renting.description",
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        filter
-        column={column}
-        title="Descripción de Renta"
-      />
-    ),
-    meta: { title: "Descripción de Renta" },
-    cell: ({ row }) => (
-      <div className="flex justify-center font-bold">
-        {row.original.renting ? row.original.renting.description : "N/A"}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "flight.details",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Detalle de Vuelo" />
-    ),
-    meta: { title: "Detalle de Vuelo" },
-    cell: ({ row }) => (
-      <div className="flex justify-center font-bold">
-        {row.original.flight ? row.original.flight.details : "N/A"}
-      </div>
-    ),
-  },
-  {
     accessorKey: "client.name",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Cliente" />
@@ -112,14 +85,21 @@ export const columns: ColumnDef<Credit>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Estado" />
     ),
-    meta: { title: "Estado" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.status}
-        </span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status;
+      const backgroundColor =
+        status === "PENDIENTE" ? "bg-yellow-500" : "bg-green-500";
+
+      return (
+        <div>
+          <div className="flex justify-center">
+            <Badge className={backgroundColor}>
+              {row.original.status}
+            </Badge>
+          </div>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "debt",

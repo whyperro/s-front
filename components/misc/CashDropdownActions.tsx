@@ -67,7 +67,7 @@ const CashDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/cuentas/${id}`)
+              router.push(`/administracion/gestion_cajas/cuentas/${id}`)
             }}
           >
           </DropdownMenuItem>

@@ -7,8 +7,8 @@ import { useSearchParams } from 'next/navigation';
 
 export const useGetFlights = () => {
   const searchParams = useSearchParams();
-  const from = searchParams.get("from") || "";
-  const to = searchParams.get("to") || "";
+  const from = searchParams.get("from");
+  const to = searchParams.get("to");
   return useQuery<Flight[], Error>({
     queryKey: ['flights', from, to],
     queryFn: async () => {

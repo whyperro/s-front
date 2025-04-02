@@ -4,7 +4,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
+import {
+  EyeIcon,
+  Loader2,
+  MoreHorizontal,
+  Trash2,
+  TrendingUp,
+} from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
@@ -19,6 +25,7 @@ import {
 } from "../ui/dialog";
 import { CashMovement } from "@/types";
 import CashMovementResume from "./CashMovementResume";
+import { useGetCashMovementById } from "@/hooks/administracion/movimientos/useGetMovementById";
 
 const CashMovementDropdownActions = ({
   id,
@@ -31,6 +38,7 @@ const CashMovementDropdownActions = ({
   const [openCashMovement, setOpenCashMovement] = useState<boolean>(false);
   const router = useRouter();
   const { deleteCashMovement } = useDeleteCashMovement();
+  const { data: movementDetails, isLoading } = useGetCashMovementById(id);
 
   const handleDelete = async (id: number | string) => {
     await deleteCashMovement.mutateAsync(id);
@@ -62,7 +70,7 @@ const CashMovementDropdownActions = ({
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/administracion/movimientos/${id}`);
+              router.push(`/administracion/gestion_cajas/movimientos/${id}`);
             }}
           ></DropdownMenuItem>
         </DropdownMenuContent>
@@ -70,9 +78,11 @@ const CashMovementDropdownActions = ({
 
       {/*Dialog para eliminar un movimiento*/}
       <Dialog open={openDelete} onOpenChange={setOpenDelete}>
-        <DialogContent onInteractOutside={(e) => {
-          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
-        }}>
+        <DialogContent
+          onInteractOutside={(e) => {
+            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+          }}
+        >
           <DialogHeader>
             <DialogTitle className="text-center">
               ¿Seguro que desea eliminar el movimiento?
@@ -107,26 +117,22 @@ const CashMovementDropdownActions = ({
 
       {/*Dialog para mostar el resumen del movimiento de una caja*/}
       <Dialog open={openCashMovement} onOpenChange={setOpenCashMovement}>
-        <DialogContent className="sm:max-w-md" onInteractOutside={(e) => {
-          e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
-        }}>
+        <DialogContent
+          className="sm:max-w-md"
+          onInteractOutside={(e) => {
+            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+          }}
+        >
           <DialogHeader className="text-center font-bold">
             Resumen del Movimiento de la Caja
           </DialogHeader>
           <CashMovementResume movement={movement} />
           <DialogFooter className="sm:justify-center">
-          {/*  <Button
-              variant="outline"
-              onClick={() =>
-                router.push(`/transmandu/administracion/movimientos/${id}`)
-              }
-            >
-              Ver detalles completos
-            </Button>  */}
             <Button onClick={() => setOpenCashMovement(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      
     </>
   );
 };
