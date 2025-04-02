@@ -110,6 +110,7 @@ export function CreateVoluntaryReportForm({
   });
 
   const onSubmit = async (data: FormSchemaType) => {
+    
     console.log("valor de is anonymous", isAnonymous);
     if (isAnonymous) {
       data.reporter_name = "";
@@ -117,7 +118,9 @@ export function CreateVoluntaryReportForm({
       data.reporter_email = "";
       data.reporter_phone = "";
     }
+
     console.log("Data post is anonymous", data);
+
     if (initialData && isEditing) {
       const value = {
         ...data,
@@ -326,10 +329,12 @@ export function CreateVoluntaryReportForm({
                 <SelectContent>
                   <SelectItem value="CALLE_RODAJE">CALLE DE RODAJE</SelectItem>
                   <SelectItem value="HANGAR13B">HANGAR13B</SelectItem>
+                  <SelectItem value="HANGAR17/18C">HANGAR17/18 C</SelectItem>
                   <SelectItem value="AEROPUERTO_CANAIMA">
-                    AEREOPUERTO CANAIMA
+                    AEROPUERTO CANAIMA
                   </SelectItem>
                   <SelectItem value="PLATAFORMA">PLATAFORMA</SelectItem>
+                  <SelectItem value="PISTA_ATERRIZAJE">PISTA DE ATERRIZAJE</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

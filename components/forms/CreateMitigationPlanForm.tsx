@@ -103,9 +103,9 @@ export default function CreateMitigationPlanForm({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Descripcion de la medida</FormLabel>
+              <FormLabel>Descripcion del Plan</FormLabel>
               <FormControl>
-                <Input placeholder="Descripcion de la medida" {...field} />
+                <Input placeholder="" {...field} />
               </FormControl>
               <FormMessage className="text-xs" />
             </FormItem>
@@ -116,9 +116,9 @@ export default function CreateMitigationPlanForm({
           name="responsible"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Responsable</FormLabel>
+              <FormLabel>Area Responsable</FormLabel>
               <FormControl>
-                <Input placeholder="Quien implementara la medida" {...field} />
+                <Input placeholder="" {...field} />
               </FormControl>
               <FormMessage className="text-xs" />
             </FormItem>
@@ -176,7 +176,7 @@ export default function CreateMitigationPlanForm({
           <p className="text-muted-foreground">SIGEAC</p>
           <Separator className="flex-1" />
         </div>
-        <Button>Enviar reporte</Button>
+        <Button>Enviar</Button>
       </form>
     </Form>
   );
