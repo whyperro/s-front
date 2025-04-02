@@ -73,9 +73,17 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           <DropdownMenuItem onClick={() => setOpenEdit(true)}>
             <EditIcon className="size-5 text-blue-500" />
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpenAddBalance(true)}>
-            <Plus className="size-5 text-green-500" />
-          </DropdownMenuItem>
+          {!isLoading && clientDetails ? (
+            clientDetails.balance < 0 ? (
+              <DropdownMenuItem disabled>
+                <span className="text-red-500">Con Deuda</span>
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem onClick={() => setOpenAddBalance(true)}>
+                <Plus className="size-5 text-green-500" />
+              </DropdownMenuItem>
+            )
+          ) : null}
           <DropdownMenuItem
             onClick={() => {
               router.push(`/administracion/gestion_vuelos/clientes/${id}`);
@@ -188,14 +196,6 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           )}
 
           <DialogFooter className="sm:justify-center">
-            {/*  <Button
-              variant="outline"
-              onClick={() =>
-                router.push(`/administracion/gestion_vuelos/clientes/${id}`)
-              }
-            >
-              Ver detalles completos
-            </Button> */}
             <Button onClick={() => setOpenClient(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>

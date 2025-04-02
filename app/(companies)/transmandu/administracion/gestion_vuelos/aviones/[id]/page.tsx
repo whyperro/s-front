@@ -171,25 +171,24 @@ export default function AircraftReportPage() {
   }, [selectedYear, flights]);
 
   // Manejar clic en una barra del gráfico
-  const handleBarClick = (data: any) => {
+  const handleBarClick = (data: any, event: any) => {
+    // Si tenemos datos de payload (lo que ocurre cuando se hace clic en una barra)
     if (data?.activePayload?.[0]?.payload) {
-      const monthIndex = data.activePayload[0].payload.month;
-      setSelectedMonth(monthIndex);
+      const monthIndex = data.activePayload[0].payload.month
+      setSelectedMonth(monthIndex)
 
       // Filtrar vuelos para el mes seleccionado
       const filteredFlights =
         flights?.filter((flight) => {
-          const flightDate = flight.date ? new Date(flight.date) : null;
+          const flightDate = flight.date ? new Date(flight.date) : null
           return (
-            flightDate &&
-            flightDate.getFullYear().toString() === selectedYear &&
-            flightDate.getMonth() === monthIndex
-          );
-        }) || [];
+            flightDate && flightDate.getFullYear().toString() === selectedYear && flightDate.getMonth() === monthIndex
+          )
+        }) || []
 
-      setFlightsData(filteredFlights);
+      setFlightsData(filteredFlights)
     }
-  };
+  }
 
   // Calcular estadísticas totales
   const totalEarnings = monthlyData.reduce((sum, month) => {
@@ -363,11 +362,11 @@ export default function AircraftReportPage() {
         <CardContent className="p-0 sm:p-6">
           <div className="h-[500px] w-full">
             <ChartContainer {...({} as any)}>
-              <ResponsiveContainer width="100%" height={450} aspect={2}>
+              <ResponsiveContainer width="100%" height={450} aspect={2}> 
                 <BarChart
                   data={monthlyData}
                   margin={{ top: 20, right: 20, left: 20, bottom: 100 }}
-                  onClick={handleBarClick}
+                  onClick={(data, event) => handleBarClick(data, event)}
                   barCategoryGap={8}
                 >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
