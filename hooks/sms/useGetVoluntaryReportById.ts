@@ -11,7 +11,7 @@ const fetcVoluntaryReportById = async (id: string | number) => {
 
 export const useGetVoluntaryReportById = (id: string | number) => {
   return useQuery<VoluntaryReport>({
-    queryKey: ['voluntary-report', id], // Incluye el ID en la clave de la query
+    queryKey: ['voluntary-report'], // Incluye el ID en la clave de la query
     queryFn: () => fetcVoluntaryReportById(id), // Pasa el ID a la función fetchUser
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
