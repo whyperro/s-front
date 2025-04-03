@@ -66,7 +66,12 @@ const FormSchema = z.object({
       message: "El número telefónico debe tener almenos 11 dígitos",
     })
     .optional(),
-  reporter_email: z.string().email().optional(),
+
+  reporter_email: z
+    .string()
+    .email({ message: "Formato de correo electrónico inválido" })
+    .optional(),
+  // Otros campos del esquema...
 });
 
 type FormSchemaType = z.infer<typeof FormSchema>;
@@ -85,7 +90,18 @@ export function CreateVoluntaryReportForm({
 }: FormProps) {
   const { createVoluntaryReport } = useCreateVoluntaryReport();
   const { updateVoluntaryReport } = useUpdateVoluntaryReport();
-  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [isAnonymous, setIsAnonymous] = useState(true);
+
+  if (initialData && isEditing) {
+    if (
+      initialData.reporter_email &&
+      initialData.reporter_name &&
+      initialData.reporter_last_name &&
+      initialData.reporter_phone
+    ) {
+      setIsAnonymous(false);
+    }
+  }
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
@@ -102,15 +118,24 @@ export function CreateVoluntaryReportForm({
       report_date: initialData?.report_date
         ? new Date(initialData.report_date)
         : new Date(),
-      reporter_email: initialData?.reporter_email,
-      reporter_last_name: initialData?.reporter_last_name,
-      reporter_name: initialData?.reporter_name,
-      reporter_phone: initialData?.reporter_phone,
+
+      // Campos del reporter - solo se asignan si existen en initialData
+      ...(initialData?.reporter_name && {
+        reporter_name: initialData.reporter_name,
+      }),
+      ...(initialData?.reporter_last_name && {
+        reporter_last_name: initialData.reporter_last_name,
+      }),
+      ...(initialData?.reporter_email && {
+        reporter_email: initialData.reporter_email,
+      }),
+      ...(initialData?.reporter_phone && {
+        reporter_phone: initialData.reporter_phone,
+      }),
     },
   });
 
   const onSubmit = async (data: FormSchemaType) => {
-    
     console.log("valor de is anonymous", isAnonymous);
     if (isAnonymous) {
       data.reporter_name = "";
@@ -334,7 +359,9 @@ export function CreateVoluntaryReportForm({
                     AEROPUERTO CANAIMA
                   </SelectItem>
                   <SelectItem value="PLATAFORMA">PLATAFORMA</SelectItem>
-                  <SelectItem value="PISTA_ATERRIZAJE">PISTA DE ATERRIZAJE</SelectItem>
+                  <SelectItem value="PISTA_ATERRIZAJE">
+                    PISTA DE ATERRIZAJE
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -387,63 +414,65 @@ export function CreateVoluntaryReportForm({
           <Label className="ml-2 text-sm">Reporte anónimo</Label>
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          <FormField
-            control={form.control}
-            name="reporter_name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nombre</FormLabel>
-                <FormControl>
-                  <Input placeholder="Nombre de quien reporta" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
+        {!isAnonymous && (
+          <div className="grid grid-cols-2 gap-2">
+            <FormField
+              control={form.control}
+              name="reporter_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nombre</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nombre de quien reporta" {...field} />
+                  </FormControl>
+                  <FormMessage className="text-xs" />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="reporter_last_name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Apellido</FormLabel>
-                <FormControl>
-                  <Input placeholder="Apellido de quien reporta" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="reporter_last_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Apellido</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Apellido de quien reporta" {...field} />
+                  </FormControl>
+                  <FormMessage className="text-xs" />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="reporter_email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Correo electrónico</FormLabel>
-                <FormControl>
-                  <Input placeholder="ejemplo@gmail.com" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="reporter_email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Correo electrónico</FormLabel>
+                  <FormControl>
+                    <Input placeholder="ejemplo@gmail.com" {...field} />
+                  </FormControl>
+                  <FormMessage className="text-xs" />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="reporter_phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Teléfono</FormLabel>
-                <FormControl>
-                  <Input placeholder="" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-        </div>
+            <FormField
+              control={form.control}
+              name="reporter_phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Teléfono</FormLabel>
+                  <FormControl>
+                    <Input placeholder="" {...field} />
+                  </FormControl>
+                  <FormMessage className="text-xs" />
+                </FormItem>
+              )}
+            />
+          </div>
+        )}
 
         <div className="flex justify-between items-center gap-x-4">
           <Separator className="flex-1" />
