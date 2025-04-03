@@ -12,8 +12,21 @@ import {
 import { useState } from "react";
 import IdentificationForm from "../forms/CreateIdentificationForm";
 import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
+import { DangerIdentification } from "@/types";
 
-export default function CreateDangerIdentificationDialog() {
+interface FormProps {
+  id: number | string;
+  initialData?: DangerIdentification;
+  isEditing?: boolean;
+  reportType: string;
+}
+
+export default function CreateDangerIdentificationDialog({
+  id,
+  isEditing,
+  initialData,
+  reportType,
+}: FormProps) {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -26,7 +39,7 @@ export default function CreateDangerIdentificationDialog() {
               size="sm"
               className=" hidden h-8 lg:flex"
             >
-              Identificacion de Peligro
+              Crear Identificacion
             </Button>
           </DialogTrigger>
           <DialogContent className="flex flex-col max-w-2xl m-2">
@@ -34,7 +47,11 @@ export default function CreateDangerIdentificationDialog() {
               <DialogTitle></DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
-            <CreateDangerIdentificationForm onClose={() => setOpen(false)} />
+            <CreateDangerIdentificationForm
+              id={id}
+              reportType={reportType}
+              onClose={() => setOpen(false)}
+            />
           </DialogContent>
         </Dialog>
       </Card>

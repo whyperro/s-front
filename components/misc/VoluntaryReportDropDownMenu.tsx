@@ -32,7 +32,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import SafetyRiskManagementPdf from "../pdf/sms/SafetyRiskManagement";
 import { useGetDangerIdentificationWithAllById } from "@/hooks/sms/useGetDangerIdentificationWithAllById";
 
 const VoluntaryReportDropdownActions = ({

@@ -1,15 +1,18 @@
 "use client";
+import CreateDangerIdentificationDialog from "@/components/dialogs/CreateDangerIdentificationDialog";
+import { CreateVoluntaryReportForm } from "@/components/forms/CreateVoluntaryReportForm";
 import { ContentLayout } from "@/components/layout/ContentLayout";
+import { Button } from "@/components/ui/button";
 import { useGetVoluntaryReportById } from "@/hooks/sms/useGetVoluntaryReportById";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import React from "react";
 
 const ShowVoluntaryReport = () => {
   const { report_id } = useParams<{ report_id: string }>();
-
   const {
     data: voluntaryReport,
     isLoading,
@@ -18,6 +21,58 @@ const ShowVoluntaryReport = () => {
 
   return (
     <ContentLayout title="Reportes Voluntarios">
+      <div className=" flex justify-evenly">
+        {voluntaryReport && !voluntaryReport.danger_identification_id ? (
+          <div className="flex items-center py-4">
+            <CreateDangerIdentificationDialog
+              id={voluntaryReport?.id}
+              reportType="RVP"
+            />
+          </div>
+        ) : (
+          voluntaryReport &&
+          voluntaryReport.danger_identification_id !== null && (
+            <div className="flex items-center py-4">
+              <Button
+                variant="outline"
+                size="sm"
+                className=" hidden h-8 lg:flex"
+              >
+                <Link
+                  href={`/transmandu/sms/peligros_identificados/${voluntaryReport.danger_identification_id}`}
+                >
+                  Ver Identificacion de Peligro
+                </Link>
+              </Button>
+            </div>
+          )
+        )}
+
+        {voluntaryReport && voluntaryReport.status === "ABIERTO" && (
+          <div className="flex items-center py-4">
+            <Button variant="outline" size="sm" className=" hidden h-8 lg:flex">
+              <CreateVoluntaryReportForm
+                initialData={voluntaryReport}
+                isEditing={true}
+                onClose={() => {}}
+              />
+            </Button>
+          </div>
+        )}
+
+        {voluntaryReport && (
+          <div className="flex items-center py-4">
+            <Button variant="outline" size="sm" className=" hidden h-8 lg:flex">
+              <Link
+                href={`/transmandu/sms/peligros_identificados/${voluntaryReport.danger_identification_id}`}
+              >
+                Eliminar
+              </Link>
+            </Button>
+          </div>
+        )}
+      </div>
+
       <div className="flex flex-col justify-center items-center border border-gray-300 rounded-lg p-6 gap-y-4 shadow-md">
         <h1 className="text-2xl font-semibold mb-4 text-center text-gray-800 dark:text-white">
           Detalles del Reporte
