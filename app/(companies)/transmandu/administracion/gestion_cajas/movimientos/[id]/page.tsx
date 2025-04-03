@@ -1,33 +1,33 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Loader2, ArrowLeft } from "lucide-react"
-import { format, } from "date-fns"
+import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts"
-import { CashMovement } from "@/types"
+import type { CashMovement } from "@/types"
 import { useGetIncomeStatistics } from "@/hooks/administracion/movimientos/useGetIncomeStatistics"
 
 // Configuración de meses
-const MONTHS = [
-  { name: "Enero", short: "Ene", number: "01" },
-  { name: "Febrero", short: "Feb", number: "02" },
-  { name: "Marzo", short: "Mar", number: "03" },
-  { name: "Abril", short: "Abr", number: "04" },
-  { name: "Mayo", short: "May", number: "05" },
-  { name: "Junio", short: "Jun", number: "06" },
-  { name: "Julio", short: "Jul", number: "07" },
-  { name: "Agosto", short: "Ago", number: "08" },
-  { name: "Septiembre", short: "Sep", number: "09" },
-  { name: "Octubre", short: "Oct", number: "10" },
-  { name: "Noviembre", short: "Nov", number: "11" },
-  { name: "Diciembre", short: "Dic", number: "12" },
-] as const 
+const months = [
+  { name: "January", short: "Jan", number: "01" },
+  { name: "February", short: "Feb", number: "02" },
+  { name: "March", short: "Mar", number: "03" },
+  { name: "April", short: "Apr", number: "04" },
+  { name: "May", short: "May", number: "05" },
+  { name: "June", short: "Jun", number: "06" },
+  { name: "July", short: "Jul", number: "07" },
+  { name: "August", short: "Aug", number: "08" },
+  { name: "September", short: "Sep", number: "09" },
+  { name: "October", short: "Oct", number: "10" },
+  { name: "November", short: "Nov", number: "11" },
+  { name: "December", short: "Dec", number: "12" },
+] as const
 
 type MonthlyData = {
   name: string
@@ -49,11 +49,11 @@ interface CustomTooltipProps {
 const IncomeDashboard = () => {
   const router = useRouter()
   const { data, isLoading, isError } = useGetIncomeStatistics()
-  
+
   // Obtener años disponibles de forma segura
   const availableYears = useMemo(() => {
     if (!data?.statistics?.monthly) return [new Date().getFullYear().toString()]
-    return Object.keys(data.statistics.monthly).sort((a, b) => parseInt(b) - parseInt(a))
+    return Object.keys(data.statistics.monthly).sort((a, b) => Number.parseInt(b) - Number.parseInt(a))
   }, [data])
 
   // Estado con valor inicial seguro
@@ -62,32 +62,56 @@ const IncomeDashboard = () => {
   })
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null)
 
+  // Depuración: Mostrar la estructura completa de cash_movements cuando cambia data
+  useEffect(() => {
+    if (data) {
+      console.log("Estructura completa de cash_movements:", data.cash_movements)
+      console.log("Años disponibles:", Object.keys(data.cash_movements || {}))
+
+      // Mostrar los meses disponibles para el año seleccionado
+      const yearData = data.cash_movements?.[selectedYear] || {}
+      console.log(`Meses disponibles para ${selectedYear}:`, Object.keys(yearData))
+    }
+  }, [data, selectedYear])
+
   // Preparar datos mensuales con protección completa
   const monthlyData = useMemo<MonthlyData[]>(() => {
-    return MONTHS.map(month => {
-      // Acceso seguro a statistics.monthly
-      const monthlyStats = data?.statistics?.monthly?.[selectedYear] || {}
-      const monthIncome = monthlyStats[month.number] || 0
+    if (!data?.statistics?.monthly?.[selectedYear]) return []
 
-      // Acceso seguro a cash_movement
-      const yearMovements = data?.cash_movement?.[selectedYear] || {}
-      const monthMovements = yearMovements[month.number] || []
-      const movementsCount = monthMovements.length
+    return months.map((m) => {
+      // Acceso directo usando month.name
+      const monthIncome = data.statistics.monthly[selectedYear][m.name] || 0
+
+      // Acceso a movimientos - CORREGIDO: usar cash_movements (con 's')
+      const monthMovements = data?.cash_movements?.[selectedYear]?.[m.name]?.length || 0
 
       return {
-        name: month.name,
-        shortName: month.short,
+        name: m.name,
+        shortName: m.short,
         income: monthIncome,
-        movements: movementsCount,
-        monthNumber: month.number
+        movements: monthMovements,
+        monthNumber: m.number,
       }
     })
   }, [data, selectedYear])
 
   // Obtener movimientos del mes seleccionado (solo INCOME) de forma segura
-  const monthlyMovements = useMemo(() => {
-    if (!selectedMonth || !data?.cash_movement?.[selectedYear]?.[selectedMonth]) return []
-    return data.cash_movement[selectedYear][selectedMonth].filter(m => m.type === "INCOME")
+  const monthMovements = useMemo(() => {
+    if (!selectedMonth || !data?.cash_movements) return []
+
+    // Depuración: Mostrar información sobre el mes seleccionado
+    console.log("Buscando movimientos para:", selectedYear, selectedMonth)
+    console.log("Estructura de cash_movements para el año:", data.cash_movements[selectedYear])
+
+    // CORREGIDO: usar cash_movements (con 's')
+    const monthData = data.cash_movements[selectedYear]?.[selectedMonth] || []
+    console.log("Datos encontrados para el mes:", monthData)
+
+    // Filtrar solo los movimientos de tipo INCOME
+    const incomeMovements = Array.isArray(monthData) ? monthData.filter((m: CashMovement) => m.type === "INCOME") : []
+
+    console.log("Movimientos de ingreso filtrados:", incomeMovements)
+    return incomeMovements
   }, [data, selectedYear, selectedMonth])
 
   // Calcular estadísticas con protección
@@ -100,9 +124,8 @@ const IncomeDashboard = () => {
   }, [monthlyData])
 
   const bestMonth = useMemo(() => {
-    return monthlyData.reduce((prev, current) => 
-      current.income > prev.income ? current : prev
-    , { income: 0 } as MonthlyData)
+    if (monthlyData.length === 0) return { name: "N/A", income: 0 }
+    return monthlyData.reduce((prev, current) => (current.income > prev.income ? current : prev))
   }, [monthlyData])
 
   // Manejadores de eventos
@@ -113,18 +136,20 @@ const IncomeDashboard = () => {
 
   const handleBarClick = (data: any) => {
     if (data?.activePayload?.[0]?.payload) {
-      setSelectedMonth(data.activePayload[0].payload.monthNumber)
+      const clickedMonth = data.activePayload[0].payload.name
+      console.log("Mes seleccionado al hacer clic:", clickedMonth)
+      setSelectedMonth(clickedMonth)
     }
   }
 
   // Componente Tooltip personalizado
   const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
     if (!active || !payload || !payload.length) return null
-    
+
     const data = payload[0].payload
     return (
-      <div className="bg-white p-3 border rounded shadow-lg text-sm">
-        <p className="font-bold">{data.name}</p>
+      <div className="bg-white p-3 border rounded shadow-lg ">
+        <p className="font-semibold">{data.name}</p>
         <p className="text-green-600">Ingresos: ${data.income.toLocaleString()}</p>
         <p className="text-gray-600">Movimientos: {data.movements}</p>
       </div>
@@ -152,6 +177,11 @@ const IncomeDashboard = () => {
     )
   }
 
+  // Depuración: Mostrar información sobre el estado actual
+  console.log("Renderizando con año:", selectedYear)
+  console.log("Renderizando con mes:", selectedMonth)
+  console.log("Movimientos para mostrar:", monthMovements)
+
   return (
     <div className="container mx-auto py-8 px-4">
       {/* Encabezado */}
@@ -168,38 +198,36 @@ const IncomeDashboard = () => {
 
       {/* Tarjetas de resumen */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <SummaryCard 
-          title="Total Ingresos" 
-          value={`$${totalAnnualIncome.toLocaleString()}`} 
+        <SummaryCard
+          title="Total Ingresos"
+          value={`$${totalAnnualIncome.toLocaleString()}`}
           description="Suma total del año"
         />
-        
-        <SummaryCard 
-          title="Total Movimientos" 
-          value={totalMovements.toString()} 
+
+        <SummaryCard
+          title="Total Movimientos"
+          value={totalMovements.toString()}
           description="Cantidad de transacciones"
         />
-        
-        <SummaryCard 
-          title="Mejor Mes" 
-          value={bestMonth.name || "-"} 
+
+        <SummaryCard
+          title="Mejor Mes"
+          value={bestMonth.name || "-"}
           description={`$${bestMonth.income.toLocaleString()}`}
         />
       </div>
 
       {/* Selector de año */}
       <div className="flex justify-end mb-4">
-        <Select 
-          value={selectedYear} 
-          onValueChange={handleYearChange}
-          disabled={availableYears.length === 0}
-        >
+        <Select value={selectedYear} onValueChange={handleYearChange} disabled={availableYears.length === 0}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Seleccionar año" />
           </SelectTrigger>
           <SelectContent>
-            {availableYears.map(year => (
-              <SelectItem key={year} value={year}>{year}</SelectItem>
+            {availableYears.map((year) => (
+              <SelectItem key={year} value={year}>
+                {year}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -208,8 +236,8 @@ const IncomeDashboard = () => {
       {/* Gráfico de barras */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Ingresos Mensuales - {selectedYear}</CardTitle>
-          <CardDescription>Haz clic en un mes para ver los detalles</CardDescription>
+          <CardTitle className="text-center">Ingresos Anual - {selectedYear}</CardTitle>
+          <CardDescription className="text-center">Haz clic en un mes para ver los detalles</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-[400px]">
@@ -220,23 +248,14 @@ const IncomeDashboard = () => {
                 onClick={handleBarClick}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="shortName" 
-                  angle={-45} 
-                  textAnchor="end" 
-                  height={60}
-                  tick={{ fontSize: 12 }}
-                />
-                <YAxis 
-                  tickFormatter={(value) => `$${value}`}
-                  width={80}
-                />
+                <XAxis dataKey="shortName" angle={-45} textAnchor="end" height={60} tick={{ fontSize: 12 }} />
+                <YAxis tickFormatter={(value) => `$${value}`} width={80} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="income" name="Ingresos">
                   {monthlyData.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
-                      fill={entry.monthNumber === selectedMonth ? "#8884d8" : "#82ca9d"}
+                      fill={entry.name === selectedMonth ? "#8884d8" : "#82ca9d"}
                       className="cursor-pointer"
                     />
                   ))}
@@ -251,12 +270,15 @@ const IncomeDashboard = () => {
       {selectedMonth && (
         <Card>
           <CardHeader>
-            <CardTitle>
-              Movimientos de {MONTHS.find(m => m.number === selectedMonth)?.name} {selectedYear}
+            <CardTitle className="text-center">
+              Movimientos de {selectedMonth} {selectedYear}
             </CardTitle>
+            <CardDescription className="text-center">
+              Detalle de los movimientos realizados durante el mes
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            {monthlyMovements.length > 0 ? (
+            {monthMovements && monthMovements.length > 0 ? (
               <>
                 <Table>
                   <TableHeader>
@@ -269,30 +291,39 @@ const IncomeDashboard = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {monthlyMovements.map((movement) => (
+                    {monthMovements.map((movement) => (
                       <TableRow key={movement.id}>
                         <TableCell>
-                          {format(new Date(movement.date), 'dd MMM yyyy', { locale: es })}
+                          {format(new Date(movement.date), "dd MMM yyyy", {
+                            locale: es,
+                          })}
                         </TableCell>
-                        <TableCell>{movement.client?.name || 'N/A'}</TableCell>
+                        <TableCell>{movement.client?.name || "N/A"}</TableCell>
                         <TableCell>{movement.account}</TableCell>
                         <TableCell>{movement.category}</TableCell>
                         <TableCell className="text-right">
-                          ${movement.amount.toLocaleString()}
+                          $
+                          {(typeof movement.amount === "string"
+                            ? Number.parseFloat(movement.amount)
+                            : movement.amount
+                          ).toLocaleString()}
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
+                  <TableCaption>
+                    Total: {monthMovements.length} movimientos | Suma: $
+                    {monthMovements
+                      .reduce(
+                        (sum, m) => sum + (typeof m.amount === "string" ? Number.parseFloat(m.amount) : m.amount),
+                        0,
+                      )
+                      .toLocaleString()}
+                  </TableCaption>
                 </Table>
-                <div className="mt-4 text-sm text-muted-foreground">
-                  Total: {monthlyMovements.length} movimientos | 
-                  Suma: ${monthlyMovements.reduce((sum, m) => sum + m.amount, 0).toLocaleString()}
-                </div>
               </>
             ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                No hay movimientos registrados para este mes
-              </div>
+              <div className="text-center py-8 text-muted-foreground">No hay movimientos registrados para este mes</div>
             )}
           </CardContent>
         </Card>
@@ -302,10 +333,10 @@ const IncomeDashboard = () => {
 }
 
 // Componente auxiliar para las tarjetas de resumen
-const SummaryCard = ({ 
-  title, 
-  value, 
-  description 
+const SummaryCard = ({
+  title,
+  value,
+  description,
 }: {
   title: string
   value: string

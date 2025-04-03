@@ -14,7 +14,7 @@ export interface IncomeStatistics {
         }
       }
     }
-    cash_movement: {
+    cash_movements: {
       [year: string]: {
         [month: string]: CashMovement[]
       }
