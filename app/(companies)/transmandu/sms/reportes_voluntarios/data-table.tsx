@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
       </div>
 
       <div className="flex items-center py-4">
-        <CreateVoluntaryReportDialog />
+        <CreateVoluntaryReportDialog title="Nuevo Reporte" />
         <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-md border mb-4">
