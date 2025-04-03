@@ -113,9 +113,16 @@ const formSchema = z.object({
       message: "El monto debe ser mayor a cero.",
     }
   ),
-  bank_account_id: z.string({
-    message: "Debe elegir una cuenta de banco.",
-  }).optional(),
+  bank_account_id: z
+    .union([
+      z.string().min(1, { message: "Debe seleccionar una cuenta válida" }),
+      z.null()
+    ])
+    .refine(
+      (val) => val !== undefined, 
+      { message: "Debe seleccionar una opción" }
+    )
+    .transform(val => val === "" ? null : val) // Transforma "" a null
 });
 
 interface FormProps {
@@ -493,7 +500,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
               <Select
                 disabled={isAccLoading}
                 onValueChange={field.onChange}
-                defaultValue={field.value}
+                defaultValue={field.value === null ? "" : field.value }
               >
                 <FormControl>
                   <SelectTrigger>
@@ -509,6 +516,10 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
+                  {/* Opción de Efectivo */}
+                  <SelectItem value="null">Efectivo</SelectItem>
+
+                  {/* Cuentas bancarias */}
                   {accounts &&
                     accounts.map((acc) => (
                       <SelectItem value={acc.id.toString()} key={acc.id}>

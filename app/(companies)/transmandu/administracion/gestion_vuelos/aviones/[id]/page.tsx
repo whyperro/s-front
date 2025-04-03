@@ -350,6 +350,7 @@ export default function AircraftReportPage() {
         </Select>
       </div>
 
+      {/* Gráfico de barras */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-center">
