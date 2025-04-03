@@ -1,7 +1,9 @@
 "use client";
 import CreateDangerIdentificationDialog from "@/components/dialogs/CreateDangerIdentificationDialog";
-import { CreateVoluntaryReportForm } from "@/components/forms/CreateVoluntaryReportForm";
+import CreateVoluntaryReportDialog from "@/components/dialogs/CreateVoluntaryReportDialog";
+import DeleteVoluntaryReprotDialog from "@/components/dialogs/DeleteVoluntaryReportDialog";
 import { ContentLayout } from "@/components/layout/ContentLayout";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useGetVoluntaryReportById } from "@/hooks/sms/useGetVoluntaryReportById";
 import { format } from "date-fns";
@@ -9,7 +11,6 @@ import { es } from "date-fns/locale";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import React from "react";
 
 const ShowVoluntaryReport = () => {
   const { report_id } = useParams<{ report_id: string }>();
@@ -22,7 +23,12 @@ const ShowVoluntaryReport = () => {
   return (
     <ContentLayout title="Reportes Voluntarios">
       <div className=" flex justify-evenly">
-        {voluntaryReport && !voluntaryReport.danger_identification_id ? (
+        {/* Mostrar el boton para crear identificacion, si el reporte existe, si el status esta  bierto 
+        y si aun no tiene una idedntificacion de peligro */}
+
+        {voluntaryReport &&
+        voluntaryReport.status === "ABIERTO" &&
+        !voluntaryReport.danger_identification_id ? (
           <div className="flex items-center py-4">
             <CreateDangerIdentificationDialog
               id={voluntaryReport?.id}
@@ -31,6 +37,7 @@ const ShowVoluntaryReport = () => {
           </div>
         ) : (
           voluntaryReport &&
+          voluntaryReport.status === "ABIERTO" &&
           voluntaryReport.danger_identification_id !== null && (
             <div className="flex items-center py-4">
               <Button
@@ -47,29 +54,35 @@ const ShowVoluntaryReport = () => {
             </div>
           )
         )}
+        {/* Mostrar el boton para editar el reporte, si el reporte existe y si el status esta  abierto */}
 
         {voluntaryReport && voluntaryReport.status === "ABIERTO" && (
           <div className="flex items-center py-4">
-            <Button variant="outline" size="sm" className=" hidden h-8 lg:flex">
-              <CreateVoluntaryReportForm
-                initialData={voluntaryReport}
-                isEditing={true}
-                onClose={() => {}}
-              />
-            </Button>
+            <CreateVoluntaryReportDialog
+              initialData={voluntaryReport}
+              isEditing={true}
+              title="Editar"
+            />
           </div>
         )}
 
-        {voluntaryReport && (
+        {voluntaryReport && voluntaryReport.status === "ABIERTO" && (
           <div className="flex items-center py-4">
-            <Button variant="outline" size="sm" className=" hidden h-8 lg:flex">
-              <Link
-                href={`/transmandu/sms/peligros_identificados/${voluntaryReport.danger_identification_id}`}
-              >
-                Eliminar
-              </Link>
-            </Button>
+            <DeleteVoluntaryReprotDialog id={voluntaryReport.id} />
           </div>
+        )}
+
+        {voluntaryReport && voluntaryReport.status === "CERRADO" ? (
+          <div className="flex items-center py-4">
+            <DeleteVoluntaryReprotDialog id={voluntaryReport.id} />
+          </div>
+        ) : (
+          voluntaryReport &&
+          voluntaryReport.status === "ABIERTO" && (
+            <div className="flex items-center py-4">
+              <DeleteVoluntaryReprotDialog id={voluntaryReport.id} />
+            </div>
+          )
         )}
       </div>
 
@@ -89,6 +102,22 @@ const ShowVoluntaryReport = () => {
                 <span className="font-semibold">Número del Reporte:</span>{" "}
                 {voluntaryReport.report_number}
               </p>
+
+              <div className="flex justify-center">
+                <p className="text-lg font-medium text-gray-700">
+                  <span className="font-semibold">Estado: </span>
+                  {"                 "}
+                </p>
+                <Badge
+                  className={`justify-center items-center text-center font-bold font-sans ${
+                    voluntaryReport.status === "CERRADO"
+                      ? "bg-green-400"
+                      : "bg-red-400"
+                  }`}
+                >
+                  {voluntaryReport.status}
+                </Badge>
+              </div>
             </div>
             <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
               <p className="text-lg font-medium text-gray-700">
