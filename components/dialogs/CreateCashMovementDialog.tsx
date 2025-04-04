@@ -17,11 +17,21 @@ import { useRouter } from "next/navigation";
 export function CashMovementDialog({ id }: { id?: string }) {
   const [openMovementDialog, setOpenMovementDialog] = useState(false);
   const [openActions, setOpenActions] = useState(false);
+  const [openActionsAccount, setOpenActionsAccount] = useState(false);
+
   const router = useRouter();
 
   const handleViewStats = () => {
-  router.push(`/transmandu/administracion/gestion_cajas/movimientos/${id}`);
-};
+    router.push(
+      "/transmandu/administracion/gestion_cajas/movimientos/reporte_ingresos"
+    );
+  };
+
+  const handleViewStat = () => {
+    router.push(
+      "/transmandu/administracion/gestion_cajas/movimientos/movimientos_por_cuenta/"
+    );
+  };
 
   return (
     <>
@@ -61,6 +71,19 @@ export function CashMovementDialog({ id }: { id?: string }) {
             className="flex items-center justify-center gap-2 h-8 border-dashed"
           >
             Resumen de Ingresos
+          </Button>
+        </DialogTrigger>
+      </Dialog>
+
+      {/*Dialogo para ver el resumen de las cuentas de los movimientos de caja*/}
+      <Dialog open={openActionsAccount} onOpenChange={setOpenActionsAccount}>
+        <DialogTrigger asChild>
+          <Button
+            onClick={handleViewStat}
+            variant={"outline"}
+            className="flex items-center justify-center gap-2 h-8 border-dashed"
+          >
+            Resumen de Cuentas
           </Button>
         </DialogTrigger>
       </Dialog>

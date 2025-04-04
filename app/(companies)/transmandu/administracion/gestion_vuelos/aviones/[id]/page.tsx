@@ -212,6 +212,7 @@ export default function AircraftReportPage() {
         )
       : null;
 
+  // Estados de carga y error
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -234,7 +235,7 @@ export default function AircraftReportPage() {
   }
 
   // Función personalizada para el tooltip
-  const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+  const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
@@ -256,6 +257,7 @@ export default function AircraftReportPage() {
 
   return (
     <div className="container mx-auto py-8 px-4">
+      {/* Encabezado */}
       <div className="flex items-center mb-6">
         <Button
           variant="outline"
@@ -274,6 +276,7 @@ export default function AircraftReportPage() {
         </div>
       </div>
 
+      {/* Tarjetas de resumen */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Card>
           <CardHeader className="pb-2">
@@ -335,6 +338,7 @@ export default function AircraftReportPage() {
         </Card>
       </div>
 
+      {/* Selector de año */}
       <div className="flex justify-end mb-4">
         <Select value={selectedYear} onValueChange={setSelectedYear}>
           <SelectTrigger className="w-[180px]">
@@ -360,8 +364,8 @@ export default function AircraftReportPage() {
             Haz clic en un mes para ver los detalles de los vuelos
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-0 sm:p-6">
-          <div className="h-[500px] w-full">
+        <CardContent>
+          <div className="h-[500px]">
             <ChartContainer {...({} as any)}>
               <ResponsiveContainer width="100%" height={450} aspect={2}> 
                 <BarChart
@@ -409,6 +413,7 @@ export default function AircraftReportPage() {
         </CardContent>
       </Card>
 
+      {/* Tabla de vuelos del mes seleccionado */}
       {selectedMonth !== null && (
         <Card>
           <CardHeader>
