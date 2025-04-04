@@ -1,9 +1,7 @@
 "use client"
 
-import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
 import {
-  Banknote,
   BookCheck,
   BookUser,
   Building,
@@ -20,7 +18,6 @@ import {
   Plane,
   Receipt,
   ScrollText,
-  Settings,
   SquarePen,
   User2,
   UserRoundCog,

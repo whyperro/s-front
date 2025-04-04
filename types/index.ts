@@ -203,8 +203,10 @@ export type MaintenanceAircraft = {
 export type MaintenanceAircraftPart = {
   part_number: string,
   part_name: string,
+  condition_type: string,
   part_hours: number,
   part_cycles: number,
+  sub_parts: MaintenanceAircraftPart[],
   aircraft: MaintenanceAircraft,
 }
 
@@ -221,17 +223,24 @@ export type FlightControl = {
 
 export type MaintenanceService = {
   id: number
+  origin_manual: string,
   name: string,
   description: string,
   manufacturer: Manufacturer,
+  type: "AIRCRAFT" | "PART",
   tasks: ServiceTask[],
 }
 
 export type ServiceTask = {
   id: number,
   description: string,
-  batch: Batch,
   service: MaintenanceService,
+  task_items: {
+    id: number
+    article_part_number: string,
+    article_alt_part_number?: string,
+    article_serial: string,
+  }[]
 }
 
 export type Employee = {
@@ -247,11 +256,24 @@ export type Employee = {
 }
 export interface WorkOrder extends Request {
   order_number: string
-  service: string,
+  client: MaintenanceClient,
   aircraft: MaintenanceAircraft,
-  status: boolean,
+  status: string,
+  date: string,
   description: string,
-  employee: Employee,
+  elaborated_by: string,
+  reviewed_by: string,
+  approved_by: string,
+  work_order_tasks: {
+    id: number,
+    status: "ABIERTO" | "CERRADO",
+    description?: string,
+    technician_responsable?: string,
+    inspector_responsable?: string,
+    ata: string,
+    old_technician?: string[],
+    task: ServiceTask,
+  }[]
 }
 
 export interface DispatchRequest extends Request {
@@ -312,6 +334,7 @@ export type ToolBox = {
 export type Manufacturer = {
   id: number,
   name: string,
+  type: "AIRCRAFT" | "PART",
   description: string,
 }
 

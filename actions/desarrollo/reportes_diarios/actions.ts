@@ -17,8 +17,8 @@ export const useCreateActivityReport = () => {
             });
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["user-activity"] });
-            queryClient.invalidateQueries({ queryKey: ["activities"] });
+            queryClient.invalidateQueries({ queryKey: ["user-activity"], exact: false });
+            queryClient.invalidateQueries({ queryKey: ["activities"], exact: false });
             toast.success("¡Reporte creado!", {
                 description: "El reporte se ha creado correctamente."
             });
