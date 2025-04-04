@@ -371,7 +371,6 @@ export function FlightForm({ onClose }: FormProps) {
               <Input
                 defaultValue={"0"}
                 onChange={(e) => setKg(e.target.value)}
-                type="number"
               />
             </div>
           )}
