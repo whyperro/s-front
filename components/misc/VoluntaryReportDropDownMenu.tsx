@@ -82,11 +82,13 @@ const VoluntaryReportDropdownActions = ({
               </DropdownMenuItem>
             )}
 
-            <DialogTrigger asChild>
-              <DropdownMenuItem onClick={() => setOpenDelete(true)}>
-                <Trash2 className="size-5 text-red-500" />
-              </DropdownMenuItem>
-            </DialogTrigger>
+            {voluntaryReport && voluntaryReport.status !== "CERRADO" && (
+              <DialogTrigger asChild>
+                <DropdownMenuItem onClick={() => setOpenDelete(true)}>
+                  <Trash2 className="size-5 text-red-500" />
+                </DropdownMenuItem>
+              </DialogTrigger>
+            )}
 
             <DropdownMenuItem
               onClick={() => {
@@ -126,7 +128,10 @@ const VoluntaryReportDropdownActions = ({
             <div className="w-full h-screen">
               {voluntaryReport && dangerIdentification ? (
                 <>
-                  {console.log("Entrando en la primera rama condicional",dangerIdentification)}
+                  {console.log(
+                    "Entrando en la primera rama condicional",
+                    dangerIdentification
+                  )}
                   <PDFViewer style={{ width: "100%", height: "60%" }}>
                     <VoluntaryReportPdf
                       report={voluntaryReport}
@@ -136,10 +141,14 @@ const VoluntaryReportDropdownActions = ({
                 </>
               ) : (
                 <>
-                {console.log("Entrando enel segundo rama condicional",dangerIdentification)}
-                <PDFViewer style={{ width: "100%", height: "60%" }}>
-                  <VoluntaryReportPdf report={voluntaryReport} />
-                </PDFViewer></>
+                  {console.log(
+                    "Entrando enel segundo rama condicional",
+                    dangerIdentification
+                  )}
+                  <PDFViewer style={{ width: "100%", height: "60%" }}>
+                    <VoluntaryReportPdf report={voluntaryReport} />
+                  </PDFViewer>
+                </>
               )}
             </div>
             <div className="flex justify-end mt-4">
