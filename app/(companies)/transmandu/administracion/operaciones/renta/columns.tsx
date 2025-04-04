@@ -7,6 +7,7 @@ import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import RentingDropdownActions from "@/components/misc/RentingDropdownActions";
 import ClientResumeDialog from "@/components/dialogs/ClientResumeDialog";
+import { Badge } from "@/components/ui/badge";
 
 // Función para determinar qué columnas mostrar basado en el dato type
 const getColumnVisibility = (data: Renting[]) => {
@@ -70,13 +71,21 @@ export const getRentingColumns = (data: Renting[]): ColumnDef<Renting>[] => {
         <DataTableColumnHeader filter column={column} title="Estado" />
       ),
       meta: { title: "Estado" },
-      cell: ({ row }) => (
-        <div className="flex justify-center">
-          <span className="text-muted-foreground italic">
-            {row.original.status}
-          </span>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const status = row.original.status;
+        const backgroundColor =
+          status === "EN PROCESO" ? "bg-yellow-500" : "bg-green-500";
+  
+        return (
+          <div>
+            <div className="flex justify-center">
+              <Badge className={backgroundColor}>
+                {row.original.status}
+              </Badge>
+            </div>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "client.name",
@@ -109,7 +118,7 @@ export const getRentingColumns = (data: Renting[]): ColumnDef<Renting>[] => {
       cell: ({ row }) => (
         <div className="flex justify-center">
           <span className="text-muted-foreground italic">
-            {row.original.price}
+            {row.original.price} $
           </span>
         </div>
       ),

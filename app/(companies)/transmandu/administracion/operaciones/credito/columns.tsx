@@ -142,7 +142,7 @@ export const columns: ColumnDef<Credit>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.debt}
+          {row.original.debt} $
         </span>
       </div>
     ),

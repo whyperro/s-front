@@ -269,8 +269,8 @@ export default function AircraftReportPage() {
           Volver
         </Button>
         <div>
-          <h1 className="text-2xl font-bold">Reporte de Ganancias</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl font-bold text-center">Reporte de Ganancias</h1>
+          <p className="text-muted-foreground text-center">
             {aircraftDetails?.acronym} - {aircraftDetails?.model}
           </p>
         </div>

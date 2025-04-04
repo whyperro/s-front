@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { AdministrationArticle } from "@/types";
 import AdministrationArticleDropdownActions from "@/components/misc/AdministrationArticleDropdownActions";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<AdministrationArticle>[] = [
   {
@@ -40,13 +41,28 @@ export const columns: ColumnDef<AdministrationArticle>[] = [
       <DataTableColumnHeader filter column={column} title="Estado" />
     ),
     meta: { title: "Estado" },
-    cell: ({ row }) => (
+    cell: ({ row }) => {
+    let backgroundColor = "";
+    switch (row.original.status.toLowerCase()) {
+      case "rentado":
+        backgroundColor = "bg-yellow-500 hover:bg-yellow-600";
+        break;
+      case "en posesion":
+        backgroundColor = "bg-green-500 hover:bg-green-600";
+        break;
+      case "vendido":
+        backgroundColor = "bg-red-500 hover:bg-red-600";
+        break;
+    }
+
+    return (
       <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.status}{" "}
-        </span>
+        <Badge className={`text-white ${backgroundColor}`}>
+          {row.original.status}
+        </Badge>
       </div>
-    ),
+    );
+  },
   },
   {
     accessorKey: "price",
@@ -57,7 +73,7 @@ export const columns: ColumnDef<AdministrationArticle>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.price}
+          {row.original.price} $
         </span>
       </div>
     ),

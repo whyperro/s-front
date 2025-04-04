@@ -97,13 +97,13 @@ export function getMenuList(
                       pathname ===
                       "/transmandu/administracion/operaciones/renta",
                   },
-                  {
-                    href: "/transmandu/administracion/operaciones/ventas",
-                    label: "Ventas",
-                    active:
-                      pathname ===
-                      "/transmandu/administracion/operaciones/ventas",
-                  },
+                //  {
+                //    href: "/transmandu/administracion/operaciones/ventas",
+                //    label: "Ventas",
+                //    active:
+                //      pathname ===
+                //      "/transmandu/administracion/operaciones/ventas",
+                //  },
                   {
                     href: "/transmandu/administracion/operaciones/articulos",
                     label: "Artículos",
@@ -169,13 +169,13 @@ export function getMenuList(
                       pathname ===
                       "/transmandu/administracion/creditos/credito_renta",
                   },
-                  {
-                    href: "/transmandu/administracion/creditos/credito_venta",
-                    label: "Crédito de Ventas",
-                    active:
-                      pathname ===
-                      "/transmandu/administracion/creditos/credito_venta",
-                  },
+                //  {
+                //    href: "/transmandu/administracion/creditos/credito_venta",
+                //    label: "Crédito de Ventas",
+                //    active:
+                //      pathname ===
+                //      "/transmandu/administracion/creditos/credito_venta",
+                //  },
                   {
                     href: "/transmandu/administracion/creditos/credito_vuelo",
                     label: "Crédito de Vuelos",
