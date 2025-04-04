@@ -152,7 +152,7 @@ export function FlightForm({ onClose }: FormProps) {
       const feeString = form.watch("fee") || "0"; // Proporciona un valor predeterminado si es undefined
       const fee = parseFloat(feeString);
 
-      if (Number(kg) >= 0) {
+      if (parseFloat(kg) >= 0) {
         newAmount = (parseFloat(kg) ?? 0) * fee;
       } else {
         newAmount = 0 * fee;
