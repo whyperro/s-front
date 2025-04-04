@@ -18,9 +18,11 @@ import { useState } from "react";
 
 interface DeleteProps {
   id: number | string;
+  onSuccess?: () => void;
+
 }
 
-export default function DeleteDangerIdentificationDialog({ id }: DeleteProps) {
+export default function DeleteDangerIdentificationDialog({  id }: DeleteProps) {
   const [open, setOpen] = useState(false);
   const { deleteDangerIdentification } = useDeleteDangerIdentification();
 

@@ -35,9 +35,11 @@ const ShowDangerIdentification = () => {
     : dangerIdentification?.obligatory_report
     ? "ROS"
     : "N/A";
+
   if (isLoading) {
     return <LoadingPage />;
   }
+  
   return (
     <ContentLayout title="Identificacion de Peligro">
       <>
@@ -150,7 +152,7 @@ const ShowDangerIdentification = () => {
                 </h1>
                 <p className="text-lg text-red-700 text-center">
                   No se pudieron cargar los datos de la identificación de
-                  peligro 
+                  peligro
                 </p>
                 <div className="flex gap-4 mt-4">
                   <Button

@@ -121,7 +121,8 @@ export default function CreateDangerIdentificationForm({
       consequence_to_evaluate: initialData?.consequence_to_evaluate || "",
       danger_area: initialData?.danger_area || "",
       danger_type: initialData?.danger_type || "",
-      information_source_id: initialData?.information_source?.id.toString() || "",
+      information_source_id:
+        initialData?.information_source?.id.toString() || "",
       root_cause_analysis: initialData?.root_cause_analysis || "",
       description: initialData?.description || "",
       possible_consequences: initialData?.possible_consequences || "",
@@ -152,13 +153,20 @@ export default function CreateDangerIdentificationForm({
     }
   }, [informationSources, initialData, form, defaultValuesLoaded]);
 
-
-
-  
-
   const onSubmit = async (data: FormSchemaType) => {
     console.log("DANGER IDETIFICATION DATA", data);
-
+    if (
+      informationSources &&
+      !informationSources.some(
+        (source) => source.id.toString() === data.information_source_id
+      )
+    ) {
+      form.setError("information_source_id", {
+        type: "manual",
+        message: "Fuente de información no válida",
+      });
+      return;
+    }
     if (initialData && isEditing) {
       const values = {
         id: initialData.id,
