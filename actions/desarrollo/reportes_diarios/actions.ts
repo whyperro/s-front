@@ -61,6 +61,62 @@ export const useRegisterActivity = () => {
     };
 };
 
+export const useDeleteActivity = () => {
+    const queryClient = useQueryClient();
+
+    const createMutation = useMutation({
+        mutationFn: async (data: {
+            id: string;
+        }) => {
+            await axiosInstance.delete(`/transmandu/activity/${data.id}`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["activities"] });
+            queryClient.invalidateQueries({ queryKey: ["user-activity"] });
+            toast.success("¡Actividad eliminada!", {
+                description: "La actividad se ha eliminado correctamente."
+            });
+        },
+        onError: () => {
+            toast.error("Oops!", {
+                description: "Hubo un error al eliminar la actividad."
+            });
+        }
+    });
+
+    return {
+        deleteActivity: createMutation,
+    };
+};
+
+export const useEditActivity = () => {
+    const queryClient = useQueryClient();
+
+    const createMutation = useMutation({
+        mutationFn: async (data: { id: string; start_hour?: string; final_hour?: string; description?: string }) => {
+            return await axiosInstance.patch(`/transmandu/update-allActivity/${data.id}`, data);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["activities"] });
+            queryClient.invalidateQueries({ queryKey: ["user-activity"] });
+            queryClient.invalidateQueries({ queryKey: ["update-activity"] });
+            toast.success("¡Actividad editada!", {
+                description: "La actividad se ha editado correctamente."
+            });
+        },
+        onError: () => {
+            toast.error("Oops!", {
+                description: "Hubo un error al editar la actividad."
+            });
+        }
+    });
+
+    return {
+        editActivity: createMutation,
+    };
+};
+
+
 export const useUpdateFinalHour = () => {
     const queryClient = useQueryClient();
 
