@@ -2,6 +2,7 @@
 import CreateDangerIdentificationDialog from "@/components/dialogs/CreateDangerIdentificationDialog";
 import CreateVoluntaryReportDialog from "@/components/dialogs/CreateVoluntaryReportDialog";
 import DeleteVoluntaryReprotDialog from "@/components/dialogs/DeleteVoluntaryReportDialog";
+import PreviewVoluntaryReportPdfDialog from "@/components/dialogs/PreviewVoluntaryReportPdfDialog";
 import { ContentLayout } from "@/components/layout/ContentLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ const ShowVoluntaryReport = () => {
         !voluntaryReport.danger_identification_id ? (
           <div className="flex items-center py-4">
             <CreateDangerIdentificationDialog
+              title="Crear Identificacion de Peligro"
               id={voluntaryReport?.id}
               reportType="RVP"
             />
@@ -74,13 +76,19 @@ const ShowVoluntaryReport = () => {
 
         {voluntaryReport && voluntaryReport.status === "CERRADO" ? (
           <div className="flex items-center py-4">
-            <DeleteVoluntaryReprotDialog id={voluntaryReport.id} />
+            <PreviewVoluntaryReportPdfDialog
+              title="Descargar PDF"
+              voluntaryReport={voluntaryReport}
+            />
           </div>
         ) : (
           voluntaryReport &&
           voluntaryReport.status === "ABIERTO" && (
             <div className="flex items-center py-4">
-              <DeleteVoluntaryReprotDialog id={voluntaryReport.id} />
+              <PreviewVoluntaryReportPdfDialog
+                title="Descargar PDF"
+                voluntaryReport={voluntaryReport}
+              />
             </div>
           )
         )}

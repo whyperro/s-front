@@ -15,6 +15,7 @@ import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
 import { DangerIdentification } from "@/types";
 
 interface FormProps {
+  title: string;
   id: number | string;
   initialData?: DangerIdentification;
   isEditing?: boolean;
@@ -22,6 +23,7 @@ interface FormProps {
 }
 
 export default function CreateDangerIdentificationDialog({
+  title,
   id,
   isEditing,
   initialData,
@@ -39,20 +41,37 @@ export default function CreateDangerIdentificationDialog({
               size="sm"
               className=" hidden h-8 lg:flex"
             >
-              Crear Identificacion
+              {title}
             </Button>
           </DialogTrigger>
-          <DialogContent className="flex flex-col max-w-2xl m-2">
-            <DialogHeader>
-              <DialogTitle></DialogTitle>
-              <DialogDescription></DialogDescription>
-            </DialogHeader>
-            <CreateDangerIdentificationForm
-              id={id}
-              reportType={reportType}
-              onClose={() => setOpen(false)}
-            />
-          </DialogContent>
+
+          {!isEditing && !initialData ? (
+            <DialogContent className="flex flex-col max-w-2xl m-2">
+              <DialogHeader>
+                <DialogTitle></DialogTitle>
+                <DialogDescription></DialogDescription>
+              </DialogHeader>
+              <CreateDangerIdentificationForm
+                id={id}
+                reportType={reportType}
+                onClose={() => setOpen(false)}
+              />
+            </DialogContent>
+          ) : (
+            <DialogContent className="flex flex-col max-w-2xl m-2">
+              <DialogHeader>
+                <DialogTitle></DialogTitle>
+                <DialogDescription></DialogDescription>
+              </DialogHeader>
+              <CreateDangerIdentificationForm
+                id={id}
+                onClose={() => setOpen(false)}
+                initialData={initialData}
+                isEditing={isEditing}
+                reportType={reportType}
+              />
+            </DialogContent>
+          )}
         </Dialog>
       </Card>
     </>

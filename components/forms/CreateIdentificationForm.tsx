@@ -33,7 +33,7 @@ import { Separator } from "@radix-ui/react-select";
 import { useEffect, useState } from "react";
 import { Textarea } from "../ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { es } from "date-fns/locale";
 import { format } from "date-fns";
@@ -92,10 +92,11 @@ export default function CreateDangerIdentificationForm({
   reportType,
 }: FormProps) {
   const [consequences, setConsequences] = useState<string[]>([]);
-  const { data: informationSources, isLoading } = useGetInformationSources();
+  const { data: informationSources, isLoading: isLoadingSources } =
+    useGetInformationSources();
   const { createDangerIdentification } = useCreateDangerIdentification();
   const { updateDangerIdentification } = useUpdateDangerIdentification();
-  const { data: voluntaryReport } = useGetVoluntaryReportById(id); // Para mostrar los datos reporte como referencia en este formulario
+  const [defaultValuesLoaded, setDefaultValuesLoaded] = useState(false);
 
   const AREAS = [
     "OPERACIONES",
@@ -106,37 +107,54 @@ export default function CreateDangerIdentificationForm({
     "OTROS",
   ];
   const DANGER_TYPES = ["ORGANIZACIONAL", "TECNICO", "HUMANO", "NATURAL"];
-
+  console.log("estos son los datos iniciales ", initialData);
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      danger: initialData?.danger,
-      current_defenses: initialData?.current_defenses,
-      risk_management_start_date: initialData?.risk_management_start_date,
-      consequence_to_evaluate: initialData?.consequence_to_evaluate,
-      danger_area: initialData?.danger_area,
-      danger_type: initialData?.danger_type,
-      information_source_id: initialData?.information_source.id,
-      root_cause_analysis: initialData?.root_cause_analysis,
-      description: initialData?.description
-        ? initialData.description
-        : voluntaryReport?.description,
+      danger: initialData?.danger || "",
+      current_defenses: initialData?.current_defenses || "",
 
-      possible_consequences: initialData?.possible_consequences
-        ? initialData?.possible_consequences
-        : voluntaryReport?.possible_consequences,
+      risk_management_start_date: initialData?.risk_management_start_date
+        ? new Date(initialData.risk_management_start_date)
+        : new Date(),
+
+      consequence_to_evaluate: initialData?.consequence_to_evaluate || "",
+      danger_area: initialData?.danger_area || "",
+      danger_type: initialData?.danger_type || "",
+      information_source_id: initialData?.information_source?.id.toString() || "",
+      root_cause_analysis: initialData?.root_cause_analysis || "",
+      description: initialData?.description || "",
+      possible_consequences: initialData?.possible_consequences || "",
     },
   });
 
   useEffect(() => {
-    if (initialData) {
-      form.reset({
-        information_source_id: initialData.information_source.id
-          ? initialData.information_source.id.toString()
-          : "",
-      });
+    if (
+      !defaultValuesLoaded &&
+      informationSources &&
+      initialData?.information_source
+    ) {
+      const sourceId = initialData.information_source.id.toString();
+      if (
+        informationSources.some((source) => source.id.toString() === sourceId)
+      ) {
+        form.setValue("information_source_id", sourceId);
+        setDefaultValuesLoaded(true);
+      }
     }
-  }, [initialData, form.reset]);
+
+    if (initialData?.possible_consequences) {
+      const initialConsequences = initialData.possible_consequences
+        .split(",")
+        .map((c) => c.trim())
+        .filter((c) => c !== "");
+      setConsequences(initialConsequences);
+    }
+  }, [informationSources, initialData, form, defaultValuesLoaded]);
+
+
+
+  
 
   const onSubmit = async (data: FormSchemaType) => {
     console.log("DANGER IDETIFICATION DATA", data);
@@ -144,17 +162,9 @@ export default function CreateDangerIdentificationForm({
     if (initialData && isEditing) {
       const values = {
         id: initialData.id,
-        danger: initialData.danger,
-        risk_management_start_date: initialData.risk_management_start_date,
-        current_defenses: initialData.current_defenses,
-        danger_area: initialData.danger_area,
-        danger_type: initialData.danger_type,
-        description: initialData.description,
-        possible_consequences: initialData.possible_consequences,
-        consequence_to_evaluate: initialData.consequence_to_evaluate,
-        root_cause_analysis: initialData.root_cause_analysis,
-        information_source_id: initialData.information_source.id,
+        ...data,
       };
+      console.log("DANGER IDETIFICATION VALUES", values);
       await updateDangerIdentification.mutateAsync(values);
     } else {
       await createDangerIdentification.mutateAsync({
@@ -357,37 +367,46 @@ export default function CreateDangerIdentificationForm({
           <FormField
             control={form.control}
             name="information_source_id"
-            render={({ field }) => {
-              const defaultValue =
-                initialData?.information_source.id.toString();
-              return (
-                <FormItem className="w-full">
-                  <FormLabel>Método de Identification</FormLabel>
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Método de Identificación</FormLabel>
+                {isLoadingSources ? (
+                  <div className="flex items-center space-x-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Cargando fuentes...</span>
+                  </div>
+                ) : (
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value || defaultValue}
+                    value={field.value}
+                    disabled={isLoadingSources}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar Fuente de Información" />
+                        <SelectValue
+                          placeholder={
+                            isLoadingSources
+                              ? "Cargando..."
+                              : "Seleccionar Fuente de Información"
+                          }
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {informationSources &&
-                        informationSources.map((source) => (
-                          <SelectItem
-                            key={source.id}
-                            value={source.id.toString()}
-                          >
-                            {source.name}
-                          </SelectItem>
-                        ))}
+                      {informationSources?.map((source) => (
+                        <SelectItem
+                          key={source.id}
+                          value={source.id.toString()}
+                        >
+                          {source.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
+                )}
+                <FormMessage />
+              </FormItem>
+            )}
           />
 
           <FormField

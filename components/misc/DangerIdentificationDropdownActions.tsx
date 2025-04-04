@@ -80,12 +80,25 @@ const DangerIdentificationDropdownActions = ({
               </DropdownMenuItem>
             )}
 
-            <DialogTrigger asChild>
-              <DropdownMenuItem onClick={() => setOpenDelete(true)}>
-                <Trash2 className="size-5 text-red-500" />
-              </DropdownMenuItem>
-            </DialogTrigger>
-
+            {dangerIdentification &&
+            reportType === "RVP" &&
+            status === "ABIERTO" ? (
+              <DialogTrigger asChild>
+                <DropdownMenuItem onClick={() => setOpenDelete(true)}>
+                  <Trash2 className="size-5 text-red-500" />
+                </DropdownMenuItem>
+              </DialogTrigger>
+            ) : (
+              dangerIdentification &&
+              reportType === "ROS" &&
+              status === "ABIERTO" && (
+                <DialogTrigger asChild>
+                  <DropdownMenuItem onClick={() => setOpenDelete(true)}>
+                    <Trash2 className="size-5 text-red-500" />
+                  </DropdownMenuItem>
+                </DialogTrigger>
+              )
+            )}
             <DropdownMenuItem
               onClick={() => {
                 router.push(
