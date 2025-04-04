@@ -76,7 +76,8 @@ export const columns: ColumnDef<DangerIdentification>[] = [
     cell: ({ row }) => {
       return (
         <p className="font-medium text-center">
-          {row.original.information_source.name}
+          {row.original.information_source &&
+            row.original.information_source.name}
         </p>
       );
     },
@@ -89,15 +90,17 @@ export const columns: ColumnDef<DangerIdentification>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex justify-center">
-          <Badge
-            className={`justify-center items-center text-center font-bold font-sans ${
-              row.original.information_source.type === "PROACTIVO"
-                ? "bg-green-400"
-                : "bg-red-400"
-            }`}
-          >
-            {row.original.information_source.type}
-          </Badge>
+          {row.original.information_source && (
+            <Badge
+              className={`justify-center items-center text-center font-bold font-sans ${
+                row.original.information_source.type === "PROACTIVO"
+                  ? "bg-green-400"
+                  : "bg-red-400"
+              }`}
+            >
+              {row.original.information_source.type}
+            </Badge>
+          )}
         </div>
       );
     },
