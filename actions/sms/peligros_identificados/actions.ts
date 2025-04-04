@@ -84,7 +84,7 @@ export const useDeleteDangerIdentification = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
-      queryClient.invalidateQueries({ queryKey: ["danger-identification"] });
+      queryClient.invalidateQueries({ queryKey: ["danger-identification-by-id"] });
       toast.success("¡Eliminado!", {
         description: `¡La fuente de informacion ha sido eliminada correctamente!`,
       });
