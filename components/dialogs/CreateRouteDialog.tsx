@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import BerkForm from "../forms/BerkanaRouteForm";
+import RouteForm from "../forms/CreateRouteForm";
 
 export function RouteDialog() {
   const [open, setOpen] = useState(false);
@@ -35,7 +35,7 @@ export function RouteDialog() {
           <DialogTitle>Crear una Ruta</DialogTitle>
           <DialogDescription>Cree una nueva ruta.</DialogDescription>
         </DialogHeader>
-        <BerkForm onClose={() => setOpen(false)} />
+        <RouteForm onClose={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );
