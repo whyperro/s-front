@@ -56,6 +56,7 @@ export const useCreateDangerIdentification = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
       queryClient.invalidateQueries({ queryKey: ["voluntary-reports"] });
+      queryClient.invalidateQueries({ queryKey: ["voluntary-report"] });
       toast.success("¡Creado!", {
         description: ` La identificacion de peligro ha sido creado correctamente.`,
       });
@@ -83,6 +84,7 @@ export const useDeleteDangerIdentification = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
+      queryClient.invalidateQueries({ queryKey: ["danger-identification"] });
       toast.success("¡Eliminado!", {
         description: `¡La fuente de informacion ha sido eliminada correctamente!`,
       });
@@ -139,6 +141,7 @@ export const useUpdateDangerIdentification = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
+      queryClient.invalidateQueries({ queryKey: ["danger-identification"] });
       toast.success("¡Actualizado!", {
         description: `La identificacion de peligro ha sido actualizada correctamente.`,
       });

@@ -79,8 +79,6 @@ export const useDeleteVoluntaryReport = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
       queryClient.invalidateQueries({ queryKey: ["voluntary-reports"] });
-      queryClient.invalidateQueries({ queryKey: ["voluntary-report"] });
-
       toast.success("¡Eliminado!", {
         description: `¡El reporte ha sido eliminada correctamente!`,
       });
@@ -110,6 +108,7 @@ export const useUpdateVoluntaryReport = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["voluntary-reports"] });
+      queryClient.invalidateQueries({ queryKey: ["voluntary-report"] });
       queryClient.invalidateQueries({ queryKey: ["voluntary-report"] });
       toast.success("¡Actualizado!", {
         description: `El reporte voluntario ha sido actualizado correctamente.`,
