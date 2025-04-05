@@ -1,4 +1,5 @@
 "use client";
+import CreateAnalysesDialog from "@/components/dialogs/CreateAnalysesDialog";
 import CreateDangerIdentificationDialog from "@/components/dialogs/CreateDangerIdentificationDialog";
 import DeleteDangerIdentificationDialog from "@/components/dialogs/DeleteDangerIdentificationDialog";
 import { ContentLayout } from "@/components/layout/ContentLayout";
@@ -39,7 +40,7 @@ const ShowDangerIdentification = () => {
   if (isLoading) {
     return <LoadingPage />;
   }
-  
+
   return (
     <ContentLayout title="Identificacion de Peligro">
       <>
@@ -47,7 +48,7 @@ const ShowDangerIdentification = () => {
           {dangerIdentification && status === "ABIERTO" && (
             <div className="flex items-center py-4">
               <CreateDangerIdentificationDialog
-                title="Editar"
+                title="Editar Identificacion"
                 id={id}
                 isEditing={true}
                 initialData={dangerIdentification}
@@ -60,6 +61,32 @@ const ShowDangerIdentification = () => {
             <div className="flex items-center py-4">
               <DeleteDangerIdentificationDialog id={dangerIdentification.id} />
             </div>
+          )}
+
+          {dangerIdentification &&
+          !dangerIdentification.analysis &&
+          status === "ABIERTO" ? (
+            <div className="flex items-center py-4">
+              <CreateAnalysesDialog
+                buttonTitle="Crear"
+                name="identification"
+                id={dangerIdentification.id}
+              />
+            </div>
+          ) : (
+            dangerIdentification &&
+            dangerIdentification.analysis &&
+            status === "ABIERTO" && (
+              <div className="flex items-center py-4">
+                <CreateAnalysesDialog
+                  buttonTitle="Editar Analisis"
+                  name="identification"
+                  id={dangerIdentification.id}
+                  isEditing={true}
+                  initialData={dangerIdentification.analysis}
+                />
+              </div>
+            )
           )}
         </div>
 
