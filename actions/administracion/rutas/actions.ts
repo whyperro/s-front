@@ -53,12 +53,12 @@ export const useUpdateRoute = () => {
       id: string
       from:string,
       to: string,
-      scale?: string
+      layovers?: string
     }) => {
       await axiosInstance.patch(`/transmandu/route/${values.id}`, {
         from: values.from,
         to: values.to,
-        scale: values.scale ?? null,
+        layovers: values.layovers ?? null,
       });
     },
     onSuccess: () => {

@@ -8,6 +8,7 @@ import { es } from "date-fns/locale/es";
 import FlightDropdownActions from "@/components/misc/FlightDropdownActions";
 import { Badge } from "@/components/ui/badge";
 import ClientResumeDialog from "@/components/dialogs/ClientResumeDialog";
+import { formatCurrency } from "@/lib/utils";
 
 export const columns: ColumnDef<Flight>[] = [
   {
@@ -84,7 +85,7 @@ export const columns: ColumnDef<Flight>[] = [
     meta: { title: "Tarifa" },
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <span className="text-muted-foreground italic">{row.original.fee}</span>
+        <span className="text-muted-foreground italic">{formatCurrency(row.original.fee)}</span>
       </div>
     ),
   },
@@ -97,7 +98,7 @@ export const columns: ColumnDef<Flight>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.total_amount}
+          {formatCurrency(row.original.total_amount)}
         </span>
       </div>
     ),
@@ -111,7 +112,7 @@ export const columns: ColumnDef<Flight>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.payed_amount}
+          {formatCurrency(row.original.payed_amount)}
         </span>
       </div>
     ),
@@ -125,7 +126,7 @@ export const columns: ColumnDef<Flight>[] = [
     cell: ({ row }) => {
       const status = row.original.debt_status;
       const backgroundColor =
-        status === "PENDIENTE" ? "bg-yellow-500" : "bg-green-500";
+        status === "PENDIENTE" ? "bg-red-500" : "bg-green-500";
 
       return (
         <div>

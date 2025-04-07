@@ -10,21 +10,7 @@ import CompanyResumeDialog from "@/components/dialogs/AdministrationCompanyResum
 import ResponsibleResumeDialog from "@/components/dialogs/ResponsibleResumeDialog";
 import BankAccountResumeDialog from "@/components/dialogs/BankAccountResumeDialog";
 import CashResumeDialog from "@/components/dialogs/CashResumeDialog";
-import ClientResumeDialog from "@/components/dialogs/ClientResumeDialog";
-
-// Función auxiliar para obtener el símbolo de la moneda
-const getCurrencySymbol = (coinType: string) => {
-  switch (coinType) {
-    case "DOLARES":
-      return "$";
-    case "EUROS":
-      return "€";
-    case "BOLIVARES":
-      return "Bs.";
-    default:
-      return "";
-  }
-};
+import { formatCurrencyJ, getCurrencySymbol } from "@/lib/utils";
 
 export const columns: ColumnDef<CashMovement>[] = [
   {
@@ -43,14 +29,14 @@ export const columns: ColumnDef<CashMovement>[] = [
       );
     },
   },
-  {
-    accessorKey: "company.name",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Empresa" />
-    ),
-    meta: { title: "Cliente" },
-    cell: ({ row }) => <CompanyResumeDialog company={row.original.company} />,
-  },
+//  {
+//    accessorKey: "company.name",
+//    header: ({ column }) => (
+//      <DataTableColumnHeader filter column={column} title="Empresa" />
+//    ),
+//    meta: { title: "Cliente" },
+//    cell: ({ row }) => <CompanyResumeDialog company={row.original.company} />,
+//  },
   {
     accessorKey: "type",
     header: ({ column }) => (
@@ -170,7 +156,7 @@ export const columns: ColumnDef<CashMovement>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.amount} {getCurrencySymbol(row.original.cash.coin)}
+        {formatCurrencyJ(row.original.amount, row.original.cash.coin)} 
         </span>
       </div>
     ),

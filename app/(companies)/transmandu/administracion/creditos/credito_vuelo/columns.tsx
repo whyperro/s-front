@@ -7,6 +7,7 @@ import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import CreditDropdownActions from "@/components/misc/CreditDropdownActions";
 import { Badge } from "@/components/ui/badge";
+import { formatCurrency } from "@/lib/utils";
 
 export const columns: ColumnDef<Credit>[] = [
   {
@@ -56,18 +57,18 @@ export const columns: ColumnDef<Credit>[] = [
       );
     },
   },
-  {
-    accessorKey: "flight.details",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Detalle de Vuelo" />
-    ),
-    meta: { title: "Detalle de Vuelo" },
-    cell: ({ row }) => (
-      <div className="flex justify-center font-bold">
-        {row.original.flight ? row.original.flight.details : "N/A"}
-      </div>
-    ),
-  },
+//  {
+//    accessorKey: "flight.details",
+//    header: ({ column }) => (
+//      <DataTableColumnHeader filter column={column} title="Detalle de Vuelo" />
+//    ),
+//    meta: { title: "Detalle de Vuelo" },
+//    cell: ({ row }) => (
+//      <div className="flex justify-center font-bold">
+//        {row.original.flight ? row.original.flight.details : "N/A"}
+//      </div>
+//    ),
+//  },
   {
     accessorKey: "client.name",
     header: ({ column }) => (
@@ -123,7 +124,7 @@ export const columns: ColumnDef<Credit>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.debt}
+          {formatCurrency(row.original.debt)}
         </span>
       </div>
     ),
@@ -137,7 +138,7 @@ export const columns: ColumnDef<Credit>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.payed_amount}
+          {formatCurrency(row.original.payed_amount)}
         </span>
       </div>
     ),

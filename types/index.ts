@@ -472,11 +472,15 @@ export type Role = {
 }
 
 export type Route = {
-  id:number,
-  from: string,
-  scale: string,
-  to: string,
-}
+  id: number;
+  from: string;
+  to: string;
+  layovers: {      
+    id: number;
+    name: string;
+    route_id: number;
+  }[];
+};
 
 export type Sell ={
   id: number,

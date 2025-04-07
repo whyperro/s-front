@@ -15,11 +15,11 @@ const CashMovementResume = ({ movement }: { movement: CashMovement }) => {
         <Separator />
       </div>
 
-      <div className="space-y-2">
+    {/*  <div className="space-y-2">
         <h3 className="text-sm font-medium text-muted-foreground">Empresa</h3>
         <p className="text-lg font-semibold">{movement.company.name}</p>
         <Separator />
-      </div>
+      </div>  */}
 
       <div className="space-y-2">
         <h3 className="text-sm font-medium text-muted-foreground">

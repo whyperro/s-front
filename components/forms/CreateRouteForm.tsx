@@ -42,7 +42,7 @@ const formSchema = z.object({
   }).max(30, {
     message: "El destino tiene un máximo 30 caracteres.",
   }),
-  scale: z.string().regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras").min(3, {
+  layovers: z.string().regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras").min(3, {
     message: "La escala debe tener al menos 3 caracteres.",
   }).max(30, {
     message: "La escala tiene un máximo 30 caracteres.",
@@ -55,7 +55,7 @@ interface FormProps {
   id?: string;
 }
 
-type ScaleField = {
+type layoversField = {
   id: number;
   value: string;
 };
@@ -72,13 +72,13 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
     defaultValues: {
       from: initialValues?.from ?? "",
       to: initialValues?.to ?? "",
-      scale: initialValues?.scale ?? undefined,
+      layovers: initialValues?.layovers ?? undefined,
     },
   });
   const { control } = useForm();
 
   // Estado para almacenar los campos de escala
-  const [scaleFields, setScaleFields] = useState<ScaleField[]>([
+  const [layoversFields, setScaleFields] = useState<layoversField[]>([
     {
       id: Date.now(),
       value: "",
@@ -90,16 +90,16 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
       setInitialValues(data);
       form.setValue("from", data.from);
       form.setValue("to", data.to);
-      form.setValue("scale", data.scale ?? undefined);
+      form.setValue("layovers", data.layovers ?? undefined);
     }
   }, [data, form]);
 
   const onAddInput = () => {
-    setScaleFields([...scaleFields, { id: Date.now(), value: "" }]);
+    setScaleFields([...layoversFields, { id: Date.now(), value: "" }]);
   };
 
   const onRemoveInput = (index: number) => {
-    if (scaleFields.length > 1) {
+    if (layoversFields.length > 1) {
       // Prevent removing the last field
       setScaleFields((prevFields) => prevFields.filter((_, i) => i !== index));
     }
@@ -110,10 +110,10 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
       const updatedFields = prevFields.map((field) =>
         field.id === id ? { ...field, value } : field
       );
-      const scaleValues = updatedFields
+      const layoversValues = updatedFields
         .map((field) => field.value)
         .filter(Boolean);
-      form.setValue("scale", scaleValues.join(", "));
+      form.setValue("layovers", layoversValues.join(", "));
 
       return updatedFields; // Return updated fields
     });
@@ -127,7 +127,7 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
           id: initialValues.id.toString(),
           from: values.from,
           to: values.to,
-          scale: values.scale ?? undefined,
+          layovers: values.layovers ?? undefined,
         });
       } else {
         await createRoute.mutateAsync(values);
@@ -136,7 +136,7 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
       onClose();
     } catch (error) {
       console.error(error); // Log the error for debugging
-      toast.error("Error al guardar le vuelo", {
+      toast.error("Error al guardar el vuelo", {
         description: "Ocurrió un error, por favor intenta nuevamente.",
       });
     }
@@ -153,11 +153,11 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 onCheckedChange={() => setChecked(!checked)}
-                id="scale"
+                id="layovers"
               />
               <div className="grid gap-1.5 leading-none">
                 <label
-                  htmlFor="scale"
+                  htmlFor="layovers"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
                   ¿Tiene escalas?
@@ -201,26 +201,26 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
               <>
                 <div className="flex gap-2 items-center p-2">
                   <MinusCircle
-                    className="size-4 cursor-pointer hover:scale-125 transition-all ease-in duration-100"
-                    onClick={() => onRemoveInput(scaleFields.length - 1)} // Get the last field's index
+                    className="size-4 cursor-pointer hover:layovers-125 transition-all ease-in duration-100"
+                    onClick={() => onRemoveInput(layoversFields.length - 1)} // Get the last field's index
                   />
                   <Label>Escala(s)</Label>
                   <PlusCircle
-                    className="size-4 cursor-pointer hover:scale-125 transition-all ease-in duration-100"
+                    className="size-4 cursor-pointer hover:layovers-125 transition-all ease-in duration-100"
                     onClick={() => onAddInput()}
                   />
                 </div>
                 <div
                   className={cn(
                     "grid grid-cols-1 gap-2",
-                    scaleFields.length > 1 ? "grid-cols-2" : ""
+                    layoversFields.length > 1 ? "grid-cols-2" : ""
                   )}
                 >
-                  {scaleFields.map((field) => (
+                  {layoversFields.map((field) => (
                     <FormField
                       key={field.id}
                       control={control}
-                      name={`scale-${field.id}`} // Nombre único para cada campo
+                      name={`layovers-${field.id}`} // Nombre único para cada campo
                       render={({ field: inputField }) => (
                         <FormItem className="w-auto">
                           <FormControl>

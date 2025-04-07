@@ -4,16 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { Cash } from "@/types";
 import CashDropdownActions from "@/components/misc/CashDropdownActions";
-
-//función auxiliar para manejar la lógica de los símbolos
-const getCurrencySymbol = (coinType: string) => {
-  switch(coinType) {
-    case "DOLARES": return "$";
-    case "EUROS": return "€";
-    case "BOLIVARES": return "Bs.";
-    default: return "";
-  }
-};
+import { formatCurrencyJ, getCurrencySymbol } from "@/lib/utils";
 
 export const columns: ColumnDef<Cash>[] = [
   {
@@ -39,7 +30,7 @@ export const columns: ColumnDef<Cash>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.total_amount } {getCurrencySymbol(row.original.coin)}
+          {formatCurrencyJ(row.original.total_amount, row.original.coin)} 
         </span>
       </div>
     ),

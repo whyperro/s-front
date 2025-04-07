@@ -8,6 +8,7 @@ import { es } from "date-fns/locale/es";
 import RentingDropdownActions from "@/components/misc/RentingDropdownActions";
 import ClientResumeDialog from "@/components/dialogs/ClientResumeDialog";
 import { Badge } from "@/components/ui/badge";
+import { formatCurrency } from "@/lib/utils";
 
 // Función para determinar qué columnas mostrar basado en el dato type
 const getColumnVisibility = (data: Renting[]) => {
@@ -118,7 +119,7 @@ export const getRentingColumns = (data: Renting[]): ColumnDef<Renting>[] => {
       cell: ({ row }) => (
         <div className="flex justify-center">
           <span className="text-muted-foreground italic">
-            {row.original.price} $
+            {formatCurrency(row.original.price)}
           </span>
         </div>
       ),

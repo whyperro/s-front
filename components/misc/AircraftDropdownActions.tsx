@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById";
-import { useDeleteAircraft } from "@/actions/administracion/aviones/actions";
+import { useDeleteAircraft } from "@/actions/administracion/aeronaves/actions";
 import {
   Dialog,
   DialogContent,
@@ -238,7 +238,9 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
                 <h3 className="text-sm font-medium text-muted-foreground">
                   Estado
                 </h3>
-                <p className="text-lg font-semibold">{aircraftDetails.status}</p>
+                <p className="text-lg font-semibold">
+                  {aircraftDetails.status}
+                </p>
                 <Separator />
               </div>
             </div>

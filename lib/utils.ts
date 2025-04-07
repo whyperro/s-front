@@ -62,3 +62,39 @@ export function formatCurrency(value: number) {
     minimumFractionDigits: 2,
   }).format(value)
 }
+
+//función auxiliar para manejar la lógica de los símbolos
+export function getCurrencySymbol(coinType: string): string {
+  const symbolMap: Record<string, string> = {
+    DOLARES: "$",
+    EUROS: "€",
+    BOLIVARES: "Bs.",
+    // Se pueden agregar más monedas aquí en un futuro ...
+  };
+  return symbolMap[coinType.toUpperCase()] || "";
+}
+
+//funcion de joselynmirror :3 formateo de simbolo y de número  
+export function formatCurrencyJ(
+  value: number | string, // Acepta ambos tipos
+  coinType: string,
+  locale: string = 'es-US'
+): string {
+  // Convertir a número
+  const numericValue = typeof value === 'string' 
+    ? parseFloat(value.replace(',', '.')) // Reemplaza comas por puntos para locales que usan coma decimal
+    : value;
+
+  // Verificar si es un número válido
+  if (isNaN(numericValue)) {
+    return 'Valor inválido';
+  }
+
+  const symbol = getCurrencySymbol(coinType);
+  const formattedValue = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(numericValue);
+
+  return `${formattedValue} ${symbol}`.trim();
+}

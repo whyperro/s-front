@@ -17,18 +17,29 @@ export const columns: ColumnDef<Route>[] = [
     ),
   },
   {
-    accessorKey: "scale",
+    accessorKey: "layover",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Escala" />
     ),
     meta: { title: "Escala" },
-    cell: ({ row }) => (
-      <div className="flex justify-center font-bold">
-        <span className="text-muted-foreground italic">
-          {row.original.scale ? row.original.scale : "N/A"}
-        </span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const layovers = row.original.layovers;
+      
+      if (!layovers || layovers.length === 0) {
+        return (
+          <div className="flex justify-center font-bold">
+            <span className="text-muted-foreground font-bold">N/A</span>
+          </div>
+        );
+      }
+      return (
+        <div className="flex justify-center font-bold">
+          <span className="text-muted-foreground font-bold">
+            {layovers.map(layover => layover.name).join(", ")}
+          </span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "to",

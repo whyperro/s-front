@@ -34,7 +34,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById";
-import { useUpdateAircraft } from "@/actions/administracion/aviones/actions";
+import { useUpdateAircraft } from "@/actions/administracion/aeronaves/actions";
 
 const FormSchema = z.object({
   fabricant: z
@@ -150,7 +150,7 @@ export function EditAircraftForm({ id, onClose }: EditAircraftFormProps) {
       },
       status: formData.status,
     };
-    await updateAircraft.mutate({ id, data });
+    await updateAircraft.mutateAsync({ id, data });
     onClose();
   };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCreateAircraft } from "@/actions/administracion/aviones/actions";
+import { useCreateAircraft } from "@/actions/administracion/aeronaves/actions";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
