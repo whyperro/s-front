@@ -42,7 +42,7 @@ const formSchema = z.object({
   }).max(30, {
     message: "El destino tiene un máximo 30 caracteres.",
   }),
-  scale: z.string().min(3, {
+  scale: z.string().regex(/^[a-zA-Z0-9\s]+$/, "No se permiten caracteres especiales, solo letras").min(3, {
     message: "La escala debe tener al menos 3 caracteres.",
   }).max(30, {
     message: "La escala tiene un máximo 30 caracteres.",
