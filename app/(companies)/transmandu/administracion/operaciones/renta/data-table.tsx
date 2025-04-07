@@ -25,22 +25,16 @@ import {
 import { ListRestart } from "lucide-react";
 import { useState } from "react";
 import { RentingDialog } from "@/components/dialogs/CreateRentingDialog";
-import { Renting } from "@/types";
-import { getRentingColumns } from "./columns";
-
 interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
-
-export function DataTable<TData extends Renting, TValue>({
+export function DataTable<TData, TValue>({
+  columns,
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
-  // Obtener las columnas dinámicas basadas en los datos
-  const columns = getRentingColumns(data);
-
   const table = useReactTable({
     data,
     columns,
@@ -62,7 +56,7 @@ export function DataTable<TData extends Renting, TValue>({
     <div>
       <div className="flex items-center py-4">
         <div className="flex gap-x-2 items-center">
-          <RentingDialog />
+        <RentingDialog />
           {isFiltered && (
             <Button
               variant="ghost"

@@ -9,8 +9,6 @@ import LoadingPage from "@/components/misc/LoadingPage";
 const RentingPage = () => {
   const { data, isLoading, isError } = useGetRenting();
 
-  console.log(data);
-
   if (isLoading) {
     return <LoadingPage />;
   }
