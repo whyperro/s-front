@@ -79,9 +79,9 @@ export const columns: ColumnDef<Flight>[] = [
   {
     accessorKey: "fee",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Tasa" />
+      <DataTableColumnHeader filter column={column} title="Tarifa" />
     ),
-    meta: { title: "Tasa" },
+    meta: { title: "Tarifa" },
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">{row.original.fee}</span>

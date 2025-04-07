@@ -33,9 +33,10 @@ const AdministrationVendorDropdownActions = ({ id }: { id: string }) => {
     router.push(`/transmandu/administracion/gestion_general/proveedor/${id}`);
   };
 
-  const handleDelete = async (id: number | string) => {
-    await deleteAdministrationVendor.mutateAsync(id);
-    setOpenDelete(false);
+  const handleDelete = (id: number | string) => {
+    deleteAdministrationVendor.mutate(id, {
+      onSuccess: () => setOpenDelete(false), // Cierra el modal solo si la eliminación fue exitosa
+    });
   };
 
   const handleViewDetails = () => {

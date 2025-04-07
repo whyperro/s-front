@@ -4,8 +4,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
 import {
   EditIcon,
   EyeIcon,
@@ -35,9 +33,10 @@ const RentingDropdownActions = ({ rent }: { rent: Renting }) => {
   const router = useRouter();
   const { deleteRenting } = useDeleteRenting();
 
-  const handleDelete = async (id: number | string) => {
-    await deleteRenting.mutateAsync(id);
-    setOpenDelete(false);
+  const handleDelete = (id: number | string) => {
+    deleteRenting.mutate(id, {
+      onSuccess: () => setOpenDelete(false), // Cierra el modal solo si la eliminación fue exitosa
+    });
   };
 
   const handleViewDetails = () => {

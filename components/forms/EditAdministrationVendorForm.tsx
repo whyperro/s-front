@@ -14,11 +14,8 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Separator } from "../ui/separator";
-import { useGetAdministrationCompanyById } from "@/hooks/administracion/useGetAdministrationCompanyById";
+import { Select, SelectContent, SelectItem } from "../ui/select";
 import { useUpdateAdministrationVendor } from "@/actions/administracion/proveedor/actions";
-import { useGetAdministrationCompany } from "@/hooks/administracion/useGetAdministrationCompany";
 import { useGetAdministrationVendorById } from "@/hooks/administracion/useGetAdministrationVendorById";
 
 const phoneRegex = new RegExp(

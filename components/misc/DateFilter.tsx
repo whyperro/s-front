@@ -19,16 +19,11 @@ import { useCompanyStore } from "@/stores/CompanyStore";
 
 const DateFilter = () => {
   const { selectedCompany, selectedStation } = useCompanyStore();
-
   const router = useRouter();
-
   const params = useSearchParams();
-
   const pathname = usePathname();
-
   const from = params.get("from") || "";
   const to = params.get("to") || "";
-
   const defaultTo = new Date();
   const defaultFrom = subDays(defaultTo, 31);
 

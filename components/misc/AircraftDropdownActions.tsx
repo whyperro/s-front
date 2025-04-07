@@ -49,9 +49,10 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
     router.push(`/transmandu/administracion/gestion_vuelos/aviones/${id}`);
   };
 
-  const handleDelete = async (id: number | string) => {
-    await deleteAircraft.mutateAsync(id);
-    setOpenDelete(false);
+  const handleDelete = (id: number | string) => {
+    deleteAircraft.mutate(id, {
+      onSuccess: () => setOpenDelete(false), // Cierra el modal solo si la eliminación fue exitosa
+    });
   };
 
   const handleViewDetails = () => {

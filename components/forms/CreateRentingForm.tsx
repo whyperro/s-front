@@ -136,8 +136,11 @@ export function CreateRentingForm({ onClose }: FormProps) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createRenting.mutateAsync(values);
-    onClose();
+    createRenting.mutate(values, {
+      onSuccess: () => {
+        onClose(); // Cierra el modal solo si la creación fue exitosa
+      },
+    });
   }
 
   return (

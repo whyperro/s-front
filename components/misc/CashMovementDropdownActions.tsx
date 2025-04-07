@@ -40,9 +40,10 @@ const CashMovementDropdownActions = ({
   const { deleteCashMovement } = useDeleteCashMovement();
   const { data: movementDetails, isLoading } = useGetCashMovementById(id);
 
-  const handleDelete = async (id: number | string) => {
-    await deleteCashMovement.mutateAsync(id);
-    setOpenDelete(false);
+  const handleDelete = (id: number | string) => {
+    deleteCashMovement.mutate(id, {
+      onSuccess: () => setOpenDelete(false), // Cierra el modal solo si la eliminación fue exitosa
+    });
   };
 
   const handleViewDetails = () => {

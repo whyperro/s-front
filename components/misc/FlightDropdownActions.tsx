@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FlightPaymentsModifiedForm } from "../forms/CreateFlightPaymentsModifiedForm";
+import { FlightPaymentsModifiedForm } from "../forms/CreateFlightPaymentsForm";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -30,16 +30,16 @@ import {
 import { Separator } from "../ui/separator";
 
 const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
-  const [open, setOpen] = useState<boolean>(false);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [openPayment, setOpenPayment] = useState<boolean>(false);
   const [openFlight, setOpenFlight] = useState<boolean>(false);
   const router = useRouter();
   const { deleteFlight } = useDeleteFlight();
 
-  const handleDelete = async (id: number | string) => {
-    await deleteFlight.mutateAsync(id);
-    setOpenDelete(false);
+  const handleDelete = (id: number | string) => {
+    deleteFlight.mutate(id, {
+      onSuccess: () => setOpenDelete(false), // Cierra el modal solo si la eliminación fue exitosa
+    });
   };
 
   const handleViewDetails = () => {
@@ -181,7 +181,7 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
 
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground">
-                Tasa
+                Tarifa
               </h3>
               <p className="text-lg font-semibold">{flight.fee}</p>
               <Separator />

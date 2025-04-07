@@ -29,9 +29,10 @@ const SellDropdownActions = ({ id }: { id: string }) => {
   const { deleteSell } = useDeleteSell();
   const { data: sellsDetails, isLoading } = useGetSellById(id);
 
-  const handleDelete = async (id: number | string) => {
-    await deleteSell.mutateAsync(id);
-    setOpenDelete(false);
+  const handleDelete = (id: number | string) => {
+    deleteSell.mutate(id, {
+      onSuccess: () => setOpenDelete(false), // Cierra el modal solo si la eliminación fue exitosa
+    });
   };
 
   const handleViewDetails = () => {
@@ -169,7 +170,7 @@ const SellDropdownActions = ({ id }: { id: string }) => {
                   Referencia
                 </h3>
                 <p className="text-lg font-semibold">
-                  {sellsDetails.reference_pick}
+                  {sellsDetails.reference_pic}
                 </p>
                 <Separator />
               </div>

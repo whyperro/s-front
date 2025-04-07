@@ -62,8 +62,11 @@ export function CreateAdministrationArticleForm({ onClose }: FormProps) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createAdministrationArticle.mutateAsync(values);
-    onClose();
+    createAdministrationArticle.mutate(values, {
+      onSuccess: () => {
+        onClose(); // Cierra el modal solo si la creación fue exitosa
+      },
+    });
   }
 
   return (

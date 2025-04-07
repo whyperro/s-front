@@ -49,8 +49,11 @@ export function CreateAdministrationVendorForm({ onClose }: FormProps) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createAdministrationVendor.mutateAsync(values);
-    onClose();
+    createAdministrationVendor.mutate(values, {
+      onSuccess: () => {
+        onClose(); // Cierra el modal solo si la creación fue exitosa
+      },
+    });
   }
 
   return (

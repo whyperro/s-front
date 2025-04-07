@@ -118,7 +118,11 @@ export function CreateAircraftForm({ onClose }: FormProps) {
   });
 
   const onSubmit = (data: FormSchemaType) => {
-    createAircraft.mutate(data);
+    createAircraft.mutate(data, {
+      onSuccess: () => {
+        onClose(); // Cierra el modal solo si la creación fue exitosa
+      },
+    });
   };
 
   return (

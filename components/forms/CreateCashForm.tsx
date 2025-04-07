@@ -44,8 +44,11 @@ export function CreateCashForm({ onClose }: FormProps) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createCash.mutateAsync(values);
-    onClose();
+    createCash.mutate(values, {
+      onSuccess: () => {
+        onClose(); // Cierra el modal solo si la creación fue exitosa
+      },
+    });
   }
 
   return (

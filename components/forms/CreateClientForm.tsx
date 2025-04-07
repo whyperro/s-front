@@ -52,8 +52,11 @@ export function CreateClientForm({ onClose }: FormProps) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createClient.mutateAsync(values);
-    onClose();
+    createClient.mutate(values, {
+      onSuccess: () => {
+        onClose(); // Cierra el modal solo si la creación fue exitosa
+      },
+    });
   }
 
   return (

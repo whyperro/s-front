@@ -97,7 +97,11 @@ export function SellForm({ onClose, article_id }: FormProps) {
       ...values,
       articles_id: [article_id],
     };
-    await createSell.mutateAsync(formattedValues);
+    createSell.mutate(formattedValues, {
+      onSuccess: () => {
+        onClose(); // Cierra el modal solo si la creación fue exitosa
+      },
+    });
   }
 
   return (

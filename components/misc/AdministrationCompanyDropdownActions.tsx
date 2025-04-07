@@ -35,9 +35,10 @@ const AdministrationCompanyDropdownActions = ({ id }: { id: string }) => {
   const { data: adminCompany, isLoading } = useGetAdministrationCompanyById(id);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
 
-  const handleDelete = async (id: number | string) => {
-    await DeleteAdministrationCompany.mutateAsync(id);
-    setOpenDelete(false);
+  const handleDelete = (id: number | string) => {
+    DeleteAdministrationCompany.mutate(id, {
+      onSuccess: () => setOpenDelete(false), // Cierra el modal solo si la eliminación fue exitosa
+    });
   };
 
   const handleViewDetails = () => {

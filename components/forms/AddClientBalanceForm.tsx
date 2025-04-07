@@ -1,5 +1,5 @@
 "use client";
-import { useCreateBank } from "@/actions/ajustes/banco_cuentas/bancos/actions";
+
 import {
   Form,
   FormControl,
@@ -16,7 +16,6 @@ import { z } from "zod";
 import { AmountInput } from "../misc/AmountInput";
 import { Button } from "../ui/button";
 import { useUpdateBalance } from "@/actions/administracion/clientes/actions";
-import { AxiosError } from "axios";
 
 const formSchema = z.object({
   balance: z.string().min(1, {
@@ -38,17 +37,17 @@ export default function AddClientBalanceForm({ onClose, id }: FormProps) {
     },
   });
   const { control } = form;
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    try {
-      await updateBalance.mutateAsync({
-        id,
-        data,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    onClose();
+    updateBalance.mutate(
+      { id, data },
+      {
+        onSuccess: () => onClose(), // Cierra solo si la mutación tiene éxito
+        onError: (error) => console.log(error), // Manejo de errores
+      }
+    );
   };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>

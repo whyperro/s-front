@@ -155,9 +155,13 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
   console.log(form.getValues());
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createCashMovement.mutateAsync(values);
-    onClose();
+    createCashMovement.mutate(values, {
+      onSuccess: () => {
+        onClose(); // Cierra el modal solo si la creación fue exitosa
+      },
+    });
   }
+
   return (
     <Form {...form}>
       <form

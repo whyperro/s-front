@@ -42,11 +42,12 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
     router.push(`/transmandu/administracion/gestion_general/clientes/${id}`);
   };
 
-  const handleDelete = async (id: number | string) => {
-    await deleteClient.mutateAsync(id);
-    setOpenDelete(false);
+  const handleDelete = (id: number | string) => {
+    deleteClient.mutate(id, {
+      onSuccess: () => setOpenDelete(false), // Cierra el modal solo si la eliminación fue exitosa
+    });
   };
-
+  
   const handleViewDetails = () => {
     setOpenClient(true);
   };

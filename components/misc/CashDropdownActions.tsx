@@ -37,9 +37,10 @@ const CashDropdownActions = ({ id }: { id: string }) => {
   const { deleteCash } = useDeleteCash();
   const { data: cashDetails, isLoading } = useGetCashById(id)
 
-  const handleDelete = async (id: number | string) => {
-    await deleteCash.mutateAsync(id);
-    setOpenDelete(false);
+  const handleDelete = (id: number | string) => {
+    deleteCash.mutate(id, {
+      onSuccess: () => setOpenDelete(false), // Cierra el modal solo si la eliminación fue exitosa
+    });
   };
 
   const handleViewDetails = () => {

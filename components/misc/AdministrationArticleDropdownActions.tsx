@@ -34,12 +34,12 @@ const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
   const router = useRouter();
   const [openSell, setOpenSell] = useState<boolean>(false);
   const { deleteAdministrationArticle } = useDeleteAdministrationArticle();
-  const { data: articleDetails, isLoading } =
-    useGetAdministrationArticleById(id);
+  const { data: articleDetails, isLoading } = useGetAdministrationArticleById(id);
 
-  const handleDelete = async (id: number | string) => {
-    await deleteAdministrationArticle.mutateAsync(id);
-    setOpenDelete(false);
+  const handleDelete = (id: number | string) => {
+    deleteAdministrationArticle.mutate(id, {
+      onSuccess: () => setOpenDelete(false), // Cierra el modal solo si la eliminación fue exitosa
+    });
   };
 
   const handleViewDetails = () => {

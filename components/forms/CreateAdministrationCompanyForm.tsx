@@ -60,8 +60,11 @@ export function CreateAdministrationCompanyForm({ onClose }: FormProps) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createAdministrationCompany.mutateAsync(values);
-    onClose();
+    createAdministrationCompany.mutate(values, {
+      onSuccess: () => {
+        onClose(); // Cierra el modal solo si la creación fue exitosa
+      },
+    });
   }
 
   return (

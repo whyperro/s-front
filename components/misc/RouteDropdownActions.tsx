@@ -22,9 +22,10 @@ const RouteDropdownActions = ({ id }: { id: string }) => {
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const { deleteRoute } = useDeleteRoute();
 
-  const handleDelete = async (id: number | string) => {
-    await deleteRoute.mutateAsync(id);
-    setOpenDelete(false);
+  const handleDelete = (id: number | string) => {
+    deleteRoute.mutate(id, {
+      onSuccess: () => setOpenDelete(false), // Cierra el modal solo si la eliminación fue exitosa
+    });
   }
 
     return (

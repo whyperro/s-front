@@ -64,17 +64,17 @@ const formSchema = z
       }),
     fee: z
       .string()
-      .min(1, "La tasa es requerida")
+      .min(1, "La tarifa es requerida")
       .refine(
         (val) => {
           const number = parseFloat(val);
           return !isNaN(number) && number >= 0;
         },
         {
-          message: "La tasa debe ser mayor a cero.",
+          message: "La tarifa debe ser mayor a cero.",
         }
       )
-      .optional(), // Hacer que la tasa sea opcional
+      .optional(), // Hacer que la tarifa sea opcional
     type: z.enum(["CARGA", "PAX", "CHART"], {
       message: "Debe elegir un tipo de vuelo.",
     }),
@@ -169,8 +169,11 @@ export function FlightForm({ onClose }: FormProps) {
       total_amount: Number(values.total_amount),
       payed_amount: Number(values.payed_amount),
     };
-    await createFlight.mutateAsync(formattedValues);
-    onClose();
+    createFlight.mutate(formattedValues, {
+      onSuccess: () => {
+        onClose(); // Cierra el modal solo si la creación fue exitosa
+      },
+    });
   }
 
   const debtStatus = form.watch("debt_status");
@@ -352,7 +355,7 @@ export function FlightForm({ onClose }: FormProps) {
               name="fee"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tasa</FormLabel>
+                  <FormLabel>Tarifa</FormLabel>
                   <FormControl>
                     <AmountInput {...field} />
                   </FormControl>
