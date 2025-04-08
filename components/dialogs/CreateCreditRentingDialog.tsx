@@ -19,7 +19,7 @@ export function CreditRentingDialog({ id }: { id?: string }) {
 
   const handleViewStats = () => {
     router.push(
-      "/transmandu/administracion/creditos/credito_renta/resumen_cr"
+      "/transmandu/administracion/creditos/credito_renta/resumen_credito"
     );
   };
 
