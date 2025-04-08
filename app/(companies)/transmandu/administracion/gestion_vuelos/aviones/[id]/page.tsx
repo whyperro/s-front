@@ -1,86 +1,59 @@
-"use client";
+"use client"
 
-import { useParams } from "next/navigation";
-import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById";
-import { useGetFlightsByAircraft } from "@/hooks/administracion/vuelos/useGetFlightsByAircraft";
-import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { format, addDays, parseISO } from "date-fns";
-import { es } from "date-fns/locale";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { ChartContainer, ChartLegend } from "@/components/ui/chart";
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
-import type { Flight } from "@/types";
+import type React from "react"
+
+import { useParams } from "next/navigation"
+import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById"
+import { useGetFlightsByAircraft } from "@/hooks/administracion/vuelos/useGetFlightsByAircraft"
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
+import { Loader2, ArrowLeft, Plane, Calendar, DollarSign, TrendingUp } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { format, parseISO } from "date-fns"
+import { es } from "date-fns/locale"
+import { Badge } from "@/components/ui/badge"
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, Cell, Legend } from "recharts"
+import type { Flight } from "@/types"
 
 // Tipo para los datos mensuales
 type MonthlyData = {
-  name: string;
-  shortName: string;
-  ganancias: number;
-  vuelos: number;
-  month: number;
-};
+  name: string
+  shortName: string
+  ganancias: number
+  vuelos: number
+  month: number
+}
 
 // Función para limpiar y convertir valores a números
 function cleanNumber(value: any): number {
-  if (typeof value === "number") return value;
-  if (typeof value !== "string") return 0;
+  if (typeof value === "number") return value
+  if (typeof value !== "string") return 0
 
   // Remover caracteres no numéricos excepto punto decimal
-  const cleaned = value.replace(/[^\d.]/g, "");
-  const number = parseFloat(cleaned);
+  const cleaned = value.replace(/[^\d.]/g, "")
+  const number = Number.parseFloat(cleaned)
 
-  return isNaN(number) ? 0 : number;
+  return isNaN(number) ? 0 : number
 }
 
 // Generar años dinámicamente (desde 2020 hasta 5 años en el futuro)
 const generateYearOptions = () => {
-  const currentYear = new Date().getFullYear();
-  const startYear = 2020;
-  const endYear = currentYear + 5;
-  const years: string[] = [];
+  const currentYear = new Date().getFullYear()
+  const startYear = 2020
+  const endYear = currentYear + 5
+  const years: string[] = []
 
   for (let year = startYear; year <= endYear; year++) {
-    years.push(year.toString());
+    years.push(year.toString())
   }
 
-  return years;
-};
+  return years
+}
 
-const yearOptions = generateYearOptions();
+const yearOptions = generateYearOptions()
 
 const monthNames = [
   "Enero",
@@ -95,47 +68,32 @@ const monthNames = [
   "Octubre",
   "Noviembre",
   "Diciembre",
-];
+]
 
-const shortMonthNames = [
-  "Ene",
-  "Feb",
-  "Mar",
-  "Abr",
-  "May",
-  "Jun",
-  "Jul",
-  "Ago",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dic",
-];
+const shortMonthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
 
 // Tipo para el tooltip personalizado
 interface CustomTooltipProps {
-  active?: boolean;
+  active?: boolean
   payload?: Array<{
-    value: number;
-    payload: MonthlyData;
-  }>;
-  label?: string;
+    value: number
+    dataKey: string
+    payload: MonthlyData
+  }>
+  label?: string
 }
 
 export default function AircraftReportPage() {
-  const params = useParams();
-  const id = params.id as string;
-  const router = useRouter();
-  const { data: aircraftDetails, isLoading, error } = useGetAircraftById(id);
-  const { data: flights, isLoading: isLoadingFlights } =
-    useGetFlightsByAircraft(id);
+  const params = useParams()
+  const id = params.id as string
+  const router = useRouter()
+  const { data: aircraftDetails, isLoading, error } = useGetAircraftById(id)
+  const { data: flights, isLoading: isLoadingFlights } = useGetFlightsByAircraft(id)
 
-  const [selectedYear, setSelectedYear] = useState<string>(
-    new Date().getFullYear().toString()
-  );
-  const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
-  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
-  const [flightsData, setFlightsData] = useState<Flight[]>([]);
+  const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString())
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(null)
+  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([])
+  const [flightsData, setFlightsData] = useState<Flight[]>([])
 
   // Función para procesar los datos de vuelos y generar datos mensuales
   const processFlightsData = (flights: Flight[], year: string) => {
@@ -147,32 +105,31 @@ export default function AircraftReportPage() {
         ganancias: 0,
         vuelos: 0,
         month: index,
-      }));
+      }))
 
     flights?.forEach((flight) => {
-      const flightDate = flight.date ? new Date(flight.date) : null;
+      const flightDate = flight.date ? new Date(flight.date) : null
       if (flightDate && flightDate.getFullYear().toString() === year) {
-        const month = flightDate.getMonth();
-        data[month].ganancias += cleanNumber(flight.total_amount);
-        data[month].vuelos += 1;
+        const month = flightDate.getMonth()
+        data[month].ganancias += cleanNumber(flight.total_amount)
+        data[month].vuelos += 1
       }
-    });
+    })
 
-    return data;
-  };
+    return data
+  }
 
   // Cargar datos cuando cambia el año seleccionado
   useEffect(() => {
     if (flights) {
-      setMonthlyData(processFlightsData(flights, selectedYear));
-      setSelectedMonth(null);
-      setFlightsData([]);
+      setMonthlyData(processFlightsData(flights, selectedYear))
+      setSelectedMonth(null)
+      setFlightsData([])
     }
-  }, [selectedYear, flights]);
+  }, [selectedYear, flights])
 
   // Manejar clic en una barra del gráfico
-  const handleBarClick = (data: any, event: any) => {
-    // Si tenemos datos de payload (lo que ocurre cuando se hace clic en una barra)
+  const handleBarClick = (data: any) => {
     if (data?.activePayload?.[0]?.payload) {
       const monthIndex = data.activePayload[0].payload.month
       setSelectedMonth(monthIndex)
@@ -192,25 +149,20 @@ export default function AircraftReportPage() {
 
   // Calcular estadísticas totales
   const totalEarnings = monthlyData.reduce((sum, month) => {
-    return sum + cleanNumber(month.ganancias);
-  }, 0);
+    return sum + cleanNumber(month.ganancias)
+  }, 0)
 
   const totalFlights = monthlyData.reduce((sum, month) => {
-    return sum + cleanNumber(month.vuelos);
-  }, 0);
+    return sum + cleanNumber(month.vuelos)
+  }, 0)
 
-  const averageEarningPerFlight =
-    totalFlights > 0
-      ? parseFloat((totalEarnings / totalFlights).toFixed(2))
-      : 0;
+  const averageEarningPerFlight = totalFlights > 0 ? Number.parseFloat((totalEarnings / totalFlights).toFixed(2)) : 0
 
   // Encontrar el mes con más ganancias
   const bestMonth =
     monthlyData.length > 0
-      ? monthlyData.reduce((prev, current) =>
-          prev.ganancias > current.ganancias ? prev : current
-        )
-      : null;
+      ? monthlyData.reduce((prev, current) => (prev.ganancias > current.ganancias ? prev : current))
+      : null
 
   // Estados de carga y error
   if (isLoading) {
@@ -218,53 +170,51 @@ export default function AircraftReportPage() {
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
-    );
+    )
   }
 
   if (error || !aircraftDetails) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
-        <p className="text-red-500 mb-4">
-          Error al cargar los datos de la aeronave
-        </p>
+        <p className="text-red-500 mb-4">Error al cargar los datos de la aeronave</p>
         <Button variant="outline" onClick={() => router.back()}>
           Volver
         </Button>
       </div>
-    );
+    )
   }
 
   // Función personalizada para el tooltip
-  const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
+  const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
-      const data = payload[0].payload;
       return (
-        <div className="bg-white p-3 border rounded shadow-lg">
-          <p className="font-semibold">{data.name}</p>
-          <p className="text-green-600">
-            Ganancias: $
-            {data.ganancias.toLocaleString("es-ES", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </p>
-          <p className="text-gray-600">Vuelos: {data.vuelos}</p>
+        <div className="bg-background p-4 border rounded-lg shadow-lg">
+          <p className="font-semibold text-lg mb-1">{label}</p>
+          {payload.map((entry, index) => (
+            <div key={`tooltip-${index}`} className="mb-1">
+              {entry.dataKey === "ganancias" && (
+                <p className="text-emerald-600 font-medium text-base">
+                  Ganancias: $
+                  {entry.value.toLocaleString("es-ES", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </p>
+              )}
+              {entry.dataKey === "vuelos" && <p className="text-blue-600 font-medium">Vuelos: {entry.value}</p>}
+            </div>
+          ))}
         </div>
-      );
+      )
     }
-    return null;
-  };
+    return null
+  }
 
   return (
     <div className="container mx-auto py-8 px-4">
       {/* Encabezado */}
       <div className="flex items-center mb-6">
-        <Button
-          variant="outline"
-          size="sm"
-          className="mr-4"
-          onClick={() => router.back()}
-        >
+        <Button variant="outline" size="sm" className="mr-4" onClick={() => router.back()}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Volver
         </Button>
@@ -278,64 +228,44 @@ export default function AircraftReportPage() {
 
       {/* Tarjetas de resumen */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Ganancias
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              $
-              {totalEarnings.toLocaleString("es-ES", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </div>
-          </CardContent>
-        </Card>
+        <SummaryCard
+          title="Total Ganancias"
+          value={`$${totalEarnings.toLocaleString("es-ES", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`}
+          description="Ingresos totales del año"
+          icon={<DollarSign className="h-5 w-5 text-emerald-500" />}
+        />
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Vuelos</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalFlights}</div>
-          </CardContent>
-        </Card>
+        <SummaryCard
+          title="Total Vuelos"
+          value={totalFlights.toString()}
+          description="Número de vuelos realizados"
+          icon={<Plane className="h-5 w-5 text-blue-500" />}
+        />
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">
-              Promedio por Vuelo
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              $
-              {averageEarningPerFlight.toLocaleString("es-ES", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </div>
-          </CardContent>
-        </Card>
+        <SummaryCard
+          title="Promedio por Vuelo"
+          value={`$${averageEarningPerFlight.toLocaleString("es-ES", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`}
+          description="Ganancia media por vuelo"
+          icon={<TrendingUp className="h-5 w-5 text-indigo-500" />}
+        />
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Mejor Mes</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{bestMonth?.name || "-"}</div>
-            <p className="text-xs text-muted-foreground">
-              $
-              {bestMonth?.ganancias.toLocaleString("es-ES", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              }) || "0"}
-            </p>
-          </CardContent>
-        </Card>
+        <SummaryCard
+          title="Mejor Mes"
+          value={bestMonth?.name || "-"}
+          description={`$${
+            bestMonth?.ganancias.toLocaleString("es-ES", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) || "0"
+          }`}
+          icon={<Calendar className="h-5 w-5 text-purple-500" />}
+        />
       </div>
 
       {/* Selector de año */}
@@ -354,61 +284,69 @@ export default function AircraftReportPage() {
         </Select>
       </div>
 
-      {/* Gráfico de barras */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="text-center">
-            Ganancias Mensuales {selectedYear}
-          </CardTitle>
+      {/* Gráfico de barras mejorado */}
+      <Card className="mb-6 overflow-hidden">
+        <CardHeader className="bg-muted/30">
+          <CardTitle className="text-center">Ganancias Mensuales {selectedYear}</CardTitle>
           <CardDescription className="text-center">
             Haz clic en un mes para ver los detalles de los vuelos
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="h-[500px]">
-            <ChartContainer {...({} as any)}>
-              <ResponsiveContainer width="100%" height={450} aspect={2}> 
-                <BarChart
-                  data={monthlyData}
-                  margin={{ top: 20, right: 20, left: 20, bottom: 100 }}
-                  onClick={(data, event) => handleBarClick(data, event)}
-                  barCategoryGap={8}
-                >
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis
-                    dataKey="shortName"
-                    tickLine={false}
-                    axisLine={true}
-                    tick={{ fontSize: 12 }}
-                    height={60}
-                    padding={{ left: 10, right: 10 }}
-                  />
-                  <YAxis
-                    tickFormatter={(value) => `$${value}`}
-                    domain={[0, "auto"]}
-                    width={80}
-                  />
-                  <Tooltip
-                    content={<CustomTooltip />}
-                    cursor={{ fill: "rgba(0, 0, 0, 0.1)" }}
-                  />
-                  <Bar
-                    dataKey="ganancias"
-                    fill="#22c55e"
-                    name="Ganancias"
-                    radius={[4, 4, 0, 0]}
-                    isAnimationActive={true}
-                    animationDuration={500}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-              <ChartLegend className="mt-2 ml-6">
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-[#22c55e]" />
-                  <span className="text-sm">Ganancias</span>
-                </div>
-              </ChartLegend>
-            </ChartContainer>
+        <CardContent className="pt-6">
+          <div className="h-[450px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={monthlyData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                onClick={handleBarClick}
+                barGap={0}
+                barCategoryGap={8}
+              >
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis
+                  dataKey="shortName"
+                  tickLine={false}
+                  axisLine={true}
+                  tick={{ fontSize: 12 }}
+                  height={60}
+                  padding={{ left: 10, right: 10 }}
+                />
+                <YAxis
+                  yAxisId="left"
+                  orientation="left"
+                  tickFormatter={(value) => `$${value.toLocaleString()}`}
+                  width={80}
+                  domain={[0, "auto"]}
+                />
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  tickFormatter={(value) => `${value}`}
+                  width={50}
+                  domain={[0, "auto"]}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                <Bar yAxisId="left" dataKey="ganancias" name="Ganancias" fill="#10b981" radius={[4, 4, 0, 0]}>
+                  {monthlyData.map((entry, index) => (
+                    <Cell
+                      key={`cell-ganancias-${index}`}
+                      fill={entry.month === selectedMonth ? "#047857" : "#10b981"}
+                      className="cursor-pointer hover:opacity-80 transition-opacity"
+                    />
+                  ))}
+                </Bar>
+                <Bar yAxisId="right" dataKey="vuelos" name="Vuelos" fill="#3b82f6" radius={[4, 4, 0, 0]}>
+                  {monthlyData.map((entry, index) => (
+                    <Cell
+                      key={`cell-vuelos-${index}`}
+                      fill={entry.month === selectedMonth ? "#1d4ed8" : "#3b82f6"}
+                      className="cursor-pointer hover:opacity-80 transition-opacity"
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </CardContent>
       </Card>
@@ -416,84 +354,116 @@ export default function AircraftReportPage() {
       {/* Tabla de vuelos del mes seleccionado */}
       {selectedMonth !== null && (
         <Card>
-          <CardHeader>
-            <CardTitle className="text-center">
-              Vuelos de {monthNames[selectedMonth]} {selectedYear}
-            </CardTitle>
-            <CardDescription className="text-center">
-              Detalle de los vuelos realizados durante el mes
-            </CardDescription>
+          <CardHeader className="bg-muted/30">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>
+                  Vuelos de {monthNames[selectedMonth]} {selectedYear}
+                </CardTitle>
+                <CardDescription>Detalle de los vuelos realizados durante el mes</CardDescription>
+              </div>
+              <Badge variant="secondary" className="text-sm py-1.5 px-3">
+                {flightsData.length} vuelos
+              </Badge>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             {isLoadingFlights ? (
               <div className="flex justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin" />
               </div>
             ) : flightsData.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Fecha</TableHead>
-                    <TableHead>Cliente</TableHead>
-                    <TableHead>Ruta</TableHead>
-                    <TableHead>Total Pagado</TableHead>
-                    <TableHead>Estado</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {flightsData.map((flight) => (
-                    <TableRow key={flight.id}>
-                      <TableCell>
-                        {flight.date
-                          ? format(parseISO(flight.date), "PPP", { locale: es })
-                          : "-"}
-                      </TableCell>
-                      <TableCell>{flight.client?.name || "-"}</TableCell>
-                      <TableCell>
-                        {flight.route?.from || "-"} - {flight.route?.to || "-"}
-                      </TableCell>
-                      <TableCell>
-                        $
-                        {cleanNumber(flight.total_amount).toLocaleString(
-                          "es-ES",
-                          {
+              <div className="rounded-md border overflow-hidden">
+                <Table>
+                  <TableHeader className="bg-muted/30">
+                    <TableRow>
+                      <TableHead>Fecha</TableHead>
+                      <TableHead>Cliente</TableHead>
+                      <TableHead>Ruta</TableHead>
+                      <TableHead>Total Pagado</TableHead>
+                      <TableHead>Estado</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {flightsData.map((flight) => (
+                      <TableRow key={flight.id} className="hover:bg-muted/30">
+                        <TableCell className="font-medium">
+                          {flight.date ? format(parseISO(flight.date), "PPP", { locale: es }) : "-"}
+                        </TableCell>
+                        <TableCell>{flight.client?.name || "-"}</TableCell>
+                        <TableCell>
+                          {flight.route?.from || "-"} - {flight.route?.to || "-"}
+                        </TableCell>
+                        <TableCell className="font-medium text-emerald-600">
+                          $
+                          {cleanNumber(flight.total_amount).toLocaleString("es-ES", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
-                          }
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          className={
-                            flight.debt_status === "PAGADO"
-                              ? "bg-green-500"
-                              : "bg-yellow-500"
-                          }
-                        >
-                          {flight.debt_status || "DESCONOCIDO"}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-                <TableCaption>
-                  Total: {flightsData.length} vuelos | Ganancias: $
-                  {flightsData
-                    .reduce(
-                      (sum, flight) => sum + cleanNumber(flight.total_amount),
-                      0
-                    )
-                    .toLocaleString()}
-                </TableCaption>
-              </Table>
-            ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                No hay vuelos registrados para este mes.
+                          })}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant="outline"
+                            className={
+                              flight.debt_status === "PAGADO"
+                                ? "bg-green-100 text-green-800 hover:bg-green-200"
+                                : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+                            }
+                          >
+                            {flight.debt_status || "DESCONOCIDO"}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                  <TableCaption>
+                    <div className="flex justify-between items-center">
+                      <span>Total: {flightsData.length} vuelos</span>
+                      <span className="font-medium text-emerald-600">
+                        Ganancias: $
+                        {flightsData
+                          .reduce((sum, flight) => sum + cleanNumber(flight.total_amount), 0)
+                          .toLocaleString("es-ES", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                      </span>
+                    </div>
+                  </TableCaption>
+                </Table>
               </div>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">No hay vuelos registrados para este mes.</div>
             )}
           </CardContent>
         </Card>
       )}
     </div>
-  );
+  )
 }
+
+// Componente auxiliar para las tarjetas de resumen
+const SummaryCard = ({
+  title,
+  value,
+  description,
+  icon,
+  highlight,
+}: {
+  title: string
+  value: string
+  description: string
+  icon?: React.ReactNode
+  highlight?: boolean
+}) => (
+  <Card className={`${highlight ? "border-purple-200 bg-purple-50/30" : ""}`}>
+    <CardHeader className="pb-2 flex flex-row items-center justify-between">
+      <CardTitle className="text-sm font-medium">{title}</CardTitle>
+      {icon}
+    </CardHeader>
+    <CardContent>
+      <div className="text-2xl font-bold">{value}</div>
+      <p className="text-xs text-muted-foreground mt-1">{description}</p>
+    </CardContent>
+  </Card>
+)
