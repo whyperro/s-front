@@ -1,59 +1,107 @@
+'use client'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/contexts/AuthContext";
 import { useGetUserActivity } from "@/hooks/desarrollo/useGetUserActivities";
-import { Eye, MessageSquare, MoreHorizontal } from "lucide-react";
+import { Eye, MessageSquare, MoreHorizontal, Loader2, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-} from "../ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { useUpdateObservation } from "@/actions/desarrollo/reportes_diarios/actions";
+import { useToast } from "../ui/use-toast";
 
-const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
+interface ActivityReportsDropdownActionsProps {
+  id: string;
+  existingObservation?: string;
+}
+
+const ActivityReportsDropdownActions = ({ id, existingObservation }: ActivityReportsDropdownActionsProps) => {
+  const { toast } = useToast();
+  const router = useRouter();
   const { data: report, isLoading: isReportLoading } = useGetUserActivity(id);
   const { updateObservation } = useUpdateObservation();
-  const { user } = useAuth();
-  const [observation, setObservation] = useState<string>("");
-  const [isObservationOpen, setIsObservationOpen] = useState<boolean>(false);
-  const router = useRouter();
-  const userRoles = user?.roles?.map((role) => role.name) || [];
+  
+  const [observation, setObservation] = useState("");
+  const [isObservationOpen, setIsObservationOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasObservation, setHasObservation] = useState(!!existingObservation);
+
+  useEffect(() => {
+    setHasObservation(!!existingObservation);
+  }, [existingObservation]);
 
   const handleUpdateObservation = async () => {
+    setIsSubmitting(true);
+    try {
+      await updateObservation.mutateAsync({
+        id: id.toString(),
+        observation: observation.trim(),
+      });
 
-    const data = {
-      id: id.toString(),
-      observation: observation,
-    };
-    await updateObservation.mutateAsync(data);
+      toast({
+        title: "Éxito",
+        description: "Observación guardada correctamente",
+      });
 
-    setTimeout(() => {
-      window.location.reload();
-    }, 5000);
+      setIsObservationOpen(false);
+      setHasObservation(true);
+      router.refresh();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo guardar la observación",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const navigateToDetail = () => {
+    router.push(`/transmandu/desarrollo/actividades_diarias/${id}/`);
   };
 
   return (
     <>
       <Dialog open={isObservationOpen} onOpenChange={setIsObservationOpen}>
         <DialogContent>
-          <DialogHeader>Agregar Observación</DialogHeader>
-          <Input
-            value={observation}
-            onChange={(e) => setObservation(e.target.value)}
-            placeholder="Escribe tu observación aquí..."
-          />
-          <DialogFooter>
-            <Button onClick={handleUpdateObservation}>Guardar</Button>
-          </DialogFooter>
+          <DialogHeader>
+            <DialogTitle>
+              {hasObservation ? "Observación Existente" : "Agregar Observación"}
+            </DialogTitle>
+          </DialogHeader>
+          {hasObservation ? (
+            <div className="p-4 bg-gray-50 rounded-md">
+              <p className="text-sm text-gray-700">{existingObservation}</p>
+            </div>
+          ) : (
+            <>
+              <Input
+                value={observation}
+                onChange={(e) => setObservation(e.target.value)}
+                placeholder="Escribe tu observación aquí..."
+                disabled={isSubmitting}
+              />
+              <DialogFooter>
+                <Button 
+                  onClick={handleUpdateObservation}
+                  disabled={isSubmitting || !observation.trim()}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Guardando...
+                    </>
+                  ) : 'Guardar'}
+                </Button>
+              </DialogFooter>
+            </>
+          )}
         </DialogContent>
       </Dialog>
 
@@ -61,22 +109,31 @@ const ActivityReportsDropdownActions = ({ id }: { id: string }) => {
         <DropdownMenuTrigger disabled={isReportLoading} asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Abrir menú</span>
-            <MoreHorizontal className="h-4 w-4" />
+            <MoreHorizontal className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="center" className="flex gap-2 justify-center">
-          <DropdownMenuItem onClick={() => router.push(`/transmandu/desarrollo/actividades_diarias/${id}/`)
-          } className="cursor-pointer">
-            <Eye className="size-5" />
+        <DropdownMenuContent align="center" className="w-56 px-2 py-1.5">
+          <DropdownMenuItem 
+            onClick={navigateToDetail} 
+            className="cursor-pointer px-3 py-2 text-sm"
+          >
+            <Eye className="mr-3 h-5 w-5" />
+            Ver detalle
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => setIsObservationOpen(true)}
-            className="cursor-pointer"
+            onClick={() => !hasObservation && setIsObservationOpen(true)}
+            className={`px-3 py-2 text-sm ${hasObservation ? 'text-gray-400 cursor-default' : 'cursor-pointer'}`}
+            disabled={hasObservation}
           >
-            <MessageSquare className="size-5" />
+            {hasObservation ? (
+              <Check className="mr-3 h-5 w-5 text-green-500" />
+            ) : (
+              <MessageSquare className="mr-3 h-5 w-5" />
+            )}
+            {hasObservation ? "Observación registrada" : "Agregar observación"}
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu >
+      </DropdownMenu>
     </>
   );
 };

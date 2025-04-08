@@ -1,21 +1,11 @@
+'use client';
 import { useRegisterActivity } from "@/actions/desarrollo/reportes_diarios/actions";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
@@ -23,7 +13,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -37,27 +26,23 @@ const FormSchema = z.object({
   date: z.date().optional(),
 });
 
-function getCurrentTime() {
+const getCurrentTime = () => {
   const now = new Date();
-  return `${String(now.getHours()).padStart(2, "0")}:${String(
-    now.getMinutes()
-  ).padStart(2, "0")}`;
-}
+  return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+};
 
-export function DailyReportForm({
-  activities_length,
-  report_id,
-}: {
+interface DailyReportFormProps {
   activities_length: number;
   report_id: string | number;
-}) {
+}
+
+export function DailyReportForm({ activities_length, report_id }: DailyReportFormProps) {
   const { user } = useAuth();
   const { registerActivity } = useRegisterActivity();
   const [manualTime, setManualTime] = useState(false);
   const [manualDate, setManualDate] = useState(false);
-  const router = useRouter();
 
-  const form = useForm({
+  const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       description: "",
@@ -66,13 +51,16 @@ export function DailyReportForm({
     },
   });
 
+  const formWatch = form.watch();
+  const isFormValid = !!formWatch.description; // Validación simple para el campo requerido
+
   useEffect(() => {
     if (!manualTime) {
       form.setValue("start_hour", getCurrentTime());
     }
   }, [manualTime, form]);
 
-  const handleSubmit = async (data: z.infer<typeof FormSchema>) => {
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     const formattedData = {
       ...data,
       activity_report_id: report_id,
@@ -83,18 +71,13 @@ export function DailyReportForm({
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="flex flex-col gap-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div className="flex items-center w-full gap-6">
           <div className="flex flex-col space-y-3">
             <Label>Analista</Label>
-            <Input
-              value={`${user?.first_name || ""} ${user?.last_name || ""}`}
-              disabled
-            />
+            <Input value={`${user?.first_name || ""} ${user?.last_name || ""}`} disabled />
           </div>
+          
           <FormField
             control={form.control}
             name="date"
@@ -106,16 +89,9 @@ export function DailyReportForm({
                     <FormControl>
                       <Button
                         variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
+                        className={cn("w-[240px] pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
                       >
-                        {field.value ? (
-                          format(field.value, "PPP", { locale: es })
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
+                        {field.value ? format(field.value, "PPP", { locale: es }) : <span>Seleccionar fecha</span>}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </FormControl>
@@ -125,9 +101,7 @@ export function DailyReportForm({
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
+                      disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
                       initialFocus
                     />
                   </PopoverContent>
@@ -150,13 +124,10 @@ export function DailyReportForm({
           <FormItem className="w-1/6">
             <FormLabel>Número de Actividad</FormLabel>
             <FormControl>
-              <Input
-                value={activities_length + 1}
-                disabled
-                className="w-16 text-center"
-              />
+              <Input value={activities_length + 1} disabled className="w-16 text-center" />
             </FormControl>
           </FormItem>
+          
           <FormField
             control={form.control}
             name="description"
@@ -197,8 +168,18 @@ export function DailyReportForm({
             )}
           />
         </div>
-        <Button type="submit" disabled={registerActivity.isPending}>
-          {registerActivity.isPending ? <Loader2 className="animate-spin size-4" /> : "Registrar"}
+        
+        <Button 
+          type="submit" 
+          disabled={registerActivity.isPending || !isFormValid}
+          className="min-w-[100px] gap-2 justify-center"
+        >
+          {registerActivity.isPending ? (
+            <>
+              <Loader2 className="animate-spin size-4" />
+              Registrando...
+            </>
+          ) : "Registrar"}
         </Button>
       </form>
     </Form>

@@ -1,34 +1,17 @@
+'use client';
 import { useRegisterActivity } from "@/actions/desarrollo/reportes_diarios/actions";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format, addDays } from "date-fns";
-import { startOfDay, isEqual } from "date-fns";
+import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, FileText, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -44,49 +27,46 @@ const FormSchema = z.object({
   date: z.date().optional(),
 });
 
-function getCurrentTime() {
-  const now = new Date();
-  return `${String(now.getHours()).padStart(2, "0")}:${String(
-    now.getMinutes()
-  ).padStart(2, "0")}`;
+interface DailyReportDialogProps {
+  activities_length: number;
+  report_id: string | number;
+  onClose: () => void;
 }
 
 export const DailyReportDialog = ({
   activities_length,
   report_id,
   onClose,
-}: {
-  activities_length: number;
-  report_id: string | number;
-  onClose: () => void;
-}) => {
+}: DailyReportDialogProps) => {
   const { user } = useAuth();
   const { registerActivity } = useRegisterActivity();
   const [manualTime, setManualTime] = useState(false);
   const [manualDate, setManualDate] = useState(false);
-  const [open, setOpen] = useState(false); // Estado del diálogo
+  const [open, setOpen] = useState(false);
 
-  const form = useForm({
+  const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       description: "",
-      start_hour: getCurrentTime(),
+      start_hour: `${new Date().getHours().toString().padStart(2, '0')}:${new Date().getMinutes().toString().padStart(2, '0')}`,
       date: new Date(),
     },
   });
 
   useEffect(() => {
     if (!manualTime) {
-      form.setValue("start_hour", getCurrentTime());
+      form.setValue("start_hour", `${new Date().getHours().toString().padStart(2, '0')}:${new Date().getMinutes().toString().padStart(2, '0')}`);
     }
   }, [manualTime, form]);
 
   const handleSubmit = async (data: z.infer<typeof FormSchema>) => {
-    const formattedData = {
+    // Solución al error de tipos - creamos un nuevo tipo que incluye el report_id
+    const submissionData = {
       ...data,
       activity_report_id: report_id,
-    };
-    await registerActivity.mutateAsync(formattedData);
+    } as z.infer<typeof FormSchema> & { activity_report_id: string | number };
+    
+    await registerActivity.mutateAsync(submissionData);
     form.reset();
     setOpen(false);
     onClose();
@@ -95,10 +75,7 @@ export const DailyReportDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          onClick={() => setOpen(true)}
-          className="flex items-center gap-x-2"
-        >
+        <Button onClick={() => setOpen(true)} className="flex items-center gap-x-2">
           <FileText className="size-5" />
           <span>Registrar Actividad</span>
         </Button>
@@ -108,17 +85,11 @@ export const DailyReportDialog = ({
           <DialogTitle>Registrar Actividad Diaria</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="flex flex-col gap-4"
-          >
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
             <div className="flex items-center w-full gap-6">
               <div className="flex flex-col space-y-3">
                 <Label>Analista</Label>
-                <Input
-                  value={`${user?.first_name || ""} ${user?.last_name || ""}`}
-                  disabled
-                />
+                <Input value={`${user?.first_name || ""} ${user?.last_name || ""}`} disabled />
               </div>
               <FormField
                 control={form.control}
@@ -136,11 +107,7 @@ export const DailyReportDialog = ({
                               !field.value && "text-muted-foreground"
                             )}
                           >
-                            {field.value ? (
-                              format(field.value, "PPP", { locale: es })
-                            ) : (
-                              <span>Seleccionar fecha</span>
-                            )}
+                            {field.value ? format(field.value, "PPP", { locale: es }) : "Seleccionar fecha"}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
                         </FormControl>
@@ -150,9 +117,7 @@ export const DailyReportDialog = ({
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
+                          disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
                           initialFocus
                         />
                       </PopoverContent>
@@ -175,11 +140,7 @@ export const DailyReportDialog = ({
               <FormItem className="w-1/6">
                 <FormLabel>Número de Actividad</FormLabel>
                 <FormControl>
-                  <Input
-                    value={activities_length + 1}
-                    disabled
-                    className="w-16 text-center"
-                  />
+                  <Input value={activities_length + 1} disabled className="w-16 text-center" />
                 </FormControl>
               </FormItem>
               <FormField
@@ -220,12 +181,17 @@ export const DailyReportDialog = ({
                 )}
               />
             </div>
-            <Button type="submit" disabled={registerActivity.isPending}>
+            <Button 
+              type="submit" 
+              disabled={registerActivity.isPending || !form.watch("description")}
+              className="min-w-[100px] gap-2 justify-center"
+            >
               {registerActivity.isPending ? (
-                <Loader2 className="animate-spin size-4" />
-              ) : (
-                "Registrar"
-              )}
+                <>
+                  <Loader2 className="animate-spin size-4" />
+                  Registrando...
+                </>
+              ) : "Registrar"}
             </Button>
           </form>
         </Form>
