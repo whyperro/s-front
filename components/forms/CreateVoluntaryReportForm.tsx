@@ -55,11 +55,37 @@ const FormSchema = z.object({
   danger_location: z.string(),
   danger_area: z.string(),
   airport_location: z.string(),
-  description: z.string(),
-  possible_consequences: z.string(),
+  description: z
+    .string()
+    .min(3, {
+      message: "La descripción debe tener al menos 3 caracteres",
+    })
+    .max(245, {
+      message: "La descripción no debe exceder los 245 caracteres",
+    }),
+  possible_consequences: z
+    .string()
+    .min(3, {
+      message: "Las consecuencias deben tener al menos 3 caracteres",
+    })
+    .max(245, {
+      message: "Las consecuencias no debe exceder los 245 caracteres",
+    }),
 
-  reporter_name: z.string().optional(),
-  reporter_last_name: z.string().optional(),
+  reporter_name: z
+    .string()
+    .min(3, {
+      message: "El nombre de quien reporta debe tener al menos 3 letras.",
+    })
+    .max(40)
+    .optional(),
+  reporter_last_name: z
+    .string()
+    .min(3, {
+      message: "El Apellido de quien reporta debe tener al menos 3 letras.",
+    })
+    .max(40)
+    .optional(),
   reporter_phone: z
     .string()
     .regex(/^\d{11}$/, {

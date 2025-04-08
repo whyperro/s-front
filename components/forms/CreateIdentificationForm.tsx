@@ -45,8 +45,19 @@ import { cn } from "@/lib/utils";
 
 // NOMBRE DE QUIEN REPORTA (PUEDE SER ANONIMO)
 
+function contCommas(text: string): number {
+  return (text.match(/,/g) || []).length;
+}
+
 const FormSchema = z.object({
-  danger: z.string().min(3, "Debe contener al menos 3 dígitos caracteres"),
+  danger: z
+    .string()
+    .min(3, {
+      message: "El peligro debe tener al menos 3 caracteres",
+    })
+    .max(245, {
+      message: "El peligro no debe exceder los 245 caracteres",
+    }),
 
   danger_area: z.string(),
 
@@ -56,19 +67,74 @@ const FormSchema = z.object({
 
   current_defenses: z
     .string()
-    .min(3, "Debe contener al menos 3 dígitos caracteres"),
-
-  description: z.string().min(3, "Debe contener al menos 3 dígitos caracteres"),
+    .min(3, {
+      message: "Las defensas actuales deben tener al menos 3 caracteres",
+    })
+    .max(245, {
+      message: "Las defensas actuales no deben exceder los 245 caracteres",
+    }),
+  description: z
+    .string()
+    .min(3, {
+      message: "La descripcion debe tener al menos 3 caracteres",
+    })
+    .max(245, {
+      message: "La descripcion deben exceder los 245 caracteres",
+    }),
 
   possible_consequences: z
     .string()
-    .min(3, "Debe contener al menos 3 dígitos caracteres"),
+    .min(3, {
+      message: "Las posibles consecuencias deben tener almenos 3 caracteres",
+    })
+    .max(245, {
+      message: "Las posibles consecuencias no deben exceder los 245 caracteres",
+    })
+    .refine((text) => contCommas(text) <= 5, {
+      message: "El analisis causa raiz no debe tener mas de 5 comas.",
+    })
+    .refine(
+      (text) => {
+        const parts = text.split(",");
+        return parts.every((parts) => parts.length <= 130);
+      },
+      {
+        message:
+          "Cada consecuencia no debe exceder los 130 caracteres.",
+      }
+    ),
   consequence_to_evaluate: z
     .string()
-    .min(3, "Debe contener al menos 3 dígitos caracteres"),
+    .min(3, {
+      message: "La consecuencia a evaluar debe tener al menos 3 caracteres",
+    })
+    .max(245, {
+      message: "La consecuencia a evaluar no debe exceder los 245 caracteres",
+    }),
 
   danger_type: z.string(),
-  root_cause_analysis: z.string(),
+
+  root_cause_analysis: z
+    .string()
+    .min(3, {
+      message: "El analisis causa raiz al menos 3 caracteres",
+    })
+    .max(245, {
+      message: "El analisis causa raiz no debe exceder los 245 caracteres",
+    })
+    .refine((text) => contCommas(text) <= 5, {
+      message: "El analisis causa raiz no debe tener mas de 5 comas.",
+    })
+    .refine(
+      (text) => {
+        const parts = text.split(",");
+        return parts.every((parts) => parts.length <= 120);
+      },
+      {
+        message:
+          "El porque no debe exceder los 120 caracteres.",
+      }
+    ),
 
   information_source_id: z.string(),
 });

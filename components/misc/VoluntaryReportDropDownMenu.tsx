@@ -129,8 +129,9 @@ const VoluntaryReportDropdownActions = ({
               {voluntaryReport && dangerIdentification ? (
                 <>
                   {console.log(
-                    "Entrando en la primera rama condicional",
-                    dangerIdentification
+                    "Entrando en la primera rama condicional ",
+                    dangerIdentification,
+                    voluntaryReport.danger_identification_id
                   )}
                   <PDFViewer style={{ width: "100%", height: "60%" }}>
                     <VoluntaryReportPdf
@@ -142,8 +143,9 @@ const VoluntaryReportDropdownActions = ({
               ) : (
                 <>
                   {console.log(
-                    "Entrando enel segundo rama condicional",
-                    dangerIdentification
+                    "Entrando en la segundo rama condicional and danger identification id is ",
+                    dangerIdentification,
+                    voluntaryReport.danger_identification_id
                   )}
                   <PDFViewer style={{ width: "100%", height: "60%" }}>
                     <VoluntaryReportPdf report={voluntaryReport} />
