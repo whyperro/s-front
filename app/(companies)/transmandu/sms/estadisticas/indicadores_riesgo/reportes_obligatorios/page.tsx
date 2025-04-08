@@ -67,7 +67,7 @@ const ObligatoryReportIndicators = () => {
       to_second: newParams.to_second || defaultToSecond,
     };
     setParams(finalParams);
-  }, [searchParams, pathname]);
+  }, [searchParams, pathname,previousMonth]);
 
   // Para extraer las estadisticas de reportes dado unos rangos de fecha, desde hasta
   const {
@@ -137,6 +137,8 @@ const ObligatoryReportIndicators = () => {
     params.from_second,
     params.to_second,
     obligatoryAverageData,
+    refetchBarChart,
+    refetchObligatoryAverageData,
   ]); // Agregado barChartData como dependencia
 
   return (

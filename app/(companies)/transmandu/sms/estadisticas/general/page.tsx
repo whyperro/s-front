@@ -17,18 +17,6 @@ import DynamicBarChart from "../../../../../../components/charts/DynamicBarChart
 import { useGetTotalIdentificationStatsBySourceName } from "@/hooks/sms/useGetTotalIdentificationStatsBySoruceName";
 import { useGetTotalPostRiskCountByDateRange } from "@/hooks/sms/useGetTotalPostRiskByDateRange";
 
-const languages = [
-  { label: "English", value: "en" },
-  { label: "French", value: "fr" },
-  { label: "German", value: "de" },
-  { label: "Spanish", value: "es" },
-  { label: "Portuguese", value: "pt" },
-  { label: "Russian", value: "ru" },
-  { label: "Japanese", value: "ja" },
-  { label: "Korean", value: "ko" },
-  { label: "Chinese", value: "zh" },
-] as const;
-
 const GeneralReportStats = () => {
   const [selectedGraphic, setSelectedGraphic] = useState("");
   const labels = [
@@ -174,8 +162,18 @@ const GeneralReportStats = () => {
     refetchTotalRiskData();
     refetchReportSourceTypeChart();
     refetchReportSourceNameChart();
-    refetchTotalPostRiskData()
-  }, [params.from, params.to]);
+    refetchTotalPostRiskData();
+  }, [
+    params.from,
+    params.to,
+    refetchBarChart,
+    refetchIdentificationData,
+    refetchReportsByAreaData,
+    refetchTotalRiskData,
+    refetchReportSourceTypeChart,
+    refetchReportSourceNameChart,
+    refetchTotalPostRiskData,
+  ]);
 
   return (
     <>

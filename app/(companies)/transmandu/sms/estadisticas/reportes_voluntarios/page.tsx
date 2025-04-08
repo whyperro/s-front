@@ -196,7 +196,18 @@ const Statistics = () => {
     refetchAirportLocationData();
     refetchDynamicSourceNameChart();
     refetchDynamicSourceTypeChart();
-  }, [params.from, params.to]);
+  }, [
+    params.from,
+    params.to,
+    refetchBarChart,
+    refetchPieChart,
+    refetchDynamicChart,
+    refetchRisk,
+    refetchPostRisk,
+    refetchAirportLocationData,
+    refetchDynamicSourceNameChart,
+    refetchDynamicSourceTypeChart,
+  ]);
 
   console.log(" BEFORE CALL DATA FROM PARAMS.FROM PARAMS.TO", params.from);
   console.log(" BEFORE CALL DATA PARAMS.TO", params.to);

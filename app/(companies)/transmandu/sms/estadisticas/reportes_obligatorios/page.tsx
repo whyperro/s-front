@@ -182,7 +182,17 @@ const ObligatoryReportStats = () => {
     refetchReportsByPostRiskData();
     refetchReportSourceNameChart();
     refetchReportSourceTypeChart();
-  }, [params.from, params.to]);
+  }, [
+    params.from,
+    params.to,
+    refetchBarChart,
+    refetchReportsByTypeData,
+    refetchReportsByAreaData,
+    refetchReportsByRiskData,
+    refetchReportsByPostRiskData,
+    refetchReportSourceNameChart,
+    refetchReportSourceTypeChart,
+  ]);
 
   return (
     <>

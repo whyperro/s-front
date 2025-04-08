@@ -5,11 +5,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { MitigationTable, VoluntaryReport } from "@/types";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import Link from "next/link";
-import VoluntaryReportDropdownActions from "@/components/misc/VoluntaryReportDropDownMenu";
+import { MitigationTable } from "@/types";
 
 export const columns: ColumnDef<MitigationTable>[] = [
   {

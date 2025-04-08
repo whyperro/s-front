@@ -68,7 +68,7 @@ export const columns: ColumnDef<MitigationTable>[] = [
                 if (riskIndex === "TOLERABLE") {
                   return (
                     <div className="flex justify-center">
-                      <Badge className={"bg-yellow-400"}>TOLERABLE</Badge>
+                      <Badge className={"bg-yellow-500"}>TOLERABLE</Badge>
                     </div>
                   );
                 } else if (riskIndex === "INTOLERABLE") {
@@ -80,7 +80,7 @@ export const columns: ColumnDef<MitigationTable>[] = [
                 } else if (riskIndex === "ACEPTABLE") {
                   return (
                     <div className="flex justify-center">
-                      <Badge className={"bg-green-500"}>ACEPTABLE</Badge>
+                      <Badge className={"bg-green-600"}>ACEPTABLE</Badge>
                     </div>
                   );
                 } else {
@@ -133,7 +133,6 @@ export const columns: ColumnDef<MitigationTable>[] = [
     ),
     cell: ({ row }) => {
       const measures = row.original.mitigation_plan?.measures;
-      const [openMeasures, setOpenMeasures] = useState(false);
       const planId = row.original.mitigation_plan?.id;
 
       return (
@@ -141,8 +140,8 @@ export const columns: ColumnDef<MitigationTable>[] = [
           <div className="flex flex-col justify-center">
             {measures ? (
               <Dialog>
-                <DialogTrigger className="flex justify-center items-center rounded-full  h-10 text-center bg-cyan-500 font-semibold hover:bg-blue-300 transition-colors duration-200">
-                  Medidas
+                <DialogTrigger className="flex justify-center items-center rounded-full  ">
+                  <Badge className={"bg-blue-600 "}>MEDIDAS DE MITIGACION</Badge>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
@@ -210,7 +209,7 @@ export const columns: ColumnDef<MitigationTable>[] = [
                 if (riskIndex === "TOLERABLE") {
                   return (
                     <div className="flex justify-center">
-                      <Badge className={"bg-yellow-400"}>TOLERABLE</Badge>
+                      <Badge className={"bg-yellow-500"}>TOLERABLE</Badge>
                     </div>
                   );
                 } else if (riskIndex === "INTOLERABLE") {
@@ -222,7 +221,7 @@ export const columns: ColumnDef<MitigationTable>[] = [
                 } else if (riskIndex === "ACEPTABLE") {
                   return (
                     <div className="flex justify-center">
-                      <Badge className={"bg-green-500"}>ACEPTABLE</Badge>
+                      <Badge className={"bg-green-600"}>ACEPTABLE</Badge>
                     </div>
                   );
                 } else {

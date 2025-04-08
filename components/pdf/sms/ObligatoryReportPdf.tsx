@@ -1046,7 +1046,7 @@ const ObligatoryReportPdf = ({ report, identification }: MyDocumentProps) => (
         </View>
         <View style={{ ...styles.tableIncidentCell, width: "20%" }}>
           <Text style={styles.cellTextIncident}>
-            CASI COLISION{"\n"}(RESOLUCION{"\n"}ACVESORY - {"\n"}A) DE LA RUTA.
+            {"CASI COLISION\n(RESOLUCION\nACVESORY -\nA) DE LA RUTA."}
           </Text>
           <View style={styles.checkbox}>
             <Text style={styles.xMark}>
