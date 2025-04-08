@@ -40,7 +40,7 @@ export function CreateFlightDialog() {
           <FlightForm onClose={() => setOpenFlightDialog(false)} />
         </DialogContent>
       </Dialog>
-    {/*  <DateFilter /> */}
+      <DateFilter /> 
     </>
   );
 }
