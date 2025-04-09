@@ -5,6 +5,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 
 import MitigationTableDropdownActions from "@/components/misc/MitigationTableDropdownActions";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -13,11 +15,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { MitigationTable } from "@/types";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/router";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+import { useTheme } from "next-themes";
 
 function getResult(index: string) {
   const INTOLERABLE: string[] = ["5A", "5B", "5C", "4A", "4B", "3A"];
@@ -120,7 +119,7 @@ export const columns: ColumnDef<MitigationTable>[] = [
     meta: { title: "Descripcion" },
     cell: ({ row }) => {
       return (
-        <p className="font-medium text-center">
+        <p className="font-medium text-left">
           {row.original.mitigation_plan?.description ?? "N/A"}
         </p>
       );
@@ -134,6 +133,7 @@ export const columns: ColumnDef<MitigationTable>[] = [
     cell: ({ row }) => {
       const measures = row.original.mitigation_plan?.measures;
       const planId = row.original.mitigation_plan?.id;
+      const { theme } = useTheme();
 
       return (
         <>
@@ -141,12 +141,18 @@ export const columns: ColumnDef<MitigationTable>[] = [
             {measures ? (
               <Dialog>
                 <DialogTrigger className="flex justify-center items-center rounded-full  ">
-                  <Badge className={"bg-blue-600 "}>MEDIDAS DE MITIGACION</Badge>
+                  <Badge className={"bg-blue-600 "}>
+                    MEDIDAS DE MITIGACION
+                  </Badge>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogDescription className="font-semibold text-black">
-                      Medidas de Mitigacion
+                    <DialogDescription
+                      className={`font-semibold ${
+                        theme === "light" ? "text-black" : "text-white"
+                      }`}
+                    >
+                      Medidas de Mitigación
                     </DialogDescription>
                   </DialogHeader>
 
