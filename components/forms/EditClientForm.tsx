@@ -57,6 +57,13 @@ const formSchema = z.object({
     .max(100, {
       message: "La dirección tiene un máximo 100 caracteres.",
     }),
+  pay_credit_days: z.coerce
+    .number({
+      invalid_type_error: "Solo se permiten números", // Mensaje si no es convertible
+    })
+    .int("Debe ser un número entero")
+    .min(1, { message: "Mínimo 1 día" })
+    .max(730, { message: "Máximo 730 días" }),
 });
 
 type FormSchemaType = z.infer<typeof formSchema>;
@@ -77,6 +84,7 @@ export function EditClientForm({ id, onClose }: EditClientFormProps) {
       phone: clientDetails?.phone,
       email: clientDetails?.email,
       address: clientDetails?.address,
+      pay_credit_days: clientDetails?.pay_credit_days,
     },
   });
 
@@ -87,6 +95,7 @@ export function EditClientForm({ id, onClose }: EditClientFormProps) {
       phone: formData.phone,
       email: formData.email,
       address: formData.address,
+      pay_credit_days: formData.pay_credit_days,
     };
     await updateClient.mutate({ id, data });
     onClose();
@@ -165,6 +174,25 @@ export function EditClientForm({ id, onClose }: EditClientFormProps) {
               <FormLabel>Dirección</FormLabel>
               <FormControl>
                 <Input placeholder="Ingresa la dirección" {...field} />
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="pay_credit_days"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Días para Pagar</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="Ingrese un plazo (0-730 días)"
+                  min={0}
+                  max={730} // Máximo 730 días
+                  {...field}
+                />
               </FormControl>
               <FormMessage className="text-xs" />
             </FormItem>

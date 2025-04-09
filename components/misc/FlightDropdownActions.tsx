@@ -137,6 +137,14 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
             Resumen de Vuelo
           </DialogHeader>
           <div className="space-y-4">
+          <div className="space-y-2">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                # Vuelo
+              </h3>
+              <p className="text-lg font-semibold">{flight.flight_number}</p>
+              <Separator />
+            </div>
+
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground">
                 Fecha

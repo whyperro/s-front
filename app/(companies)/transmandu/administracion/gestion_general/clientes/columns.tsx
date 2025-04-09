@@ -76,6 +76,20 @@ export const columns: ColumnDef<Client>[] = [
     ),
   },
   {
+    accessorKey: "pay_credit_days",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Días Para Pagar" />
+    ),
+    meta: { title: "Días Para Pagar" },
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <span className="text-muted-foreground italic">
+          {row.original.pay_credit_days}
+        </span>
+      </div>
+    ),
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const id = row.original.id;

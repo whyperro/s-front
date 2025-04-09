@@ -12,6 +12,20 @@ import { formatCurrency } from "@/lib/utils";
 
 export const columns: ColumnDef<Flight>[] = [
   {
+    accessorKey: "flight_number",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="# Vuelo" />
+    ),
+    meta: { title: "# Vuelo" },
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <span className="text-muted-foreground italic">
+          {row.original.flight_number} 
+        </span>
+      </div>
+    ),
+  },
+  {
     accessorKey: "date",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Fecha" />

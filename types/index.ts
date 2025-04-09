@@ -145,6 +145,7 @@ export type Client = {
   email: string,
   phone: string,
   balance: number,
+  pay_credit_days: number,
 }
 
 export type Condition = {
@@ -267,6 +268,7 @@ export type Employee = {
 
 export type Flight = {
   id:number,
+  flight_number: string,
   client: Client, 
   route: Route,      
   aircraft: Aircraft,  
