@@ -33,6 +33,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import CreateMitigationMeasureForm from "../forms/CreateMitigationMeasureForm";
+import { useTheme } from "next-themes";
 
 const MitigationTableDropdownActions = ({
   mitigationTable,
@@ -40,22 +41,16 @@ const MitigationTableDropdownActions = ({
   mitigationTable: MitigationTable;
 }) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [openEdit, setOpenEdit] = useState<boolean>(false);
-
   const { deleteMitigationPlan } = useDeleteMitigationPlan();
-
   const [openCreateDangerIdentification, setOpenCreateDangerIdentification] =
     useState<boolean>(false);
-
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [openCreatePlan, setOpenCreatePlan] = useState<boolean>(false);
   const [openCreateMeasure, setOpenCreateMeasure] = useState<boolean>(false);
   const [openEditPlan, setOpenEditPlan] = useState<boolean>(false);
   const [openEditAnalyses, setOpenEditAnalyses] = useState<boolean>(false);
-
   const [openCreateAnalysis, setOpenCreateAnalysis] = useState<boolean>(false);
-
-  const router = useRouter();
+  const { theme } = useTheme();
 
   const handleDelete = async (id: number | string) => {
     console.log("plan id is : ", id);
@@ -111,7 +106,11 @@ const MitigationTableDropdownActions = ({
             {mitigationTable.mitigation_plan?.id &&
               mitigationTable.mitigation_plan?.analysis === null && (
                 <DropdownMenuItem onClick={() => setOpenCreateMeasure(true)}>
-                  <Plus className="size-5" />
+                  <Plus
+                    className={`size-5 ${
+                      theme === "light" ? "text-black" : "text-white"
+                    }`}
+                  />
                 </DropdownMenuItem>
               )}
 
@@ -199,7 +198,9 @@ const MitigationTableDropdownActions = ({
         <Dialog open={openEditAnalyses} onOpenChange={setOpenEditAnalyses}>
           <DialogContent className="flex flex-col max-w-2xl m-2">
             <DialogHeader>
-              <DialogTitle className="text-center">Editar Analisis Post Mitigacion</DialogTitle>
+              <DialogTitle className="text-center">
+                Editar Analisis Post Mitigacion
+              </DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
 
