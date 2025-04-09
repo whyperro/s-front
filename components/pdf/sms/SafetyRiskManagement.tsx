@@ -495,6 +495,9 @@ const styles = StyleSheet.create({
     borderColor: "#000",
     justifyContent: "center",
     alignItems: "center",
+  },lastRowBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000',
   },
 });
 
@@ -1982,7 +1985,6 @@ export const SecondPage = ({
         })}
       </View>
 
-      {/* 3. Líneas de guía (opcional, según tu diseño) */}
       <View style={styles.linesContainer}>
         {[...Array(5)].map((_, index) => (
           <View key={`line-${index}`} style={styles.line}>
@@ -2070,180 +2072,118 @@ export const SecondPage = ({
     </View>
 
     <>
-      {/* Muestra las medidas existentes (hasta 5) */}
-      {identification.mitigation_plan?.measures
-        .slice(0, 5)
-        .map((measure, index) => (
-          <View key={measure.id} style={styles.tableRow}>
-            {/* Celda de responsable */}
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "25%",
-                backgroundColor: WHITE,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={[styles.cellText2, { width: 25, textAlign: "left" }]}
-              >
-                {index + 1}.
-              </Text>
-              <Text
-                style={[styles.cellText2, { flex: 1, textAlign: "center" }]}
-              >
-                {measure.implementation_responsible}
-              </Text>
-            </View>
-
-            {/* Celdas restantes */}
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "12%",
-                backgroundColor: WHITE,
-              }}
-            >
-              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
-            </View>
-
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "18%",
-                backgroundColor: WHITE,
-              }}
-            >
-              <Text style={[styles.cellText2, { textAlign: "center" }]}>
-                {measure.implementation_supervisor}
-              </Text>
-            </View>
-
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "12%",
-                backgroundColor: WHITE,
-              }}
-            >
-              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
-            </View>
-
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "21%",
-                backgroundColor: WHITE,
-              }}
-            >
-              <Text style={[styles.cellText2, { textAlign: "center" }]}>
-                {dateFormat(measure.estimated_date, "dd-MM-yyyy")}
-              </Text>
-            </View>
-
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "12%",
-                backgroundColor: WHITE,
-              }}
-            >
-              <Text style={[styles.cellText2, { textAlign: "center" }]}>
-                {dateFormat(measure.execution_date, "dd-MM-yyyy")}
-              </Text>
-            </View>
-          </View>
-        ))}
-
-      {/* Rellena con líneas vacías si hay menos de 5 */}
-      {Array.from({
-        length: Math.max(
-          0,
-          5 - (identification.mitigation_plan?.measures?.length || 0)
-        ),
-      }).map((_, i) => {
-        const emptyIndex =
-          (identification.mitigation_plan?.measures?.length || 0) + i;
-        const isLastRow = emptyIndex === 4; // Última línea (índice 4)
-
-        return (
+  {/* Muestra las medidas existentes (hasta 5) */}
+  {identification.mitigation_plan?.measures
+    .slice(0, 5)
+    .map((measure, index) => {
+      const isLastRow = index === 4; // Verifica si es la quinta fila
+      return (
+        <View 
+          key={measure.id} 
+          style={[
+            styles.tableRow,
+            ...(isLastRow ? [styles.lastRowBorder] : [])
+          ]}
+        >
           <View
-            key={`empty-${emptyIndex}`}
-            style={[styles.tableRow, isLastRow ? { borderBottom: 1 } : {}]}
+            style={{
+              ...styles.tableCell,
+              width: "25%",
+              backgroundColor: WHITE,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
           >
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "25%",
-                backgroundColor: WHITE,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={[styles.cellText2, { width: 25, textAlign: "left" }]}
-              >
-                {emptyIndex + 1}.
-              </Text>
-              <Text
-                style={[styles.cellText2, { flex: 1, textAlign: "center" }]}
-              ></Text>
-            </View>
-
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "12%",
-                backgroundColor: WHITE,
-              }}
-            >
-              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
-            </View>
-
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "18%",
-                backgroundColor: WHITE,
-              }}
-            >
-              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
-            </View>
-
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "12%",
-                backgroundColor: WHITE,
-              }}
-            >
-              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
-            </View>
-
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "21%",
-                backgroundColor: WHITE,
-              }}
-            >
-              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
-            </View>
-
-            <View
-              style={{
-                ...styles.tableCell,
-                width: "12%",
-                backgroundColor: WHITE,
-              }}
-            >
-              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
-            </View>
+            <Text style={[styles.cellText2, { width: 25, textAlign: "left" }]}>
+              {index + 1}.
+            </Text>
+            <Text style={[styles.cellText2, { flex: 1, textAlign: "center" }]}>
+              {measure.implementation_responsible}
+            </Text>
           </View>
-        );
-      })}
-    </>
+
+          <View style={{ ...styles.tableCell, width: "12%", backgroundColor: WHITE }}>
+            <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+          </View>
+
+          <View style={{ ...styles.tableCell, width: "18%", backgroundColor: WHITE }}>
+            <Text style={[styles.cellText2, { textAlign: "center" }]}>
+              {measure.implementation_supervisor}
+            </Text>
+          </View>
+
+          <View style={{ ...styles.tableCell, width: "12%", backgroundColor: WHITE }}>
+            <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+          </View>
+
+          <View style={{ ...styles.tableCell, width: "21%", backgroundColor: WHITE }}>
+            <Text style={[styles.cellText2, { textAlign: "center" }]}>
+              {dateFormat(measure.estimated_date, "dd-MM-yyyy")}
+            </Text>
+          </View>
+
+          <View style={{ ...styles.tableCell, width: "12%", backgroundColor: WHITE }}>
+            <Text style={[styles.cellText2, { textAlign: "center" }]}>
+              {dateFormat(measure.execution_date, "dd-MM-yyyy")}
+            </Text>
+          </View>
+        </View>
+      );
+    })}
+
+  {/* Rellena con líneas vacías si hay menos de 5 */}
+  {Array.from({
+    length: Math.max(0, 5 - (identification.mitigation_plan?.measures?.length || 0)),
+  }).map((_, i) => {
+    const emptyIndex = (identification.mitigation_plan?.measures?.length || 0) + i;
+    const isLastRow = emptyIndex === 4; // Última línea (índice 4)
+
+    return (
+      <View
+        key={`empty-${emptyIndex}`}
+        style={[
+          styles.tableRow,
+          ...(isLastRow ? [styles.lastRowBorder] : [])
+        ]}
+      >
+        <View
+          style={{
+            ...styles.tableCell,
+            width: "25%",
+            backgroundColor: WHITE,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Text style={[styles.cellText2, { width: 25, textAlign: "left" }]}>
+            {emptyIndex + 1}.
+          </Text>
+          <Text style={[styles.cellText2, { flex: 1, textAlign: "center" }]}></Text>
+        </View>
+
+        <View style={{ ...styles.tableCell, width: "12%", backgroundColor: WHITE }}>
+          <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+        </View>
+
+        <View style={{ ...styles.tableCell, width: "18%", backgroundColor: WHITE }}>
+          <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+        </View>
+
+        <View style={{ ...styles.tableCell, width: "12%", backgroundColor: WHITE }}>
+          <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+        </View>
+
+        <View style={{ ...styles.tableCell, width: "21%", backgroundColor: WHITE }}>
+          <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+        </View>
+
+        <View style={{ ...styles.tableCell, width: "12%", backgroundColor: WHITE }}>
+          <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+        </View>
+      </View>
+    );
+  })}
+</>
 
     {Footer(2, 5)}
   </Page>
