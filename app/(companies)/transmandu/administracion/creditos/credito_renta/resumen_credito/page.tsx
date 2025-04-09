@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Loader2, DollarSign, CreditCard, Clock } from "lucide-react"
+import { ArrowLeft, Loader2, CreditCard } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 import { formatCurrency } from "@/lib/utils"
 import { useGetCreditStatisticsRentings } from "@/hooks/administracion/creditos/useGetCreditStatisticsRentings"
@@ -38,13 +38,10 @@ const CreditStatisticsRentingPage = () => {
     )
   }
 
-  // Preparar datos para el gráfico
+  // Preparar datos para el gráfico - solo montos
   const chartData = [
     {
-      name: "Estadísticas de Créditos",
-      total: data.credits.length,
-      pagados: data.payed_credits.length,
-      pendientes: data.pending_credits.length,
+      name: "",
       montoTotal: data.credits_total_amount,
       montoPagado: data.credits_payed_amount,
       montoDeuda: data.credits_debt_amount,
@@ -53,13 +50,8 @@ const CreditStatisticsRentingPage = () => {
 
   // Función para manejar el clic en la barra
   const handleBarClick = (dataKey: string) => {
-    if (dataKey === "total") {
-      setShowCreditsTable(!showCreditsTable)
-      setActiveBar(dataKey)
-    } else {
-      setShowCreditsTable(false)
-      setActiveBar(dataKey)
-    }
+    setActiveBar(dataKey)
+    setShowCreditsTable(true)
   }
 
   // Función para formatear fechas
@@ -74,9 +66,53 @@ const CreditStatisticsRentingPage = () => {
 
   // Colores para las barras
   const barColors = {
-    total: "#7c3aed",
-    pagados: "#10b981",
-    pendientes: "#f59e0b",
+    montoTotal: "#3b82f6", // Blue-500
+    montoPagado: "#14b8a6", // Teal-500
+    montoDeuda: "#6366f1", // Indigo-500
+  }
+
+  // Obtener los créditos filtrados según la barra seleccionada
+  const getFilteredCredits = () => {
+    if (!activeBar) return data.credits
+
+    switch (activeBar) {
+      case "montoTotal":
+        return data.credits
+      case "montoPagado":
+        return data.payed_credits
+      case "montoDeuda":
+        return data.pending_credits
+      default:
+        return data.credits
+    }
+  }
+
+  // Obtener el título de la tabla según la barra seleccionada
+  const getTableTitle = () => {
+    switch (activeBar) {
+      case "montoTotal":
+        return "Detalle de Todos los Créditos"
+      case "montoPagado":
+        return "Detalle de Créditos Pagados"
+      case "montoDeuda":
+        return "Detalle de Créditos Pendientes"
+      default:
+        return "Detalle de Créditos"
+    }
+  }
+
+  // Obtener la descripción de la tabla según la barra seleccionada
+  const getTableDescription = () => {
+    switch (activeBar) {
+      case "montoTotal":
+        return "Lista de todos los créditos registrados"
+      case "montoPagado":
+        return "Lista de créditos que han sido pagados completamente"
+      case "montoDeuda":
+        return "Lista de créditos con pagos pendientes"
+      default:
+        return "Lista de créditos"
+    }
   }
 
   return (
@@ -118,11 +154,11 @@ const CreditStatisticsRentingPage = () => {
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Monto Total</p>
-                    <h3 className="text-2xl font-bold">{formatCurrency(data.credits_total_amount)}</h3>
+                    <p className="text-sm font-medium text-muted-foreground">Créditos Pagados</p>
+                    <h3 className="text-2xl font-bold">{data.payed_credits.length}</h3>
                   </div>
-                  <div className="p-2 bg-primary/10 rounded-full">
-                    <DollarSign className="h-6 w-6 text-primary" />
+                  <div className="p-2 bg-green-500/10 rounded-full">
+                    <CreditCard className="h-6 w-6 text-green-500" />
                   </div>
                 </div>
               </CardContent>
@@ -131,11 +167,11 @@ const CreditStatisticsRentingPage = () => {
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Deuda Pendiente</p>
-                    <h3 className="text-2xl font-bold">{formatCurrency(data.credits_debt_amount)}</h3>
+                    <p className="text-sm font-medium text-muted-foreground">Créditos Pendientes</p>
+                    <h3 className="text-2xl font-bold">{data.pending_credits.length}</h3>
                   </div>
                   <div className="p-2 bg-amber-500/10 rounded-full">
-                    <Clock className="h-6 w-6 text-amber-500" />
+                    <CreditCard className="h-6 w-6 text-amber-500" />
                   </div>
                 </div>
               </CardContent>
@@ -144,7 +180,7 @@ const CreditStatisticsRentingPage = () => {
 
           {/* Gráfico de barras */}
           <div className="w-full h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="70%" height="100%">
               <BarChart
                 data={chartData}
                 margin={{
@@ -153,46 +189,30 @@ const CreditStatisticsRentingPage = () => {
                   left: 20,
                   bottom: 5,
                 }}
+                barSize={40} // Añadir esta línea para hacer las barras más delgadas
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis
                   yAxisId="left"
                   orientation="left"
-                  label={{ value: "Cantidad de Créditos", angle: -90, position: "insideLeft" }}
-                />
-                <YAxis
-                  yAxisId="right"
-                  orientation="right"
-                  label={{ value: "Montos (Q)", angle: 90, position: "insideRight" }}
+                  label={{
+                    value: "Montos ($)",
+                    angle: -90,
+                    position: "insideLeft",
+                  }}
                 />
                 <Tooltip
                   formatter={(value, name) => {
-                    if (name === "montoTotal" || name === "montoPagado" || name === "montoDeuda") {
-                      return [
-                        formatCurrency(value as number),
-                        name === "montoTotal" ? "Monto Total" : name === "montoPagado" ? "Monto Pagado" : "Monto Deuda",
-                      ]
-                    }
                     return [
-                      value,
-                      name === "total"
-                        ? "Total Créditos"
-                        : name === "pagados"
-                          ? "Créditos Pagados"
-                          : "Créditos Pendientes",
+                      formatCurrency(value as number),
+                      name === "montoTotal" ? "Monto Total" : name === "montoPagado" ? "Monto Pagado" : "Monto Deuda",
                     ]
                   }}
                 />
                 <Legend
                   formatter={(value) => {
                     switch (value) {
-                      case "total":
-                        return "Total Créditos"
-                      case "pagados":
-                        return "Créditos Pagados"
-                      case "pendientes":
-                        return "Créditos Pendientes"
                       case "montoTotal":
                         return "Monto Total"
                       case "montoPagado":
@@ -206,38 +226,35 @@ const CreditStatisticsRentingPage = () => {
                 />
                 <Bar
                   yAxisId="left"
-                  dataKey="total"
-                  fill={barColors.total}
-                  onClick={() => handleBarClick("total")}
+                  dataKey="montoTotal"
+                  fill={barColors.montoTotal}
+                  onClick={() => handleBarClick("montoTotal")}
                   cursor="pointer"
-                  className={activeBar === "total" ? "opacity-100" : "opacity-70"}
+                  className={activeBar === "montoTotal" ? "opacity-100" : "opacity-70"}
                 />
                 <Bar
                   yAxisId="left"
-                  dataKey="pagados"
-                  fill={barColors.pagados}
-                  onClick={() => handleBarClick("pagados")}
+                  dataKey="montoPagado"
+                  fill={barColors.montoPagado}
+                  onClick={() => handleBarClick("montoPagado")}
                   cursor="pointer"
-                  className={activeBar === "pagados" ? "opacity-100" : "opacity-70"}
+                  className={activeBar === "montoPagado" ? "opacity-100" : "opacity-70"}
                 />
                 <Bar
                   yAxisId="left"
-                  dataKey="pendientes"
-                  fill={barColors.pendientes}
-                  onClick={() => handleBarClick("pendientes")}
+                  dataKey="montoDeuda"
+                  fill={barColors.montoDeuda}
+                  onClick={() => handleBarClick("montoDeuda")}
                   cursor="pointer"
-                  className={activeBar === "pendientes" ? "opacity-100" : "opacity-70"}
+                  className={activeBar === "montoDeuda" ? "opacity-100" : "opacity-70"}
                 />
-                <Bar yAxisId="right" dataKey="montoTotal" fill="#8884d8" className="opacity-70" />
-                <Bar yAxisId="right" dataKey="montoPagado" fill="#82ca9d" className="opacity-70" />
-                <Bar yAxisId="right" dataKey="montoDeuda" fill="#ffc658" className="opacity-70" />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
           {/* Instrucciones */}
           <p className="text-center text-muted-foreground mt-4">
-            Haz clic en la barra de "Total Créditos" para ver el detalle de los créditos
+            Haz clic en cualquier barra para ver el detalle de los créditos correspondientes
           </p>
         </CardContent>
       </Card>
@@ -246,8 +263,8 @@ const CreditStatisticsRentingPage = () => {
       {showCreditsTable && (
         <Card>
           <CardHeader>
-            <CardTitle>Detalle de Créditos</CardTitle>
-            <CardDescription>Lista de todos los créditos registrados</CardDescription>
+            <CardTitle className="text-center">{getTableTitle()}</CardTitle>
+            <CardDescription className="text-center">{getTableDescription()}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="rounded-md border overflow-hidden">
@@ -262,7 +279,7 @@ const CreditStatisticsRentingPage = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data.credits.map((credit) => (
+                  {getFilteredCredits().map((credit) => (
                     <TableRow key={credit.id}>
                       <TableCell className="font-medium">{credit.client.name || "N/A"}</TableCell>
                       <TableCell>

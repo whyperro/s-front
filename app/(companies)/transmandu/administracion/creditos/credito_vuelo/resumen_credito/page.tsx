@@ -51,13 +51,10 @@ const CreditStatisticsFlightPage = () => {
     credits_total_amount: processedData.reduce((sum, item) => sum + (item.credits_total_amount || 0), 0),
   }
 
-  // Preparar datos para el gráfico
+  // Preparar datos para el gráfico - solo montos
   const chartData = [
     {
-      name: "Estadísticas de Créditos",
-      total: aggregatedData.credits.length,
-      pagados: aggregatedData.payed_credits.length,
-      pendientes: aggregatedData.pending_credits.length,
+      name: "",
       montoTotal: aggregatedData.credits_total_amount,
       montoPagado: aggregatedData.credits_payed_amount,
       montoDeuda: aggregatedData.credits_debt_amount,
@@ -66,13 +63,8 @@ const CreditStatisticsFlightPage = () => {
 
   // Función para manejar el clic en la barra
   const handleBarClick = (dataKey: string) => {
-    if (dataKey === "total") {
-      setShowCreditsTable(!showCreditsTable)
-      setActiveBar(dataKey)
-    } else {
-      setShowCreditsTable(false)
-      setActiveBar(dataKey)
-    }
+    setActiveBar(dataKey)
+    setShowCreditsTable(true)
   }
 
   // Función para formatear fechas
@@ -87,9 +79,53 @@ const CreditStatisticsFlightPage = () => {
 
   // Colores para las barras
   const barColors = {
-    total: "#7c3aed",
-    pagados: "#10b981",
-    pendientes: "#f59e0b",
+    montoTotal: "#3b82f6", // Blue-500
+    montoPagado: "#14b8a6", // Teal-500
+    montoDeuda: "#6366f1", // Indigo-500
+  }
+
+  // Obtener los créditos filtrados según la barra seleccionada
+  const getFilteredCredits = () => {
+    if (!activeBar) return aggregatedData.credits
+
+    switch (activeBar) {
+      case "montoTotal":
+        return aggregatedData.credits
+      case "montoPagado":
+        return aggregatedData.payed_credits
+      case "montoDeuda":
+        return aggregatedData.pending_credits
+      default:
+        return aggregatedData.credits
+    }
+  }
+
+  // Obtener el título de la tabla según la barra seleccionada
+  const getTableTitle = () => {
+    switch (activeBar) {
+      case "montoTotal":
+        return "Detalle de Todos los Créditos de Vuelos"
+      case "montoPagado":
+        return "Detalle de Créditos de Vuelos Pagados"
+      case "montoDeuda":
+        return "Detalle de Créditos de Vuelos Pendientes"
+      default:
+        return "Detalle de Créditos de Vuelos"
+    }
+  }
+
+  // Obtener la descripción de la tabla según la barra seleccionada
+  const getTableDescription = () => {
+    switch (activeBar) {
+      case "montoTotal":
+        return "Lista de todos los créditos de vuelos registrados"
+      case "montoPagado":
+        return "Lista de créditos de vuelos que han sido pagados completamente"
+      case "montoDeuda":
+        return "Lista de créditos de vuelos con pagos pendientes"
+      default:
+        return "Lista de créditos de vuelos"
+    }
   }
 
   return (
@@ -131,11 +167,11 @@ const CreditStatisticsFlightPage = () => {
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Monto Total</p>
-                    <h3 className="text-2xl font-bold">{formatCurrency(aggregatedData.credits_total_amount)}</h3>
+                    <p className="text-sm font-medium text-muted-foreground">Créditos Pagados</p>
+                    <h3 className="text-2xl font-bold">{aggregatedData.payed_credits.length}</h3>
                   </div>
-                  <div className="p-2 bg-primary/10 rounded-full">
-                    <DollarSign className="h-6 w-6 text-primary" />
+                  <div className="p-2 bg-green-500/10 rounded-full">
+                    <Plane className="h-6 w-6 text-green-500" />
                   </div>
                 </div>
               </CardContent>
@@ -144,11 +180,11 @@ const CreditStatisticsFlightPage = () => {
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Deuda Pendiente</p>
-                    <h3 className="text-2xl font-bold">{formatCurrency(aggregatedData.credits_debt_amount)}</h3>
+                    <p className="text-sm font-medium text-muted-foreground">Créditos Pendientes</p>
+                    <h3 className="text-2xl font-bold">{aggregatedData.pending_credits.length}</h3>
                   </div>
                   <div className="p-2 bg-amber-500/10 rounded-full">
-                    <Clock className="h-6 w-6 text-amber-500" />
+                    <Plane className="h-6 w-6 text-amber-500" />
                   </div>
                 </div>
               </CardContent>
@@ -157,7 +193,7 @@ const CreditStatisticsFlightPage = () => {
 
           {/* Gráfico de barras */}
           <div className="w-full h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="70%" height="100%">
               <BarChart
                 data={chartData}
                 margin={{
@@ -166,46 +202,26 @@ const CreditStatisticsFlightPage = () => {
                   left: 20,
                   bottom: 5,
                 }}
+                barSize={40} // Barras más delgadas
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis
                   yAxisId="left"
                   orientation="left"
-                  label={{ value: "Cantidad de Créditos", angle: -90, position: "insideLeft" }}
-                />
-                <YAxis
-                  yAxisId="right"
-                  orientation="right"
-                  label={{ value: "Montos (Q)", angle: 90, position: "insideRight" }}
+                  label={{ value: "Montos ($)", angle: -90, position: "insideLeft" }}
                 />
                 <Tooltip
                   formatter={(value, name) => {
-                    if (name === "montoTotal" || name === "montoPagado" || name === "montoDeuda") {
-                      return [
-                        formatCurrency(value as number),
-                        name === "montoTotal" ? "Monto Total" : name === "montoPagado" ? "Monto Pagado" : "Monto Deuda",
-                      ]
-                    }
                     return [
-                      value,
-                      name === "total"
-                        ? "Total Créditos"
-                        : name === "pagados"
-                          ? "Créditos Pagados"
-                          : "Créditos Pendientes",
+                      formatCurrency(value as number),
+                      name === "montoTotal" ? "Monto Total" : name === "montoPagado" ? "Monto Pagado" : "Monto Deuda",
                     ]
                   }}
                 />
                 <Legend
                   formatter={(value) => {
                     switch (value) {
-                      case "total":
-                        return "Total Créditos"
-                      case "pagados":
-                        return "Créditos Pagados"
-                      case "pendientes":
-                        return "Créditos Pendientes"
                       case "montoTotal":
                         return "Monto Total"
                       case "montoPagado":
@@ -219,39 +235,31 @@ const CreditStatisticsFlightPage = () => {
                 />
                 <Bar
                   yAxisId="left"
-                  dataKey="total"
-                  fill={barColors.total}
-                  onClick={() => handleBarClick("total")}
+                  dataKey="montoTotal"
+                  fill={barColors.montoTotal}
+                  onClick={() => handleBarClick("montoTotal")}
                   cursor="pointer"
-                  className={activeBar === "total" ? "opacity-100" : "opacity-70"}
+                  className={activeBar === "montoTotal" ? "opacity-100" : "opacity-70"}
                 />
                 <Bar
                   yAxisId="left"
-                  dataKey="pagados"
-                  fill={barColors.pagados}
-                  onClick={() => handleBarClick("pagados")}
+                  dataKey="montoPagado"
+                  fill={barColors.montoPagado}
+                  onClick={() => handleBarClick("montoPagado")}
                   cursor="pointer"
-                  className={activeBar === "pagados" ? "opacity-100" : "opacity-70"}
+                  className={activeBar === "montoPagado" ? "opacity-100" : "opacity-70"}
                 />
                 <Bar
                   yAxisId="left"
-                  dataKey="pendientes"
-                  fill={barColors.pendientes}
-                  onClick={() => handleBarClick("pendientes")}
+                  dataKey="montoDeuda"
+                  fill={barColors.montoDeuda}
+                  onClick={() => handleBarClick("montoDeuda")}
                   cursor="pointer"
-                  className={activeBar === "pendientes" ? "opacity-100" : "opacity-70"}
+                  className={activeBar === "montoDeuda" ? "opacity-100" : "opacity-70"}
                 />
-                <Bar yAxisId="right" dataKey="montoTotal" fill="#8884d8" className="opacity-70" />
-                <Bar yAxisId="right" dataKey="montoPagado" fill="#82ca9d" className="opacity-70" />
-                <Bar yAxisId="right" dataKey="montoDeuda" fill="#ffc658" className="opacity-70" />
               </BarChart>
             </ResponsiveContainer>
           </div>
-
-          {/* Instrucciones */}
-          <p className="text-center text-muted-foreground mt-4">
-            Haz clic en la barra de "Total Créditos" para ver el detalle de los créditos
-          </p>
         </CardContent>
       </Card>
 
@@ -259,8 +267,8 @@ const CreditStatisticsFlightPage = () => {
       {showCreditsTable && (
         <Card>
           <CardHeader>
-            <CardTitle>Detalle de Créditos de Vuelos</CardTitle>
-            <CardDescription>Lista de todos los créditos de vuelos registrados</CardDescription>
+            <CardTitle>{getTableTitle()}</CardTitle>
+            <CardDescription>{getTableDescription()}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="rounded-md border overflow-hidden">
@@ -276,7 +284,7 @@ const CreditStatisticsFlightPage = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {aggregatedData.credits.map((credit) => (
+                  {getFilteredCredits().map((credit) => (
                     <TableRow key={credit.id}>
                       <TableCell className="font-medium">{credit.client?.name || "N/A"}</TableCell>
                       <TableCell>
@@ -321,4 +329,3 @@ const CreditStatisticsFlightPage = () => {
 }
 
 export default CreditStatisticsFlightPage
-
