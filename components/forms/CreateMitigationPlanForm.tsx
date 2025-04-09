@@ -15,29 +15,35 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { CalendarIcon } from "lucide-react";
 import { es } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
 
-import { useState } from "react";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { format, min } from "date-fns";
+import { format } from "date-fns";
 
-import { Separator } from "@radix-ui/react-select";
 import { useCreateMitigationPlan, useUpdateMitigationPlan } from "@/actions/sms/planes_de_mitigation/actions";
 import { MitigationPlan } from "@/types";
+import { Separator } from "@radix-ui/react-select";
+import { Textarea } from "../ui/textarea";
 
 const FormSchema = z.object({
-  description: z.string().min(5),
-  responsible: z.string().min(3),
+  description: z.string()
+    .min(5, { message: "La descripción debe tener al menos 5 caracteres" })
+    .max(200, { message: "La descripción no puede exceder los 200 caracteres" }),
+    
+  responsible: z.string()
+    .min(3, { message: "El responsable debe tener al menos 3 caracteres" })
+    .max(50, { message: "El responsable no puede exceder los 50 caracteres" }),
+
   start_date: z
     .date()
-    .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
+    .refine((val) => !isNaN(val.getTime()), { message: "Fecha Invalida" }),
 });
 
 type FormSchemaType = z.infer<typeof FormSchema>;
@@ -105,7 +111,7 @@ export default function CreateMitigationPlanForm({
             <FormItem>
               <FormLabel>Descripcion del Plan</FormLabel>
               <FormControl>
-                <Input placeholder="" {...field} />
+                <Textarea placeholder="" {...field} />
               </FormControl>
               <FormMessage className="text-xs" />
             </FormItem>
