@@ -205,6 +205,19 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                         date > new Date() || date < new Date("1999-07-21")
                       }
                       initialFocus
+                      fromYear={1980} // Año mínimo que se mostrará
+                      toYear={new Date().getFullYear()} // Año máximo (actual)
+                      captionLayout="dropdown-buttons" // Selectores de año/mes
+                      components={{
+                        Dropdown: (props) => (
+                          <select
+                            {...props}
+                            className="bg-popover text-popover-foreground"
+                          >
+                            {props.children}
+                          </select>
+                        ),
+                      }}
                     />
                   </PopoverContent>
                 </Popover>

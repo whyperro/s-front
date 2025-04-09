@@ -63,7 +63,7 @@ const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
             <>
               {articleDetails.status === "VENDIDO" ? (
                 <DropdownMenuItem disabled>
-                  <span className="text-green-500">Vendido</span>
+                  <span className="text-red-500">Vendido</span>
                 </DropdownMenuItem>
               ) : articleDetails.status === "RENTADO" ? (
                 <DropdownMenuItem disabled>

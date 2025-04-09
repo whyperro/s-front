@@ -164,7 +164,7 @@ export function CreateAircraftForm({ onClose }: FormProps) {
               <FormItem>
                 <FormLabel>Modelo</FormLabel>
                 <FormControl>
-                  <Input placeholder="Marca de la Aeronave" {...field} />
+                  <Input placeholder="Modelo de la Aeronave" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>

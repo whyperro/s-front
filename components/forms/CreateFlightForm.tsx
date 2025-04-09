@@ -249,10 +249,20 @@ export function FlightForm({ onClose }: FormProps) {
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={
-                        (date) => date < new Date("1999-07-21") // Solo deshabilita fechas muy antiguas
-                      }
                       initialFocus
+                      fromYear={1980} // Año mínimo que se mostrará
+                      toYear={new Date().getFullYear()} // Año máximo (actual)
+                      captionLayout="dropdown-buttons" // Selectores de año/mes
+                      components={{
+                        Dropdown: (props) => (
+                          <select
+                            {...props}
+                            className="bg-popover text-popover-foreground"
+                          >
+                            {props.children}
+                          </select>
+                        ),
+                      }}
                     />
                   </PopoverContent>
                 </Popover>

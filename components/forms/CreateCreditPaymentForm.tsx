@@ -43,62 +43,62 @@ interface FormProps {
 export function CreditPaymentForm({ onClose, credit }: FormProps) {
   const { createCreditPayment } = useCreateCreditPayment();
   const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts();
-  
+
   const formSchema = z
-  .object({
-    bank_account_id: z
-      .string({
-        message: "Debe elegir una cuenta de banco.",
-      })
-      .optional(), // Por defecto es opcional
-    pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"], {
-      message: "Debe elegir un método de pago.",
-    }),
-    pay_amount: z.string().refine(
-      (val) => {
-        // Convertir el valor a número y verificar que sea positivo
-        const number = parseFloat(val);
-        return !isNaN(number) && number >= 0;
+    .object({
+      bank_account_id: z
+        .string({
+          message: "Debe elegir una cuenta de banco.",
+        })
+        .optional(), // Por defecto es opcional
+      pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"], {
+        message: "Debe elegir un método de pago.",
+      }),
+      pay_amount: z.string().refine(
+        (val) => {
+          // Convertir el valor a número y verificar que sea positivo
+          const number = parseFloat(val);
+          return !isNaN(number) && number >= 0;
+        },
+        {
+          message: "La cantidad pagada debe ser mayor a cero.",
+        }
+      ),
+      payment_date: z.date({
+        required_error: "La fecha de vuelo es requerida",
+      }),
+      pay_description: z
+        .string()
+        .min(3, {
+          message: "Los detalles del pago deben tener al menos 3 caracteres.",
+        })
+        .max(100, {
+          message: "Los detalles del pago tiene un máximo 100 caracteres.",
+        }),
+    })
+    .refine(
+      (data: { pay_method: string; bank_account_id?: string }) => {
+        if (data.pay_method === "TRANSFERENCIA" && !data.bank_account_id) {
+          return false;
+        }
+        return true;
       },
       {
-        message: "La cantidad pagada debe ser mayor a cero.",
+        message: "La cuenta de banco es requerida para transferencias.",
+        path: ["bank_account_id"],
       }
-    ),
-    payment_date: z.date({
-      required_error: "La fecha de vuelo es requerida",
-    }),
-    pay_description: z
-      .string()
-      .min(3, {
-        message: "Los detalles del pago deben tener al menos 3 caracteres.",
-      })
-      .max(100, {
-        message: "Los detalles del pago tiene un máximo 100 caracteres.",
-      }),
-  })
-  .refine(
-    (data: { pay_method: string; bank_account_id?: string }) => {
-      if (data.pay_method === "TRANSFERENCIA" && !data.bank_account_id) {
-        return false;
+    )
+    .refine(
+      (data: { pay_amount: string }) => {
+        const payAmount = parseFloat(data.pay_amount);
+        return payAmount <= credit.debt;
+      },
+      {
+        message: "El monto a pagar no puede ser mayor que la deuda.",
+        path: ["pay_amount"],
       }
-      return true;
-    },
-    {
-      message: "La cuenta de banco es requerida para transferencias.",
-      path: ["bank_account_id"],
-    }
-  )
-  .refine(
-    (data: { pay_amount: string }) => {
-      const payAmount = parseFloat(data.pay_amount);
-      return payAmount <= credit.debt;
-    },
-    {
-      message: "El monto a pagar no puede ser mayor que la deuda.",
-      path: ["pay_amount"],
-    }
-  );
-  
+    );
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
@@ -232,6 +232,19 @@ export function CreditPaymentForm({ onClose, credit }: FormProps) {
                       date > new Date() || date < new Date("1999-07-21")
                     }
                     initialFocus
+                    fromYear={1980} // Año mínimo que se mostrará
+                    toYear={new Date().getFullYear()} // Año máximo (actual)
+                    captionLayout="dropdown-buttons" // Selectores de año/mes
+                    components={{
+                      Dropdown: (props) => (
+                        <select
+                          {...props}
+                          className="bg-popover text-popover-foreground"
+                        >
+                          {props.children}
+                        </select>
+                      ),
+                    }}
                   />
                 </PopoverContent>
               </Popover>

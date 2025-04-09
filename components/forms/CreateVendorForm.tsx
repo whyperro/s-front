@@ -32,9 +32,7 @@ interface FormProps {
 }
 
 export default function CreateVendorForm({ onClose }: FormProps) {
-
   const { createVendor } = useCreateVendor()
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
