@@ -4,11 +4,10 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
@@ -16,33 +15,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { CalendarIcon } from "lucide-react";
 import { es } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
 
-import { useState } from "react";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
-import { Separator } from "@radix-ui/react-select";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useCreateAnalysis } from "@/actions/sms/analisis/actions";
-import { description } from "../misc/TestChart";
 import { useCreateFollowUpControl } from "@/actions/sms/controles_de_seguimiento/actions";
-import useCurrentPath from "@/hooks/sms/currentPath";
+import { Separator } from "@radix-ui/react-select";
 import { useParams } from "next/navigation";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
+import { Textarea } from "../ui/textarea";
 
 const FormSchema = z.object({
   description: z.string(),
@@ -99,7 +87,7 @@ export default function CreateFollowUpControlForm({ onClose, id }: FormProps) {
             <FormItem>
               <FormLabel>Descripcion del Control</FormLabel>
               <FormControl>
-                <Input placeholder="" {...field} />
+                <Textarea placeholder="" {...field} />
               </FormControl>
               <FormMessage className="text-xs" />
             </FormItem>
