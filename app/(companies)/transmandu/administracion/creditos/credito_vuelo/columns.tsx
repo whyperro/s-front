@@ -93,41 +93,54 @@ export const columns: ColumnDef<Credit>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "status",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Estado" />
-    ),
-    meta: { title: "Estado actual" },
-    cell: ({ row }) => {
-      const status = row.original.status;
-      const backgroundColor =
-        status === "PENDIENTE" ? "bg-yellow-500" : "bg-green-500";
+//  {
+//    accessorKey: "status",
+//    header: ({ column }) => (
+//      <DataTableColumnHeader filter column={column} title="Estado" />
+//    ),
+//    meta: { title: "Estado actual" },
+//    cell: ({ row }) => {
+//      const status = row.original.status;
+//      const backgroundColor =
+//        status === "PENDIENTE" ? "bg-yellow-500" : "bg-green-500";
 
-      return (
-        <div>
-          <div className="flex justify-center">
-            <Badge className={backgroundColor}>
-              {row.original.status}
-            </Badge>
-          </div>
-        </div>
-      );
-    },
-  },
+//      return (
+//        <div>
+//          <div className="flex justify-center">
+//            <Badge className={backgroundColor}>
+//              {row.original.status}
+//            </Badge>
+//          </div>
+//        </div>
+//      );
+//    },
+//  },
   {
     accessorKey: "debt",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Deuda" />
     ),
     meta: { title: "Deuda" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {formatCurrency(row.original.debt)}
-        </span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const isPayed = row.original.status === "PAGADO";
+      const badgeVariant = isPayed ? "default" : "destructive";
+      const formattedAmount = formatCurrency(row.original.debt);
+
+      return (
+        <div className="flex justify-center">
+          <Badge
+            className={
+              isPayed
+                ? "bg-green-500 hover:bg-green-600"
+                : "bg-yellow-500 hover:bg-yellow-500"
+            }
+            variant={badgeVariant}
+          >
+            {formattedAmount}
+          </Badge>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "payed_amount",
@@ -143,20 +156,20 @@ export const columns: ColumnDef<Credit>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "type",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Tipo" />
-    ),
-    meta: { title: "Tipo" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.type}
-        </span>
-      </div>
-    ),
-  },
+//  {
+//    accessorKey: "type",
+//    header: ({ column }) => (
+//      <DataTableColumnHeader filter column={column} title="Tipo" />
+//    ),
+//    meta: { title: "Tipo" },
+//    cell: ({ row }) => (
+//      <div className="flex justify-center">
+//        <span className="text-muted-foreground italic">
+//          {row.original.type}
+//        </span>
+//      </div>
+//    ),
+//  },
   {
     id: "actions",
     cell: ({ row }) => {

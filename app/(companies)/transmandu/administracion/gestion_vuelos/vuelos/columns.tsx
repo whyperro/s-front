@@ -25,22 +25,22 @@ export const columns: ColumnDef<Flight>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "date",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Fecha" />
-    ),
-    meta: { title: "Fecha" },
-    cell: ({ row }) => {
-      return (
-        <p>
-          {format(addDays(row.original.date, 1), "PPP", {
-            locale: es,
-          })}
-        </p>
-      );
-    },
-  },
+//  {
+//    accessorKey: "date",
+//    header: ({ column }) => (
+//      <DataTableColumnHeader filter column={column} title="Fecha" />
+//    ),
+//    meta: { title: "Fecha" },
+//    cell: ({ row }) => {
+//      return (
+//        <p>
+//          {format(addDays(row.original.date, 1), "PPP", {
+//            locale: es,
+//          })}
+//        </p>
+//      );
+//    },
+//  },
   {
     accessorKey: "client.name",
     header: ({ column }) => (
@@ -91,68 +91,81 @@ export const columns: ColumnDef<Flight>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "fee",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Tarifa" />
-    ),
-    meta: { title: "Tarifa" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">{formatCurrency(row.original.fee)}</span>
-      </div>
-    ),
-  },
+//  {
+//    accessorKey: "fee",
+//    header: ({ column }) => (
+//      <DataTableColumnHeader filter column={column} title="Tarifa" />
+//    ),
+//    meta: { title: "Tarifa" },
+//    cell: ({ row }) => (
+//      <div className="flex justify-center">
+//        <span className="text-muted-foreground italic">{formatCurrency(row.original.fee)}</span>
+//      </div>
+//    ),
+//  },
   {
     accessorKey: "total_amount",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Costo" />
     ),
     meta: { title: "Costo" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {formatCurrency(row.original.total_amount)}
-        </span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "payed_amount",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Total Pagado" />
-    ),
-    meta: { title: "Total Pagado" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {formatCurrency(row.original.payed_amount)}
-        </span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "debt_status",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Estado Actual" />
-    ),
-    meta: { title: "Estado actual" },
     cell: ({ row }) => {
-      const status = row.original.debt_status;
-      const backgroundColor =
-        status === "PENDIENTE" ? "bg-red-500" : "bg-green-500";
+      const isPayed = row.original.debt_status === "PAGADO";
+      const badgeVariant = isPayed ? "default" : "destructive";
+      const formattedAmount = formatCurrency(row.original.total_amount);
 
       return (
-        <div>
-          <div className="flex justify-center">
-            <Badge className={backgroundColor}>
-              {row.original.debt_status}
-            </Badge>
-          </div>
+        <div className="flex justify-center">
+          <Badge
+            className={
+              isPayed
+                ? "bg-green-500 hover:bg-green-600"
+                : "bg-red-500 hover:bg-red-500"
+            }
+            variant={badgeVariant}
+          >
+            {formattedAmount}
+          </Badge>
         </div>
       );
     },
   },
+//  {
+//    accessorKey: "payed_amount",
+//    header: ({ column }) => (
+//      <DataTableColumnHeader filter column={column} title="Total Pagado" />
+//    ),
+//    meta: { title: "Total Pagado" },
+//    cell: ({ row }) => (
+//      <div className="flex justify-center">
+//        <span className="text-muted-foreground italic">
+//          {formatCurrency(row.original.payed_amount)}
+//        </span>
+//      </div>
+//    ),
+//  },
+//  {
+//    accessorKey: "debt_status",
+//    header: ({ column }) => (
+//      <DataTableColumnHeader filter column={column} title="Estado Actual" />
+//    ),
+//    meta: { title: "Estado actual" },
+//    cell: ({ row }) => {
+//      const status = row.original.debt_status;
+//      const backgroundColor =
+//        status === "PENDIENTE" ? "bg-red-500" : "bg-green-500";
+
+//      return (
+//        <div>
+//          <div className="flex justify-center">
+//            <Badge className={backgroundColor}>
+//              {row.original.debt_status}
+//            </Badge>
+//          </div>
+//        </div>
+//      );
+//    },
+//  },
   {
     accessorKey: "details",
     header: ({ column }) => (
