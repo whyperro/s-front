@@ -3,6 +3,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 import { Aircraft } from "@/types";
+import { addDays, format } from "date-fns";
+import { es } from "date-fns/locale/es";
 import AircraftDropdownActions from "@/components/misc/AircraftDropdownActions";
 
 export const columns: ColumnDef<Aircraft>[] = [
@@ -68,34 +70,34 @@ export const columns: ColumnDef<Aircraft>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "brand",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Marca" />
-    ),
-    meta: { title: "Marca" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.brand}
-        </span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "fabricant",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Fabricante" />
-    ),
-    meta: { title: "Fabricante" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.fabricant}
-        </span>
-      </div>
-    ),
-  },
+  //  {
+  //    accessorKey: "brand",
+  //    header: ({ column }) => (
+  //      <DataTableColumnHeader filter column={column} title="Marca" />
+  //    ),
+  //    meta: { title: "Marca" },
+  //    cell: ({ row }) => (
+  //      <div className="flex justify-center">
+  //        <span className="text-muted-foreground italic">
+  //          {row.original.brand}
+  //        </span>
+  //      </div>
+  //    ),
+  //  },
+  //  {
+  //    accessorKey: "fabricant",
+  //    header: ({ column }) => (
+  //      <DataTableColumnHeader filter column={column} title="Fabricante" />
+  //    ),
+  //    meta: { title: "Fabricante" },
+  //    cell: ({ row }) => (
+  //      <div className="flex justify-center">
+  //        <span className="text-muted-foreground italic">
+  //          {row.original.fabricant}
+  //        </span>
+  //      </div>
+  //    ),
+  //  },
   {
     accessorKey: "fabricant_date",
     header: ({ column }) => (
@@ -106,15 +108,16 @@ export const columns: ColumnDef<Aircraft>[] = [
       />
     ),
     meta: { title: "Fecha de Fabricación" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.fabricant}
-        </span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      return (
+        <p>
+          {format(addDays(row.original.fabricant_date, 1), "PPP", {
+            locale: es,
+          })}
+        </p>
+      );
+    },
   },
-  
   {
     accessorKey: "comments",
     header: ({ column }) => (
