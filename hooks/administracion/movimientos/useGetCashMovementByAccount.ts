@@ -10,15 +10,30 @@ export interface AccountMovement {
   movements: CashMovement[]
 }
 
-const fetchCashMovementByAccount = async (): Promise<AccountMovement[]> => {
-  const { data } = await axiosInstance.get("/transmandu/movements-by-accounts")
+// Interfaz para los parámetros de fecha
+interface DateParams {
+  from?: string
+  to?: string
+}
+
+const fetchCashMovementByAccount = async (params: DateParams = {}): Promise<AccountMovement[]> => {
+  //parámetros de consulta para la URL
+  const queryParams = new URLSearchParams()
+  if (params.from) queryParams.append("from", params.from)
+  if (params.to) queryParams.append("to", params.to)
+
+  // Construir la URL con los parámetros
+  const url = `/transmandu/movements-by-accounts${queryParams.toString() ? `?${queryParams.toString()}` : ""}`
+
+  const { data } = await axiosInstance.get(url)
   return data
 }
 
-export const useGetCashMovementByAccount = () => {
+export const useGetCashMovementByAccount = (dateParams: DateParams = {}) => {
   return useQuery<AccountMovement[]>({
-    queryKey: ["movements-by-accounts"],
-    queryFn: fetchCashMovementByAccount,
+    // Incluir los parámetros de fecha en la queryKey para que React Query actualice los datos cuando cambien
+    queryKey: ["movements-by-accounts", dateParams.from, dateParams.to],
+    queryFn: () => fetchCashMovementByAccount(dateParams),
     staleTime: 1000 * 60 * 5, // 5 minutos
   })
 }

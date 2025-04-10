@@ -11,6 +11,7 @@ import ResponsibleResumeDialog from "@/components/dialogs/ResponsibleResumeDialo
 import BankAccountResumeDialog from "@/components/dialogs/BankAccountResumeDialog";
 import CashResumeDialog from "@/components/dialogs/CashResumeDialog";
 import { formatCurrencyJ, getCurrencySymbol } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<CashMovement>[] = [
   {
@@ -37,20 +38,20 @@ export const columns: ColumnDef<CashMovement>[] = [
 //    meta: { title: "Cliente" },
 //    cell: ({ row }) => <CompanyResumeDialog company={row.original.company} />,
 //  },
-  {
-    accessorKey: "type",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Ingreso/Egreso" />
-    ),
-    meta: { title: "Ingreso/Egreso" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.type}
-        </span>
-      </div>
-    ),
-  },
+//  {
+//    accessorKey: "type",
+//    header: ({ column }) => (
+//      <DataTableColumnHeader filter column={column} title="Ingreso/Egreso" />
+//    ),
+//    meta: { title: "Ingreso/Egreso" },
+//    cell: ({ row }) => (
+//      <div className="flex justify-center">
+//        <span className="text-muted-foreground italic">
+//          {row.original.type}
+//        </span>
+//      </div>
+//    ),
+//  },
   {
     accessorKey: "client.name",
     header: ({ column }) => (
@@ -153,13 +154,19 @@ export const columns: ColumnDef<CashMovement>[] = [
       <DataTableColumnHeader filter column={column} title="Monto" />
     ),
     meta: { title: "Monto" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-        {formatCurrencyJ(row.original.amount, row.original.cash.coin)} 
-        </span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const isIncome = row.original.type === "INCOME"; 
+      const badgeVariant = isIncome ? "default" : "destructive";
+      const formattedAmount = formatCurrencyJ(row.original.amount, row.original.cash.coin);
+  
+      return (
+        <div className="flex justify-center">
+          <Badge  className={isIncome ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-500"} variant={badgeVariant}>
+            {formattedAmount}
+          </Badge>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "responsible.first_name",
