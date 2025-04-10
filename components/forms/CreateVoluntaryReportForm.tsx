@@ -15,18 +15,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { format } from "date-fns";
-import { CalendarIcon, Loader2 } from "lucide-react";
-import { es } from "date-fns/locale";
+import {
+  useCreateVoluntaryReport,
+  useUpdateVoluntaryReport,
+} from "@/actions/sms/reporte_voluntario/actions";
+import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
-import { Calendar } from "@/components/ui/calendar";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -34,14 +33,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChangeEvent, useEffect, useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "../ui/label";
-import {
-  useCreateVoluntaryReport,
-  useUpdateVoluntaryReport,
-} from "@/actions/sms/reporte_voluntario/actions";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { VoluntaryReport } from "@/types";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { CalendarIcon, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Label } from "../ui/label";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   identification_date: z
@@ -117,7 +119,8 @@ export function CreateVoluntaryReportForm({
   const { createVoluntaryReport } = useCreateVoluntaryReport();
   const { updateVoluntaryReport } = useUpdateVoluntaryReport();
   const [isAnonymous, setIsAnonymous] = useState(true);
-
+  const router = useRouter();
+  
   if (initialData && isEditing) {
     if (
       initialData.reporter_email &&
@@ -182,14 +185,14 @@ export function CreateVoluntaryReportForm({
       console.log("this is the value", value);
       await updateVoluntaryReport.mutateAsync(value);
     } else {
-      const value = {
-        ...data,
-        status: "ABIERTO",
-      };
-      console.log("this is the value", value);
-      await createVoluntaryReport.mutateAsync(value);
+      const value = { ...data, status: "ABIERTO" };
+      try {
+        const response = await createVoluntaryReport.mutateAsync(value);
+        router.push(`/transmandu/sms/reportes_voluntarios/${response.voluntary_report_id}`);
+      } catch (error) {
+        console.error("Error al crear el reporte:", error);
+      }
     }
-
     onClose();
   };
 
