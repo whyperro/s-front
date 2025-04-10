@@ -49,26 +49,6 @@ const ObligatoryReportIndicators = () => {
     to_second: format(endOfMonth(previousMonth), "yyyy-MM-dd"),
   });
 
-  useEffect(() => {
-    const defaultFrom = format(startOfMonth(new Date()), "yyyy-MM-dd");
-    const defaultTo = format(new Date(), "yyyy-MM-dd");
-    const defaultFromSecond = format(startOfMonth(previousMonth), "yyyy-MM-dd");
-    const defaultToSecond = format(endOfMonth(previousMonth), "yyyy-MM-dd");
-
-    const newParams: Params = {};
-    searchParams.forEach((value, key) => {
-      newParams[key] = value;
-    });
-
-    const finalParams: Params = {
-      from_first: newParams.from_first || defaultFrom,
-      to_first: newParams.to_first || defaultTo,
-      from_second: newParams.from_second || defaultFromSecond,
-      to_second: newParams.to_second || defaultToSecond,
-    };
-    setParams(finalParams);
-  }, [searchParams, pathname,previousMonth]);
-
   // Para extraer las estadisticas de reportes dado unos rangos de fecha, desde hasta
   const {
     data: barChartData,
@@ -105,8 +85,18 @@ const ObligatoryReportIndicators = () => {
   useEffect(() => {
     refetchBarChart();
     refetchObligatoryAverageData();
+  }, [
+    params.from_first,
+    params.to_first,
+    params.from_second,
+    params.to_second,
+    refetchBarChart,
+    refetchObligatoryAverageData,
+  ]);
+
+  useEffect(() => {
     if (obligatoryAverageData) {
-      setResultArrayData([
+      const newData = [
         {
           name: `${formatDate(params.from_first || "")} - ${formatDate(
             params.to_first || ""
@@ -119,27 +109,10 @@ const ObligatoryReportIndicators = () => {
           )}`,
           value: obligatoryAverageData.oldest_range.average_per_month,
         },
-      ]);
-      console.log("THIS IS THE DATA USE USE EFFECT", obligatoryAverageData);
-    } else {
-      setResultArrayData([]);
+      ];
+      setResultArrayData(newData);
     }
-    console.log(
-      params.from_first,
-      params.to_first,
-      params.from_second,
-      params.to_second,
-      "INSIDE OBLIGATORY REPORT DATA"
-    );
-  }, [
-    params.from_first,
-    params.to_first,
-    params.from_second,
-    params.to_second,
-    obligatoryAverageData,
-    refetchBarChart,
-    refetchObligatoryAverageData,
-  ]); // Agregado barChartData como dependencia
+  }, [obligatoryAverageData]);
 
   return (
     <>

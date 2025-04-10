@@ -115,6 +115,11 @@ const VoluntaryReportIndicators = () => {
     });
   }
 
+  // Separate useEffect for refetching based on date params
+  useEffect(() => {
+    refetchBarChart();
+  }, [params.from, params.to, refetchBarChart]);
+
   useEffect(() => {
     refetchBarChart();
     if (barChartData) {
@@ -135,7 +140,7 @@ const VoluntaryReportIndicators = () => {
       setResultArrayData([]);
     }
     console.log(resultArrayData, "resultArrayData");
-  }, [params.from, params.to, barChartData, refetchBarChart,resultArrayData]); // Agregado barChartData como dependencia
+  }, [barChartData]); // Agregado barChartData como dependencia
 
   return (
     <>
@@ -223,8 +228,9 @@ const VoluntaryReportIndicators = () => {
                         Aun no se ha alcanzado la gestión del 90% de reportes
                         identificados.
                         <div className="mt-2 p-2 bg-purple-50 rounded-md border border-gray-200 shadow-sm text-center text-black">
+                          En rango de fechas del{" "}
                           {dateFormat(params.from || "", "PPP")}
-                          {"     "} al {"     "}
+                          {""} al {""}
                           {dateFormat(params.to || "", "PPP")}
                         </div>
                       </span>
