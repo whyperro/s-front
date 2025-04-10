@@ -198,13 +198,13 @@ export function getMenuList(
                   "SUPERUSER",
                 ],
                 submenus: [
-                  {
-                    href: "/transmandu/administracion/gestion_general/empresa",
-                    label: "Gestionar Empresa",
-                    active:
-                      pathname ===
-                      "/transmandu/administracion/gestion_general/empresa",
-                  },
+                //  {
+                //    href: "/transmandu/administracion/gestion_general/empresa",
+                //    label: "Gestionar Empresa",
+                //    active:
+                //      pathname ===
+                //      "/transmandu/administracion/gestion_general/empresa",
+                //  },
                   {
                     href: "/transmandu/administracion/gestion_general/proveedor",
                     label: "Gestionar Proveedor",

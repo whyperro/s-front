@@ -54,7 +54,7 @@ const formSchema = z.object({
     .max(100, {
       message: "La dirección tiene un máximo 100 caracteres.",
     }),
-  pay_credit_days: z
+  pay_credit_days: z.coerce
     .number({
       invalid_type_error: "Debe ingresar un número válido",
     })
