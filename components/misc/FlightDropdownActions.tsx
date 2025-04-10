@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FlightPaymentsModifiedForm } from "../forms/CreateFlightPaymentsForm";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -31,7 +30,6 @@ import { Separator } from "../ui/separator";
 
 const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
   const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [openPayment, setOpenPayment] = useState<boolean>(false);
   const [openFlight, setOpenFlight] = useState<boolean>(false);
   const router = useRouter();
   const { deleteFlight } = useDeleteFlight();
@@ -59,15 +57,6 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
           align="center"
           className="flex gap-2 justify-center"
         >
-          {flight.debt_status === "PAGADO" ? (
-            <DropdownMenuItem disabled>
-              <span className="text-green-500">Pagado</span>
-            </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem onClick={() => setOpenPayment(true)}>
-              <HandCoins className="size-5 text-green-500" />
-            </DropdownMenuItem>
-          )}
           <DropdownMenuItem onClick={() => setOpenDelete(true)}>
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
@@ -114,19 +103,6 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
               )}
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/*Dialog para registrar el pago de un vuelo*/}
-      <Dialog open={openPayment} onOpenChange={setOpenPayment}>
-        <DialogContent>
-          <DialogHeader className="text-center font-bold">
-            Registrar Pago
-          </DialogHeader>
-          <FlightPaymentsModifiedForm
-            flight={flight}
-            onClose={() => setOpenPayment(false)}
-          />
         </DialogContent>
       </Dialog>
 

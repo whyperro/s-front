@@ -11,7 +11,7 @@ const fetchCreditFlight = async (): Promise<Credit[]> => {
 
 export const useGetCreditFlight = () => {
   return useQuery<Credit[]>({
-    queryKey: ['credit-flight'],
+    queryKey: ['credit-payment'],
     queryFn: fetchCreditFlight,
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
