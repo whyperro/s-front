@@ -1,11 +1,4 @@
 import axiosInstance from "@/lib/axios";
-import {
-  ComponentArticle,
-  ConsumableArticle,
-  DispatchRequest,
-  Request,
-  VoluntaryReport,
-} from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -39,34 +32,35 @@ interface UpdateVoluntaryReportData {
   reporter_email?: string;
 }
 
-export const useCreateVoluntaryReport = () => {
-  const queryClient = useQueryClient();
-  const createMutation = useMutation({
-    mutationKey: ["voluntary-reports"],
-    mutationFn: async (data: VoluntaryReportData) => {
-      await axiosInstance.post("/transmandu/sms/voluntary-reports", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["voluntary-reports"] });
-      toast.success("¡Creado!", {
-        description: `El reporte voluntario ha sido creado correctamente.`,
-      });
-    },
-    onError: (error) => {
-      toast.error("Oops!", {
-        description: "No se pudo crear el reporte...",
-      });
-      console.log(error);
-    },
-  });
-  return {
-    createVoluntaryReport: createMutation,
+  export const useCreateVoluntaryReport = () => {
+    const queryClient = useQueryClient();
+    const createMutation = useMutation({
+      mutationKey: ["voluntary-reports"],
+      mutationFn: async (data: VoluntaryReportData) => {
+        const response = await axiosInstance.post("/transmandu/sms/voluntary-reports", data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        return response.data;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["voluntary-reports"] });
+        toast.success("¡Creado!", {
+          description: `El reporte voluntario ha sido creado correctamente.`,
+        });
+      },
+      onError: (error) => {
+        toast.error("Oops!", {
+          description: "No se pudo crear el reporte...",
+        });
+        console.log(error);
+      },
+    });
+    return {
+      createVoluntaryReport: createMutation,
+    };
   };
-};
 
 export const useDeleteVoluntaryReport = () => {
   const queryClient = useQueryClient();

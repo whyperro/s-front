@@ -43,7 +43,7 @@ export const useCreateDangerIdentification = () => {
   const createMutation = useMutation({
     mutationKey: ["danger-identifications/${id}"],
     mutationFn: async (data: DangerIdentificationData) => {
-      await axiosInstance.post(
+      const response = await axiosInstance.post(
         `/transmandu/sms/danger-identifications/${data.id}/${data.reportType}`,
         data,
         {
@@ -52,6 +52,7 @@ export const useCreateDangerIdentification = () => {
           },
         }
       );
+      return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
@@ -84,7 +85,9 @@ export const useDeleteDangerIdentification = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["danger-identifications"] });
-      queryClient.invalidateQueries({ queryKey: ["danger-identification-by-id"] });
+      queryClient.invalidateQueries({
+        queryKey: ["danger-identification-by-id"],
+      });
       toast.success("¡Eliminado!", {
         description: `¡La fuente de informacion ha sido eliminada correctamente!`,
       });
