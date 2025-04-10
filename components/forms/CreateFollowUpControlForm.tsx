@@ -7,10 +7,9 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 
-import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -33,7 +32,11 @@ import { useParams } from "next/navigation";
 import { Textarea } from "../ui/textarea";
 
 const FormSchema = z.object({
-  description: z.string(),
+  description: z
+    .string()
+    .min(3, { message: "La observacion debe tener al menos 3 caracteres" })
+    .max(75, { message: "La observacion no puede exceder los 75 caracteres" }),
+
   date: z
     .date()
     .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),

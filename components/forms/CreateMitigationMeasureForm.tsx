@@ -37,8 +37,15 @@ import { MitigationMeasure } from "@/types";
 
 const FormSchema = z.object({
   description: z.string().min(5),
-  implementation_supervisor: z.string().min(3),
-  implementation_responsible: z.string().min(3),
+  implementation_supervisor: z
+    .string()
+    .min(3, { message: "El supervisor debe tener al menos 3 caracteres" })
+    .max(19, { message: "El supervisor no puede exceder los 19 caracteres" }),
+  implementation_responsible: z
+    .string()
+    .min(3, { message: "El responsable debe tener al menos 3 caracteres" })
+    .max(23, { message: "El responsable no puede exceder los 23 caracteres" }),
+
   estimated_date: z
     .date()
     .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
