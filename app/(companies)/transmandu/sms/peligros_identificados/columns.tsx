@@ -58,7 +58,7 @@ export const columns: ColumnDef<DangerIdentification>[] = [
   {
     accessorKey: "consequence_to_evaluate",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Consecuencia a Evaluar" />
+      <DataTableColumnHeader filter column={column} title="Consecuencia a Evaluar" />
     ),
     cell: ({ row }) => {
       return (
@@ -71,7 +71,7 @@ export const columns: ColumnDef<DangerIdentification>[] = [
   {
     accessorKey: "information_source",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Fuente de Informacion" />
+      <DataTableColumnHeader filter column={column} title="Fuente de Informacion" />
     ),
     cell: ({ row }) => {
       return (

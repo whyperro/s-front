@@ -4,42 +4,27 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
 
-import { Checkbox } from "@/components/ui/checkbox";
-import Link from "next/link";
-import { FollowUpControl, MitigationMeasure, MitigationTable } from "@/types";
-import MitigationPlanPage from "./page";
-import MitigationTableDropdownActions from "@/components/misc/MitigationTableDropdownActions";
-import { useState } from "react";
-import MitigationMeasureList from "@/components/misc/MitigationMeasureList";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import FollowUpControlDropdownActions from "@/components/misc/FollowUpControlDropdownActions";
+import { FollowUpControl } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import FollowUpControlTableDropdownActions from "@/components/misc/FollowUpControlDropdownActions";
-import FollowUpControlDropdownActions from "@/components/misc/FollowUpControlDropdownActions";
 
 export const columns: ColumnDef<FollowUpControl>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Control" />
+      <DataTableColumnHeader column={column} title="Numero de Control" />
     ),
-    meta: { title: "Numero de Control" },
+    meta: { title: "Control" },
     cell: ({ row }) => {
-      return <div className="flex justify-center">{row.original.id}</div>;
+
+      return <div className="flex justify-center">{row.index + 1}</div>;
     },
   },
   {
     accessorKey: "description",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Descripcion" />
+      <DataTableColumnHeader column={column} title="Observacion" />
     ),
     meta: { title: "Control de Segumiento" },
     cell: ({ row }) => {

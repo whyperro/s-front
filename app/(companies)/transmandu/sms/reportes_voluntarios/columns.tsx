@@ -54,7 +54,7 @@ export const columns: ColumnDef<VoluntaryReport>[] = [
   {
     accessorKey: "report_date",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Fecha del reporte" />
+      <DataTableColumnHeader filter column={column} title="Fecha del reporte" />
     ),
     cell: ({ row }) => {
       return (

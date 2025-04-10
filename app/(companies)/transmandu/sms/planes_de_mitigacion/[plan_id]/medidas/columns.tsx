@@ -11,12 +11,14 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTrigger
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { MitigationMeasure } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { useTheme } from "next-themes";
 
 export const columns: ColumnDef<MitigationMeasure>[] = [
   {
@@ -83,9 +85,14 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
       const planId = row.original.mitigation_plan_id;
       const followUpControls = row.original.follow_up_control;
       const measureId = row.original.id;
+      const { theme } = useTheme();
       return (
         <>
-          <div className="flex flex-col justify-center h-10 bg-blue-300 rounded-full">
+          <Badge
+            className={
+              "flex flex-col justify-center h-8 bg-blue-300 rounded-full text-black"
+            }
+          >
             {followUpControls.length ? (
               <Dialog>
                 <DialogTrigger className="font-semibold">
@@ -128,10 +135,10 @@ export const columns: ColumnDef<MitigationMeasure>[] = [
               </Dialog>
             ) : (
               <div className="flex flex-col justify-center text-center">
-                Sin Controles Disponibles
+                Sin Control
               </div>
             )}
-          </div>
+          </Badge>
         </>
       );
     },
