@@ -424,6 +424,8 @@ export type Renting = {
   article: AdministrationArticle,
   aircraft: Aircraft,
   client: Client,
+  debt_status: "PENDIENTE" | "PAGADO",
+  bank_account: BankAccount,
 }
 
 export type Request = {

@@ -229,7 +229,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             control={form.control}
             name="cash_id"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Caja</FormLabel>
                 <Select
                   disabled={isCashesLoading}
@@ -260,7 +260,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             control={form.control}
             name="type"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Tipo de Transacción</FormLabel>
                 <Select
                   onValueChange={field.onChange}
@@ -284,7 +284,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
               control={form.control}
               name="vendor_id"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>Beneficiario</FormLabel>
                   <Select
                     disabled={isVendorLoading}
@@ -318,7 +318,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
               control={form.control}
               name="client_id"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>Cliente</FormLabel>
                   <Select
                     disabled={isClientLoading}
@@ -353,7 +353,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             control={form.control}
             name="account"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Cuenta</FormLabel>
                 <FormControl>
                   <Input placeholder="Ingrese la cuenta" {...field} />
@@ -366,7 +366,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             control={form.control}
             name="category"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Categoría</FormLabel>
                 <FormControl>
                   <Input placeholder="Ingrese la categoría" {...field} />
@@ -381,7 +381,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             control={form.control}
             name="sub_category"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Subcategoría</FormLabel>
                 <FormControl>
                   <Input placeholder="Ingrese la subcategoría" {...field} />
@@ -394,7 +394,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             control={form.control}
             name="sub_category_details"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Detalles</FormLabel>
                 <FormControl>
                   <Input placeholder="Ingrese los detalles" {...field} />
@@ -512,7 +512,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
           control={form.control}
           name="bank_account_id"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Cuenta de Banco</FormLabel>
               <Select
                 disabled={isAccLoading}

@@ -64,10 +64,10 @@ export function CreateAdministrationVendorForm({ onClose }: FormProps) {
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Nombre</FormLabel>
               <FormControl>
-                <Input placeholder="Ingresa el nombre" {...field} />
+                <Input placeholder="Ingrese el nombre" {...field} />
               </FormControl>
               <FormMessage className="text-xs"/>
             </FormItem>
@@ -77,7 +77,7 @@ export function CreateAdministrationVendorForm({ onClose }: FormProps) {
           control={form.control}
           name="phone"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Teléfono</FormLabel>
               <FormControl>
                 <Input                  
@@ -95,7 +95,7 @@ export function CreateAdministrationVendorForm({ onClose }: FormProps) {
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>E-mail</FormLabel>
               <FormControl>
                 <Input
@@ -112,10 +112,10 @@ export function CreateAdministrationVendorForm({ onClose }: FormProps) {
           control={form.control}
           name="address"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Dirección</FormLabel>
               <FormControl>
-                <Input placeholder="Ingresa la dirección" {...field} />
+                <Input placeholder="Ingrese la dirección" {...field} />
               </FormControl>
               <FormMessage className="text-xs"/>
             </FormItem>

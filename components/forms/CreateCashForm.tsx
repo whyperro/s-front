@@ -64,7 +64,7 @@ export function CreateCashForm({ onClose }: FormProps) {
             <FormItem>
               <FormLabel>Nombre</FormLabel>
               <FormControl>
-                <Input placeholder="Ingrese el nombre" {...field} />
+                <Input placeholder="Ingrese el nombre de la caja" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -77,7 +77,7 @@ export function CreateCashForm({ onClose }: FormProps) {
             <FormItem>
               <FormLabel>Total</FormLabel>
               <FormControl>
-                <Input placeholder="Ingresa el total" {...field} />
+                <Input placeholder="Monto de la caja" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

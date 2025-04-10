@@ -95,7 +95,7 @@ export function CreateClientForm({ onClose }: FormProps) {
             control={form.control}
             name="dni"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>DNI</FormLabel>
                 <FormControl>
                   <Input placeholder="Ej: V-12345678" {...field} />
@@ -108,7 +108,7 @@ export function CreateClientForm({ onClose }: FormProps) {
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Nombre</FormLabel>
                 <FormControl>
                   <Input placeholder="Ingresa el nombre" {...field} />
@@ -123,7 +123,7 @@ export function CreateClientForm({ onClose }: FormProps) {
             control={form.control}
             name="phone"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Teléfono</FormLabel>
                 <FormControl>
                   <Input placeholder="Ej: +584247000001" {...field} />
@@ -136,7 +136,7 @@ export function CreateClientForm({ onClose }: FormProps) {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>E-mail</FormLabel>
                 <FormControl>
                   <Input
@@ -155,7 +155,7 @@ export function CreateClientForm({ onClose }: FormProps) {
             control={form.control}
             name="address"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Dirección</FormLabel>
                 <FormControl className="w-[420px]">
                   <Input placeholder="Ingresa la dirección" {...field} />
@@ -169,11 +169,11 @@ export function CreateClientForm({ onClose }: FormProps) {
           control={form.control}
           name="pay_credit_days"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Días para Pagar</FormLabel>
               <FormControl>
                 <Input
-                  type="string"
+                  type="number"
                   placeholder="Ingrese un plazo (0-730 días)"
                   min={0}
                   max={730} // Máximo 730 días

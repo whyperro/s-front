@@ -171,7 +171,7 @@ export function SellForm({ onClose, article_id }: FormProps) {
             control={form.control}
             name="client_id"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Cliente</FormLabel>
                 <Select
                   disabled={isClientsLoading}
@@ -204,7 +204,7 @@ export function SellForm({ onClose, article_id }: FormProps) {
           control={form.control}
           name="concept"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Concepto</FormLabel>
               <FormControl>
                 <Input placeholder="Detalles..." {...field} />
@@ -218,7 +218,7 @@ export function SellForm({ onClose, article_id }: FormProps) {
             control={form.control}
             name="total_price"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Precio</FormLabel>
                 <FormControl>
                   <Input placeholder="Ingresa el precio" {...field} />
@@ -231,7 +231,7 @@ export function SellForm({ onClose, article_id }: FormProps) {
             control={form.control}
             name="payed_amount"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Monto Pagado</FormLabel>
                 <FormControl>
                   <Input placeholder="Ingresa el monto" {...field} />
@@ -245,7 +245,7 @@ export function SellForm({ onClose, article_id }: FormProps) {
           control={form.control}
           name="reference_pick"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Referencia</FormLabel>
               <FormControl>
                 <Input placeholder="Capture o num. ref" {...field} />

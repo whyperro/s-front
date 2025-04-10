@@ -25,7 +25,7 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useGetAircrafts } from "@/hooks/administracion/useGetAircrafts";
@@ -34,6 +34,7 @@ import { useGetAdministrationArticle } from "@/hooks/administracion/useGetAdmini
 import { Calendar } from "../ui/calendar";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateRenting } from "@/actions/administracion/renta/actions";
+import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 
 const formSchema = z
   .object({
@@ -64,6 +65,10 @@ const formSchema = z
         message: "El monto debe ser un número válido.",
       }
     ),
+    bank_account_id: z.string().optional(),
+    pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"], {
+      message: "Debe elegir un método de pago.",
+    }),
     start_date: z.date({
       required_error: "La fecha de inicio es requerida",
     }),
@@ -134,6 +139,7 @@ export function CreateRentingForm({ onClose }: FormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
+  const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     createRenting.mutate(values, {
@@ -358,7 +364,7 @@ export function CreateRentingForm({ onClose }: FormProps) {
             control={form.control}
             name="price"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Precio</FormLabel>
                 <FormControl>
                   <Input placeholder="Ingrese el precio" {...field} />
@@ -371,7 +377,7 @@ export function CreateRentingForm({ onClose }: FormProps) {
             control={form.control}
             name="payed_amount"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Monto Pagado</FormLabel>
                 <FormControl>
                   <Input placeholder="Ingrese el monto" {...field} />
@@ -384,9 +390,73 @@ export function CreateRentingForm({ onClose }: FormProps) {
         <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
+            name="pay_method"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Método de Pago</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione el tipo de vuelo" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="EFECTIVO">Efectivo</SelectItem>
+                    <SelectItem value="TRANSFERENCIA">Transferencia</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+          {form.watch("pay_method") !== "EFECTIVO" && (
+            <FormField
+              control={form.control}
+              name="bank_account_id"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Cuenta de Banco</FormLabel>
+                  <Select
+                    disabled={isAccLoading}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={
+                            isAccLoading ? (
+                              <Loader2 className="animate-spin" />
+                            ) : (
+                              "Seleccione el tipo..."
+                            )
+                          }
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {accounts &&
+                        accounts.map((acc) => (
+                          <SelectItem value={acc.id.toString()} key={acc.id}>
+                            {acc.name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+        </div>
+        <div className="flex gap-2 items-center justify-center">
+          <FormField
+            control={form.control}
             name="client_id"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Cliente</FormLabel>
                 <Select
                   disabled={isClientsLoading}
@@ -394,7 +464,7 @@ export function CreateRentingForm({ onClose }: FormProps) {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger className="w-[250px]">
+                    <SelectTrigger>
                       <SelectValue placeholder="Seleccione" />
                     </SelectTrigger>
                   </FormControl>
@@ -419,7 +489,7 @@ export function CreateRentingForm({ onClose }: FormProps) {
           control={form.control}
           name="description"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Descripción</FormLabel>
               <FormControl>
                 <Input placeholder="Ingrese alguna descripción" {...field} />

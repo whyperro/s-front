@@ -189,7 +189,7 @@ export function FlightForm({ onClose }: FormProps) {
             control={form.control}
             name="client_id"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Cliente</FormLabel>
                 <Select
                   disabled={isClientsLoading}
@@ -276,7 +276,7 @@ export function FlightForm({ onClose }: FormProps) {
             control={form.control}
             name="route_id"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Ruta</FormLabel>
                 <Select
                   disabled={isRouteLoading}
@@ -305,7 +305,7 @@ export function FlightForm({ onClose }: FormProps) {
             control={form.control}
             name="aircraft_id"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Aeronave</FormLabel>
                 <Select
                   disabled={isAircraftLoading}
@@ -364,7 +364,7 @@ export function FlightForm({ onClose }: FormProps) {
               control={form.control}
               name="fee"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>Tarifa</FormLabel>
                   <FormControl>
                     <AmountInput {...field} />
@@ -391,7 +391,7 @@ export function FlightForm({ onClose }: FormProps) {
             control={form.control}
             name="total_amount"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Precio a Cobrar</FormLabel>
                 <FormControl>
                   <AmountInput
@@ -417,7 +417,7 @@ export function FlightForm({ onClose }: FormProps) {
             control={form.control}
             name="debt_status"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Status</FormLabel>
                 <Select
                   onValueChange={field.onChange}
@@ -441,7 +441,7 @@ export function FlightForm({ onClose }: FormProps) {
               control={form.control}
               name="payed_amount"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>Monto Pagado</FormLabel>
                   <FormControl>
                     <AmountInput
@@ -463,7 +463,7 @@ export function FlightForm({ onClose }: FormProps) {
             control={form.control}
             name="pay_method"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Método de Pago</FormLabel>
                 <Select
                   onValueChange={field.onChange}
@@ -487,7 +487,7 @@ export function FlightForm({ onClose }: FormProps) {
               control={form.control}
               name="bank_account_id"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>Cuenta de Banco</FormLabel>
                   <Select
                     disabled={isAccLoading}
@@ -526,7 +526,7 @@ export function FlightForm({ onClose }: FormProps) {
           control={form.control}
           name="details"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Detalle</FormLabel>
               <FormControl>
                 <Input placeholder="Cantidad de personas o Kg" {...field} />

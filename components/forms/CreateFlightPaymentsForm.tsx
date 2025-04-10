@@ -130,7 +130,7 @@ export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
             control={form.control}
             name="pay_method"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Método de Pago</FormLabel>
                 <Select
                   onValueChange={field.onChange}
@@ -154,7 +154,7 @@ export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
               control={form.control}
               name="bank_account_id"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>Cuenta de Banco</FormLabel>
                   <Select
                     disabled={isAccLoading}
@@ -193,7 +193,7 @@ export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
           control={form.control}
           name="payed_amount"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Cantidad Pagada</FormLabel>
               <FormControl>
                 <Input placeholder="Ingrese el monto cancelado" {...field} />
@@ -262,7 +262,7 @@ export function FlightPaymentsModifiedForm({ onClose, flight }: FormProps) {
           control={form.control}
           name="pay_description"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Descripción</FormLabel>
               <FormControl>
                 <Input placeholder="Detalle/Descripción" {...field} />

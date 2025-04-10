@@ -128,12 +128,12 @@ export function CreateAircraftForm({ onClose }: FormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex gap-2">
+        <div className="flex flex-col md:flex-row gap-2">
           <FormField
             control={form.control}
             name="serial"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Serial</FormLabel>
                 <FormControl>
                   <Input placeholder="Ingrese el código" {...field} />
@@ -146,7 +146,7 @@ export function CreateAircraftForm({ onClose }: FormProps) {
             control={form.control}
             name="acronym"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Matrícula</FormLabel>
                 <FormControl>
                   <Input placeholder="Ingrese la Matrícula" {...field} />
@@ -161,7 +161,7 @@ export function CreateAircraftForm({ onClose }: FormProps) {
             control={form.control}
             name="model"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Modelo</FormLabel>
                 <FormControl>
                   <Input placeholder="Modelo de la Aeronave" {...field} />
@@ -174,7 +174,7 @@ export function CreateAircraftForm({ onClose }: FormProps) {
             control={form.control}
             name="location_id"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Ubicacion</FormLabel>
                 <Select
                   onValueChange={field.onChange}
@@ -207,7 +207,7 @@ export function CreateAircraftForm({ onClose }: FormProps) {
             control={form.control}
             name="owner"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Dueño</FormLabel>
                 <FormControl>
                   <Input placeholder="Nombre del dueño" {...field} />
@@ -220,7 +220,7 @@ export function CreateAircraftForm({ onClose }: FormProps) {
             control={form.control}
             name="brand"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Marca</FormLabel>
                 <FormControl>
                   <Input placeholder="Ingrese la marca" {...field} />
@@ -235,7 +235,7 @@ export function CreateAircraftForm({ onClose }: FormProps) {
             control={form.control}
             name="fabricant"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Fabricante</FormLabel>
                 <FormControl>
                   <Input placeholder="Ingrese el fabricante" {...field} />
@@ -248,7 +248,7 @@ export function CreateAircraftForm({ onClose }: FormProps) {
             control={form.control}
             name="fabricant_date"
             render={({ field }) => (
-              <FormItem className="flex flex-col mt-2.5">
+              <FormItem className="flex flex-col mt-2.5 w-full">
                 <FormLabel>Fecha de Fabricación</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -256,7 +256,7 @@ export function CreateAircraftForm({ onClose }: FormProps) {
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
+                          "w-full pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >

@@ -77,7 +77,7 @@ export function CreateAdministrationArticleForm({ onClose }: FormProps) {
           control={form.control}
           name="serial"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Serial</FormLabel>
               <FormControl>
                 <Input placeholder="Ingrese el serial" {...field} />
@@ -90,7 +90,7 @@ export function CreateAdministrationArticleForm({ onClose }: FormProps) {
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Nombre</FormLabel>
               <FormControl>
                 <Input placeholder="Ingresa el nombre" {...field} />
@@ -105,7 +105,7 @@ export function CreateAdministrationArticleForm({ onClose }: FormProps) {
           control={form.control}
           name="status"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Estado</FormLabel>
               <Select
                   onValueChange={field.onChange}
@@ -129,7 +129,7 @@ export function CreateAdministrationArticleForm({ onClose }: FormProps) {
           control={form.control}
           name="price"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Precio</FormLabel>
               <FormControl>
                 <Input placeholder="Ingrese el precio" {...field} />
@@ -144,7 +144,7 @@ export function CreateAdministrationArticleForm({ onClose }: FormProps) {
           control={form.control}
           name="brand"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Marca</FormLabel>
               <FormControl>
                 <Input placeholder="Ingrese la marca" {...field} />
@@ -157,7 +157,7 @@ export function CreateAdministrationArticleForm({ onClose }: FormProps) {
           control={form.control}
           name="type"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Tipo</FormLabel>
               <FormControl>
                 <Input placeholder="Ingrese el tipo" {...field} />
