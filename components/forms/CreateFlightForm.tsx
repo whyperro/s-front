@@ -24,6 +24,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../ui/command";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -185,34 +194,71 @@ export function FlightForm({ onClose }: FormProps) {
         className="flex flex-col space-y-3"
       >
         <div className="flex gap-2 items-center justify-center">
-          <FormField
+        <FormField
             control={form.control}
             name="client_id"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="w-full flex flex-col space-y-3">
                 <FormLabel>Cliente</FormLabel>
-                <Select
-                  disabled={isClientsLoading}
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione un Cliente" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {clients &&
-                      clients.map((client) => (
-                        <SelectItem
-                          key={client.id}
-                          value={client.id.toString()}
-                        >
-                          {client.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        disabled={isClientsLoading}
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {isClientsLoading && (
+                          <Loader2 className="size-4 animate-spin mr-2" />
+                        )}
+                        {field.value
+                          ? clients?.find(
+                              (client) => client.id.toString() === field.value
+                            )?.name
+                          : "Seleccione un cliente..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0">
+                    <Command>
+                      <CommandInput placeholder="Busque un cliente..." />
+                      <CommandList>
+                        <CommandEmpty className="text-sm p-2 text-center">
+                          No se ha encontrado ningún cliente.
+                        </CommandEmpty>
+                        <CommandGroup>
+                          {clients?.map((client) => (
+                            <CommandItem
+                              value={client.name}
+                              key={client.id}
+                              onSelect={() => {
+                                form.setValue(
+                                  "client_id",
+                                  client.id.toString()
+                                );
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  client.id.toString() === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {client.name}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
                 <FormMessage />
               </FormItem>
             )}

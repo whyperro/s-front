@@ -10,7 +10,7 @@ export const useGetFlights = () => {
   const from = searchParams.get("from");
   const to = searchParams.get("to");
   return useQuery<Flight[], Error>({
-    queryKey: ['flights', from, to],
+    queryKey: ['credit-payment', from, to],
     queryFn: async () => {
       const  {data}  = await axiosInstance.get('/transmandu/flights', {
       params: {

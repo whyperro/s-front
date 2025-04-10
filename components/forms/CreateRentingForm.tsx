@@ -11,17 +11,26 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../ui/command";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
@@ -292,74 +301,128 @@ export function CreateRentingForm({ onClose }: FormProps) {
           />
           {form.watch("type") !== "ARTICULO" && (
             <FormField
-            control={form.control}
-            name="aircraft_id"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Aeronave</FormLabel>
-                <Select
-                  disabled={isAircraftLoading}
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione un Avión" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {aircrafts &&
-                      aircrafts
-                        .filter((aircraft) => aircraft.status === "EN POSESION")
-                        .map((aircraft) => (
-                          <SelectItem
-                            key={aircraft.id}
-                            value={aircraft.id.toString()}
-                          >
-                            {aircraft.brand} - {aircraft.acronym}
-                          </SelectItem>
-                        ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              control={form.control}
+              name="aircraft_id"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Aeronave</FormLabel>
+                  <Select
+                    disabled={isAircraftLoading}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccione un Avión" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {aircrafts &&
+                        aircrafts
+                          .filter(
+                            (aircraft) => aircraft.status === "EN POSESION"
+                          )
+                          .map((aircraft) => (
+                            <SelectItem
+                              key={aircraft.id}
+                              value={aircraft.id.toString()}
+                            >
+                              {aircraft.brand} - {aircraft.acronym}
+                            </SelectItem>
+                          ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
           {form.watch("type") !== "AERONAVE" && (
             <FormField
-            control={form.control}
-            name="article_id"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Artículo</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione un artículo" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {articles &&
-                      articles
-                        .filter((article) => article.status === "EN POSESION")
-                        .map((article) => (
-                          <SelectItem
-                            key={article.id}
-                            value={article.id.toString()}
-                          >
-                            {article.brand} - {article.name} ({article.serial})
-                          </SelectItem>
-                        ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              control={form.control}
+              name="article_id"
+              render={({ field }) => (
+                <FormItem className="w-full flex flex-col space-y-3">
+                  <FormLabel>Artículo</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            <p>
+                              {
+                                articles?.find(
+                                  (article) =>
+                                    article.id.toString() === field.value
+                                )?.serial
+                              }{" "}
+                              -{" "}
+                              {
+                                articles?.find(
+                                  (article) =>
+                                    article.id.toString() === field.value
+                                )?.name
+                              }
+                            </p>
+                          ) : (
+                            "Seleccione un artículo..."
+                          )}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0">
+                      <Command>
+                        <CommandInput placeholder="Busque un artículo..." />
+                        <CommandList>
+                          <CommandEmpty className="text-sm p-2 text-center">
+                            No se ha encontrado ningún artículo.
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {articles
+                              ?.filter(
+                                (article) => article.status === "EN POSESION"
+                              )
+                              ?.map((article) => (
+                                <CommandItem
+                                  value={`${article.serial} ${article.name}`}
+                                  key={article.id}
+                                  onSelect={() => {
+                                    form.setValue(
+                                      "article_id",
+                                      article.id.toString()
+                                    );
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      article.id.toString() === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  <p>
+                                    {article.serial} - {article.name}
+                                  </p>
+                                </CommandItem>
+                              ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
         </div>
         <div className="flex gap-2 items-center justify-center">
@@ -459,30 +522,67 @@ export function CreateRentingForm({ onClose }: FormProps) {
             control={form.control}
             name="client_id"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="w-full flex flex-col space-y-3">
                 <FormLabel>Cliente</FormLabel>
-                <Select
-                  disabled={isClientsLoading}
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {clients &&
-                      clients.map((client) => (
-                        <SelectItem
-                          key={client.id}
-                          value={client.id.toString()}
-                        >
-                          {client.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        disabled={isClientsLoading}
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {isClientsLoading && (
+                          <Loader2 className="size-4 animate-spin mr-2" />
+                        )}
+                        {field.value
+                          ? clients?.find(
+                              (client) => client.id.toString() === field.value
+                            )?.name
+                          : "Seleccione un cliente..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0">
+                    <Command>
+                      <CommandInput placeholder="Busque un cliente..." />
+                      <CommandList>
+                        <CommandEmpty className="text-sm p-2 text-center">
+                          No se ha encontrado ningún cliente.
+                        </CommandEmpty>
+                        <CommandGroup>
+                          {clients?.map((client) => (
+                            <CommandItem
+                              value={client.name}
+                              key={client.id}
+                              onSelect={() => {
+                                form.setValue(
+                                  "client_id",
+                                  client.id.toString()
+                                );
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  client.id.toString() === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {client.name}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
                 <FormMessage />
               </FormItem>
             )}
