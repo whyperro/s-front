@@ -101,7 +101,7 @@ export const columns: ColumnDef<Renting>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.aircraft.acronym
+          {row.original.aircraft
             ? `${row.original.aircraft.acronym}-${row.original.aircraft.serial}`
             : "N/A"}
         </span>
