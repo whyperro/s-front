@@ -27,18 +27,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetInformationSources } from "@/hooks/sms/useGetInformationSource";
-import { useGetVoluntaryReportById } from "@/hooks/sms/useGetVoluntaryReportById";
+import { cn } from "@/lib/utils";
 import { DangerIdentification } from "@/types";
 import { Separator } from "@radix-ui/react-select";
-import { useEffect, useState } from "react";
-import { Textarea } from "../ui/textarea";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { CalendarIcon, Loader2 } from "lucide-react";
-import { Calendar } from "../ui/calendar";
-import { es } from "date-fns/locale";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-
+import { es } from "date-fns/locale";
+import { CalendarIcon, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Calendar } from "../ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Textarea } from "../ui/textarea";
+import { useRouter } from "next/navigation";
+import router from "next/router";
 // HAY DATOS QUE VIENEN DEL REPORTE
 // COMO FECHA DE REPORTE E IDENTIFICACION
 // A LADO DEL CODIGO TENDRA EL TIPO DE REPORTE (RVP-RSO) DETECTADO DEL ORIGEN DEL REPORTE
@@ -99,8 +99,7 @@ const FormSchema = z.object({
         return parts.every((parts) => parts.length <= 130);
       },
       {
-        message:
-          "Cada consecuencia no debe exceder los 130 caracteres.",
+        message: "Cada consecuencia no debe exceder los 130 caracteres.",
       }
     ),
   consequence_to_evaluate: z
@@ -131,8 +130,7 @@ const FormSchema = z.object({
         return parts.every((parts) => parts.length <= 120);
       },
       {
-        message:
-          "El porque no debe exceder los 120 caracteres.",
+        message: "El porque no debe exceder los 120 caracteres.",
       }
     ),
 
@@ -163,7 +161,7 @@ export default function CreateDangerIdentificationForm({
   const { createDangerIdentification } = useCreateDangerIdentification();
   const { updateDangerIdentification } = useUpdateDangerIdentification();
   const [defaultValuesLoaded, setDefaultValuesLoaded] = useState(false);
-
+  const router = useRouter();
   const AREAS = [
     "OPERACIONES",
     "MANTENIMIENTO",
@@ -241,11 +239,17 @@ export default function CreateDangerIdentificationForm({
       console.log("DANGER IDETIFICATION VALUES", values);
       await updateDangerIdentification.mutateAsync(values);
     } else {
-      await createDangerIdentification.mutateAsync({
+      
+      const response = await createDangerIdentification.mutateAsync({
         ...data,
         id,
         reportType: reportType,
       });
+      router.push(
+        `/transmandu/sms/peligros_identificados/${response.danger_identification_id}`
+      );
+
+
     }
 
     onClose();
