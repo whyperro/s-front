@@ -9,6 +9,7 @@ import { ArrowLeft, Loader2, CreditCard } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 import { formatCurrency } from "@/lib/utils"
 import { useGetCreditStatisticsRentings } from "@/hooks/administracion/creditos/useGetCreditStatisticsRentings"
+import { DataTablePagination } from "@/components/tables/DataTablePagination"
 
 const CreditStatisticsRentingPage = () => {
   const router = useRouter()
@@ -299,6 +300,7 @@ const CreditStatisticsRentingPage = () => {
                 </TableBody>
               </Table>
             </div>
+           
           </CardContent>
           <CardFooter className="flex justify-end">
             <Button variant="outline" onClick={() => setShowCreditsTable(false)}>

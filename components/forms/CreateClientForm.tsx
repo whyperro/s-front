@@ -170,7 +170,7 @@ export function CreateClientForm({ onClose }: FormProps) {
           name="pay_credit_days"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel>Días para Pagar</FormLabel>
+              <FormLabel>Días de Crédito</FormLabel>
               <FormControl>
                 <Input
                   type="number"

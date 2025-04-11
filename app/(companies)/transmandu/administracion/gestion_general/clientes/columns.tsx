@@ -78,9 +78,9 @@ export const columns: ColumnDef<Client>[] = [
   {
     accessorKey: "pay_credit_days",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Días Para Pagar" />
+      <DataTableColumnHeader filter column={column} title="Días de Crédito" />
     ),
-    meta: { title: "Días Para Pagar" },
+    meta: { title: "Días de Crédito" },
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">

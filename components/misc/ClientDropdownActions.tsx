@@ -183,7 +183,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
 
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-muted-foreground">
-                  Días para pagar
+                  Días de Crédito 
                 </h3>
                 <p className="text-lg font-semibold">{clientDetails.pay_credit_days}</p>
                 <Separator />
