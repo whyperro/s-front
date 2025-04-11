@@ -10,7 +10,7 @@ export const useCreateFlight = () => {
             await axiosInstance.post('/transmandu/flights', data)
           },
         onSuccess: () => {
-            queryFlight.invalidateQueries({queryKey: ['flights']})
+            queryFlight.invalidateQueries({queryKey: ['credit-flight-payment']})
             toast("¡Creado!", {
                 description: `¡El vuelo se ha creado correctamente!`
             })
@@ -38,7 +38,7 @@ export const useDeleteFlight = () => {
         },
       onSuccess: () => {
 
-          queryFlight.invalidateQueries({queryKey: ['flights']})
+          queryFlight.invalidateQueries({queryKey: ['credit-flight-payment']})
           toast.success("¡Eliminado!", {
               description: `¡El registro del vuelo ha sido eliminado correctamente!`
           })

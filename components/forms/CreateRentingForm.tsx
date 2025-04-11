@@ -169,7 +169,7 @@ export function CreateRentingForm({ onClose }: FormProps) {
             control={form.control}
             name="start_date"
             render={({ field }) => (
-              <FormItem className="flex flex-col mt-2.5">
+              <FormItem className="flex flex-col gap-2 w-full">
                 <FormLabel>Fecha Inicio</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -177,14 +177,12 @@ export function CreateRentingForm({ onClose }: FormProps) {
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-[200px] pl-3 text-left font-normal",
+                          "w-full pl-2 text-left font-normal", // Cambiado a w-full
                           !field.value && "text-muted-foreground"
                         )}
                       >
                         {field.value ? (
-                          format(field.value, "PPP", {
-                            locale: es,
-                          })
+                          format(field.value, "PPP", { locale: es })
                         ) : (
                           <span>Seleccione</span>
                         )}
@@ -225,7 +223,7 @@ export function CreateRentingForm({ onClose }: FormProps) {
             control={form.control}
             name="deadline"
             render={({ field }) => (
-              <FormItem className="flex flex-col mt-2.5">
+              <FormItem className="flex flex-col gap-2 w-full">
                 <FormLabel>Fecha Límite</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -299,130 +297,137 @@ export function CreateRentingForm({ onClose }: FormProps) {
               </FormItem>
             )}
           />
-          {form.watch("type") !== "ARTICULO" && (
-            <FormField
-              control={form.control}
-              name="aircraft_id"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Aeronave</FormLabel>
-                  <Select
-                    disabled={isAircraftLoading}
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccione un Avión" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {aircrafts &&
-                        aircrafts
-                          .filter(
-                            (aircraft) => aircraft.status === "EN POSESION"
-                          )
-                          .map((aircraft) => (
-                            <SelectItem
-                              key={aircraft.id}
-                              value={aircraft.id.toString()}
-                            >
-                              {aircraft.brand} - {aircraft.acronym}
-                            </SelectItem>
-                          ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-          {form.watch("type") !== "AERONAVE" && (
-            <FormField
-              control={form.control}
-              name="article_id"
-              render={({ field }) => (
-                <FormItem className="w-full flex flex-col space-y-3">
-                  <FormLabel>Artículo</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            "justify-between",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            <p>
-                              {
-                                articles?.find(
-                                  (article) =>
-                                    article.id.toString() === field.value
-                                )?.serial
-                              }{" "}
-                              -{" "}
-                              {
-                                articles?.find(
-                                  (article) =>
-                                    article.id.toString() === field.value
-                                )?.name
-                              }
-                            </p>
-                          ) : (
-                            "Seleccione un artículo..."
-                          )}
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="p-0">
-                      <Command>
-                        <CommandInput placeholder="Busque un artículo..." />
-                        <CommandList>
-                          <CommandEmpty className="text-sm p-2 text-center">
-                            No se ha encontrado ningún artículo.
-                          </CommandEmpty>
-                          <CommandGroup>
-                            {articles
-                              ?.filter(
-                                (article) => article.status === "EN POSESION"
+
+          {/* Mostrar solo cuando hay un tipo seleccionado */}
+          {form.watch("type") && (
+            <>
+              {form.watch("type") !== "ARTICULO" && (
+                <FormField
+                  control={form.control}
+                  name="aircraft_id"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col space-y-3">
+                      <FormLabel>Aeronave</FormLabel>
+                      <Select
+                        disabled={isAircraftLoading}
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Seleccione un Avión" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {aircrafts &&
+                            aircrafts
+                              .filter(
+                                (aircraft) => aircraft.status === "EN POSESION"
                               )
-                              ?.map((article) => (
-                                <CommandItem
-                                  value={`${article.serial} ${article.name}`}
-                                  key={article.id}
-                                  onSelect={() => {
-                                    form.setValue(
-                                      "article_id",
-                                      article.id.toString()
-                                    );
-                                  }}
+                              .map((aircraft) => (
+                                <SelectItem
+                                  key={aircraft.id}
+                                  value={aircraft.id.toString()}
                                 >
-                                  <Check
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      article.id.toString() === field.value
-                                        ? "opacity-100"
-                                        : "opacity-0"
-                                    )}
-                                  />
-                                  <p>
-                                    {article.serial} - {article.name}
-                                  </p>
-                                </CommandItem>
+                                  {aircraft.brand} - {aircraft.acronym}
+                                </SelectItem>
                               ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               )}
-            />
+              {form.watch("type") !== "AERONAVE" && (
+                <FormField
+                  control={form.control}
+                  name="article_id"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col space-y-3 w-full">
+                      <FormLabel>Artículo</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                <p>
+                                  {
+                                    articles?.find(
+                                      (article) =>
+                                        article.id.toString() === field.value
+                                    )?.serial
+                                  }{" "}
+                                  -{" "}
+                                  {
+                                    articles?.find(
+                                      (article) =>
+                                        article.id.toString() === field.value
+                                    )?.name
+                                  }
+                                </p>
+                              ) : (
+                                "Seleccione un artículo..."
+                              )}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="p-0">
+                          <Command>
+                            <CommandInput placeholder="Busque un artículo..." />
+                            <CommandList>
+                              <CommandEmpty className="text-sm p-2 text-center">
+                                No se ha encontrado ningún artículo.
+                              </CommandEmpty>
+                              <CommandGroup>
+                                {articles
+                                  ?.filter(
+                                    (article) =>
+                                      article.status === "EN POSESION"
+                                  )
+                                  ?.map((article) => (
+                                    <CommandItem
+                                      value={`${article.serial} ${article.name}`}
+                                      key={article.id}
+                                      onSelect={() => {
+                                        form.setValue(
+                                          "article_id",
+                                          article.id.toString()
+                                        );
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          article.id.toString() === field.value
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      <p>
+                                        {article.serial} - {article.name}
+                                      </p>
+                                    </CommandItem>
+                                  ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+            </>
           )}
         </div>
         <div className="flex gap-2 items-center justify-center">

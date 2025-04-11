@@ -328,8 +328,8 @@ const IncomeDashboard = () => {
                   </TableBody>
                   <TableCaption>
                     <div className="flex justify-between items-center">
-                      <span>Total: {monthMovements.length} movimientos</span>
-                      <span className="font-medium text-emerald-600">
+                      <span className="text-center pl-5 pb-5">Total: {monthMovements.length} movimientos</span>
+                      <span className="font-medium text-emerald-600 text-center pr-8 pb-5">
                         Suma: $
                         {monthMovements
                           .reduce(

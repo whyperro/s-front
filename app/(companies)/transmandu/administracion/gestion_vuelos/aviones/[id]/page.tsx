@@ -30,8 +30,6 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { format, parseISO } from "date-fns";
-import { es } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -529,8 +527,8 @@ export default function AircraftReportPage() {
                   </TableBody>
                   <TableCaption>
                     <div className="flex justify-between items-center">
-                      <span style={{ textAlign: "center", paddingLeft: "30px" }}> Total: {flightsData.length} vuelos</span>
-                      <span style={{ textAlign: "center", paddingRight: "50px" }} className="font-medium text-emerald-600">
+                      <span className="text-center pl-5 pb-5"> Total: {flightsData.length} vuelos</span>
+                      <span className="font-medium text-emerald-600 text-center pr-8 pb-5">
                         Ganancias: $
                         {flightsData
                           .reduce(
