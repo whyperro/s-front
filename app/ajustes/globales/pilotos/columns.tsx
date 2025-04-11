@@ -12,6 +12,7 @@ export const columns: ColumnDef<Pilot>[] = [
   {
     id: "select",
     header: ({ table }) => (
+      
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
@@ -63,7 +64,7 @@ export const columns: ColumnDef<Pilot>[] = [
     meta: { title: "Apellido" },
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
+        <span className="font-bold text-center">
           {row.original.last_name}
         </span>
       </div>
@@ -72,7 +73,7 @@ export const columns: ColumnDef<Pilot>[] = [
   {
     accessorKey: "license_number",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nro. de Licencia" />
+      <DataTableColumnHeader filter column={column} title="Nro. de Licencia" />
     ),
     meta: { title: "Nro. Licencia" },
     cell: ({ row }) => (
@@ -87,7 +88,7 @@ export const columns: ColumnDef<Pilot>[] = [
   {
     accessorKey: "phone",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Telefono" />
+      <DataTableColumnHeader filter column={column} title="Telefono" />
     ),
     meta: { title: "Telefono" },
     cell: ({ row }) => (
@@ -101,7 +102,7 @@ export const columns: ColumnDef<Pilot>[] = [
   {
     accessorKey: "email",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Correo Electronico" />
+      <DataTableColumnHeader filter column={column} title="Correo Electronico" />
     ),
     meta: { title: "Email" },
     cell: ({ row }) => (
