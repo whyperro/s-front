@@ -198,7 +198,7 @@ export function FlightForm({ onClose }: FormProps) {
             control={form.control}
             name="client_id"
             render={({ field }) => (
-              <FormItem className="w-full flex flex-col space-y-3">
+              <FormItem className="w-full space-y-3">
                 <FormLabel>Cliente</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -267,7 +267,7 @@ export function FlightForm({ onClose }: FormProps) {
             control={form.control}
             name="date"
             render={({ field }) => (
-              <FormItem className="flex flex-col mt-2.5">
+              <FormItem>
                 <FormLabel>Fecha</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -275,7 +275,7 @@ export function FlightForm({ onClose }: FormProps) {
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-[210px] pl-3 text-left font-normal",
+                          "w-full pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >

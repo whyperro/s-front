@@ -11,7 +11,7 @@ const fetchCreditRent = async (): Promise<Credit[]> => {
 
 export const useGetCreditRent = () => {
   return useQuery<Credit[]>({
-    queryKey: ['credit-payment'],
+    queryKey: ['credit-rent-payment'],
     queryFn: fetchCreditRent,
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
