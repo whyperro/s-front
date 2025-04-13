@@ -182,8 +182,6 @@ export function CreateUserForm() {
 
   const isRoleSelected = (value: string) => selectedRoles.includes(value);
 
-  console.log(form.watch("companies_locations"))
-
   return (
     <Form {...form}>
 

@@ -6,7 +6,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useCreateRequisition } from "@/actions/compras/requisiciones/actions"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "@/contexts/AuthContext"
-import { useGetAircrafts } from "@/hooks/planificacion/useGetAircrafts"
+import { useGetMaintenanceAircrafts } from "@/hooks/planificacion/useGetMaintenanceAircrafts"
 import { useGetWorkOrderEmployees } from "@/hooks/planificacion/useGetWorkOrderEmployees"
 import { useGetWorkOrders } from "@/hooks/planificacion/useGetWorkOrders"
 import { useGetBatchesByLocationId } from "@/hooks/useGetBatchesByLocationId"
@@ -72,7 +72,7 @@ export function CreateRequisitionForm({ onClose }: FormProps) {
 
   const { data: employees, isLoading: employeesLoading, isError: employeesError } = useGetWorkOrderEmployees();
 
-  const { data: aircrafts, isLoading: aircraftsLoading, isError: aircraftsError } = useGetAircrafts();
+  const { data: aircrafts, isLoading: aircraftsLoading, isError: aircraftsError } = useGetMaintenanceAircrafts();
 
   const { mutate: woMutate, data: workOrders, isPending: workOrdersLoading, isError: workOrdersError } = useGetWorkOrders()
 

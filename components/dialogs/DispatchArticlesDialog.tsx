@@ -10,13 +10,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
-import axiosInstance from "@/lib/axios"
-import { FileDown } from "lucide-react"
+import { Convertion } from "@/types"
 import Image from "next/image"
-import { Badge } from "../ui/badge"
 import { Button } from "../ui/button"
-import { toast } from "sonner"
-import { Article, Convertion } from "@/types"
 
 interface DialogProps {
   articles?: {

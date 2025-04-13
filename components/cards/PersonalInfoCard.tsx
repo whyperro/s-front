@@ -25,7 +25,7 @@ const PersonalInfoCard = ({ user }: {
         <div className="flex justify-around gap-2">
           <div className="flex gap-2">
             <h3 className="text-muted-foreground">Nombre:</h3>
-            <p>Taylor Swift</p>
+            <p>{user.first_name} {user.last_name}</p>
           </div>
           <div className="flex gap-2">
             <h3 className="text-muted-foreground">Usuario:</h3>

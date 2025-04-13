@@ -12,11 +12,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 
-import { DataTableFacetedFilter } from "@/components/tables/DataTableFacetedFilter"
 import { DataTablePagination } from "@/components/tables/DataTablePagination"
 import { DataTableViewOptions } from "@/components/tables/DataTableViewOptions"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -25,12 +23,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ListRestart, PlusCircle } from "lucide-react"
 import Link from "next/link"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { CreateBatchDialog } from "@/components/dialogs/CreateBatchDialog"
-import { CreateWorkOrderDialog } from "@/components/dialogs/CreateWorkOrderDialog"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -77,7 +72,9 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="flex items-center py-4">
         <div className="flex gap-x-2 items-center">
-          <CreateWorkOrderDialog />
+          <Link href={'/hangar74/planificacion/ordenes_trabajo/nueva_orden_trabajo'}>
+            <Button variant={'outline'}>Crear</Button>
+          </Link>
         </div>
         <DataTableViewOptions table={table} />
       </div>

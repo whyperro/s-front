@@ -2,8 +2,6 @@
 
 import WarehouseDropdownActions from "@/components/misc/WarehouseDropdownActions"
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader"
-import { Checkbox } from "@/components/ui/checkbox"
-import { generateSlug } from "@/lib/utils"
 import { Bank } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
 import Link from "next/link"

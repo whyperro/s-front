@@ -1,4 +1,3 @@
-import { z } from "zod";
 
 export type AdministrationCompany = {
   id: number,
@@ -234,6 +233,71 @@ export type Department = {
   email: string,
 }
 
+export type MaintenanceClient = {
+  id: number
+  name: string,
+  email: string,
+  address: string,
+  phone_number: string,
+}
+
+export type MaintenanceAircraft = {
+  id: number,
+  client: MaintenanceClient,
+  manufacturer: Manufacturer,
+  serial: string,
+  acronym: string,
+  flight_hours: number,
+  flight_cycles: number,
+  fabricant_date: string,
+  aircraft_parts: MaintenanceAircraftPart[],
+  location: Location,
+  comments: string,
+}
+
+export type MaintenanceAircraftPart = {
+  part_number: string,
+  part_name: string,
+  part_hours: number,
+  part_cycles: number,
+  aircraft: MaintenanceAircraft,
+}
+
+export type FlightControl = {
+  flight_number: string,
+  aircraft_operator: string,
+  origin: string,
+  destination: string,
+  flight_date: string,
+  flight_hours: number,
+  flight_cycles: number,
+  aircraft: MaintenanceAircraft,
+}
+
+export type MaintenanceService = {
+  id: number
+  name: string,
+  description: string,
+  manufacturer: Manufacturer,
+  tasks: ServiceTask[],
+}
+
+export type ServiceTask = {
+  id: number,
+  description: string,
+  batch: Batch,
+  service: MaintenanceService,
+}
+
+export interface WorkOrder extends Request {
+  order_number: string
+  service: string,
+  aircraft: MaintenanceAircraft,
+  status: boolean,
+  description: string,
+  employee: Employee,
+}
+
 export interface DispatchRequest extends Request {
   part_number: string,
   destination_place: string,
@@ -324,6 +388,29 @@ export type Manufacturer = {
 
 export type Module = {
   id: number,
+  order_number: string,
+  status: string,
+  created_by: User,
+  requested_by: string,
+  batch: {
+    name: string,
+    batch_articles: {
+      article_part_number: string,
+      quantity: number,
+      unit?: Convertion,
+      image: string,
+    }[]
+  }[],
+  received_by: string,
+  justification: string,
+  arrival_date: Date,
+  submission_date: Date,
+  work_order: WorkOrder,
+  aircraft: MaintenanceAircraft,
+}
+
+export type Vendor = {
+id: string | number,
   name: string,
   description: string,
   company_id: string,
@@ -550,16 +637,6 @@ export type AdministrationVendor = {
   updated_at: Date,
 }
 
-export type Vendor = {
-  id: string | number,
-  name: string,
-  email: string,
-  phone: string,
-  address: string,
-  created_at: Date,
-  updated_at: Date,
-}
-
 export type Warehouse = {
   id: string,
   name: string,
@@ -575,4 +652,20 @@ export interface WorkOrder extends Request {
   status: boolean,
   description: string,
   employee: Employee,
+}
+
+export type ActivityReport = {
+  id: number,
+  date: string,
+  user: User,
+  activities: Activity[],
+  observation?: string,
+}
+
+export type Activity = {
+  id: number,
+  start_hour: string,
+  final_hour: string,
+  description: string,
+  result?: string,
 }

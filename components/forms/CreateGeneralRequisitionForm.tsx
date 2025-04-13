@@ -90,11 +90,12 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
 
   const { mutate, data } = useGetBatchesByLocationId();
 
+  const { selectedCompany, selectedStation } = useCompanyStore()
+  
   const { mutate: employeesMutation, data: employees, isPending: employeesLoading } = useGetDepartamentEmployees();
 
   const { data: secondaryUnits, isLoading: secondaryUnitLoading } = useGetSecondaryUnits()
 
-  const { selectedCompany, selectedStation } = useCompanyStore()
 
   const { createRequisition } = useCreateRequisition()
 
@@ -207,16 +208,13 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
   };
 
   const onSubmit = async (data: FormSchemaType) => {
-    const formattedData = {
-      ...data,
-    }
     if (isEditing && id) {
-      await updateRequisition.mutateAsync({ data: formattedData, id: id })
-    } else {
-      await createRequisition.mutateAsync(formattedData)
+      await updateRequisition.mutateAsync({ data, id });
+    } else if (!isEditing) {
+      await createRequisition.mutateAsync(data);
     }
-    onClose()
-  }
+    onClose();
+  };
 
 
   return (
