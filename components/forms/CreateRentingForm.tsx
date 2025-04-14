@@ -89,6 +89,7 @@ const formSchema = z
     deadline: z.date({
       required_error: "La fecha límite es requerida",
     }),
+    //reference_pick: z.string(),
     client_id: z.string({
       message: "Debe elegir un cliente.",
     }),
@@ -606,6 +607,19 @@ export function CreateRentingForm({ onClose }: FormProps) {
             </FormItem>
           )}
         />
+    {/*   <FormField
+          control={form.control}
+          name="reference_pick"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>Referencia</FormLabel>
+              <FormControl>
+                <Input placeholder="Capture o num. ref" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />  */} 
         <Button type="submit" disabled={createRenting.isPending}>
           {createRenting.isPending ? "Enviando..." : "Enviar"}
         </Button>

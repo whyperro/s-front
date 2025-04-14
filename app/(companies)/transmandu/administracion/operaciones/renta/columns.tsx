@@ -164,6 +164,81 @@ export const columns: ColumnDef<Renting>[] = [
       </div>
     ),
   },
+//  {
+//    accessorKey: "reference_pic",
+//    header: ({ column }) => (
+//      <DataTableColumnHeader filter column={column} title="Referencia" />
+//    ),
+//    meta: { title: "Referencia" },
+//    cell: ({ row }) => {
+//      const reference = row.original.reference_pic;
+//      
+//      if (!reference) {
+//        return (
+//          <div className="flex justify-center">
+//            <span className="text-muted-foreground italic">N/A</span>
+//          </div>
+//        );
+//      }
+//  
+//      // Caso imagen
+//      if (reference.match(/\.(jpeg|jpg|gif|png|webp)$/i)) {
+//        return (
+//          <div className="flex justify-center">
+//            <img 
+//              src={reference} 
+//              alt="Referencia" 
+//              className="h-10 w-10 object-cover rounded"
+//              onClick={() => window.open(reference, '_blank')}
+//              style={{ cursor: 'pointer' }}
+//            />
+//          </div>
+//        );
+//      }
+//  
+//      // Caso PDF
+//      if (reference.endsWith('.pdf')) {
+//        return (
+//          <div className="flex justify-center">
+//            <a 
+//              href={reference} 
+//              target="_blank" 
+//              rel="noopener noreferrer"
+//              className="flex items-center text-red-500 hover:underline"
+//            >
+//              <FileDownIcon className="mr-1 h-4 w-4" />
+//              Ver PDF
+//            </a>
+//          </div>
+//        );
+//      }
+//  
+//      // Caso enlace genérico
+//      if (reference.startsWith('http')) {
+//        return (
+//          <div className="flex justify-center">
+//            <a 
+//              href={reference} 
+//              target="_blank" 
+//              rel="noopener noreferrer"
+//              className="text-blue-500 hover:underline"
+//            >
+//              Ver referencia
+//            </a>
+//          </div>
+//        );
+//      }
+//  
+//      // Texto plano
+//      return (
+//        <div className="flex justify-center">
+//          <span className="text-muted-foreground italic">
+//            {reference}
+//          </span>
+//        </div>
+//      );
+//    },
+//  },
   {
     id: "actions",
     cell: ({ row }) => <RentingDropdownActions rent={row.original} />,

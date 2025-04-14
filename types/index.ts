@@ -513,6 +513,7 @@ export type Renting = {
   client: Client,
   debt_status: "PENDIENTE" | "PAGADO",
   bank_account: BankAccount,
+  //reference_pic: string,
 }
 
 export type Request = {
@@ -648,7 +649,7 @@ export type Warehouse = {
 export interface WorkOrder extends Request {
   order_number: string
   service: string,
-  aircraft: Aircraft,
+  aircraft: MaintenanceAircraft,
   status: boolean,
   description: string,
   employee: Employee,

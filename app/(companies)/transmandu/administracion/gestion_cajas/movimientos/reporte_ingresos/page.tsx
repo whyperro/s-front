@@ -53,7 +53,7 @@ const IncomeDashboard = () => {
   const router = useRouter()
   const { data, isLoading, isError } = useGetIncomeStatistics()
 
-  // Obtener años disponibles de forma segura
+  // Obtener años disponibles
   const availableYears = useMemo(() => {
     if (!data?.statistics?.monthly) return [new Date().getFullYear().toString()]
     return Object.keys(data.statistics.monthly).sort((a, b) => Number.parseInt(b) - Number.parseInt(a))
@@ -64,29 +64,51 @@ const IncomeDashboard = () => {
     return availableYears[0] || new Date().getFullYear().toString()
   })
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null)
+  const [selectedClient, setSelectedClient] = useState<string | null>("all")
 
   // Depuración: Mostrar la estructura completa de cash_movements cuando cambia data
   useEffect(() => {
     if (data) {
       console.log("Estructura completa de cash_movements:", data.cash_movements)
       console.log("Años disponibles:", Object.keys(data.cash_movements || {}))
+      console.log("Cliente seleccionado:", selectedClient)
 
       // Mostrar los meses disponibles para el año seleccionado
       const yearData = data.cash_movements?.[selectedYear] || {}
       console.log(`Meses disponibles para ${selectedYear}:`, Object.keys(yearData))
     }
-  }, [data, selectedYear])
+  }, [data, selectedYear, selectedClient])
 
-  // Preparar datos mensuales con protección completa
+  // Preparar datos mensuales 
   const monthlyData = useMemo<MonthlyData[]>(() => {
     if (!data?.statistics?.monthly?.[selectedYear]) return []
 
     return months.map((m) => {
       // Acceso directo usando month.name
-      const monthIncome = data.statistics.monthly[selectedYear][m.name] || 0
+      let monthIncome = data.statistics.monthly[selectedYear][m.name] || 0
 
-      // Acceso a movimientos - CORREGIDO: usar cash_movements (con 's')
-      const monthMovements = data?.cash_movements?.[selectedYear]?.[m.name]?.length || 0
+      // Filtrar por cliente si se ha seleccionado uno específico
+      if (selectedClient && selectedClient !== "all" && data?.cash_movements?.[selectedYear]?.[m.name]) {
+        const clientMovements = data.cash_movements[selectedYear][m.name].filter(
+          (mov: CashMovement) => mov.type === "INCOME" && String(mov.client?.id) === selectedClient,
+        )
+
+        // Calcular el total de ingresos para este cliente en este mes
+        monthIncome = clientMovements.reduce(
+          (sum: number, mov: CashMovement) =>
+            sum + (typeof mov.amount === "string" ? Number.parseFloat(mov.amount) : mov.amount),
+          0,
+        )
+      }
+
+      // Acceso a movimientos (también filtrados por cliente si es necesario)
+      let monthMovements = data?.cash_movements?.[selectedYear]?.[m.name]?.length || 0
+
+      if (selectedClient && selectedClient !== "all" && data?.cash_movements?.[selectedYear]?.[m.name]) {
+        monthMovements = data.cash_movements[selectedYear][m.name].filter(
+          (mov: CashMovement) => mov.type === "INCOME" && String(mov.client?.id) === selectedClient,
+        ).length
+      }
 
       return {
         name: m.name,
@@ -96,28 +118,31 @@ const IncomeDashboard = () => {
         monthNumber: m.number,
       }
     })
-  }, [data, selectedYear])
+  }, [data, selectedYear, selectedClient])
 
-  // Obtener movimientos del mes seleccionado (solo INCOME) de forma segura
+  // Obtener movimientos del mes seleccionado solo Ingresos
   const monthMovements = useMemo(() => {
     if (!selectedMonth || !data?.cash_movements) return []
 
-    // Depuración: Mostrar información sobre el mes seleccionado
-    console.log("Buscando movimientos para:", selectedYear, selectedMonth)
+    console.log("Buscando movimientos para:", selectedYear, selectedMonth, selectedClient)
     console.log("Estructura de cash_movements para el año:", data.cash_movements[selectedYear])
 
-    // CORREGIDO: usar cash_movements (con 's')
     const monthData = data.cash_movements[selectedYear]?.[selectedMonth] || []
     console.log("Datos encontrados para el mes:", monthData)
 
     // Filtrar solo los movimientos de tipo INCOME
-    const incomeMovements = Array.isArray(monthData) ? monthData.filter((m: CashMovement) => m.type === "INCOME") : []
+    let incomeMovements = Array.isArray(monthData) ? monthData.filter((m: CashMovement) => m.type === "INCOME") : []
+
+    // Filtrar por cliente si se ha seleccionado uno específico
+    if (selectedClient && selectedClient !== "all") {
+      incomeMovements = incomeMovements.filter((m: CashMovement) => String(m.client?.id) === selectedClient)
+    }
 
     console.log("Movimientos de ingreso filtrados:", incomeMovements)
     return incomeMovements
-  }, [data, selectedYear, selectedMonth])
+  }, [data, selectedYear, selectedMonth, selectedClient])
 
-  // Calcular estadísticas con protección
+  // Calcular estadísticas 
   const totalAnnualIncome = useMemo(() => {
     return data?.statistics?.total_annual || 0
   }, [data])
@@ -144,6 +169,41 @@ const IncomeDashboard = () => {
       setSelectedMonth(clickedMonth)
     }
   }
+
+  const handleClientChange = (clientId: string) => {
+    setSelectedClient(clientId)
+  }
+
+  // Obtener clientes disponibles
+  const availableClients = useMemo(() => {
+    if (!data?.cash_movements) return []
+
+    // Extraer todos los clientes únicos de los movimientos
+    const clientsSet = new Set<string>()
+    const clientsMap = new Map<string, { id: string; name: string }>()
+
+    // Recorrer todos los años y meses para encontrar clientes únicos
+    Object.values(data.cash_movements).forEach((yearData) => {
+      Object.values(yearData).forEach((monthData) => {
+        if (Array.isArray(monthData)) {
+          monthData.forEach((movement: CashMovement) => {
+            if (movement.type === "INCOME" && movement.client?.id && movement.client?.name) {
+              // Convertir el ID a string
+              const clientId = String(movement.client.id)
+              clientsSet.add(clientId)
+              clientsMap.set(clientId, {
+                id: clientId,
+                name: movement.client.name,
+              })
+            }
+          })
+        }
+      })
+    })
+
+    // Convertir a array para el selector
+    return Array.from(clientsMap.values())
+  }, [data])
 
   // Componente Tooltip personalizado
   const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
@@ -180,7 +240,6 @@ const IncomeDashboard = () => {
     )
   }
 
-  // Depuración: Mostrar información sobre el estado actual
   console.log("Renderizando con año:", selectedYear)
   console.log("Renderizando con mes:", selectedMonth)
   console.log("Movimientos para mostrar:", monthMovements)
@@ -219,12 +278,28 @@ const IncomeDashboard = () => {
           title="Mejor Mes"
           value={bestMonth.name || "-"}
           description={`$${bestMonth.income.toLocaleString()}`}
-          icon={<Calendar className="h-5 w-5 text-purple-500" />}        
+          icon={<Calendar className="h-5 w-5 text-purple-500" />}
         />
       </div>
 
-      {/* Selector de año */}
-      <div className="flex justify-end mb-4">
+      {/* Selectores */}
+      <div className="flex justify-end mb-4 gap-4">
+        {/* Selector de cliente */}
+        <Select value={selectedClient || "all"} onValueChange={handleClientChange}>
+          <SelectTrigger className="w-[220px]">
+            <SelectValue placeholder="Todos los clientes" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos los clientes</SelectItem>
+            {availableClients.map((client) => (
+              <SelectItem key={client.id} value={client.id}>
+                {client.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Selector de año */}
         <Select value={selectedYear} onValueChange={handleYearChange} disabled={availableYears.length === 0}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Seleccionar año" />
@@ -242,7 +317,12 @@ const IncomeDashboard = () => {
       {/* Gráfico de barras */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-center">Ingresos Mensuales - {selectedYear}</CardTitle>
+          <CardTitle className="text-center">
+            Ingresos Mensuales - {selectedYear}
+            {selectedClient &&
+              selectedClient !== "all" &&
+              ` - ${availableClients.find((c) => c.id === selectedClient)?.name || ""}`}
+          </CardTitle>
           <CardDescription className="text-center">Haz clic en un mes para ver los detalles</CardDescription>
         </CardHeader>
         <CardContent>
@@ -352,7 +432,7 @@ const IncomeDashboard = () => {
   )
 }
 
-// Componente auxiliar para las tarjetas de resumen mejorado
+// Componente auxiliar para las tarjetas de resumen
 const SummaryCard = ({
   title,
   value,

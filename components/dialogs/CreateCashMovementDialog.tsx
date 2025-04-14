@@ -82,7 +82,7 @@ export function CashMovementDialog({ id }: { id?: string }) {
         </DialogTrigger>
       </Dialog>
 
-      {/*Dialogo para ver el resumen de egresos*/}
+      {/*Dialogo para ver el resumen de egresos
       <Dialog open={openActionsOutput} onOpenChange={setOpenActionsOutput}>
         <DialogTrigger asChild>
           <Button
@@ -93,7 +93,7 @@ export function CashMovementDialog({ id }: { id?: string }) {
             Resumen de Egresos
           </Button>
         </DialogTrigger>
-      </Dialog>
+      </Dialog>  */}
 
       {/*Dialogo para ver el resumen de las cuentas de los movimientos de caja*/}
       <Dialog open={openActionsAccount} onOpenChange={setOpenActionsAccount}>
