@@ -7,10 +7,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useGetAdministrationArticleById } from "@/hooks/administracion/useGetAdministrationArticleById";
 import {
+  Boxes,
   EyeIcon,
   HandCoins,
   Loader2,
   MoreHorizontal,
+  PackageIcon,
   Trash2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -24,9 +26,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Separator } from "../ui/separator";
+import { Badge } from "../ui/badge";
 import { SellForm } from "../forms/CreateSellForm";
-import { AdministrationArticle } from "@/types";
 
 const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
   const [openDelete, setOpenDelete] = useState<boolean>(false);
@@ -34,7 +35,8 @@ const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
   const router = useRouter();
   const [openSell, setOpenSell] = useState<boolean>(false);
   const { deleteAdministrationArticle } = useDeleteAdministrationArticle();
-  const { data: articleDetails, isLoading } = useGetAdministrationArticleById(id);
+  const { data: articleDetails, isLoading } =
+    useGetAdministrationArticleById(id);
 
   const handleDelete = (id: number | string) => {
     deleteAdministrationArticle.mutate(id, {
@@ -145,64 +147,96 @@ const AdministrationArticleDropdownActions = ({ id }: { id: string }) => {
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
           ) : articleDetails ? (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Serial
-                </h3>
-                <p className="text-lg font-semibold">{articleDetails.serial}</p>
-                <Separator />
+            <div className="relative">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-t-lg">
+                <div className="flex items-center gap-4">
+                  <div className="bg-white p-3 rounded-lg shadow-sm border">
+                    <Boxes className="h-10 w-10 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold">{articleDetails.name}</h2>
+                    <p className="text-sm text-muted-foreground">
+                      Serial: {articleDetails.serial}
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Nombre
-                </h3>
-                <p className="text-lg font-semibold">{articleDetails.name}</p>
-                <Separator />
+              {/* Contenido principal */}
+              <div className="p-6 grid gap-6">
+                {/* Estado con badge */}
+                <div className="mt-2 text-center">
+                  <Badge
+                    className={
+                      articleDetails.status === "EN POSESION"
+                        ? "bg-green-600 hover:bg-green-700 text-white"
+                        : articleDetails.status === "RENTADO"
+                        ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                        : articleDetails.status === "VENDIDO"
+                        ? "bg-red-600 hover:bg-red-700 text-white"
+                        : "bg-gray-600 hover:bg-gray-700 text-white"
+                    }
+                  >
+                    {articleDetails.status}
+                  </Badge>
+                </div>
+
+                {/* Grid de información */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                      Precio
+                    </h3>
+                    <p className="font-medium text-lg">
+                      ${articleDetails.price.toLocaleString()}
+                    </p>
+                  </div>
+
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                      Marca
+                    </h3>
+                    <p className="font-medium text-lg">
+                      {articleDetails.brand || "No especificada"}
+                    </p>
+                  </div>
+
+                  <div className="bg-muted/50 p-4 rounded-lg col-span-2">
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                      Tipo
+                    </h3>
+                    <p className="font-medium text-lg">
+                      {articleDetails.type || "No especificado"}
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Estado
-                </h3>
-                <p className="text-lg font-semibold">{articleDetails.status}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Precio
-                </h3>
-                <p className="text-lg font-semibold">{articleDetails.price}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Marca
-                </h3>
-                <p className="text-lg font-semibold">{articleDetails.brand}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Tipo
-                </h3>
-                <p className="text-lg font-semibold">{articleDetails.type}</p>
-                <Separator />
-              </div>
+              <DialogFooter className="px-6 pb-6">
+                <Button
+                  onClick={() => setOpenAdminArticle(false)}
+                  variant="outline"
+                  className="w-full"
+                >
+                  Cerrar
+                </Button>
+              </DialogFooter>
             </div>
           ) : (
-            <p className="text-center text-muted-foreground">
-              No se pudo cargar la información del articulo.
-            </p>
+            <div className="text-center py-6">
+              <p className="text-muted-foreground">
+                No se pudo cargar la información del artículo
+              </p>
+              <Button
+                onClick={() => setOpenAdminArticle(false)}
+                variant="outline"
+                className="mt-4"
+              >
+                Cerrar
+              </Button>
+            </div>
           )}
-
-          <DialogFooter className="sm:justify-center">
-            <Button onClick={() => setOpenAdminArticle(false)}>Cerrar</Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 
