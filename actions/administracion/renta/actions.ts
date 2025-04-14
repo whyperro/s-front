@@ -64,7 +64,7 @@ export const useDefineEndDateRenting = () => {
       await axiosInstance.patch(`/transmandu/renting-define-end-date/${id}`, data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['credit-flight'] });
+      queryClient.invalidateQueries({ queryKey: ['renting'], exact: false });
       toast("¡Definido!", {
         description: "¡La fecha final se ha definido correctamente!",
       });

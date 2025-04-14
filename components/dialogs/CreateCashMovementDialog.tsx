@@ -16,18 +16,25 @@ import { useRouter } from "next/navigation";
 
 export function CashMovementDialog({ id }: { id?: string }) {
   const [openMovementDialog, setOpenMovementDialog] = useState(false);
-  const [openActions, setOpenActions] = useState(false);
+  const [openActionsIncome, setOpenActionsIncome] = useState(false);
+  const [openActionsOutput, setOpenActionsOutput] = useState(false);
   const [openActionsAccount, setOpenActionsAccount] = useState(false);
 
   const router = useRouter();
 
-  const handleViewStats = () => {
+  const handleViewStatsIncome = () => {
     router.push(
       "/transmandu/administracion/gestion_cajas/movimientos/reporte_ingresos"
     );
   };
 
-  const handleViewStat = () => {
+  const handleViewStatsOutput = () => {
+    router.push(
+      "/transmandu/administracion/gestion_cajas/movimientos/reporte_egresos"
+    );
+  };
+
+  const handleViewStatsAccount = () => {
     router.push(
       "/transmandu/administracion/gestion_cajas/movimientos/movimientos_por_cuenta/"
     );
@@ -63,10 +70,10 @@ export function CashMovementDialog({ id }: { id?: string }) {
       </Dialog>
 
       {/*Dialogo para ver el resumen de ingresos*/}
-      <Dialog open={openActions} onOpenChange={setOpenActions}>
+      <Dialog open={openActionsIncome} onOpenChange={setOpenActionsIncome}>
         <DialogTrigger asChild>
           <Button
-            onClick={handleViewStats}
+            onClick={handleViewStatsIncome}
             variant={"outline"}
             className="flex items-center justify-center gap-2 h-8 border-dashed"
           >
@@ -75,11 +82,24 @@ export function CashMovementDialog({ id }: { id?: string }) {
         </DialogTrigger>
       </Dialog>
 
+      {/*Dialogo para ver el resumen de egresos*/}
+      <Dialog open={openActionsOutput} onOpenChange={setOpenActionsOutput}>
+        <DialogTrigger asChild>
+          <Button
+            onClick={handleViewStatsOutput}
+            variant={"outline"}
+            className="flex items-center justify-center gap-2 h-8 border-dashed"
+          >
+            Resumen de Egresos
+          </Button>
+        </DialogTrigger>
+      </Dialog>
+
       {/*Dialogo para ver el resumen de las cuentas de los movimientos de caja*/}
       <Dialog open={openActionsAccount} onOpenChange={setOpenActionsAccount}>
         <DialogTrigger asChild>
           <Button
-            onClick={handleViewStat}
+            onClick={handleViewStatsAccount}
             variant={"outline"}
             className="flex items-center justify-center gap-2 h-8 border-dashed"
           >

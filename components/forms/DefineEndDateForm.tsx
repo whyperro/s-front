@@ -73,7 +73,8 @@ export function DefineEndDateForm({ id, onClose }: DefineEndDateFormProps) {
       end_date: formData.end_date,
     };
 
-    defineEndDateRenting.mutate({ id, data: { end_date: formData.end_date } },
+    defineEndDateRenting.mutate(
+      { id, data: { end_date: formData.end_date } },
       {
         onSuccess: () => onClose(), // Cierra solo si la mutación es exitosa
       }
