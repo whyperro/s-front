@@ -103,6 +103,7 @@ export function CreditPaymentForm({ onClose, credit }: FormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const formattedValues = {
       ...values,
@@ -110,9 +111,14 @@ export function CreditPaymentForm({ onClose, credit }: FormProps) {
       client_id: credit.client.id,
       pay_amount: parseFloat(values.pay_amount),
     };
-    await createCreditPayment.mutateAsync(formattedValues);
-    onClose();
+  
+    createCreditPayment.mutate(formattedValues, {
+      onSuccess: () => {
+        onClose(); 
+      },
+    });
   }
+  
   return (
     <Form {...form}>
       <form

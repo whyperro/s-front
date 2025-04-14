@@ -2,28 +2,34 @@ import axiosInstance from "@/lib/axios"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
-export const useCreateCreditPayment = () => {
+export const useCreateCreditPayment = (options?: { onSuccess?: () => void }) => {
+  const queryClient = useQueryClient();
   
-  const queryCreditPayment = useQueryClient()
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
-          await axiosInstance.post(`/transmandu/credit-payment/${data.id}`, data)
-        },
-        onSuccess: () => {
-          queryCreditPayment.invalidateQueries({queryKey: ['credit-payment']})
-          toast("¡Creado!", {
-              description: `¡El registro del pago del crédito se ha creado correctamente!`
-          })
-        },
-        onError: (error) => {
-            toast('Hey', {
-              description: `No se creo correctamente: ${error}`
-            })
-          },
-        }
-    )
+      const response = await axiosInstance.post(`/transmandu/credit-payment/${data.id}`, data);
+      return response.data;
+    },
+    onSuccess: () => {
+      // Invalidar todas las queries relacionadas
+      queryClient.invalidateQueries({ queryKey: ['credit-payment'] });
+      queryClient.invalidateQueries({ queryKey: ['credit-flight-payment'] }); //query de credito de vuelos
+      queryClient.invalidateQueries({ queryKey: ['credit-rent-payment'] });  //query de credito de renta
+      
+      toast.success("Pago registrado correctamente");
+      
+      if (options?.onSuccess) {
+        options.onSuccess(); // Ejecutar callback opcional 
+      }
+    },
+    onError: (error) => {
+      toast.error("Error al registrar el pago", {
+        description: error.message,
+      });
+    },
+  });
 
-    return {
-      createCreditPayment: createMutation,
-    }
+  return {
+    createCreditPayment: createMutation,
+  };
 }

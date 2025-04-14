@@ -145,7 +145,7 @@ export const columns: ColumnDef<Renting>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.payed_amount}
+        {formatCurrency(row.original.payed_amount)}
         </span>
       </div>
     ),

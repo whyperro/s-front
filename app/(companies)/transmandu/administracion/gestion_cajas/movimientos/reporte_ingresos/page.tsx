@@ -66,7 +66,7 @@ const IncomeDashboard = () => {
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null)
   const [selectedClient, setSelectedClient] = useState<string | null>("all")
 
-  // Depuración: Mostrar la estructura completa de cash_movements cuando cambia data
+  // Mostrar la estructura completa de cash_movements cuando cambia data
   useEffect(() => {
     if (data) {
       console.log("Estructura completa de cash_movements:", data.cash_movements)
