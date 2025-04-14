@@ -26,7 +26,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Separator } from "../ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Badge } from "../ui/badge";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 import AddClientBalanceForm from "../forms/AddClientBalanceForm";
 
 const ClientDropdownActions = ({ id }: { id: string }) => {
@@ -47,7 +49,7 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
       onSuccess: () => setOpenDelete(false), // Cierra el modal solo si la eliminación fue exitosa
     });
   };
-  
+
   const handleViewDetails = () => {
     setOpenClient(true);
   };
@@ -135,77 +137,110 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
       {/*Dialog para ver el resumen de un cliente*/}
       <Dialog open={openClient} onOpenChange={setOpenClient}>
         <DialogContent
-          className="sm:max-w-md"
           onInteractOutside={(e) => {
             e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
           }}
+          className="sm:max-w-lg"
         >
-          <DialogHeader className="text-center font-bold">
-            Resumen del Cliente
-          </DialogHeader>
           {isLoading ? (
-            <div className="flex justify-center py-4">
-              <Loader2 className="h-6 w-6 animate-spin" />
+            <div className="flex justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin" />
             </div>
           ) : clientDetails ? (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Nombre
-                </h3>
-                <p className="text-lg font-semibold">{clientDetails.name}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Cedula / RIF
-                </h3>
-                <p className="text-lg font-semibold">{clientDetails.dni}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Número de Teléfono
-                </h3>
-                <p className="text-lg font-semibold">{clientDetails.phone}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Ubicación
-                </h3>
-                <p className="text-lg font-semibold">{clientDetails.address}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Días de Crédito 
-                </h3>
-                <p className="text-lg font-semibold">{clientDetails.pay_credit_days}</p>
-                <Separator />
-              </div>
-
-              <div className="bg-muted p-4 rounded-lg mt-6">
-                <h3 className="font-medium mb-2">Saldo</h3>
-                <div className="flex justify-between items-center">
-                  <span className="font-bold text-xl">
-                    ${clientDetails.balance}
-                  </span>
+            <Card className="border-none shadow-none">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-12 w-12">
+                    <AvatarFallback>
+                      {clientDetails.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <CardTitle className="text-xl">
+                      {clientDetails.name}
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      {clientDetails.dni}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </CardHeader>
+
+              <CardContent className="grid gap-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      Teléfono
+                    </h3>
+                    <p className="font-medium">
+                      {clientDetails.phone || "No especificado"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      Días Crédito
+                    </h3>
+                    <p className="font-medium">
+                      {clientDetails.pay_credit_days || "0"} días
+                    </p>
+                  </div>
+
+                  <div className="space-y-1 col-span-2">
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      Dirección
+                    </h3>
+                    <p className="font-medium">
+                      {clientDetails.address || "No especificada"}
+                    </p>
+                  </div>
+                </div>
+
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">Saldo Actual</span>
+                      <span
+                        className={`font-bold text-2xl ${
+                          clientDetails.balance >= 0
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {clientDetails.balance >= 0 ? "+" : "-"} ${" "}
+                        {Math.abs(clientDetails.balance).toLocaleString()}
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {clientDetails.balance < 0 && (
+                  <Badge variant="destructive" className="w-fit">
+                    Cliente con deuda
+                  </Badge>
+                )}
+              </CardContent>
+            </Card>
           ) : (
-            <p className="text-center text-muted-foreground">
-              No se pudo cargar la información del cliente.
-            </p>
+            <div className="text-center py-6">
+              <p className="text-muted-foreground">
+                No se pudo cargar la información del cliente
+              </p>
+            </div>
           )}
 
-          <DialogFooter className="sm:justify-center">
-            <Button onClick={() => setOpenClient(false)}>Cerrar</Button>
+          <DialogFooter className="sm:justify-start">
+            <Button
+              onClick={() => setOpenClient(false)}
+              variant="outline"
+              className="w-full"
+            >
+              Cerrar
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

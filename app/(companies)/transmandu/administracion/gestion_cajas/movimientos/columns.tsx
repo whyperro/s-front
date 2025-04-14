@@ -6,7 +6,6 @@ import { CashMovement } from "@/types";
 import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import CashMovementDropdownActions from "@/components/misc/CashMovementDropdownActions";
-import CompanyResumeDialog from "@/components/dialogs/AdministrationCompanyResumeDialog";
 import ResponsibleResumeDialog from "@/components/dialogs/ResponsibleResumeDialog";
 import BankAccountResumeDialog from "@/components/dialogs/BankAccountResumeDialog";
 import CashResumeDialog from "@/components/dialogs/CashResumeDialog";
@@ -212,4 +211,4 @@ export const columns: ColumnDef<CashMovement>[] = [
       );
     },
   },
-]; //satisfies ColumnDef<CashMovement>[]
+]; 

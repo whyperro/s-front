@@ -38,7 +38,6 @@ const CashMovementDropdownActions = ({
   const [openCashMovement, setOpenCashMovement] = useState<boolean>(false);
   const router = useRouter();
   const { deleteCashMovement } = useDeleteCashMovement();
-  const { data: movementDetails, isLoading } = useGetCashMovementById(id);
 
   const handleDelete = (id: number | string) => {
     deleteCashMovement.mutate(id, {

@@ -48,26 +48,26 @@ export const columns: ColumnDef<Renting>[] = [
       <p>{format(addDays(row.original.deadline, 1), "PPP", { locale: es })}</p>
     ),
   },
-  {
-    accessorKey: "status",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Estado" />
-    ),
-    meta: { title: "Estado" },
-    cell: ({ row }) => {
-      const status = row.original.status;
-      const backgroundColor =
-        status === "EN PROCESO" ? "bg-yellow-500" : "bg-green-500";
+//  {
+//    accessorKey: "status",
+//    header: ({ column }) => (
+//      <DataTableColumnHeader filter column={column} title="Estado" />
+//    ),
+//    meta: { title: "Estado" },
+//    cell: ({ row }) => {
+//      const status = row.original.status;
+//      const backgroundColor =
+//        status === "EN PROCESO" ? "bg-yellow-500" : "bg-green-500";
 
-      return (
-        <div>
-          <div className="flex justify-center">
-            <Badge className={backgroundColor}>{row.original.status}</Badge>
-          </div>
-        </div>
-      );
-    },
-  },
+//      return (
+//        <div>
+//          <div className="flex justify-center">
+//            <Badge className={backgroundColor}>{row.original.status}</Badge>
+//          </div>
+//        </div>
+//      );
+//    },
+//  },
   {
     accessorKey: "client.name",
     header: ({ column }) => (
@@ -108,33 +108,46 @@ export const columns: ColumnDef<Renting>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "type",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Tipo" />
-    ),
-    meta: { title: "Tipo" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.type}
-        </span>
-      </div>
-    ),
-  },
+//  {
+//    accessorKey: "type",
+//    header: ({ column }) => (
+//      <DataTableColumnHeader filter column={column} title="Tipo" />
+//    ),
+//    meta: { title: "Tipo" },
+//    cell: ({ row }) => (
+//      <div className="flex justify-center">
+//        <span className="text-muted-foreground italic">
+//          {row.original.type}
+//        </span>
+//      </div>
+//    ),
+//  },
   {
     accessorKey: "price",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Precio" />
     ),
     meta: { title: "Precio" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {formatCurrency(row.original.price)}
-        </span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const isPayed = row.original.status === "CULMINADO";
+      const badgeVariant = isPayed ? "default" : "destructive";
+      const formattedAmount = formatCurrency(row.original.price);
+
+      return (
+        <div className="flex justify-center">
+          <Badge
+            className={
+              isPayed
+                ? "bg-green-500 hover:bg-green-500"
+                : "bg-yellow-500 hover:bg-yellow-500"
+            }
+            variant={badgeVariant}
+          >
+            {formattedAmount}
+          </Badge>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "payed_amount",
