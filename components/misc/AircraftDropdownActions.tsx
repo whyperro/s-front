@@ -8,13 +8,13 @@ import {
   EyeIcon,
   Loader2,
   MoreHorizontal,
+  PlaneIcon,
   Trash2,
   TrendingUp,
 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
 import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById";
 import { useDeleteAircraft } from "@/actions/administracion/aeronaves/actions";
 import {
@@ -28,6 +28,7 @@ import {
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { EditIcon } from "lucide-react";
+import { Badge } from "../ui/badge";
 import { EditAircraftForm } from "../forms/EditAircraftForm";
 
 interface AircraftDropdownActionsProps {
@@ -147,120 +148,143 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
           ) : aircraftDetails ? (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Serial
-                </h3>
-                <p className="text-lg font-semibold">
-                  {aircraftDetails.serial}
-                </p>
-                <Separator />
+            <div className="relative">
+              {/* Header con gradiente según estado */}
+              <div
+                className={`p-6 text-white rounded-t-lg ${
+                  aircraftDetails.status === "EN POSESION"
+                    ? "bg-gradient-to-r from-green-600 to-emerald-500"
+                    : aircraftDetails.status === "RENTADO"
+                    ? "bg-gradient-to-r from-amber-500 to-yellow-500"
+                    : "bg-gradient-to-r from-red-600 to-red-500"
+                }`}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="bg-white p-3 rounded-lg shadow-sm border">
+                    <PlaneIcon
+                      className={`h-10 w-10 ${
+                        aircraftDetails.status === "EN POSESION"
+                          ? "text-green-600"
+                          : aircraftDetails.status === "RENTADO"
+                          ? "text-amber-500"
+                          : "text-gray-600"
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold">
+                      {aircraftDetails.model}
+                    </h2>
+                    <div className="flex items-center gap-3 mt-1">
+                      <Badge className="bg-white text-gray-800 hover:bg-gray-100">
+                        {aircraftDetails.acronym}
+                      </Badge>
+                      <Badge
+                        className={`text-white ${
+                          aircraftDetails.status === "EN POSESION"
+                            ? "bg-green-700 hover:bg-green-800"
+                            : aircraftDetails.status === "RENTADO"
+                            ? "bg-amber-600 hover:bg-amber-700"
+                            : "bg-gray-700 hover:bg-gray-800"
+                        }`}
+                      >
+                        {aircraftDetails.status}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Matricula
-                </h3>
-                <p className="text-lg font-semibold">
-                  {aircraftDetails.acronym}
-                </p>
-                <Separator />
+              {/* Contenido principal */}
+              <div className="p-6 grid gap-6">
+                {/* Grid de información principal */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                      Serial
+                    </h3>
+                    <p className="font-medium">{aircraftDetails.serial}</p>
+                  </div>
+
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                      Fabricante
+                    </h3>
+                    <p className="font-medium">{aircraftDetails.fabricant}</p>
+                  </div>
+
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                      Fecha Fabricación
+                    </h3>
+                    <p className="font-medium">
+                      {format(aircraftDetails.fabricant_date, "PPP", {
+                        locale: es,
+                      })}
+                    </p>
+                  </div>
+
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                      Marca
+                    </h3>
+                    <p className="font-medium">{aircraftDetails.brand}</p>
+                  </div>
+                </div>
+
+                {/* Información secundaria */}
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                    Ubicación
+                  </h3>
+                  <p className="font-medium">
+                    {aircraftDetails.location.address}
+                  </p>
+                </div>
+
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                    Dueño
+                  </h3>
+                  <p className="font-medium">{aircraftDetails.owner}</p>
+                </div>
+
+                {aircraftDetails.comments && (
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                      Comentarios
+                    </h3>
+                    <p className="font-medium text-justify">
+                      {aircraftDetails.comments}
+                    </p>
+                  </div>
+                )}
               </div>
 
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Modelo
-                </h3>
-                <p className="text-lg font-semibold">{aircraftDetails.model}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Ubicación
-                </h3>
-                <p className="text-lg font-semibold">
-                  {aircraftDetails.location.address}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Dueño
-                </h3>
-                <p className="text-lg font-semibold">{aircraftDetails.owner}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Marca
-                </h3>
-                <p className="text-lg font-semibold">{aircraftDetails.brand}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Fabricante
-                </h3>
-                <p className="text-lg font-semibold">
-                  {aircraftDetails.fabricant}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Fecha de Fabricación
-                </h3>
-                <p className="text-lg font-semibold">
-                  {format(aircraftDetails.fabricant_date, "PPP", {
-                    locale: es,
-                  })}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Comentarios
-                </h3>
-                <p className="text-lg font-semibold">
-                  {aircraftDetails.comments}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Estado
-                </h3>
-                <p className="text-lg font-semibold">
-                  {aircraftDetails.status}
-                </p>
-                <Separator />
-              </div>
+              <DialogFooter className="px-6 pb-6">
+                <Button
+                  onClick={() => setOpenAircraft(false)}
+                  variant="outline"
+                  className="w-full"
+                >
+                  Cerrar
+                </Button>
+              </DialogFooter>
             </div>
           ) : (
-            <p className="text-center text-muted-foreground">
-              No se pudo cargar la información de la aeronave.
-            </p>
+            <div className="text-center py-6">
+              <p className="text-muted-foreground">
+                No se pudo cargar la información de la aeronave
+              </p>
+              <Button
+                onClick={() => setOpenAircraft(false)}
+                variant="outline"
+                className="mt-4"
+              >
+                Cerrar
+              </Button>
+            </div>
           )}
-
-          <DialogFooter className="sm:justify-center">
-            {/*  <Button
-              variant="outline"
-              onClick={() =>
-                router.push(`/administracion/gestion_vuelos/aviones/${id}`)
-              }
-            >
-              Ver detalles completos
-            </Button> */}
-            <Button onClick={() => setOpenAircraft(false)}>Cerrar</Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 

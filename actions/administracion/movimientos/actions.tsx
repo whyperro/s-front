@@ -10,7 +10,7 @@ export const useCreateCashMovement = () => {
       await axiosInstance.post('/transmandu/cash-movements', data)
     },
     onSuccess: () => {
-      queryCashMovement.invalidateQueries({queryKey: ['cash']})
+      queryCashMovement.invalidateQueries({queryKey: ['cash-movements']})
           toast("¡Creado!", {
             description: `¡El movimiento se ha creado correctamente!`
           })
@@ -36,7 +36,7 @@ export const useDeleteCashMovement = () => {
         },
       onSuccess: () => {
 
-          queryCashMovement.invalidateQueries({queryKey: ['cash']})
+          queryCashMovement.invalidateQueries({queryKey: ['cash-movements']})
           toast.success("¡Eliminado!", {
               description: `¡El movimiento ha sido eliminado correctamente!`
           })
