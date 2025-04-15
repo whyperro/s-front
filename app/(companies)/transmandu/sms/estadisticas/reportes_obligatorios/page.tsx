@@ -10,12 +10,13 @@ import { format, startOfMonth } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import DynamicBarChart from "../../../../../../components/charts/DynamicBarChart";
 import { useGetRiskCountByDateRange } from "@/hooks/sms/useGetRiskByDateRange";
 import PieChartComponent from "@/components/charts/PieChartComponent";
 import { useGetPostRiskCountByDateRange } from "@/hooks/sms/useGetPostRiskByDateRange";
 import { useGetIdentificationStatsBySourceName } from "@/hooks/sms/useGetIdentificationStatsBySoruceName";
 import { useGetIdentificationStatsBySourceType } from "@/hooks/sms/useGetIdentificationStatsBySoruceType";
+import DynamicBarChart from "@/components/charts/DynamicBarChart";
+import { useGetTotalReportsStatsByYear } from "@/hooks/sms/useGetTotalReportsStatsByYear";
 
 const languages = [
   { label: "English", value: "en" },
@@ -104,8 +105,7 @@ const ObligatoryReportStats = () => {
     refetch: refetchBarChart,
   } = useGetVoluntaryReportingStatsByYear(
     params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "obligatory"
+    params.to || format(new Date(), "yyyy-MM-dd"),"obligatory"
   );
 
   const {
