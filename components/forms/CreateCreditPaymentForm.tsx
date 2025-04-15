@@ -109,7 +109,7 @@ export function CreditPaymentForm({ onClose, credit }: FormProps) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const payAmount = parseFloat(values.pay_amount);
-    
+
     if (payAmount > pendingAmount) {
       form.setError("pay_amount", {
         message: `El monto a pagar no puede ser mayor que el saldo pendiente (${pendingAmount.toFixed(2)})`,
@@ -213,8 +213,8 @@ export function CreditPaymentForm({ onClose, credit }: FormProps) {
                 </span>
               </div>
               <FormControl>
-                <Input 
-                  placeholder={`Ingrese el monto a pagar (máximo ${pendingAmount.toFixed(2)})`} 
+                <Input
+                  placeholder={`Ingrese el monto a pagar (máximo ${pendingAmount.toFixed(2)})`}
                   {...field}
                   onChange={(e) => {
                     const value = e.target.value;
@@ -229,7 +229,9 @@ export function CreditPaymentForm({ onClose, credit }: FormProps) {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => form.setValue("pay_amount", pendingAmount.toFixed(2))}
+                  onClick={() =>
+                    form.setValue("pay_amount", pendingAmount.toFixed(2))
+                  }
                 >
                   Pagar deuda completo
                 </Button>
