@@ -13,6 +13,7 @@ import {
   FirstPage,
   FourthPage,
   SecondPage,
+  SixthPage,
   ThirdPage,
 } from "./SafetyRiskManagement";
 
@@ -782,6 +783,7 @@ const MyDocument = ({ report, identification }: MyDocumentProps) => (
         <ThirdPage identification={identification} />
         <FourthPage />
         <FifthPage />
+        <SixthPage />
       </>
     )}
   </Document>
