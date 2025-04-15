@@ -225,7 +225,7 @@ export function getMenuList(pathname: string, company: CompanyMenu, userRoles: s
               label: "Control de Ingreso",
               active: pathname.includes("/hangar74/almacen/inventario/ingreso"),
               icon: PackagePlus,
-              roles: ["ANALISTA_ALMACEN", "ANALISTA_COMPRAS", "SUPERUSER"],
+              roles: ["ANALISTA_ALMACEN", "ANALISTA_COMPRAS", "SUPERUSER", "JEFE_ALMACEN"],
               submenus: [
                 {
                   href: "/hangar74/almacen/ingreso/registrar_ingreso",
