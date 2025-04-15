@@ -9,13 +9,14 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { useGetUserActivity } from "@/hooks/desarrollo/useGetUserActivities";
 import { useRouter } from "next/navigation";
+import { Activity } from '@/types';
 
 interface ActivityDropdownActionsProps {
-  id: number;
   finished: boolean;
+  initialData: Activity
 }
 
-export const ActivityDropdownActions = ({ id, finished }: ActivityDropdownActionsProps) => {
+export const ActivityDropdownActions = ({ initialData, finished }: ActivityDropdownActionsProps) => {
   const router = useRouter();
 
   // Uso correcto de los hooks de mutación
@@ -23,7 +24,6 @@ export const ActivityDropdownActions = ({ id, finished }: ActivityDropdownAction
   const { deleteActivity } = useDeleteActivity();
   const { editActivity } = useEditActivity();
 
-  const { data: report } = useGetUserActivity(id.toString());
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -50,22 +50,21 @@ export const ActivityDropdownActions = ({ id, finished }: ActivityDropdownAction
 
   // Load correct activity data when edit dialog opens
   useEffect(() => {
-    if (editDialogOpen && report) {
-      const activity = report.activities.find(act => act.id === id);
-      if (activity) {
-        setStartTime(activity.start_hour || "");
-        setEndTime(activity.final_hour || "");
-        setDescription(activity.description || "");
-        setResult(activity.result || "");
+    if (editDialogOpen && initialData) {
+      if (initialData) {
+        setStartTime(initialData.start_hour || "");
+        setEndTime(initialData.final_hour || "");
+        setDescription(initialData.description || "");
+        setResult(initialData.result || "");
         setOriginalData({
-          startTime: activity.start_hour || "",
-          endTime: activity.final_hour || "",
-          description: activity.description || "",
-          result: activity.result || ""
+          startTime: initialData.start_hour || "",
+          endTime: initialData.final_hour || "",
+          description: initialData.description || "",
+          result: initialData.result || ""
         });
       }
     }
-  }, [editDialogOpen, report, id]);
+  }, [editDialogOpen, initialData]);
 
   const hasChanges = () => {
     return (
@@ -83,7 +82,7 @@ export const ActivityDropdownActions = ({ id, finished }: ActivityDropdownAction
     try {
       await updateFinalHour.mutateAsync({
         final_hour: endTime,
-        id: id.toString(),
+        id: initialData.id.toString(),
         result: result,
       });
       router.refresh();
@@ -96,14 +95,7 @@ export const ActivityDropdownActions = ({ id, finished }: ActivityDropdownAction
   const handleDelete = async () => {
     setIsLoading(true);
     try {
-      const activities = report?.activities || [];
-      const isOnlyOneActivity = activities.length === 1 && activities[0]?.id === id;
-      await deleteActivity.mutateAsync({ id: id.toString() });
-
-      if (isOnlyOneActivity) {
-        router.back();
-      }
-      router.refresh();
+      await deleteActivity.mutateAsync({ id: initialData.id.toString() });
       setDeleteDialogOpen(false);
     } finally {
       setIsLoading(false);
@@ -114,7 +106,7 @@ export const ActivityDropdownActions = ({ id, finished }: ActivityDropdownAction
     setIsLoading(true);
     try {
       await editActivity.mutateAsync({
-        id: id.toString(),
+        id: initialData.id.toString(),
         start_hour: startTime,
         final_hour: endTime,
         description: description,
