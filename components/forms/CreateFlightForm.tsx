@@ -158,17 +158,19 @@ export function FlightForm({ onClose }: FormProps) {
   useEffect(() => {
     if (form.watch("type") !== "CHART") {
       let newAmount = 0;
-      const feeString = form.watch("fee") || "0"; // Proporciona un valor predeterminado si es undefined
-      const fee = parseFloat(feeString);
-
-      if (parseFloat(kg) >= 0) {
-        newAmount = (parseFloat(kg) ?? 0) * fee;
-      } else {
-        newAmount = 0 * fee;
+      const feeString = form.watch("fee") || "0";
+      const fee = parseFloat(feeString.replace(/,/g, '')); // Asegurar reemplazo de comas
+      
+      // Asegurar que kg use punto como separador decimal
+      const kgValue = parseFloat(kg.replace(/,/g, '') || "0");
+      
+      if (!isNaN(kgValue)) {
+        newAmount = kgValue * fee;
       }
+      
       form.setValue("total_amount", newAmount.toString());
     }
-  }, [kg, form]);
+  }, [kg, form.watch("fee"), form.watch("type")]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("clkick");
@@ -194,7 +196,7 @@ export function FlightForm({ onClose }: FormProps) {
         className="flex flex-col space-y-3"
       >
         <div className="flex gap-2 items-center justify-center">
-        <FormField
+          <FormField
             control={form.control}
             name="client_id"
             render={({ field }) => (
@@ -429,7 +431,17 @@ export function FlightForm({ onClose }: FormProps) {
               </Label>
               <Input
                 defaultValue={"0"}
-                onChange={(e) => setKg(e.target.value)}
+                onChange={(e) => {
+                  // Validar que solo se ingresen números y puntos
+                  const value = e.target.value;
+                  if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+                    setKg(value);
+                  }
+                }}
+                value={kg}
+                placeholder={
+                  form.watch("type") === "CARGA" ? "KG" : "# Pasajeros"
+                }
               />
             </div>
           )}
