@@ -42,12 +42,13 @@ import { useCompanyStore } from '@/stores/CompanyStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { CalendarIcon, Check, ChevronsUpDown, Loader2, MinusCircle } from 'lucide-react';
+import { CalendarIcon, Check, ChevronsUpDown, Loader2, MinusCircle, CheckCircle, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-
+import { useCheckWorkOrderArticles } from '@/hooks/planificacion/useCheckWorkOrderArticles';
+import { toast } from 'sonner';
 // Esquema de validación con Zod
 interface TaskItem {
   id: number;
@@ -80,7 +81,13 @@ interface SelectedTask {
   task_items: TaskItem[];
 }
 
-// Esquema simplificado
+interface ArticleAvailability {
+  article: string;
+  available: boolean;
+  location?: string;
+  warehouse?: string;
+}
+
 const workOrderSchema = z.object({
   description: z.string().min(1, 'La descripción es obligatoria'),
   elaborated_by: z.string().min(1, 'Elaborado por es obligatorio'),
@@ -103,10 +110,12 @@ const ServiceWorkOrderForm = () => {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedService, setSelectedService] = useState<number | null>(null);
+  const [articleAvailability, setArticleAvailability] = useState<ArticleAvailability[]>([]);
   const { selectedStation } = useCompanyStore();
   const { createWorkOrder } = useCreateWorkOrder();
   const { data: aircrafts, isLoading: isAircraftsLoading } = useGetMaintenanceAircrafts();
   const { data: services, isLoading: isServicesLoading } = useGetServicesByManufacturer(selectedAircraft);
+  const { data, mutateAsync: check_mutate, isPending: isCheckLoading } = useCheckWorkOrderArticles()
   const router = useRouter();
 
   const form = useForm<WorkOrderFormValues>({
@@ -131,6 +140,23 @@ const ServiceWorkOrderForm = () => {
       });
     }
   }, [selectedStation, form]);
+
+  const handleCheckTaskItems = async () => {
+    try {
+      const taskIds = selectedTasks.map(task => task.task_id);
+      const result = await check_mutate(taskIds);
+      setArticleAvailability(result);
+      // Mostrar notificación o alerta con los resultados
+      const availableCount = result.filter(item => item.available).length;
+      if (availableCount > 0) {
+        toast.success(`${availableCount} artículo(s) disponibles en almacén.`);
+      } else {
+        toast.warning("Ningún artículo disponible en almacén");
+      }
+    } catch (error) {
+      toast.error("Error al verificar artículos");
+    }
+  };
 
   const handleTaskSelect = (task: Task, service: Service) => {
     setSelectedTasks(prev => {
@@ -216,7 +242,7 @@ const ServiceWorkOrderForm = () => {
         ata: task.ata
       })),
     };
-    await createWorkOrder.mutateAsync(formattedData);
+    //await createWorkOrder.mutateAsync(formattedData);
     form.reset();
     router.push('/hangar74/planificacion/ordenes_trabajo');
   };
@@ -468,7 +494,7 @@ const ServiceWorkOrderForm = () => {
                                 {servicesWithCount?.map(service => (
                                   <div
                                     key={service.id}
-                                    className={`p-2 rounded cursor-pointer flex justify-between items-center ${selectedService === service.id ? 'bg-blue-50' : ''}`}
+                                    className={`p - 2 rounded cursor - pointer flex justify - between items - center ${selectedService === service.id ? 'bg-blue-50' : ''} `}
                                     onClick={() => setSelectedService(service.id)}
                                   >
                                     <span className="truncate">{service.name}</span>
@@ -526,16 +552,120 @@ const ServiceWorkOrderForm = () => {
                                     ))}
                                 </div>
                               )}
+                              {/* Tabla de verificación simplificada */}
+                              {articleAvailability.length > 0 && (
+                                <Card className="mt-4">
+                                  <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                      <Check className="h-5 w-5 text-green-500" />
+                                      Disponibilidad de Artículos
+                                      <Badge variant="outline" className="ml-auto">
+                                        {articleAvailability.filter(item => item.available).length}/{articleAvailability.length} disponibles
+                                      </Badge>
+                                    </CardTitle>
+                                  </CardHeader>
+                                  <CardContent>
+                                    <div className="border rounded-lg overflow-hidden">
+                                      <Table>
+                                        <TableHeader>
+                                          <TableRow>
+                                            <TableHead className="w-[50px]">#</TableHead>
+                                            <TableHead>Artículo</TableHead>
+                                            <TableHead>Almacén</TableHead>
+                                            <TableHead>Ubicación</TableHead>
+                                            <TableHead className="text-center">Estado</TableHead>
+                                          </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                          {articleAvailability.map((item, index) => (
+                                            <TableRow key={index} className={cn(
+                                              !item.available && "opacity-70 bg-gray-50 dark:bg-gray-900"
+                                            )}>
+                                              <TableCell>{index + 1}</TableCell>
+                                              <TableCell className="font-mono font-medium">
+                                                {item.article}
+                                              </TableCell>
+                                              <TableCell>
+                                                {item.warehouse || (
+                                                  <span className="text-muted-foreground text-center">N/A</span>
+                                                )}
+                                              </TableCell>
+                                              <TableCell>
+                                                {item.location || (
+                                                  <span className="text-muted-foreground text-center">N/A</span>
+                                                )}
+                                              </TableCell>
+                                              <TableCell className="text-center">
+                                                {item.available ? (
+                                                  <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 hover:bg-green-300 cursor-pointer">
+                                                    <Check className="h-3 w-3 mr-1" />
+                                                    Disponible
+                                                  </Badge>
+                                                ) : (
+                                                  <Badge variant="destructive" className='cursor-pointer'>
+                                                    <MinusCircle className="h-3 w-3 mr-1" />
+                                                    No disponible
+                                                  </Badge>
+                                                )}
+                                              </TableCell>
+                                            </TableRow>
+                                          ))}
+                                        </TableBody>
+                                      </Table>
+                                    </div>
+                                  </CardContent>
+                                  <CardFooter className="text-xs text-muted-foreground flex justify-between">
+                                    <div>
+                                      {articleAvailability.filter(item => item.available).length > 0 ? (
+                                        <span className="text-green-600 flex items-center gap-1">
+                                          <CheckCircle className="h-3 w-3" />
+                                          {articleAvailability.filter(item => item.available).length} artículos disponibles en almacén.
+                                        </span>
+                                      ) : (
+                                        <span className="text-yellow-600 flex items-center gap-1">
+                                          <AlertCircle className="h-3 w-3" />
+                                          Ningún artículo disponible en almacén
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div>
+                                      Última verificación: {new Date().toLocaleTimeString()}
+                                    </div>
+                                  </CardFooter>
+                                </Card>
+                              )}
                             </div>
                           </div>
 
-                          <DialogFooter>
+                          <DialogFooter className="flex justify-between">
                             <Button
                               type="button"
+                              variant="outline"
                               onClick={() => setIsTaskModalOpen(false)}
                             >
-                              Confirmar selección
+                              Cancelar
                             </Button>
+
+                            <div className="flex gap-2">
+                              <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={handleCheckTaskItems}
+                                disabled={isCheckLoading}
+                              >
+                                {isCheckLoading ? (
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                ) : null}
+                                Verificar Artículos
+                              </Button>
+
+                              <Button
+                                type="button"
+                                onClick={() => setIsTaskModalOpen(false)}
+                              >
+                                Confirmar selección
+                              </Button>
+                            </div>
                           </DialogFooter>
                         </DialogContent>
                       </Dialog>

@@ -87,7 +87,10 @@ export type Location = {
 export type Warehouse = {
     id: string,
     name: string,
-    address: string,
+    location: {
+      address: string,
+      type: string,
+    },
     company: string,
     type: string,
 }
@@ -254,6 +257,34 @@ export type Employee = {
   user?: User,
   location: Location,
 }
+
+export type WorkOrderTask = {
+  id: number,
+  description_task: string,
+  status: string,
+  technician_responsable?: string,
+  inspector_responsable?: string,
+  ata: string,
+  task_number: string,
+  origin_manual: string,
+  old_technician?: string[],
+  task_items: {
+    article_serial: string,
+    article_part_number: string,
+    article_alt_part_number: string,
+  }[],
+  non_routine?: {
+    id: number,
+    ata: string,
+    description: string,
+    status: string,
+    action?: string,
+    needs_task: boolean,
+    work_order_task: Omit<WorkOrderTask, "non_routine">
+    no_routine_task?: Omit<WorkOrderTask, "non_routine">[]
+  }
+}
+
 export interface WorkOrder extends Request {
   order_number: string
   client: MaintenanceClient,
@@ -264,16 +295,7 @@ export interface WorkOrder extends Request {
   elaborated_by: string,
   reviewed_by: string,
   approved_by: string,
-  work_order_tasks: {
-    id: number,
-    status: "ABIERTO" | "CERRADO",
-    description?: string,
-    technician_responsable?: string,
-    inspector_responsable?: string,
-    ata: string,
-    old_technician?: string[],
-    task: ServiceTask,
-  }[]
+  work_order_tasks: WorkOrderTask[]
 }
 
 export interface DispatchRequest extends Request {
@@ -343,6 +365,7 @@ export type Requisition = {
   order_number: string,
   status: string,
   created_by: User,
+  type: string,
   requested_by: string,
   batch: {
     name: string,

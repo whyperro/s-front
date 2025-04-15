@@ -10,10 +10,16 @@ interface CreateWOData {
   date: string,
   aircraft_id: string,
   location_id: string,
-  work_order_task: {
-    task_item_id?: string,
-    description?: string,
+  work_order_task?: {
+    description_task: string,
     ata: string,
+    task_number: string,
+    origin_manual: string,
+    task_items?: {
+      part_number: string,
+      alternate_part_number?: string,
+      serial?: string,
+    }[]
   }[]
 }
 

@@ -47,9 +47,9 @@ const WorkOrderDropdownActions = ({ work_order }: { work_order: WorkOrder }) => 
       <Dialog open={openDelete} onOpenChange={setOpenDelete}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-center">¿Seguro que desea eliminar esta unidad primaria?</DialogTitle>
+            <DialogTitle className="text-center">¿Seguro que desea eliminar esta Ord. de Trabajo?</DialogTitle>
             <DialogDescription className="text-center p-2 mb-0 pb-0">
-              Esta acción es irreversible y estaría eliminando por completo la unidad seleccionada.
+              Esta acción es irreversible y estaría eliminando por completo la orden de trabajo.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex flex-col gap-2 md:gap-0">

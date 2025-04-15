@@ -104,8 +104,6 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
 
   const { mutate, data: locations, isPending: isLocationsPending } = useGetLocationsByCompanyId()
 
-  console.log(form.getValues())
-
   useEffect(() => {
     if (selectedCompany) {
       mutate(Number(2))

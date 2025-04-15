@@ -21,7 +21,6 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-// Esquema simplificado sin IDs para las tareas
 const manualWorkOrderSchema = z.object({
   description: z.string().min(1, 'La descripción es obligatoria'),
   elaborated_by: z.string().min(1, 'Elaborado por es obligatorio'),
@@ -31,16 +30,32 @@ const manualWorkOrderSchema = z.object({
   aircraft_id: z.string(),
   date: z.date(),
   work_order_task: z.array(z.object({
-    description: z.string().min(1, 'La descripción de la tarea es obligatoria'),
-    ata: z.string().min(1, 'Código ATA requerido')
+    description_task: z.string().min(1, 'La descripción de la tarea es obligatoria'),
+    ata: z.string().min(1, 'Código ATA requerido'),
+    task_number: z.string().min(1, 'Número de tarea requerido'),
+    origin_manual: z.string().min(1, 'Origen manual requerido'),
+    task_items: z.array(z.object({
+      part_number: z.string().min(1, 'Número de parte requerido'),
+      alternate_part_number: z.string().optional(),
+      serial: z.string().optional()
+    })).optional()
   })).min(1, 'Debe agregar al menos una tarea'),
 });
 
 type ManualWorkOrderFormValues = z.infer<typeof manualWorkOrderSchema>;
 
+interface TaskItem {
+  part_number: string;
+  alternate_part_number: string;
+  serial: string;
+}
+
 interface TaskInProgress {
-  description: string;
+  description_task: string;
   ata: string;
+  task_number: string;
+  origin_manual: string;
+  task_items: TaskItem[];
 }
 
 const NonServiceWorkOrderForm = () => {
@@ -51,7 +66,7 @@ const NonServiceWorkOrderForm = () => {
   const { data: aircrafts, isLoading: isAircraftsLoading, isError: isAircraftsError } = useGetMaintenanceAircrafts();
   const router = useRouter();
 
-  const form = useForm<ManualWorkOrderFormValues>({git 
+  const form = useForm<ManualWorkOrderFormValues>({
     resolver: zodResolver(manualWorkOrderSchema),
     defaultValues: {
       elaborated_by: 'Ing. Francisco Montilla',
@@ -71,8 +86,11 @@ const NonServiceWorkOrderForm = () => {
 
   const addEmptyTask = () => {
     setTasks(prev => [...prev, {
-      description: '',
-      ata: ''
+      description_task: '',
+      ata: '',
+      task_number: '',
+      origin_manual: '',
+      task_items: []
     }]);
   };
 
@@ -84,6 +102,38 @@ const NonServiceWorkOrderForm = () => {
 
   const removeTask = (index: number) => {
     setTasks(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const addEmptyTaskItem = (itemIndex: number) => {
+    setTasks(prev => prev.map((task, index) =>
+      index === itemIndex
+        ? { ...task, task_items: [...task.task_items, { part_number: '', alternate_part_number: '', serial: '' }] }
+        : task
+    ));
+  };
+
+  const updateTaskItem = (taskIndex: number, itemIndex: number, field: keyof TaskItem, value: string) => {
+    setTasks(prev => prev.map((task, tIndex) =>
+      tIndex === taskIndex
+        ? {
+          ...task,
+          task_items: task.task_items.map((item, iIndex) =>
+            iIndex === itemIndex ? { ...item, [field]: value } : item
+          )
+        }
+        : task
+    ));
+  };
+
+  const removeTaskItem = (taskIndex: number, itemIndex: number) => {
+    setTasks(prev => prev.map((task, tIndex) =>
+      tIndex === taskIndex
+        ? {
+          ...task,
+          task_items: task.task_items.filter((_, iIndex) => iIndex !== itemIndex)
+        }
+        : task
+    ));
   };
 
   useEffect(() => {
@@ -283,7 +333,6 @@ const NonServiceWorkOrderForm = () => {
           {/* Selección de tareas */}
           <div className="space-y-4">
             <h2 className="text-3xl font-semibold text-center">Tareas Manuales</h2>
-
             <div className="flex flex-col gap-4">
               <Button
                 disabled={!selectedAircraft}
@@ -295,34 +344,61 @@ const NonServiceWorkOrderForm = () => {
                 <PlusCircle className="h-4 w-4" />
                 Agregar Tarea
               </Button>
-
-              <ScrollArea className={cn("flex", tasks.length > 2 ? "h-[450px]" : "")}>
+              <ScrollArea className={cn("flex", tasks.length > 1 ? "h-[550px]" : "")}>
                 <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
                   {tasks.map((task, index) => (
                     <div key={index} className="p-4 border rounded-lg mb-2">
                       <div className="flex gap-2 justify-between items-center">
-                        <FormItem className='w-[120px]'>
-                          <FormLabel>Código ATA</FormLabel>
-                          <Input
-                            value={task.ata}
-                            onChange={(e) =>
-                              updateTask(index, "ata", e.target.value)
-                            }
-                            placeholder="Ej: 25"
-                          />
-                          <FormMessage />
-                        </FormItem>
-                        <FormItem className="w-full">
-                          <FormLabel>Descripción de la Tarea</FormLabel>
-                          <Input
-                            value={task.description}
-                            onChange={(e) =>
-                              updateTask(index, "description", e.target.value)
-                            }
-                            placeholder="Describa la tarea..."
-                          />
-                          <FormMessage />
-                        </FormItem>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 w-full">
+                          {/* Task Number */}
+                          <FormItem>
+                            <FormLabel>Número de Tarea</FormLabel>
+                            <Input
+                              value={task.task_number}
+                              onChange={(e) =>
+                                updateTask(index, "task_number", e.target.value)
+                              }
+                              placeholder="Ej: TASK-001"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                          {/* Origin Manual */}
+                          <FormItem>
+                            <FormLabel>Manual de Origen</FormLabel>
+                            <Input
+                              value={task.origin_manual}
+                              onChange={(e) =>
+                                updateTask(index, "origin_manual", e.target.value)
+                              }
+                              placeholder="Ej: Manual..."
+                            />
+                            <FormMessage />
+                          </FormItem>
+                          {/* ATA Code */}
+                          <FormItem>
+                            <FormLabel>Código ATA</FormLabel>
+                            <Input
+                              value={task.ata}
+                              onChange={(e) =>
+                                updateTask(index, "ata", e.target.value)
+                              }
+                              placeholder="Ej: 25"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                          {/* Task Description (full width) */}
+                          <FormItem className="md:col-span-3">
+                            <FormLabel>Descripción de la Tarea</FormLabel>
+                            <Textarea
+                              value={task.description_task}
+                              onChange={(e) =>
+                                updateTask(index, "description_task", e.target.value)
+                              }
+                              placeholder="Describa la tarea..."
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        </div>
                         <Button
                           variant="ghost"
                           type="button"
@@ -332,6 +408,77 @@ const NonServiceWorkOrderForm = () => {
                         >
                           <MinusCircle className="size-4" />
                         </Button>
+                      </div>
+                      <div className="mt-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <h3 className="font-medium">Artículos/Partes Necesarias</h3>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => addEmptyTaskItem(index)}
+                          >
+                            <PlusCircle className="h-4 w-4 mr-2" />
+                            Agregar Artículo
+                          </Button>
+                        </div>
+
+                        <ScrollArea className={cn("", task.task_items.length > 2 ? "h-[295px]" : "")}>
+                          {task.task_items.map((item, itemIndex) => (
+                            <div key={itemIndex} className="p-3 border rounded-md bg-muted/50">
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                {/* Part Number */}
+                                <FormItem>
+                                  <FormLabel>Número de Parte*</FormLabel>
+                                  <Input
+                                    value={item.part_number}
+                                    onChange={(e) =>
+                                      updateTaskItem(index, itemIndex, "part_number", e.target.value)
+                                    }
+                                    placeholder="Ej: 1234-5678"
+                                  />
+                                </FormItem>
+
+                                {/* Alternate Part Number */}
+                                <FormItem>
+                                  <FormLabel>Número Alternativo</FormLabel>
+                                  <Input
+                                    value={item.alternate_part_number}
+                                    onChange={(e) =>
+                                      updateTaskItem(index, itemIndex, "alternate_part_number", e.target.value)
+                                    }
+                                    placeholder="Ej: 9876-5432"
+                                  />
+                                </FormItem>
+
+                                {/* Serial */}
+                                <FormItem>
+                                  <FormLabel>Serial</FormLabel>
+                                  <Input
+                                    value={item.serial}
+                                    onChange={(e) =>
+                                      updateTaskItem(index, itemIndex, "serial", e.target.value)
+                                    }
+                                    placeholder="Ej: SN12345678"
+                                  />
+                                </FormItem>
+                              </div>
+
+                              <div className="flex justify-end mt-2">
+                                <Button
+                                  variant="ghost"
+                                  type="button"
+                                  size="sm"
+                                  onClick={() => removeTaskItem(index, itemIndex)}
+                                  className="text-red-500 hover:text-red-600"
+                                >
+                                  <MinusCircle className="h-4 w-4 mr-1" />
+                                  Eliminar
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                        </ScrollArea>
                       </div>
                     </div>
                   ))}
