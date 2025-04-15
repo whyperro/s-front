@@ -119,8 +119,8 @@ export const columns: ColumnDef<Flight>[] = [
           <Badge
             className={
               isPayed
-                ? "bg-green-500 hover:bg-green-600"
-                : "bg-red-500 hover:bg-red-500"
+                ? "bg-green-700 hover:bg-green-700"
+                : "bg-red-700 hover:bg-red-700"
             }
             variant={badgeVariant}
           >

@@ -113,7 +113,7 @@ export const columns: ColumnDef<Sell>[] = [
               href={reference} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center text-red-500 hover:underline"
+              className="flex items-center text-red-700 hover:underline"
             >
               <FileDownIcon className="mr-1 h-4 w-4" />
               Ver PDF
@@ -130,7 +130,7 @@ export const columns: ColumnDef<Sell>[] = [
               href={reference} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-blue-500 hover:underline"
+              className="text-blue-700 hover:underline"
             >
               Ver referencia
             </a>
