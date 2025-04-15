@@ -17,6 +17,7 @@ const BLUE = "#daeef3";
 const BLUE_HEADER = "#b6dde8";
 const RED = "#ff0000";
 const GREEN = "#00b050";
+const YELLOW = "#f9c000";
 const WHITE = "#fff";
 const GRAY = "#d9d9d9";
 
@@ -32,6 +33,11 @@ const styles = StyleSheet.create({
     width: 102,
     height: 43,
     position: "relative",
+  },
+  pyramid_image: {
+    width: 121,
+    height: 118,
+    position: "absolute",
   },
   page: {
     padding: 30,
@@ -495,9 +501,48 @@ const styles = StyleSheet.create({
     borderColor: "#000",
     justifyContent: "center",
     alignItems: "center",
-  },lastRowBorder: {
+  },
+  lastRowBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: '#000000',
+    borderBottomColor: "#000000",
+  },
+  mainRow: {
+    flexDirection: "row",
+    width: "100%",
+    borderLeft: 1, // Borde más delgado
+    minHeight: "120px", // Altura reducida
+  },
+  pyramidColumn: {
+    width: "50%",
+    padding: 5, // Padding reducido
+    borderRight: "1px solid #000",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  segmentedColumn: {
+    width: "25%",
+    borderRight: 1,
+  },
+  segment: {
+    flex: 1,
+    //borderBottom: "1px solid #eee", // Borde más sutil
+    padding: 3, // Padding mínimo
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: 30, // Altura fija pequeña para cada segmento
+  },
+  lastSegment: {
+    //borderBottom: 1,
+  },
+  pyramidTitle: {
+    textAlign: "center",
+    fontSize: 9, // Texto más pequeño
+    fontWeight: "bold",
+  },
+  segmentText: {
+    fontSize: 10, // Texto más pequeño
+    color: "#333",
+    margin: 1, // Margen mínimo
   },
 });
 
@@ -522,54 +567,6 @@ export const InstructiveFirstPart = () => (
     <View style={styles.instructiveContainer}>
       <Text style={styles.instructiveText}>se identifica el peligro.</Text>
     </View>
-
-    <View style={styles.instructiveContainer}>
-      <Text style={styles.instructiveSubTitle}>
-        • Fecha de la recepción del peligro (DD/MM/AAAA):
-      </Text>
-      <Text style={styles.instructiveText}> Colocar día, mes y año que se</Text>
-    </View>
-    <View style={styles.instructiveContainer}>
-      <Text style={styles.instructiveText}>
-        realizó la apertura del caso en el departamento de SMS.
-      </Text>
-    </View>
-
-    <View style={styles.instructiveContainer}>
-      <Text style={styles.instructiveSubTitle}>• N° Caso: </Text>
-      <Text style={styles.instructiveText}>
-        Colocar el número correlativo a los casos
-      </Text>
-    </View>
-
-    <View style={styles.instructiveContainer}>
-      <Text style={styles.instructiveSubTitle}>• Tipo de peligro: </Text>
-      <Text style={styles.instructiveText}>
-        Marcar con una (X) el tipo de peligro que se identificó.
-      </Text>
-    </View>
-
-    <View style={styles.instructiveContainer}>
-      <Text style={styles.instructiveSubTitle}>
-        • Área donde fue identificado el peligro:{" "}
-      </Text>
-      <Text style={styles.instructiveText}>
-        Marcar con una (X) el área donde fue identificado
-      </Text>
-    </View>
-    <Text style={styles.instructiveText}>el peligro.</Text>
-
-    <View style={styles.instructiveContainer}>
-      <Text style={styles.instructiveSubTitle}>
-        • Método y fuente de la identificación de peligros:
-      </Text>
-      <Text style={styles.instructiveText}>
-        Marcar con una (X) la(s) fuente(s) con
-      </Text>
-    </View>
-    <Text style={[styles.instructiveText, { paddingLeft: 8 }]}>
-      que se identificó el peligro.
-    </Text>
   </View>
 );
 
@@ -1321,7 +1318,11 @@ export const FirstPage = ({
 
     <View style={styles.tableRow}>
       <View
-        style={{ ...styles.tableCell, width: "100%", backgroundColor: BLUE }}
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: BLUE_HEADER,
+        }}
       >
         <Text style={[styles.cellTextHeader, styles.boldTitle]}>
           2. GESTION DE RIESGOS
@@ -1340,7 +1341,7 @@ export const FirstPage = ({
 
     {/* FILA PARA LOS DATOS DEL AREA RESPONSABLE DE LA MITIGACION*/}
 
-    <View style={[styles.tableRow, { borderBottom: 0 }]}>
+    <View style={[styles.tableRow]}>
       {/*NUMERO DE REPORTE*/}
       <View
         style={{
@@ -1399,7 +1400,7 @@ export const FirstPage = ({
         }}
       >
         <Text style={[styles.cellText3, styles.boldTitle]}>
-          MANTENIMIENTO Y{"\n"}PLANIFICACION
+          MANTENIMIENTO{"\n"}
         </Text>
       </View>
 
@@ -1450,7 +1451,7 @@ export const FirstPage = ({
       <View
         style={{
           ...styles.tableCell,
-          width: "34%",
+          width: "35%",
           backgroundColor: GRAY,
         }}
       >
@@ -1474,7 +1475,7 @@ export const FirstPage = ({
       <View
         style={{
           ...styles.tableCell,
-          width: "22%",
+          width: "21%",
           backgroundColor: GRAY,
         }}
       >
@@ -1518,7 +1519,7 @@ export const FirstPage = ({
         </Text>
       </View>
     </View>
-    {Footer(1, 5)}
+    {Footer(1, 6)}
   </Page>
 );
 
@@ -1529,30 +1530,6 @@ export const SecondPage = ({
 }) => (
   <Page size={"LETTER"} style={styles.page}>
     <Header />
-    <View style={[styles.tableRow]}>
-      <View
-        style={{
-          ...styles.tableCell,
-          width: "100%",
-          backgroundColor: WHITE,
-          alignItems: "flex-start",
-          paddingLeft: 4,
-        }}
-      >
-        <Text style={[styles.cellText2, styles.boldTitle]}>
-          {"\n"}
-          FECHA DE INICIO DE LA GESTION:{" "}
-          <Text style={[styles.cellText2]}>
-            {dateFormat(
-              identification.risk_management_start_date,
-              "dd-MM-yyyy"
-            )}
-          </Text>
-          {"\n"}
-          {"\n"}
-        </Text>
-      </View>
-    </View>
 
     <View style={[styles.tableRow]}>
       <View
@@ -1681,6 +1658,581 @@ export const SecondPage = ({
             <Text style={[styles.cellText3]}></Text>
           </View>
         ))}
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: BLUE_HEADER,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          MATRIZ DE EVALUACION DE RIESGO DE SEGURIDAD OPERACIONAL
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "30%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          Probabilidad de Riesgo
+        </Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          Catastrófico{"\n"}(A)
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          Peligroso{"\n"}(B)
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          Importante{"\n"}(C)
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          Leve{"\n"} (D)
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          Insignificante{"\n"}(E)
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "30%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          Frecuente (5)
+        </Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle, { color: RED }]}>
+          5A
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle, { color: RED }]}>
+          5B
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle, { color: RED }]}>
+          5C
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: YELLOW }]}
+        >
+          {" "}
+          5D
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: YELLOW }]}
+        >
+          5E
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "30%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          Ocasional (4)
+        </Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle, { color: RED }]}>
+          4A
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle, { color: RED }]}>
+          4B
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: YELLOW }]}
+        >
+          4C
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: YELLOW }]}
+        >
+          {" "}
+          4D
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: YELLOW }]}
+        >
+          4E
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "30%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          Remoto (3)
+        </Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle, { color: RED }]}>
+          3A
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: YELLOW }]}
+        >
+          3B
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: YELLOW }]}
+        >
+          3C
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: YELLOW }]}
+        >
+          {" "}
+          3D
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: GREEN }]}
+        >
+          3E
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "30%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          Improbable (2)
+        </Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: YELLOW }]}
+        >
+          2A
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: YELLOW }]}
+        >
+          2B
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: YELLOW }]}
+        >
+          2C
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: GREEN }]}
+        >
+          {" "}
+          2D
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: GREEN }]}
+        >
+          2E
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "30%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          Sumamente Improbable (1)
+        </Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: GREEN }]}
+        >
+          1A
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: GREEN }]}
+        >
+          1B
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: GREEN }]}
+        >
+          1C
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: GREEN }]}
+        >
+          {" "}
+          1D
+        </Text>
+      </View>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "14%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[styles.cellTextHeader, styles.boldTitle, { color: GREEN }]}
+        >
+          1E
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: BLUE_HEADER,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          MATRIZ DE TOLERABILIDAD DEL RIESGO DE SEGURIDAD OPERACIONAL
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.tableRow]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "50%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          Descripción de tolerabilidad{" "}
+        </Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          Índice de riesgo{" "}
+        </Text>
+      </View>
+
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "25%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text style={[styles.cellTextHeader, styles.boldTitle]}>
+          Criterios sugeridos{" "}
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.mainRow, { borderTop: 1 }]}>
+      {/* Columna de la pirámide (continua) */}
+      <View style={styles.pyramidColumn}>
+        <Image src="/risk_matrix_pyramid.png" style={styles.pyramid_image} />
+      </View>
+
+      {/* Primera columna segmentada */}
+      <View style={styles.segmentedColumn}>
+        <View style={[styles.segment, { backgroundColor: RED }]}>
+          <Text style={styles.segmentText}></Text>
+        </View>
+        <View
+          style={[styles.segment, { backgroundColor: YELLOW, borderTop: 1 }]}
+        >
+          <Text style={styles.segmentText}></Text>
+        </View>
+        <View
+          style={[
+            styles.segment,
+            styles.lastSegment,
+            { backgroundColor: GREEN, borderTop: 1 },
+          ]}
+        >
+          <Text style={styles.segmentText}></Text>
+        </View>
+      </View>
+
+      {/* Segunda columna segmentada */}
+      <View style={[styles.segmentedColumn]}>
+        <View style={styles.segment}>
+          <Text style={styles.segmentText}>
+            Inaceptable según las circunstancias existentes
+          </Text>
+        </View>
+        <View style={[styles.segment, { borderTop: 1 }]}>
+          <Text style={styles.segmentText}>
+            Tolerable según la mitigación de riesgos. Puede necesitar una
+            decisión de gestión
+          </Text>
+        </View>
+        <View style={[styles.segment, styles.lastSegment, { borderTop: 1 }]}>
+          <Text style={styles.segmentText}>Aceptable</Text>
+        </View>
       </View>
     </View>
 
@@ -1835,7 +2387,7 @@ export const SecondPage = ({
           backgroundColor: GRAY,
         }}
       >
-        <Text style={[styles.cellText2, styles.boldTitle]}>PROBABILIDAD</Text>
+        <Text style={[styles.cellText2, styles.boldTitle]}>Probabilidad</Text>
       </View>
 
       {/*LOCALIZACION DEL REPORTE*/}
@@ -1846,7 +2398,7 @@ export const SecondPage = ({
           backgroundColor: GRAY,
         }}
       >
-        <Text style={[styles.cellText2, styles.boldTitle]}>SEVERIDAD</Text>
+        <Text style={[styles.cellText2, styles.boldTitle]}>Severidad</Text>
       </View>
 
       {/*NUMERO DE REPORTE*/}
@@ -1858,7 +2410,7 @@ export const SecondPage = ({
         }}
       >
         <Text style={[styles.cellText2, styles.boldTitle]}>
-          INDICE DE RIESGO{"\n"}INICIAL
+          Indice de riesgo inicial
         </Text>
       </View>
 
@@ -1871,13 +2423,11 @@ export const SecondPage = ({
         }}
       >
         <Text style={[styles.cellText2, styles.boldTitle]}>
-          TOLERABILIDAD DEL{"\n"}RIESGO
+          Tolerabilidad del riesgo
         </Text>
       </View>
     </View>
     <View style={[styles.tableRow, { borderBottom: 1 }]}>
-      {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
-
       <View
         style={{
           ...styles.tableCell,
@@ -1929,6 +2479,18 @@ export const SecondPage = ({
         </Text>
       </View>
     </View>
+
+    {Footer(2, 6)}
+  </Page>
+);
+
+export const ThirdPage = ({
+  identification,
+}: {
+  identification: MitigationTable;
+}) => (
+  <Page size={"LETTER"} style={styles.page}>
+    <Header />
     <View style={[styles.tableRow, { marginTop: 15 }]}>
       <View
         style={{
@@ -2072,131 +2634,196 @@ export const SecondPage = ({
     </View>
 
     <>
-  {/* Muestra las medidas existentes (hasta 5) */}
-  {identification.mitigation_plan?.measures
-    .slice(0, 5)
-    .map((measure, index) => {
-      const isLastRow = index === 4; // Verifica si es la quinta fila
-      return (
-        <View 
-          key={measure.id} 
-          style={[
-            styles.tableRow,
-            ...(isLastRow ? [styles.lastRowBorder] : [])
-          ]}
-        >
+      {/* Muestra las medidas existentes (hasta 5) */}
+      {identification.mitigation_plan?.measures
+        .slice(0, 5)
+        .map((measure, index) => {
+          const isLastRow = index === 4; // Verifica si es la quinta fila
+          return (
+            <View
+              key={measure.id}
+              style={[
+                styles.tableRow,
+                ...(isLastRow ? [styles.lastRowBorder] : []),
+              ]}
+            >
+              <View
+                style={{
+                  ...styles.tableCell,
+                  width: "25%",
+                  backgroundColor: WHITE,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={[styles.cellText2, { width: 25, textAlign: "left" }]}
+                >
+                  {index + 1}.
+                </Text>
+                <Text
+                  style={[styles.cellText2, { flex: 1, textAlign: "center" }]}
+                >
+                  {measure.implementation_responsible}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  ...styles.tableCell,
+                  width: "12%",
+                  backgroundColor: WHITE,
+                }}
+              >
+                <Text
+                  style={[styles.cellText2, { textAlign: "center" }]}
+                ></Text>
+              </View>
+
+              <View
+                style={{
+                  ...styles.tableCell,
+                  width: "18%",
+                  backgroundColor: WHITE,
+                }}
+              >
+                <Text style={[styles.cellText2, { textAlign: "center" }]}>
+                  {measure.implementation_supervisor}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  ...styles.tableCell,
+                  width: "12%",
+                  backgroundColor: WHITE,
+                }}
+              >
+                <Text
+                  style={[styles.cellText2, { textAlign: "center" }]}
+                ></Text>
+              </View>
+
+              <View
+                style={{
+                  ...styles.tableCell,
+                  width: "21%",
+                  backgroundColor: WHITE,
+                }}
+              >
+                <Text style={[styles.cellText2, { textAlign: "center" }]}>
+                  {dateFormat(measure.estimated_date, "dd-MM-yyyy")}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  ...styles.tableCell,
+                  width: "12%",
+                  backgroundColor: WHITE,
+                }}
+              >
+                <Text style={[styles.cellText2, { textAlign: "center" }]}>
+                  {dateFormat(measure.execution_date, "dd-MM-yyyy")}
+                </Text>
+              </View>
+            </View>
+          );
+        })}
+
+      {/* Rellena con líneas vacías si hay menos de 5 */}
+      {Array.from({
+        length: Math.max(
+          0,
+          5 - (identification.mitigation_plan?.measures?.length || 0)
+        ),
+      }).map((_, i) => {
+        const emptyIndex =
+          (identification.mitigation_plan?.measures?.length || 0) + i;
+        const isLastRow = emptyIndex === 4; // Última línea (índice 4)
+
+        return (
           <View
-            style={{
-              ...styles.tableCell,
-              width: "25%",
-              backgroundColor: WHITE,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
+            key={`empty-${emptyIndex}`}
+            style={[
+              styles.tableRow,
+              ...(isLastRow ? [styles.lastRowBorder] : []),
+            ]}
           >
-            <Text style={[styles.cellText2, { width: 25, textAlign: "left" }]}>
-              {index + 1}.
-            </Text>
-            <Text style={[styles.cellText2, { flex: 1, textAlign: "center" }]}>
-              {measure.implementation_responsible}
-            </Text>
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "25%",
+                backgroundColor: WHITE,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={[styles.cellText2, { width: 25, textAlign: "left" }]}
+              >
+                {emptyIndex + 1}.
+              </Text>
+              <Text
+                style={[styles.cellText2, { flex: 1, textAlign: "center" }]}
+              ></Text>
+            </View>
+
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "12%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+            </View>
+
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "18%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+            </View>
+
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "12%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+            </View>
+
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "21%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+            </View>
+
+            <View
+              style={{
+                ...styles.tableCell,
+                width: "12%",
+                backgroundColor: WHITE,
+              }}
+            >
+              <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
+            </View>
           </View>
+        );
+      })}
+    </>
 
-          <View style={{ ...styles.tableCell, width: "12%", backgroundColor: WHITE }}>
-            <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
-          </View>
-
-          <View style={{ ...styles.tableCell, width: "18%", backgroundColor: WHITE }}>
-            <Text style={[styles.cellText2, { textAlign: "center" }]}>
-              {measure.implementation_supervisor}
-            </Text>
-          </View>
-
-          <View style={{ ...styles.tableCell, width: "12%", backgroundColor: WHITE }}>
-            <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
-          </View>
-
-          <View style={{ ...styles.tableCell, width: "21%", backgroundColor: WHITE }}>
-            <Text style={[styles.cellText2, { textAlign: "center" }]}>
-              {dateFormat(measure.estimated_date, "dd-MM-yyyy")}
-            </Text>
-          </View>
-
-          <View style={{ ...styles.tableCell, width: "12%", backgroundColor: WHITE }}>
-            <Text style={[styles.cellText2, { textAlign: "center" }]}>
-              {dateFormat(measure.execution_date, "dd-MM-yyyy")}
-            </Text>
-          </View>
-        </View>
-      );
-    })}
-
-  {/* Rellena con líneas vacías si hay menos de 5 */}
-  {Array.from({
-    length: Math.max(0, 5 - (identification.mitigation_plan?.measures?.length || 0)),
-  }).map((_, i) => {
-    const emptyIndex = (identification.mitigation_plan?.measures?.length || 0) + i;
-    const isLastRow = emptyIndex === 4; // Última línea (índice 4)
-
-    return (
-      <View
-        key={`empty-${emptyIndex}`}
-        style={[
-          styles.tableRow,
-          ...(isLastRow ? [styles.lastRowBorder] : [])
-        ]}
-      >
-        <View
-          style={{
-            ...styles.tableCell,
-            width: "25%",
-            backgroundColor: WHITE,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Text style={[styles.cellText2, { width: 25, textAlign: "left" }]}>
-            {emptyIndex + 1}.
-          </Text>
-          <Text style={[styles.cellText2, { flex: 1, textAlign: "center" }]}></Text>
-        </View>
-
-        <View style={{ ...styles.tableCell, width: "12%", backgroundColor: WHITE }}>
-          <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
-        </View>
-
-        <View style={{ ...styles.tableCell, width: "18%", backgroundColor: WHITE }}>
-          <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
-        </View>
-
-        <View style={{ ...styles.tableCell, width: "12%", backgroundColor: WHITE }}>
-          <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
-        </View>
-
-        <View style={{ ...styles.tableCell, width: "21%", backgroundColor: WHITE }}>
-          <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
-        </View>
-
-        <View style={{ ...styles.tableCell, width: "12%", backgroundColor: WHITE }}>
-          <Text style={[styles.cellText2, { textAlign: "center" }]}></Text>
-        </View>
-      </View>
-    );
-  })}
-</>
-
-    {Footer(2, 5)}
-  </Page>
-);
-
-export const ThirdPage = ({
-  identification,
-}: {
-  identification: MitigationTable;
-}) => (
-  <Page size={"LETTER"} style={styles.page}>
-    <Header />
-    <View style={[styles.tableRow]}>
+    <View style={[styles.tableRow, { borderTop: 0 }]}>
       {/*FECHA DE IDENTIFICACION DEL REPORTE*/}
 
       <View
@@ -2582,8 +3209,7 @@ export const ThirdPage = ({
       </View>
     </View>
 
-    <InstructiveFirstPart />
-    {Footer(3, 5)}
+    {Footer(3, 6)}
   </Page>
 );
 
@@ -2591,6 +3217,92 @@ export const FourthPage = () => (
   <Page size={"LETTER"} style={styles.page}>
     <Header />
 
+    <View style={[styles.tableRow, { borderBottom: 1 }]}>
+      <View
+        style={{
+          ...styles.tableCell,
+          width: "100%",
+          backgroundColor: WHITE,
+        }}
+      >
+        <Text
+          style={[
+            styles.cellTextHeader,
+            styles.boldTitle,
+            { textAlign: "center", textDecoration: "underline" },
+          ]}
+        >
+          OBSERVACION
+        </Text>
+      </View>
+    </View>
+
+    <View style={[styles.observationContainer,{paddingBottom:220,paddingTop:220}]}>
+   
+    </View>
+
+    <InstructiveFirstPart />
+
+    {Footer(4, 6)}
+  </Page>
+);
+
+export const FifthPage = () => (
+  <Page size={"LETTER"} style={styles.page}>
+    <Header />
+
+    <View style={[{ paddingLeft: 20 }]}>
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveSubTitle}>
+          • Fecha de la recepción del peligro (DD/MM/AAAA):
+        </Text>
+        <Text style={styles.instructiveText}>
+          {" "}
+          Colocar día, mes y año que se
+        </Text>
+      </View>
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveText}>
+          realizó la apertura del caso en el departamento de SMS.
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveSubTitle}>• N° Caso: </Text>
+        <Text style={styles.instructiveText}>
+          Colocar el número correlativo a los casos
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveSubTitle}>• Tipo de peligro: </Text>
+        <Text style={styles.instructiveText}>
+          Marcar con una (X) el tipo de peligro que se identificó.
+        </Text>
+      </View>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveSubTitle}>
+          • Área donde fue identificado el peligro:{" "}
+        </Text>
+        <Text style={styles.instructiveText}>
+          Marcar con una (X) el área donde fue identificado
+        </Text>
+      </View>
+      <Text style={styles.instructiveText}>el peligro.</Text>
+
+      <View style={styles.instructiveContainer}>
+        <Text style={styles.instructiveSubTitle}>
+          • Método y fuente de la identificación de peligros:
+        </Text>
+        <Text style={styles.instructiveText}>
+          Marcar con una (X) la(s) fuente(s) con
+        </Text>
+      </View>
+      <Text style={[styles.instructiveText, { paddingLeft: 8 }]}>
+        que se identificó el peligro.
+      </Text>
+    </View>
     <View
       style={[styles.instructiveContainer, { marginTop: 15, paddingLeft: 20 }]}
     >
@@ -2750,6 +3462,14 @@ export const FourthPage = () => (
       </Text>
     </View>
 
+    {Footer(5, 6)}
+  </Page>
+);
+
+export const SixthPage = () => (
+  <Page size={"LETTER"} style={styles.page}>
+    <Header />
+
     <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
       <Text style={[styles.instructiveTitle, styles.boldTitle]}>
         • Firmar:{" "}
@@ -2813,13 +3533,6 @@ export const FourthPage = () => (
         Colocar el indie de riesgo residual obtenida.
       </Text>
     </View>
-    {Footer(4, 5)}
-  </Page>
-);
-
-export const FifthPage = () => (
-  <Page size={"LETTER"} style={styles.page}>
-    <Header />
 
     <View style={[styles.instructiveContainer, { paddingLeft: 34 }]}>
       <Text style={[styles.instructiveTitle, styles.boldTitle]}>
@@ -2918,7 +3631,8 @@ export const FifthPage = () => (
         responsable de la mitigación.
       </Text>
     </View>
-    {Footer(5, 5)}
+
+    {Footer(6, 6)}
   </Page>
 );
 
