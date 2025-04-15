@@ -289,7 +289,7 @@ const OutputDashboard = () => {
         />
 
         <SummaryCard
-          title="Mayor Gasto"
+          title="Mes con mayor gasto"
           value={worstMonth.name || "-"}
           description={`$${worstMonth.output.toLocaleString()}`}
           icon={<Calendar className="h-5 w-5 text-purple-500" />}

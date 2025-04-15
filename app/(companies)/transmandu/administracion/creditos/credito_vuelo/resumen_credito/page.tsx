@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Loader2, DollarSign, Plane, Clock, PlaneIcon, PlaneLandingIcon } from "lucide-react"
+import { ArrowLeft, Loader2, Plane,  PlaneIcon, } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 import { formatCurrency } from "@/lib/utils"
 import { useGetCreditStatisticsFlights } from "@/hooks/administracion/creditos/useGetCreditStatisticsFlights"

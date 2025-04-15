@@ -69,7 +69,6 @@ const IncomeDashboard = () => {
     return months.map((m) => {
       // Acceso directo usando month.name
       let monthIncome = data.statistics.monthly[selectedYear][m.name] || 0;
-
       // Filtrar por cliente si se ha seleccionado uno específico
       if (
         selectedClient &&
