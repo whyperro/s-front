@@ -45,7 +45,7 @@ export const columns: ColumnDef<AdministrationArticle>[] = [
     let backgroundColor = "";
     switch (row.original.status.toLowerCase()) {
       case "rentado":
-        backgroundColor = "bg-yellow-700 hover:bg-yellow-700";
+        backgroundColor = "bg-yellow-500 hover:bg-yellow-500";
         break;
       case "en posesion":
         backgroundColor = "bg-green-700 hover:bg-green-700";

@@ -139,7 +139,7 @@ export const columns: ColumnDef<Renting>[] = [
             className={
               isPayed
                 ? "bg-green-700 hover:bg-green-700"
-                : "bg-yellow-700 hover:bg-yellow-700"
+                : "bg-yellow-500 hover:bg-yellow-500"
             }
             variant={badgeVariant}
           >
