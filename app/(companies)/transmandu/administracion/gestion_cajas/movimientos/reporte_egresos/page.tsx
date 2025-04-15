@@ -1,162 +1,236 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useRouter } from "next/navigation"
-import { useState, useMemo, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import { Loader2, ArrowLeft, DollarSign, BarChartIcon, Calendar } from "lucide-react"
-import { addDays, format } from "date-fns"
-import { es } from "date-fns/locale"
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts"
-import { Badge } from "@/components/ui/badge"
-import type { CashMovement } from "@/types"
-import { useGetOutputStatistics } from "@/hooks/administracion/movimientos/useGetOutputStatistics"
-
-// Configuración de meses
-const months = [
-  { name: "January", short: "Jan", number: "01" },
-  { name: "February", short: "Feb", number: "02" },
-  { name: "March", short: "Mar", number: "03" },
-  { name: "April", short: "Apr", number: "04" },
-  { name: "May", short: "May", number: "05" },
-  { name: "June", short: "Jun", number: "06" },
-  { name: "July", short: "Jul", number: "07" },
-  { name: "August", short: "Aug", number: "08" },
-  { name: "September", short: "Sep", number: "09" },
-  { name: "October", short: "Oct", number: "10" },
-  { name: "November", short: "Nov", number: "11" },
-  { name: "December", short: "Dec", number: "12" },
-] as const
+import type React from "react";
+import { useRouter } from "next/navigation";
+import { useState, useMemo, useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Loader2, ArrowLeft, DollarSign, BarChartIcon, Calendar, } from "lucide-react";
+import { addDays, format } from "date-fns";
+import { es } from "date-fns/locale";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, } from "recharts";
+import { Badge } from "@/components/ui/badge";
+import type { CashMovement } from "@/types";
+import { useGetOutputStatistics } from "@/hooks/administracion/movimientos/useGetOutputStatistics";
+import { SummaryCard } from "@/components/cards/SummaryCard";
+import months from "@/components/cards/ConfigMonths";
 
 type MonthlyData = {
-  name: string
-  shortName: string
-  expense: number
-  movements: number
-  monthNumber: string
-}
+  name: string;
+  shortName: string;
+  output: number;
+  movements: number;
+  monthNumber: string;
+};
 
 interface CustomTooltipProps {
-  active?: boolean
+  active?: boolean;
   payload?: Array<{
-    value: number
-    payload: MonthlyData
-  }>
-  label?: string
+    value: number;
+    payload: MonthlyData;
+  }>;
+  label?: string;
 }
 
-const ExpenseDashboard = () => {
-  const router = useRouter()
-  const { data, isLoading, isError } = useGetOutputStatistics()
+const OutputDashboard = () => {
+  const router = useRouter();
+  const { data, isLoading, isError } = useGetOutputStatistics();
 
-  // Obtener años disponibles de forma segura
+  // Obtener años disponibles
   const availableYears = useMemo(() => {
-    if (!data?.statistics?.monthly) return [new Date().getFullYear().toString()]
-    return Object.keys(data.statistics.monthly).sort((a, b) => Number.parseInt(b) - Number.parseInt(a))
-  }, [data])
+    if (!data?.statistics?.monthly)
+      return [new Date().getFullYear().toString()];
+    return Object.keys(data.statistics.monthly).sort(
+      (a, b) => Number.parseInt(b) - Number.parseInt(a)
+    );
+  }, [data]);
 
   // Estado con valor inicial seguro
   const [selectedYear, setSelectedYear] = useState<string>(() => {
-    return availableYears[0] || new Date().getFullYear().toString()
-  })
-  const [selectedMonth, setSelectedMonth] = useState<string | null>(null)
+    return availableYears[0] || new Date().getFullYear().toString();
+  });
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+  const [selectedVendor, setSelectedVendor] = useState<string | null>("all");
 
-  // Depuración: Mostrar la estructura completa de cash_movements cuando cambia data
+  // Mostrar la estructura completa de cash_movements cuando cambia data
   useEffect(() => {
     if (data) {
-      console.log("Estructura completa de cash_movements:", data.cash_movements)
-      console.log("Años disponibles:", Object.keys(data.cash_movements || {}))
-
       // Mostrar los meses disponibles para el año seleccionado
-      const yearData = data.cash_movements?.[selectedYear] || {}
-      console.log(`Meses disponibles para ${selectedYear}:`, Object.keys(yearData))
+      const yearData = data.cash_movements?.[selectedYear] || {};
     }
-  }, [data, selectedYear])
+  }, [data, selectedYear, selectedVendor]);
 
-  // Preparar datos mensuales con protección completa
+  // Preparar datos mensuales
   const monthlyData = useMemo<MonthlyData[]>(() => {
-    if (!data?.statistics?.monthly?.[selectedYear]) return []
+    if (!data?.statistics?.monthly?.[selectedYear]) return [];
 
     return months.map((m) => {
       // Acceso directo usando month.name
-      const monthExpense = data.statistics.monthly[selectedYear][m.name] || 0
+      let monthOutput = data.statistics.monthly[selectedYear][m.name] || 0;
 
-      // Acceso a movimientos
-      const monthMovements = data?.cash_movements?.[selectedYear]?.[m.name]?.length || 0
+      // Filtrar por cliente si se ha seleccionado uno específico
+      if (
+        selectedVendor &&
+        selectedVendor !== "all" &&
+        data?.cash_movements?.[selectedYear]?.[m.name]
+      ) {
+        const vendorMovements = data.cash_movements[selectedYear][
+          m.name
+        ].filter(
+          (mov: CashMovement) =>
+            mov.type === "INCOME" && String(mov.client?.id) === selectedVendor
+        );
+
+        // Calcular el total de ingresos para este cliente en este mes
+        monthOutput = vendorMovements.reduce(
+          (sum: number, mov: CashMovement) =>
+            sum +
+            (typeof mov.amount === "string"
+              ? Number.parseFloat(mov.amount)
+              : mov.amount),
+          0
+        );
+      }
+
+      // Acceso a movimientos (también filtrados por cliente si es necesario)
+      let monthMovements =
+        data?.cash_movements?.[selectedYear]?.[m.name]?.length || 0;
+
+      if (
+        selectedVendor &&
+        selectedVendor !== "all" &&
+        data?.cash_movements?.[selectedYear]?.[m.name]
+      ) {
+        monthMovements = data.cash_movements[selectedYear][m.name].filter(
+          (mov: CashMovement) =>
+            mov.type === "INCOME" && String(mov.client?.id) === selectedVendor
+        ).length;
+      }
 
       return {
         name: m.name,
         shortName: m.short,
-        expense: monthExpense,
+        output: monthOutput,
         movements: monthMovements,
         monthNumber: m.number,
-      }
-    })
-  }, [data, selectedYear])
+      };
+    });
+  }, [data, selectedYear, selectedVendor]);
 
-  // Obtener movimientos del mes seleccionado (solo OUTPUT) de forma segura
+  // Obtener movimientos del mes seleccionado solo Egresos
   const monthMovements = useMemo(() => {
-    if (!selectedMonth || !data?.cash_movements) return []
+    if (!selectedMonth || !data?.cash_movements) return [];
 
-    // Depuración: Mostrar información sobre el mes seleccionado
-    console.log("Buscando movimientos para:", selectedYear, selectedMonth)
-    console.log("Estructura de cash_movements para el año:", data.cash_movements[selectedYear])
-
-    const monthData = data.cash_movements[selectedYear]?.[selectedMonth] || []
-    console.log("Datos encontrados para el mes:", monthData)
+    const monthData = data.cash_movements[selectedYear]?.[selectedMonth] || [];
 
     // Filtrar solo los movimientos de tipo OUTPUT
-    const outputMovements = Array.isArray(monthData) ? monthData.filter((m: CashMovement) => m.type === "OUTPUT") : []
+    let outputMovements = Array.isArray(monthData)
+      ? monthData.filter((m: CashMovement) => m.type === "OUTPUT")
+      : [];
 
-    console.log("Movimientos de egreso filtrados:", outputMovements)
-    return outputMovements
-  }, [data, selectedYear, selectedMonth])
+    // Filtrar por cliente si se ha seleccionado uno específico
+    if (selectedVendor && selectedVendor !== "all") {
+      outputMovements = outputMovements.filter(
+        (m: CashMovement) => String(m.vendor?.id) === selectedVendor
+      );
+    }
 
-  // Calcular estadísticas con protección
-  const totalAnnualExpense = useMemo(() => {
-    return data?.statistics?.total_annual || 0
-  }, [data])
+    return outputMovements;
+  }, [data, selectedYear, selectedMonth, selectedVendor]);
+
+  // Calcular estadísticas
+  const totalAnnualOutput = useMemo(() => {
+    if (!data?.statistics?.monthly?.[selectedYear]) return 0;
+
+    // Si no hay proveedor seleccionado o es "all", usa las estadísticas directas
+    if (!selectedVendor || selectedVendor === "all") {
+      return months.reduce((sum, month) => {
+        return sum + (data.statistics.monthly[selectedYear][month.name] || 0);
+      }, 0);
+    }
+
+    // Si hay un proveedor seleccionado, calcula manualmente
+    return monthlyData.reduce((sum, month) => sum + month.output, 0);
+  }, [data, selectedYear, selectedVendor, monthlyData]);
 
   const totalMovements = useMemo(() => {
-    return monthlyData.reduce((sum, month) => sum + month.movements, 0)
-  }, [monthlyData])
+    return monthlyData.reduce((sum, month) => sum + month.movements, 0);
+  }, [monthlyData]);
 
   const worstMonth = useMemo(() => {
-    if (monthlyData.length === 0) return { name: "N/A", expense: 0 }
-    return monthlyData.reduce((prev, current) => (current.expense > prev.expense ? current : prev))
-  }, [monthlyData])
+    if (monthlyData.length === 0) return { name: "N/A", output: 0 };
+    return monthlyData.reduce((prev, current) =>
+      current.output > prev.output ? current : prev
+    );
+  }, [monthlyData]);
 
   // Manejadores de eventos
   const handleYearChange = (year: string) => {
-    setSelectedYear(year)
-    setSelectedMonth(null)
-  }
+    setSelectedYear(year);
+    setSelectedMonth(null);
+  };
 
   const handleBarClick = (data: any) => {
     if (data?.activePayload?.[0]?.payload) {
-      const clickedMonth = data.activePayload[0].payload.name
-      console.log("Mes seleccionado al hacer clic:", clickedMonth)
-      setSelectedMonth(clickedMonth)
+      const clickedMonth = data.activePayload[0].payload.name;
+      setSelectedMonth(clickedMonth);
     }
-  }
+  };
+
+  const handleVendorChange = (vendorId: string) => {
+    setSelectedVendor(vendorId);
+  };
+
+  // Obtener clientes disponibles
+  const availableVendors = useMemo(() => {
+    if (!data?.cash_movements) return [];
+
+    // Extraer todos los proveedores únicos de los movimientos
+    const vendorsSet = new Set<string>();
+    const vendorsMap = new Map<string, { id: string; name: string }>();
+
+    // Recorrer todos los años y meses para encontrar proveedores únicos
+    Object.values(data.cash_movements).forEach((yearData) => {
+      Object.values(yearData).forEach((monthData) => {
+        if (Array.isArray(monthData)) {
+          monthData.forEach((movement: CashMovement) => {
+            if (
+              movement.type === "OUTPUT" &&
+              movement.vendor?.id &&
+              movement.vendor?.name
+            ) {
+              // Convertir el ID a string
+              const vendorId = String(movement.vendor.id);
+              vendorsSet.add(vendorId);
+              vendorsMap.set(vendorId, {
+                id: vendorId,
+                name: movement.vendor.name,
+              });
+            }
+          });
+        }
+      });
+    });
+
+    // Convertir a array para el selector
+    return Array.from(vendorsMap.values());
+  }, [data]);
 
   // Componente Tooltip personalizado
   const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
-    if (!active || !payload || !payload.length) return null
+    if (!active || !payload || !payload.length) return null;
 
-    const data = payload[0].payload
+    const data = payload[0].payload;
     return (
       <div className="bg-white p-3 border rounded shadow-lg ">
         <p className="font-semibold">{data.name}</p>
-        <p className="text-red-600">Egresos: ${data.expense.toLocaleString()}</p>
+        <p className="text-red-600">Egresos: ${data.output.toLocaleString()}</p>
         <p className="text-gray-600">Movimientos: {data.movements}</p>
       </div>
-    )
-  }
+    );
+  };
 
   // Estados de carga y error
   if (isLoading) {
@@ -164,7 +238,7 @@ const ExpenseDashboard = () => {
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
-    )
+    );
   }
 
   if (isError) {
@@ -176,19 +250,19 @@ const ExpenseDashboard = () => {
           Volver
         </Button>
       </div>
-    )
+    );
   }
-
-  // Depuración: Mostrar información sobre el estado actual
-  console.log("Renderizando con año:", selectedYear)
-  console.log("Renderizando con mes:", selectedMonth)
-  console.log("Movimientos para mostrar:", monthMovements)
 
   return (
     <div className="container mx-auto py-8 px-4">
       {/* Encabezado */}
       <div className="flex items-center mb-6">
-        <Button variant="outline" size="sm" className="mr-4" onClick={() => router.back()}>
+        <Button
+          variant="outline"
+          size="sm"
+          className="mr-4"
+          onClick={() => router.back()}
+        >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Volver
         </Button>
@@ -201,8 +275,8 @@ const ExpenseDashboard = () => {
       {/* Tarjetas de resumen */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <SummaryCard
-          title="Total Egresos"
-          value={`$${totalAnnualExpense.toLocaleString()}`}
+          title={`Total Egresos ${selectedYear}`}
+          value={`$${totalAnnualOutput.toLocaleString()}`}
           description="Suma total del año"
           icon={<DollarSign className="h-5 w-5 text-red-500" />}
         />
@@ -217,14 +291,36 @@ const ExpenseDashboard = () => {
         <SummaryCard
           title="Mayor Gasto"
           value={worstMonth.name || "-"}
-          description={`$${worstMonth.expense.toLocaleString()}`}
+          description={`$${worstMonth.output.toLocaleString()}`}
           icon={<Calendar className="h-5 w-5 text-purple-500" />}
         />
       </div>
 
-      {/* Selector de año */}
-      <div className="flex justify-end mb-4">
-        <Select value={selectedYear} onValueChange={handleYearChange} disabled={availableYears.length === 0}>
+      <div className="flex justify-end mb-4 gap-4">
+        {/* Selector de cliente */}
+        <Select
+          value={selectedVendor || "all"}
+          onValueChange={handleVendorChange}
+        >
+          <SelectTrigger className="w-[220px]">
+            <SelectValue placeholder="Todos los clientes" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos los proveedores</SelectItem>
+            {availableVendors.map((vendor) => (
+              <SelectItem key={vendor.id} value={vendor.id}>
+                {vendor.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Selector de año */}
+        <Select
+          value={selectedYear}
+          onValueChange={handleYearChange}
+          disabled={availableYears.length === 0}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Seleccionar año" />
           </SelectTrigger>
@@ -241,8 +337,18 @@ const ExpenseDashboard = () => {
       {/* Gráfico de barras */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-center">Egresos Mensuales - {selectedYear}</CardTitle>
-          <CardDescription className="text-center">Haz clic en un mes para ver los detalles</CardDescription>
+          <CardTitle className="text-center">
+            Egresos Mensuales - {selectedYear}
+            {selectedVendor &&
+              selectedVendor !== "all" &&
+              ` - ${
+                availableVendors.find((c) => c.id === selectedVendor)?.name ||
+                ""
+              }`}
+          </CardTitle>
+          <CardDescription className="text-center">
+            Haz clic en un mes para ver los detalles
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-[400px]">
@@ -253,14 +359,22 @@ const ExpenseDashboard = () => {
                 onClick={handleBarClick}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="shortName" angle={-45} textAnchor="end" height={60} tick={{ fontSize: 12 }} />
+                <XAxis
+                  dataKey="shortName"
+                  angle={-45}
+                  textAnchor="end"
+                  height={60}
+                  tick={{ fontSize: 12 }}
+                />
                 <YAxis tickFormatter={(value) => `$${value}`} width={80} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="expense" name="Egresos">
+                <Bar dataKey="output" name="Egresos">
                   {monthlyData.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
-                      fill={entry.name === selectedMonth ? "#8884d8" : "#ef4444"}
+                      fill={
+                        entry.name === selectedMonth ? "#8884d8" : "#ef4444"
+                      }
                       className="cursor-pointer"
                     />
                   ))}
@@ -280,7 +394,9 @@ const ExpenseDashboard = () => {
                 <CardTitle>
                   Movimientos de {selectedMonth} {selectedYear}
                 </CardTitle>
-                <CardDescription>Detalle de los egresos realizados durante el mes</CardDescription>
+                <CardDescription>
+                  Detalle de los egresos realizados durante el mes
+                </CardDescription>
               </div>
               <Badge variant="secondary" className="text-sm py-1.5 px-3">
                 {monthMovements.length} movimientos
@@ -327,13 +443,19 @@ const ExpenseDashboard = () => {
                   </TableBody>
                   <TableCaption>
                     <div className="flex justify-between items-center">
-                      <span className="text-center pl-5 pb-5">Total: {monthMovements.length} movimientos</span>
+                      <span className="text-center pl-5 pb-5">
+                        Total: {monthMovements.length} movimientos
+                      </span>
                       <span className="font-medium text-red-600 text-center pr-8 pb-5">
                         Suma: $
                         {monthMovements
                           .reduce(
-                            (sum, m) => sum + (typeof m.amount === "string" ? Number.parseFloat(m.amount) : m.amount),
-                            0,
+                            (sum, m) =>
+                              sum +
+                              (typeof m.amount === "string"
+                                ? Number.parseFloat(m.amount)
+                                : m.amount),
+                            0
                           )
                           .toLocaleString()}
                       </span>
@@ -342,39 +464,15 @@ const ExpenseDashboard = () => {
                 </Table>
               </div>
             ) : (
-              <div className="text-center py-8 text-muted-foreground">No hay movimientos registrados para este mes</div>
+              <div className="text-center py-8 text-muted-foreground">
+                No hay movimientos registrados para este mes
+              </div>
             )}
           </CardContent>
         </Card>
       )}
     </div>
-  )
-}
+  );
+};
 
-// Componente auxiliar para las tarjetas de resumen mejorado
-const SummaryCard = ({
-  title,
-  value,
-  description,
-  icon,
-  highlight,
-}: {
-  title: string
-  value: string
-  description: string
-  icon?: React.ReactNode
-  highlight?: boolean
-}) => (
-  <Card className={`${highlight ? "border-purple-200 bg-purple-50/30" : ""}`}>
-    <CardHeader className="pb-2 flex flex-row items-center justify-between">
-      <CardTitle className="text-sm font-medium">{title}</CardTitle>
-      {icon}
-    </CardHeader>
-    <CardContent>
-      <div className="text-2xl font-bold">{value}</div>
-      <p className="text-xs text-muted-foreground mt-1">{description}</p>
-    </CardContent>
-  </Card>
-)
-
-export default ExpenseDashboard
+export default OutputDashboard;

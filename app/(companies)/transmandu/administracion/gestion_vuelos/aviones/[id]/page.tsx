@@ -1,57 +1,20 @@
 "use client";
 
-import type React from "react";
-
 import { useParams } from "next/navigation";
 import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById";
 import { useGetFlightsByAircraft } from "@/hooks/administracion/vuelos/useGetFlightsByAircraft";
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import {
-  Loader2,
-  ArrowLeft,
-  Plane,
-  Calendar,
-  DollarSign,
-  TrendingUp,
-} from "lucide-react";
+import { Loader2, ArrowLeft, DollarSign, BarChartIcon, Calendar, Plane, TrendingUp, } from "lucide-react";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
+import { BarChart, Bar, Legend, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, } from "recharts";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  Cell,
-  Legend,
-} from "recharts";
 import type { Flight } from "@/types";
+import { SummaryCard } from "@/components/cards/SummaryCard";
+import { formatCurrency } from "@/lib/utils";
 
 // Tipo para los datos mensuales
 type MonthlyData = {
@@ -311,10 +274,7 @@ export default function AircraftReportPage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <SummaryCard
           title="Total Ganancias"
-          value={`$${totalEarnings.toLocaleString("es-ES", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}`}
+          value={formatCurrency(totalEarnings)}
           description="Ingresos totales del año"
           icon={<DollarSign className="h-5 w-5 text-emerald-500" />}
         />
@@ -328,10 +288,7 @@ export default function AircraftReportPage() {
 
         <SummaryCard
           title="Promedio por Vuelo"
-          value={`$${averageEarningPerFlight.toLocaleString("es-ES", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}`}
+          value={formatCurrency(averageEarningPerFlight)}
           description="Ganancia media por vuelo"
           icon={<TrendingUp className="h-5 w-5 text-indigo-500" />}
         />
@@ -339,12 +296,7 @@ export default function AircraftReportPage() {
         <SummaryCard
           title="Mejor Mes"
           value={bestMonth?.name || "-"}
-          description={`$${
-            bestMonth?.ganancias.toLocaleString("es-ES", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            }) || "0"
-          }`}
+          description={bestMonth ? formatCurrency(bestMonth.ganancias) : "$0"}
           icon={<Calendar className="h-5 w-5 text-purple-500" />}
         />
       </div>
@@ -501,14 +453,7 @@ export default function AircraftReportPage() {
                           {flight.route?.to || "-"}
                         </TableCell>
                         <TableCell style={{ textAlign: "center", paddingRight: "110px" }} className="font-medium text-emerald-600">
-                          $
-                          {cleanNumber(flight.total_amount).toLocaleString(
-                            "es-ES",
-                            {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            }
-                          )}
+                          {formatCurrency(cleanNumber(flight.total_amount))}
                         </TableCell>
                         <TableCell>
                           <Badge
@@ -529,17 +474,12 @@ export default function AircraftReportPage() {
                     <div className="flex justify-between items-center">
                       <span className="text-center pl-5 pb-5"> Total: {flightsData.length} vuelos</span>
                       <span className="font-medium text-emerald-600 text-center pr-8 pb-5">
-                        Ganancias: $
-                        {flightsData
-                          .reduce(
-                            (sum, flight) =>
-                              sum + cleanNumber(flight.total_amount),
+                        Ganancias: {formatCurrency(
+                          flightsData.reduce(
+                            (sum, flight) => sum + cleanNumber(flight.total_amount),
                             0
                           )
-                          .toLocaleString("es-ES", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
+                        )}
                       </span>
                     </div>
                   </TableCaption>
@@ -556,29 +496,3 @@ export default function AircraftReportPage() {
     </div>
   );
 }
-
-// Componente auxiliar para las tarjetas de resumen
-const SummaryCard = ({
-  title,
-  value,
-  description,
-  icon,
-  highlight,
-}: {
-  title: string;
-  value: string;
-  description: string;
-  icon?: React.ReactNode;
-  highlight?: boolean;
-}) => (
-  <Card className={`${highlight ? "border-purple-200 bg-purple-50/30" : ""}`}>
-    <CardHeader className="pb-2 flex flex-row items-center justify-between">
-      <CardTitle className="text-sm font-medium">{title}</CardTitle>
-      {icon}
-    </CardHeader>
-    <CardContent>
-      <div className="text-2xl font-bold">{value}</div>
-      <p className="text-xs text-muted-foreground mt-1">{description}</p>
-    </CardContent>
-  </Card>
-);

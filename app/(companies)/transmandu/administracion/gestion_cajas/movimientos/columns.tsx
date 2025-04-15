@@ -129,24 +129,24 @@ export const columns: ColumnDef<CashMovement>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "sub_category_details",
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        filter
-        column={column}
-        title="Detalles de Sub Categorías"
-      />
-    ),
-    meta: { title: "Detalles de Sub Categorías" },
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.sub_category_details}
-        </span>
-      </div>
-    ),
-  },
+//  {
+//    accessorKey: "sub_category_details",
+//    header: ({ column }) => (
+//      <DataTableColumnHeader
+//        filter
+//        column={column}
+//        title="Detalles de Sub Categorías"
+//      />
+//    ),
+//    meta: { title: "Detalles de Sub Categorías" },
+//    cell: ({ row }) => (
+//      <div className="flex justify-center">
+//        <span className="text-muted-foreground italic">
+//          {row.original.sub_category_details}
+//        </span>
+//      </div>
+//    ),
+//  },
   {
     accessorKey: "amount",
     header: ({ column }) => (
@@ -167,16 +167,16 @@ export const columns: ColumnDef<CashMovement>[] = [
       );
     },
   },
-  {
-    accessorKey: "responsible.first_name",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Responsable" />
-    ),
-    meta: { title: "Responsable" },
-    cell: ({ row }) => (
-      <ResponsibleResumeDialog id={row.original.responsible.id.toString()} />
-    ),
-  },
+//  {
+//    accessorKey: "responsible.first_name",
+//    header: ({ column }) => (
+//      <DataTableColumnHeader filter column={column} title="Responsable" />
+//    ),
+//    meta: { title: "Responsable" },
+//    cell: ({ row }) => (
+//      <ResponsibleResumeDialog id={row.original.responsible.id.toString()} />
+//    ),
+//  },
   {
     accessorKey: "bank_account.name",
     header: ({ column }) => (
