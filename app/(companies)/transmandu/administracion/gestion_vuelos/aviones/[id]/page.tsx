@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, DollarSign, BarChartIcon, Calendar, Plane, TrendingUp, } from "lucide-react";
+import { Loader2, ArrowLeft, DollarSign, Calendar, Plane, TrendingUp, } from "lucide-react";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
 import { BarChart, Bar, Legend, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, } from "recharts";
 import { useRouter } from "next/navigation";
