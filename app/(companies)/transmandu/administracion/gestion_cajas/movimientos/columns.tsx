@@ -160,7 +160,7 @@ export const columns: ColumnDef<CashMovement>[] = [
   
       return (
         <div className="flex justify-center">
-          <Badge  className={isIncome ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-500"} variant={badgeVariant}>
+          <Badge  className={isIncome ? "bg-green-700 hover:bg-green-700" : "bg-red-700 hover:bg-red-700"} variant={badgeVariant}>
             {formattedAmount}
           </Badge>
         </div>
