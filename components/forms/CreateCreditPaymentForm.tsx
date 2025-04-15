@@ -50,13 +50,12 @@ export function CreditPaymentForm({ onClose, credit }: FormProps) {
         .string({
           message: "Debe elegir una cuenta de banco.",
         })
-        .optional(), // Por defecto es opcional
+        .optional(),
       pay_method: z.enum(["EFECTIVO", "TRANSFERENCIA"], {
         message: "Debe elegir un método de pago.",
       }),
       pay_amount: z.string().refine(
         (val) => {
-          // Convertir el valor a número y verificar que sea positivo
           const number = parseFloat(val);
           return !isNaN(number) && number >= 0;
         },
@@ -77,7 +76,7 @@ export function CreditPaymentForm({ onClose, credit }: FormProps) {
         }),
     })
     .refine(
-      (data: { pay_method: string; bank_account_id?: string }) => {
+      (data) => {
         if (data.pay_method === "TRANSFERENCIA" && !data.bank_account_id) {
           return false;
         }
@@ -89,9 +88,9 @@ export function CreditPaymentForm({ onClose, credit }: FormProps) {
       }
     )
     .refine(
-      (data: { pay_amount: string }) => {
+      (data) => {
         const payAmount = parseFloat(data.pay_amount);
-        return payAmount <= credit.debt;
+        return payAmount <= Number(credit.debt);
       },
       {
         message: "El monto a pagar no puede ser mayor que la deuda.",
@@ -101,24 +100,36 @@ export function CreditPaymentForm({ onClose, credit }: FormProps) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {},
+    defaultValues: {
+      pay_amount: Number(credit.debt).toString(),
+    },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    const payAmount = parseFloat(values.pay_amount);
+    const debtAmount = Number(credit.debt);
+
+    if (payAmount > debtAmount) {
+      form.setError("pay_amount", {
+        message: "El monto a pagar no puede ser mayor que la deuda.",
+      });
+      return;
+    }
+
     const formattedValues = {
       ...values,
       id: credit.id,
       client_id: credit.client.id,
-      pay_amount: parseFloat(values.pay_amount),
+      pay_amount: payAmount,
     };
-  
+
     createCreditPayment.mutate(formattedValues, {
       onSuccess: () => {
-        onClose(); 
+        onClose();
       },
     });
   }
-  
+
   return (
     <Form {...form}>
       <form
@@ -194,10 +205,44 @@ export function CreditPaymentForm({ onClose, credit }: FormProps) {
           name="pay_amount"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel>Cantidad Pagada</FormLabel>
+              <div className="flex justify-between items-center">
+                <FormLabel>Cantidad Pagada</FormLabel>
+                <span className="text-sm text-muted-foreground">
+                  Deuda total: {Number(credit.debt).toFixed(2)}
+                </span>
+              </div>
               <FormControl>
-                <Input placeholder="Ingrese el monto cancelado" {...field} />
+                <Input
+                  placeholder={`Ingrese el monto a pagar (máximo ${Number(credit.debt).toFixed(2)})`}
+                  {...field}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+                      field.onChange(value);
+                    }
+                  }}
+                />
               </FormControl>
+              <div className="flex gap-2 mt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    form.setValue("pay_amount", Number(credit.debt).toString())
+                  }
+                >
+                  Pagar total
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => form.setValue("pay_amount", "0")}
+                >
+                  Limpiar
+                </Button>
+              </div>
               <FormMessage />
             </FormItem>
           )}
@@ -238,9 +283,9 @@ export function CreditPaymentForm({ onClose, credit }: FormProps) {
                       date > new Date() || date < new Date("1999-07-21")
                     }
                     initialFocus
-                    fromYear={1980} // Año mínimo que se mostrará
-                    toYear={new Date().getFullYear()} // Año máximo (actual)
-                    captionLayout="dropdown-buttons" // Selectores de año/mes
+                    fromYear={1980}
+                    toYear={new Date().getFullYear()}
+                    captionLayout="dropdown-buttons"
                     components={{
                       Dropdown: (props) => (
                         <select
