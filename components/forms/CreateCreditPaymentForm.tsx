@@ -59,7 +59,7 @@ export function CreditPaymentForm({ onClose, credit }: FormProps) {
       pay_amount: z.string().refine(
         (val) => {
           const number = parseFloat(val);
-          return !isNaN(number) && number >= 0;
+          return !isNaN(number) && number > 0;
         },
         {
           message: "La cantidad pagada debe ser mayor a cero.",

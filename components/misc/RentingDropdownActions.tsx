@@ -78,7 +78,9 @@ const RentingDropdownActions = ({ rent }: { rent: Renting }) => {
 
       {/*Dialog para eliminar la renta*/}
       <Dialog open={openDelete} onOpenChange={setOpenDelete}>
-        <DialogContent>
+        <DialogContent onInteractOutside={(e) => {
+            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+          }}>
           <DialogHeader>
             <DialogTitle className="text-center">
               ¿Seguro que desea eliminar la renta?

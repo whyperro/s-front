@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Loader2, DollarSign, Plane, Clock } from "lucide-react"
+import { ArrowLeft, Loader2, DollarSign, Plane, Clock, PlaneIcon, PlaneLandingIcon } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 import { formatCurrency } from "@/lib/utils"
 import { useGetCreditStatisticsFlights } from "@/hooks/administracion/creditos/useGetCreditStatisticsFlights"
@@ -276,7 +276,7 @@ const CreditStatisticsFlightPage = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Cliente</TableHead>
-                    <TableHead>Vuelo (ID - Tipo)</TableHead>
+                    <TableHead>Vuelo (# - Tipo)</TableHead>
                     <TableHead>Estado</TableHead>
                     <TableHead>Deuda</TableHead>
                     <TableHead>Monto Pagado</TableHead>
@@ -289,12 +289,17 @@ const CreditStatisticsFlightPage = () => {
                       <TableCell className="font-medium">{credit.client?.name || "N/A"}</TableCell>
                       <TableCell>
                         {credit.flight ? (
-                          <div className="flex flex-col">
-                            <span className="font-medium">ID: {credit.flight.id}</span>
-                            <span className="text-xs text-muted-foreground">
-                              {credit.flight.type} - {new Date(credit.flight.date).toLocaleDateString()}
-                            </span>
-                          </div>
+                           <div className="flex items-center gap-2">
+                           <div className="flex flex-col">
+                             <span className="font-medium flex items-center gap-1">
+                               <PlaneIcon className="h-4 w-4 text-blue-500" /> {/* Icono en lugar del texto "Vuelo" */}
+                               {credit.flight.flight_number} {/* Número de vuelo directamente */}
+                             </span>
+                             <span className="text-xs text-muted-foreground">
+                               {credit.flight.type} - {new Date(credit.flight.date).toLocaleDateString()}
+                             </span>
+                           </div>
+                         </div>
                         ) : (
                           "N/A"
                         )}

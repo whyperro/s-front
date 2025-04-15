@@ -50,7 +50,9 @@ const RouteDropdownActions = ({ id }: { id: string }) => {
         </DropdownMenu>
 
         {/*Dialog para eliminar una ruta*/}
-        <DialogContent>
+        <DialogContent onInteractOutside={(e) => {
+            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+          }}>
           <DialogHeader>
             <DialogTitle className="text-center">
               ¿Seguro que desea eliminar la ruta?

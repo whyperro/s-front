@@ -25,7 +25,6 @@ import {
 } from "../ui/dialog";
 import { CashMovement } from "@/types";
 import CashMovementResume from "./CashMovementResume";
-import { useGetCashMovementById } from "@/hooks/administracion/movimientos/useGetMovementById";
 
 const CashMovementDropdownActions = ({
   id,

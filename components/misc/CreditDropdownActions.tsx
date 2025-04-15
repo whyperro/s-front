@@ -55,7 +55,9 @@ const CreditDropdownActions = ({ credit }: { credit: Credit }) => {
 
       {/*Dialog para registrar el pago de un credito*/}
       <Dialog open={openPayment} onOpenChange={setOpenPayment}>
-        <DialogContent>
+        <DialogContent onInteractOutside={(e) => {
+            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
+          }}>
           <DialogHeader className="text-center font-bold">
             Registrar Pago
           </DialogHeader>
