@@ -53,7 +53,11 @@ const FormSchema = z.object({
     .date()
     .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
 
-  report_number: z.string(),
+  report_number: z
+    .string()
+    .refine((val) => !isNaN(Number(val)), {
+      message: "El valor debe ser un número",
+    }),
   danger_location: z.string(),
   danger_area: z.string(),
   airport_location: z.string(),
@@ -62,16 +66,16 @@ const FormSchema = z.object({
     .min(3, {
       message: "La descripción debe tener al menos 3 caracteres",
     })
-    .max(245, {
-      message: "La descripción no debe exceder los 245 caracteres",
+    .max(255, {
+      message: "La descripción no debe exceder los 255 caracteres",
     }),
   possible_consequences: z
     .string()
     .min(3, {
       message: "Las consecuencias deben tener al menos 3 caracteres",
     })
-    .max(245, {
-      message: "Las consecuencias no debe exceder los 245 caracteres",
+    .max(255, {
+      message: "Las consecuencias no debe exceder los 255 caracteres",
     }),
 
   reporter_name: z
@@ -97,6 +101,9 @@ const FormSchema = z.object({
 
   reporter_email: z
     .string()
+    .min(10, {
+      message: "El correo electrónico debe tener al menos 10 caracteres",
+    })
     .email({ message: "Formato de correo electrónico inválido" })
     .optional(),
   // Otros campos del esquema...
@@ -120,7 +127,7 @@ export function CreateVoluntaryReportForm({
   const { updateVoluntaryReport } = useUpdateVoluntaryReport();
   const [isAnonymous, setIsAnonymous] = useState(true);
   const router = useRouter();
-  
+
   if (initialData && isEditing) {
     if (
       initialData.reporter_email &&
@@ -165,15 +172,12 @@ export function CreateVoluntaryReportForm({
   });
 
   const onSubmit = async (data: FormSchemaType) => {
-    console.log("valor de is anonymous", isAnonymous);
     if (isAnonymous) {
       data.reporter_name = "";
       data.reporter_last_name = "";
       data.reporter_email = "";
       data.reporter_phone = "";
     }
-
-    console.log("Data post is anonymous", data);
 
     if (initialData && isEditing) {
       const value = {
@@ -182,13 +186,14 @@ export function CreateVoluntaryReportForm({
         id: initialData.id,
         danger_identification_id: initialData?.danger_identification_id,
       };
-      console.log("this is the value", value);
       await updateVoluntaryReport.mutateAsync(value);
     } else {
       const value = { ...data, status: "ABIERTO" };
       try {
         const response = await createVoluntaryReport.mutateAsync(value);
-        router.push(`/transmandu/sms/reportes_voluntarios/${response.voluntary_report_id}`);
+        router.push(
+          `/transmandu/sms/reportes_voluntarios/${response.voluntary_report_id}`
+        );
       } catch (error) {
         console.error("Error al crear el reporte:", error);
       }
