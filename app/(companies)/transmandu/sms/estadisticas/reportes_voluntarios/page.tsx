@@ -17,62 +17,32 @@ import { format, startOfMonth } from "date-fns";
 import { useGetIdentificationStatsBySourceName } from "@/hooks/sms/useGetIdentificationStatsBySoruceName";
 import { useGetIdentificationStatsBySourceType } from "@/hooks/sms/useGetIdentificationStatsBySoruceType";
 import { useGetReportsCountedByArea } from "@/hooks/sms/useGetReportsCountedByArea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-const languages = [
-  { label: "English", value: "en" },
-  { label: "French", value: "fr" },
-  { label: "German", value: "de" },
-  { label: "Spanish", value: "es" },
-  { label: "Portuguese", value: "pt" },
-  { label: "Russian", value: "ru" },
-  { label: "Japanese", value: "ja" },
-  { label: "Korean", value: "ko" },
-  { label: "Chinese", value: "zh" },
-] as const;
+interface Params {
+  from?: string;
+  to?: string;
+  [key: string]: string | undefined;
+}
+
+const labels = [
+  { label: "Identificados por localizacion", value: "location" },
+  { label: "Según su Tipo", value: "tipo" },
+  { label: "Por Índice de Riesgo Pre-Mitigación", value: "pre-riesgo" },
+  { label: "Por Índice de Riesgo Post-Mitigación", value: "post-riesgo" },
+  { label: "Identificados vs Gestionados", value: "bar-chart" },
+  { label: "Número de Reportes por Índice de Riesgo", value: "pre-riesgo-bar" },
+  { label: "Número de Reportes vs Área", value: "area-bar" },
+];
 
 const Statistics = () => {
-  const [selectedGraphic, setSelectedGraphic] = useState("");
-  const labels = [
-    {
-      label: "Identificados por Área",
-      value: "número de informes por cada área específica",
-    },
-    {
-      label: "Según su Tipo",
-      value: "número de informes clasificados por tipo específico",
-    },
-    {
-      label: "Por Índice de Riesgo Pre-Mitigación",
-      value:
-        "número de informes clasificados por índice de riesgo antes de cualquier medida de mitigación",
-    },
-    {
-      label: "Por Índice de Riesgo Post-Mitigación",
-      value:
-        "número de informes clasificados por índice de riesgo después de aplicar medidas de mitigación",
-    },
-    {
-      label: "Identificados vs Gestionados",
-      value:
-        "comparación entre el número de informes identificados y el número de informes gestionados",
-    },
-    {
-      label: "Número de Reportes por Índice de Riesgo",
-      value:
-        "total de informes clasificados por diferentes niveles de índice de riesgo",
-    },
-    {
-      label: "Número de Reportes vs Área",
-      value:
-        "comparación del número de informes con respecto a cada área específica",
-    },
-  ];
-
-  interface Params {
-    from?: string;
-    to?: string;
-    [key: string]: string | undefined; // Permite otros parámetros
-  }
+  const [selectedGraphic, setSelectedGraphic] = useState("Todos"); // Mostrar todos por defecto
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
@@ -81,61 +51,64 @@ const Statistics = () => {
     to: format(new Date(), "yyyy-MM-dd"),
   });
 
+  // Hooks de datos
   const {
-    data: dynamicSourceNameData,
-    isLoading: isLoadingDynamicSourceNameData,
-    isError: isErrorDynamicSourceNameData,
-    refetch: refetchDynamicSourceNameChart,
-  } = useGetIdentificationStatsBySourceName(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
+    data: barChartData,
+    isLoading: isLoadingBarChart,
+    refetch: refetchBarChart,
+  } = useGetVoluntaryReportingStatsByYear(
+    params.from!,
+    params.to!,
     "voluntary"
   );
 
   const {
-    data: dynamicSourceTypeData,
-    isLoading: isLoadingDynamicSourceTypeData,
-    isError: isErrorDynamicSourceTypeData,
-    refetch: refetchDynamicSourceTypeChart,
-  } = useGetIdentificationStatsBySourceType(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
+    data: dynamicData,
+    isLoading: isLoadingDynamicData,
+    refetch: refetchDynamicChart,
+  } = useGetDangerIdentificationsCountedByType(
+    params.from!,
+    params.to!,
     "voluntary"
   );
 
-  // Asigna parametros cuando cambia el Pathname o el SearchParams
-
   const {
-    data: airportLocationData,
-    isLoading: isLoadingAirportLocationData,
-    isError: isErrorAirportLocationData,
-    refetch: refetchAirportLocationData,
-  } = useGetVoluntaryReportsCountedByAirportLocation(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd")
-  );
-
-  const {
-    data: postRiskData,
-    isLoading: isLoadingPostRisk,
-    isError: isErrorPostRisk,
-    refetch: refetchPostRisk,
-  } = useGetPostRiskCountByDateRange(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "voluntary"
-  );
+    data: pieCharData,
+    isLoading: isLoadingPieCharData,
+    refetch: refetchPieChart,
+  } = useGetReportsCountedByArea(params.from!, params.to!, "voluntary");
 
   const {
     data: riskData,
     isLoading: isLoadingRisk,
-    isError: isErrorRisk,
     refetch: refetchRisk,
-  } = useGetRiskCountByDateRange(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "voluntary"
-  );
+  } = useGetRiskCountByDateRange(params.from!, params.to!, "voluntary");
+
+  const {
+    data: postRiskData,
+    isLoading: isLoadingPostRisk,
+    refetch: refetchPostRisk,
+  } = useGetPostRiskCountByDateRange(params.from!, params.to!, "voluntary");
+
+  const {
+    data: reportsByLocationData,
+    isLoading: isLoadingReportsByLocationData,
+    refetch: refetchAirportLocationData,
+  } = useGetVoluntaryReportsCountedByAirportLocation(params.from!, params.to!);
+
+  const { refetch: refetchDynamicSourceNameChart } =
+    useGetIdentificationStatsBySourceName(
+      params.from!,
+      params.to!,
+      "voluntary"
+    );
+
+  const { refetch: refetchDynamicSourceTypeChart } =
+    useGetIdentificationStatsBySourceType(
+      params.from!,
+      params.to!,
+      "voluntary"
+    );
 
   useEffect(() => {
     const defaultFrom = format(startOfMonth(new Date()), "yyyy-MM-dd");
@@ -146,46 +119,11 @@ const Statistics = () => {
       newParams[key] = value;
     });
 
-    const finalParams: Params = {
+    setParams({
       from: newParams.from || defaultFrom,
       to: newParams.to || defaultTo,
-    };
-    setParams(finalParams);
+    });
   }, [searchParams, pathname]);
-
-  // Para extraer las estadisticas de reportes dado unos rangos de fecha, desde hasta
-  const {
-    data: barChartData,
-    isLoading: isLoadingBarChart,
-    isError: isErrorBarChart,
-    refetch: refetchBarChart,
-  } = useGetVoluntaryReportingStatsByYear(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "voluntary"
-  );
-
-  // Para extraer el numero de reportes por area dado unos rangos de fecha, desde hasta
-  const {
-    data: pieCharData,
-    isLoading: isLoadingPieCharData,
-    isError: isErrorPieCharData,
-    refetch: refetchPieChart,
-  } = useGetReportsCountedByArea(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "voluntary"
-  );
-  const {
-    data: dynamicData,
-    isLoading: isLoadingDynamicData,
-    isError: isErrorDynamicData,
-    refetch: refetchDynamicChart,
-  } = useGetDangerIdentificationsCountedByType(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "voluntary"
-  );
 
   useEffect(() => {
     refetchBarChart();
@@ -196,65 +134,67 @@ const Statistics = () => {
     refetchAirportLocationData();
     refetchDynamicSourceNameChart();
     refetchDynamicSourceTypeChart();
-  }, [
-    params.from,
-    params.to,
-    refetchBarChart,
-    refetchPieChart,
-    refetchDynamicChart,
-    refetchRisk,
-    refetchPostRisk,
-    refetchAirportLocationData,
-    refetchDynamicSourceNameChart,
-    refetchDynamicSourceTypeChart,
-  ]);
+  }, [params]);
 
-  console.log(" BEFORE CALL DATA FROM PARAMS.FROM PARAMS.TO", params.from);
-  console.log(" BEFORE CALL DATA PARAMS.TO", params.to);
+  const shouldShow = (value: string) =>
+    selectedGraphic === "Todos" || selectedGraphic === value;
 
   return (
-    <>
-      <ContentLayout title="Gráficos Estadísticos de los Reportes">
-        <div className="flex justify-center items-center mb-4">
-          <div className="flex flex-col">
-            <Label className="text-lg font-semibold">Seleccionar Fecha:</Label>
-            <DataFilter />
-          </div>
+    <ContentLayout title="Gráficos Estadísticos de los Reportes">
+      <div className="flex flex-col items-center gap-4 mb-6">
+        <div className="flex flex-col">
+          <Label className="text-lg font-semibold">Seleccionar Fecha:</Label>
+          <DataFilter />
         </div>
+        <div className="w-full max-w-md">
+          <Label className="text-lg font-semibold">Seleccionar gráfico:</Label>
+          <Select onValueChange={setSelectedGraphic} value={selectedGraphic}>
+            <SelectTrigger>
+              <SelectValue placeholder="Mostrar todos los gráficos" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Todos">Todos</SelectItem>
+              {labels.map(({ label, value }) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
-          {/* Gráfico de Barras (Peligros Identificados) */}
-          <div className=" flex flex-col justify-center items-center p-4 rounded-lg shadow border">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
+        {shouldShow("bar-chart") && (
+          <div className="p-4 rounded-lg shadow border">
             {isLoadingBarChart ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
             ) : barChartData ? (
-              params.from &&
-              params.to && (
-                <BarChartComponent
-                  from={params.from}
-                  to={params.to}
-                  height="100%"
-                  width="100%"
-                  data={barChartData}
-                  title="Peligros Identificados"
-                />
-              )
+              <BarChartComponent
+                from={params.from!}
+                to={params.to!}
+                height="100%"
+                width="100%"
+                data={barChartData}
+                title="Peligros Identificados"
+              />
             ) : (
               <p className="text-sm text-muted-foreground">
-                Ha ocurrido un error al cargar las...
+                Ha ocurrido un error al cargar los datos.
               </p>
             )}
           </div>
+        )}
 
-          {/* Gráfico de Barras Dinámico (Numero de Reportes vs Tipo) */}
+        {shouldShow("tipo") && (
           <div className="p-4 rounded-lg shadow border">
             {isLoadingDynamicData ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
-            ) : dynamicData && dynamicData.length > 0 ? (
+            ) : dynamicData?.length ? (
               <DynamicBarChart
                 height="70%"
                 width="70%"
@@ -267,14 +207,15 @@ const Statistics = () => {
               </p>
             )}
           </div>
+        )}
 
-          {/* Gráfico de Barras Dinámico (Numero de Reportes vs Tipo) */}
+        {shouldShow("area-bar") && (
           <div className="p-4 rounded-lg shadow border">
             {isLoadingPieCharData ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
-            ) : pieCharData && pieCharData.length > 0 ? (
+            ) : pieCharData?.length ? (
               <DynamicBarChart
                 height="70%"
                 width="70%"
@@ -287,17 +228,36 @@ const Statistics = () => {
               </p>
             )}
           </div>
+        )}
 
-          {/* Gráfico de Torta (Porcentaje de Indice de Riesgo Pre-Mitigacion) */}
-          <div
-            className="flex flex-col justify-center items-center 
-          p-4 rounded-lg shadow border"
-          >
+        {shouldShow("location") && (
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingReportsByLocationData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : reportsByLocationData?.length ? (
+              <DynamicBarChart
+                height="70%"
+                width="70%"
+                data={reportsByLocationData}
+                title="Numero de Reportes vs Localizacion"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+        )}
+
+        {shouldShow("pre-riesgo") && (
+          <div className="p-4 rounded-lg shadow border">
             {isLoadingRisk ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
-            ) : riskData && riskData.length > 0 ? (
+            ) : riskData?.length ? (
               <PieChartComponent
                 radius={120}
                 height="50%"
@@ -311,19 +271,20 @@ const Statistics = () => {
               </p>
             )}
           </div>
+        )}
 
-          {/* Gráfico de Barras Dinámico (Indice de Riesgo Pre-Mitigacion) */}
-          <div className="flex-col p-4 rounded-lg shadow border">
+        {shouldShow("pre-riesgo-bar") && (
+          <div className="p-4 rounded-lg shadow border">
             {isLoadingRisk ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
-            ) : riskData && riskData.length > 0 ? (
+            ) : riskData?.length ? (
               <DynamicBarChart
                 height="100%"
                 width="100%"
                 data={riskData}
-                title="Numero de Reportes por Cada Indice de Riesgo (Pre-Mitigacion)"
+                title="Numero de Reportes por Cada Indice de Riesgo"
               />
             ) : (
               <p className="text-lg text-muted-foreground">
@@ -331,20 +292,21 @@ const Statistics = () => {
               </p>
             )}
           </div>
+        )}
 
-          {/* Gráfico de Torta (Porcentaje de Indice de Riesgo Post-Mitigacion) */}
-          <div className="flex flex-col justify-center items-center p-4 rounded-lg shadow border ">
+        {shouldShow("post-riesgo") && (
+          <div className="p-4 rounded-lg shadow border">
             {isLoadingPostRisk ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
-            ) : postRiskData && postRiskData.length > 0 ? (
+            ) : postRiskData?.length ? (
               <PieChartComponent
                 radius={120}
-                height="100%"
-                width="100%"
+                height="50%"
+                width="50%"
                 data={postRiskData}
-                title="Porcentaje de Indice de Riesgo Post-Mitigacion"
+                title="Indice de Riesgo Post-Mitigación"
               />
             ) : (
               <p className="text-lg text-muted-foreground">
@@ -352,88 +314,9 @@ const Statistics = () => {
               </p>
             )}
           </div>
-
-          <div className="flex-col p-4 rounded-lg shadow border">
-            {isLoadingPostRisk ? (
-              <div className="flex justify-center items-center h-48">
-                <Loader2 className="size-24 animate-spin" />
-              </div>
-            ) : postRiskData && postRiskData.length > 0 ? (
-              <DynamicBarChart
-                height="100%"
-                width="100%"
-                data={postRiskData}
-                title="Numero de Reportes por Cada Indice de Riesgo (Post-Mitigacion)"
-              />
-            ) : (
-              <p className="text-lg text-muted-foreground">
-                No hay datos para mostrar.
-              </p>
-            )}
-          </div>
-
-          {/* Gráfico de Barras Dinámico (Numero de Reportes vs Localizacion) */}
-          <div className="p-4 rounded-lg shadow border">
-            {isLoadingAirportLocationData ? (
-              <div className="flex justify-center items-center h-48">
-                <Loader2 className="size-24 animate-spin" />
-              </div>
-            ) : airportLocationData && airportLocationData.length > 0 ? (
-              <DynamicBarChart
-                height="100%"
-                width="100%"
-                data={airportLocationData}
-                title="Numero de Reportes vs Localizacion"
-              />
-            ) : (
-              <p className="text-lg text-muted-foreground">
-                No hay datos para mostrar.
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Gráfico de Barras Dinámico (Indice de Riesgo Pre-Mitigacion) */}
-        <div className="flex-col p-4 rounded-lg shadow border">
-          {isLoadingDynamicSourceTypeData ? (
-            <div className="flex justify-center items-center h-48">
-              <Loader2 className="size-24 animate-spin" />
-            </div>
-          ) : dynamicSourceTypeData && dynamicSourceTypeData.length > 0 ? (
-            <DynamicBarChart
-              height="100%"
-              width="100%"
-              data={dynamicSourceTypeData}
-              title="Numero de Reportes vs Tipo de Fuente"
-            />
-          ) : (
-            <p className="text-lg text-muted-foreground">
-              No hay datos para mostrar.
-            </p>
-          )}
-        </div>
-
-        {/* Gráfico de Barras Dinámico (Indice de Riesgo Pre-Mitigacion) */}
-        <div className="flex-col p-4 rounded-lg shadow border">
-          {isLoadingDynamicSourceNameData ? (
-            <div className="flex justify-center items-center h-48">
-              <Loader2 className="size-24 animate-spin" />
-            </div>
-          ) : dynamicSourceNameData && dynamicSourceNameData.length > 0 ? (
-            <DynamicBarChart
-              height="100%"
-              width="100%"
-              data={dynamicSourceNameData}
-              title="Numero de Reportes Voluntarios vs Nombre de la Fuente"
-            />
-          ) : (
-            <p className="text-lg text-muted-foreground">
-              No hay datos para mostrar.
-            </p>
-          )}
-        </div>
-      </ContentLayout>
-    </>
+        )}
+      </div>
+    </ContentLayout>
   );
 };
 
