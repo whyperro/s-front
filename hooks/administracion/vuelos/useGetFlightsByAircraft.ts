@@ -19,16 +19,16 @@ export interface AircraftStatistics {
     }
 }
 
-const fetchFlightsByAircraft = async (aircraftId: string): Promise<Flight[]> => {
+const fetchFlightsByAircraft = async (aircraftId: string): Promise<AircraftStatistics> => {
   const { data } = await axiosInstance.get(`/transmandu/flights-by-aircraft/${aircraftId}`);
   return data;
 };
 
 export const useGetFlightsByAircraft = (aircraftId: string) => {
-  return useQuery<Flight[]>({
+  return useQuery<AircraftStatistics>({
     queryKey: ["flights", aircraftId],
     queryFn: () => fetchFlightsByAircraft(aircraftId),
     staleTime: 1000 * 60 * 5, // 5 minutos
-    enabled: !!aircraftId, // Solo ejecuta la consulta si hay un ID
+    enabled: !!aircraftId,
   });
 };
