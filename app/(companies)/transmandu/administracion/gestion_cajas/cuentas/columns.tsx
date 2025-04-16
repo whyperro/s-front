@@ -30,7 +30,7 @@ export const columns: ColumnDef<Cash>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {formatCurrencyJ(row.original.total_amount, row.original.coin)} 
+          {formatCurrencyJ(row.original.total_amount, row.original.coin)}
         </span>
       </div>
     ),
@@ -52,8 +52,12 @@ export const columns: ColumnDef<Cash>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const id = row.original.id;
-      return <CashDropdownActions id={row.original.id.toString()} />;
+      return (
+        <CashDropdownActions
+          cash={row.original}
+          id={row.original.id.toString()}
+        />
+      );
     },
   },
 ];

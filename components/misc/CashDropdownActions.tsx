@@ -1,23 +1,15 @@
+import { useDeleteCash } from "@/actions/administracion/cuentas/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  AlertCircleIcon,
-  EyeIcon,
-  Loader2,
-  MoreHorizontal,
-  Trash2,
-  WalletIcon,
-} from "lucide-react";
-import { useState } from "react";
+import { Cash } from "@/types";
+import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "../ui/button";
-import { useDeleteCash } from "@/actions/administracion/cuentas/actions";
-import { Separator } from "../ui/separator";
-import { useGetCashById } from "@/hooks/administracion/useGetCashById";
 import {
   Dialog,
   DialogContent,
@@ -26,27 +18,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
+import { getCurrencySymbol } from "@/lib/utils";
 
-//función auxiliar para manejar la lógica de los símbolos
-const getCurrencySymbol = (coinType: string) => {
-  switch (coinType) {
-    case "DOLARES":
-      return "$";
-    case "EUROS":
-      return "€";
-    case "BOLIVARES":
-      return "Bs.";
-    default:
-      return "";
-  }
-};
-
-const CashDropdownActions = ({ id }: { id: string }) => {
+const CashDropdownActions = ({ id, cash }: { id: string; cash: Cash }) => {
   const [openCash, setOpenCash] = useState<boolean>(false);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const router = useRouter();
   const { deleteCash } = useDeleteCash();
-  const { data: cashDetails, isLoading } = useGetCashById(id);
 
   const handleDelete = (id: number | string) => {
     deleteCash.mutate(id, {
@@ -132,87 +110,54 @@ const CashDropdownActions = ({ id }: { id: string }) => {
             e.preventDefault();
           }}
         >
-          {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <p className="mt-4 text-sm text-muted-foreground">
-                Cargando información...
-              </p>
+          <DialogHeader className="text-center font-bold">
+            Resumen de la Caja
+          </DialogHeader>
+          <div className="space-y-6 py-4">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div>
+                <p className="text-sm font-medium text-gray-500">Nombre</p>
+                <p className="text-lg font-semibold text-gray-800">
+                  {cash.name}
+                </p>
+              </div>
+              <div className="bg-primary/10 px-3 py-1 rounded-full">
+                <p className="text-sm font-medium text-primary">{cash.coin}</p>
+              </div>
             </div>
-          ) : cashDetails ? (
-            <>
-              <DialogHeader>
-                <div className="flex flex-col items-center space-y-2">
-                  <div className="bg-primary/10 p-3 rounded-full">
-                    <WalletIcon className="h-6 w-6 text-primary" />
-                  </div>
-                  <DialogTitle className="text-xl font-bold text-white-800">
-                    Detalles de la Caja
-                  </DialogTitle>
-                  <DialogDescription className="text-sm text-gray-500">
-                    Información completa de la cuenta
-                  </DialogDescription>
-                </div>
-              </DialogHeader>
 
-              <div className="space-y-6 py-4">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Nombre</p>
-                    <p className="text-lg font-semibold text-gray-800">
-                      {cashDetails.name}
-                    </p>
-                  </div>
-                  <div className="bg-primary/10 px-3 py-1 rounded-full">
-                    <p className="text-sm font-medium text-primary">
-                      {cashDetails.coin}
-                    </p>
-                  </div>
-                </div>
+            <div className="grid gap-4">
+              <div className="bg-green-50 p-4 rounded-lg">
+                <p className="text-sm font-medium text-green-600">
+                  Saldo Total
+                </p>
+                <p className="text-xl font-bold text-green-800">
+                  {getCurrencySymbol(cash.coin)} {cash.total_amount}
+                </p>
+              </div>
+            </div>
 
-                <div className="grid gap-4">
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <p className="text-sm font-medium text-green-600">
-                      Saldo Total
-                    </p>
-                    <p className="text-xl font-bold text-green-800">
-                      {getCurrencySymbol(cashDetails.coin)}{" "}
-                      {cashDetails.total_amount}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <h3 className="text-sm font-medium text-gray-500 mb-2">
-                    Resumen Detallado
-                  </h3>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Estado:</span>
-                      <span className="font-medium text-green-600">Activa</span>
-                    </div>
-                  </div>
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">
+                Resumen Detallado
+              </h3>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Estado:</span>
+                  <span className="font-medium text-green-600">Activa</span>
                 </div>
               </div>
-
-              <DialogFooter className="sm:justify-center">
-                <Button
-                  onClick={() => setOpenCash(false)}
-                  className="w-full max-w-xs mx-auto"
-                  variant="outline"
-                >
-                  Cerrar
-                </Button>
-              </DialogFooter>
-            </>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-8">
-              <AlertCircleIcon className="h-8 w-8 text-red-500" />
-              <p className="mt-4 text-center text-muted-foreground">
-                No se pudo cargar la información de la caja.
-              </p>
             </div>
-          )}
+          </div>
+          <DialogFooter className="sm:justify-start">
+            <Button
+              onClick={() => setOpenCash(false)}
+              variant="outline"
+              className="w-full"
+            >
+              Cerrar
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

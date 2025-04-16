@@ -10,47 +10,62 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Cash } from "@/types";
-import { Separator } from "../ui/separator";
+import { WalletIcon } from "lucide-react";
+import { getCurrencySymbol } from "@/lib/utils";
 
 const CashResumeDialog = ({ cash }: { cash: Cash }) => {
   const [openCash, setOpenCash] = useState(false);
 
   return (
     <Dialog open={openCash} onOpenChange={setOpenCash}>
-      <DialogTrigger className="flex justify-center">
-        {cash.name}
-      </DialogTrigger>
+      <DialogTrigger className="flex justify-center">{cash.name}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader className="text-center font-bold">
-          Resumen de la Empresa
+        <DialogHeader>
+          <div className="flex flex-col items-center space-y-2">
+            <div className="bg-primary/10 p-3 rounded-full">
+              <WalletIcon className="h-6 w-6 text-primary" />
+            </div>
+            <DialogTitle className="text-xl font-bold text-white-800">
+              Detalles de la Caja
+            </DialogTitle>
+            <DialogDescription className="text-sm text-gray-500">
+              Información completa de la cuenta
+            </DialogDescription>
+          </div>
         </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Caja
+
+        <div className="space-y-6 py-4">
+          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Nombre</p>
+              <p className="text-lg font-semibold text-gray-800">{cash.name}</p>
+            </div>
+            <div className="bg-primary/10 px-3 py-1 rounded-full">
+              <p className="text-sm font-medium text-primary">{cash.coin}</p>
+            </div>
+          </div>
+
+          <div className="grid gap-4">
+            <div className="bg-green-50 p-4 rounded-lg">
+              <p className="text-sm font-medium text-green-600">Saldo Total</p>
+              <p className="text-xl font-bold text-green-800">
+                {getCurrencySymbol(cash.coin)} {cash.total_amount}
+              </p>
+            </div>
+          </div>
+
+          <div className="p-4 bg-gray-50 rounded-lg">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">
+              Resumen Detallado
             </h3>
-            <p className="text-lg font-semibold">{cash.name}</p>
-            <Separator />
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Estado:</span>
+                <span className="font-medium text-green-600">Activa</span>
+              </div>
+            </div>
           </div>
-
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Total</h3>
-            <p className="text-lg font-semibold">{cash.total_amount}</p>
-            <Separator />
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Moneda
-            </h3>
-            <p className="text-lg font-semibold">{cash.coin}</p>
-            <Separator />
-          </div>
-
         </div>
-        <DialogFooter className="sm:justify-center">
-          <Button onClick={() => setOpenCash(false)}>Cerrar</Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

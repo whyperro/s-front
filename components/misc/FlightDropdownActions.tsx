@@ -9,11 +9,9 @@ import { Flight } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import {
-  AirplayIcon,
   ArrowRightIcon,
   EyeIcon,
   FileTextIcon,
-  HandCoins,
   Loader2,
   MapPinIcon,
   MoreHorizontal,
@@ -82,9 +80,11 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
 
       {/*Dialog para eliminar el registro de un vuelo*/}
       <Dialog open={openDelete} onOpenChange={setOpenDelete}>
-        <DialogContent onInteractOutside={(e) => {
+        <DialogContent
+          onInteractOutside={(e) => {
             e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
-          }}>
+          }}
+        >
           <DialogHeader>
             <DialogTitle className="text-center">
               ¿Seguro que desea eliminar el registro del vuelo?
@@ -119,10 +119,12 @@ const FlightDropdownActions = ({ flight }: { flight: Flight }) => {
 
       {/*Dialog para ver el resumen de un vuelo*/}
       <Dialog open={openFlight} onOpenChange={setOpenFlight}>
-        <DialogContent onInteractOutside={(e) => {
+        <DialogContent
+          onInteractOutside={(e) => {
             e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
           }}
-          className="sm:max-w-xl rounded-lg">
+          className="sm:max-w-xl rounded-lg"
+        >
           <DialogHeader>
             <div className="flex items-center justify-between">
               <div>

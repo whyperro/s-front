@@ -131,7 +131,6 @@ const CashMovementDropdownActions = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
     </>
   );
 };

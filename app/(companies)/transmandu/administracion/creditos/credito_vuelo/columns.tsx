@@ -8,8 +8,22 @@ import { es } from "date-fns/locale/es";
 import CreditDropdownActions from "@/components/misc/CreditDropdownActions";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
+import FlightResumeDialog from "@/components/dialogs/FlightResumeDialog";
+import ClientResumeDialog from "@/components/dialogs/ClientResumeDialog";
 
 export const columns: ColumnDef<Credit>[] = [
+  {
+    accessorKey: "flight.flight_number",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="# Vuelo" />
+    ),
+    meta: { title: "# Vuelo" },
+    cell: ({ row }) => (
+      <div className="flex justify-center font-bold">
+        <FlightResumeDialog flight={row.original.flight} />
+      </div>
+    ),
+  },
   {
     accessorKey: "opening_date",
     header: ({ column }) => (
@@ -33,13 +47,13 @@ export const columns: ColumnDef<Credit>[] = [
     ),
     meta: { title: "Fecha Cierre" },
     cell: ({ row }) => {
-        if (!row.original.closing_date) return <p>No especificado</p>;
-        return (
-          <p>
-            {format(addDays(row.original.closing_date, 1), "PPP", { locale: es })}
-          </p>
-        );
-      },
+      if (!row.original.closing_date) return <p>No especificado</p>;
+      return (
+        <p>
+          {format(addDays(row.original.closing_date, 1), "PPP", { locale: es })}
+        </p>
+      );
+    },
   },
   {
     accessorKey: "deadline",
@@ -57,18 +71,18 @@ export const columns: ColumnDef<Credit>[] = [
       );
     },
   },
-//  {
-//    accessorKey: "flight.details",
-//    header: ({ column }) => (
-//      <DataTableColumnHeader filter column={column} title="Detalle de Vuelo" />
-//    ),
-//    meta: { title: "Detalle de Vuelo" },
-//    cell: ({ row }) => (
-//      <div className="flex justify-center font-bold">
-//        {row.original.flight ? row.original.flight.details : "N/A"}
-//      </div>
-//    ),
-//  },
+  //  {
+  //    accessorKey: "flight.details",
+  //    header: ({ column }) => (
+  //      <DataTableColumnHeader filter column={column} title="Detalle de Vuelo" />
+  //    ),
+  //    meta: { title: "Detalle de Vuelo" },
+  //    cell: ({ row }) => (
+  //      <div className="flex justify-center font-bold">
+  //        {row.original.flight ? row.original.flight.details : "N/A"}
+  //      </div>
+  //    ),
+  //  },
   {
     accessorKey: "client.name",
     header: ({ column }) => (
@@ -76,45 +90,50 @@ export const columns: ColumnDef<Credit>[] = [
     ),
     meta: { title: "Cliente" },
     cell: ({ row }) => (
-      <div className="flex justify-center font-bold">
-        {row.original.client ? row.original.client.name : "N/A"}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "details",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Detalles" />
-    ),
-    meta: { title: "Detalles" },
-    cell: ({ row }) => (
-      <div className="flex justify-center font-bold">
-        {row.original.details}
-      </div>
+      <ClientResumeDialog client={row.original.client || {
+        name: "N/A",
+        dni: "",
+        phone: "",
+        address: "",
+        balance: 0,
+        pay_credit_days: 0
+      }} />
     ),
   },
 //  {
-//    accessorKey: "status",
+//    accessorKey: "details",
 //    header: ({ column }) => (
-//      <DataTableColumnHeader filter column={column} title="Estado" />
+//      <DataTableColumnHeader filter column={column} title="Detalles" />
 //    ),
-//    meta: { title: "Estado actual" },
-//    cell: ({ row }) => {
-//      const status = row.original.status;
-//      const backgroundColor =
-//        status === "PENDIENTE" ? "bg-yellow-500" : "bg-green-500";
-
-//      return (
-//        <div>
-//          <div className="flex justify-center">
-//            <Badge className={backgroundColor}>
-//              {row.original.status}
-//            </Badge>
-//          </div>
-//        </div>
-//      );
-//    },
+//    meta: { title: "Detalles" },
+//    cell: ({ row }) => (
+//      <div className="flex justify-center font-bold">
+//        {row.original.details}
+//      </div>
+//    ),
 //  },
+  //  {
+  //    accessorKey: "status",
+  //    header: ({ column }) => (
+  //      <DataTableColumnHeader filter column={column} title="Estado" />
+  //    ),
+  //    meta: { title: "Estado actual" },
+  //    cell: ({ row }) => {
+  //      const status = row.original.status;
+  //      const backgroundColor =
+  //        status === "PENDIENTE" ? "bg-yellow-500" : "bg-green-500";
+
+  //      return (
+  //        <div>
+  //          <div className="flex justify-center">
+  //            <Badge className={backgroundColor}>
+  //              {row.original.status}
+  //            </Badge>
+  //          </div>
+  //        </div>
+  //      );
+  //    },
+  //  },
   {
     accessorKey: "debt",
     header: ({ column }) => (
@@ -156,20 +175,20 @@ export const columns: ColumnDef<Credit>[] = [
       </div>
     ),
   },
-//  {
-//    accessorKey: "type",
-//    header: ({ column }) => (
-//      <DataTableColumnHeader filter column={column} title="Tipo" />
-//    ),
-//    meta: { title: "Tipo" },
-//    cell: ({ row }) => (
-//      <div className="flex justify-center">
-//        <span className="text-muted-foreground italic">
-//          {row.original.type}
-//        </span>
-//      </div>
-//    ),
-//  },
+  //  {
+  //    accessorKey: "type",
+  //    header: ({ column }) => (
+  //      <DataTableColumnHeader filter column={column} title="Tipo" />
+  //    ),
+  //    meta: { title: "Tipo" },
+  //    cell: ({ row }) => (
+  //      <div className="flex justify-center">
+  //        <span className="text-muted-foreground italic">
+  //          {row.original.type}
+  //        </span>
+  //      </div>
+  //    ),
+  //  },
   {
     id: "actions",
     cell: ({ row }) => {

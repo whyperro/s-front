@@ -6,9 +6,11 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "../ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Badge } from "../ui/badge";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Client } from "@/types";
-import { Separator } from "../ui/separator";
 
 const ClientResumeDialog = ({ client }: { client: Client }) => {
   const [openClient, setOpenClient] = useState(false);
@@ -20,48 +22,87 @@ const ClientResumeDialog = ({ client }: { client: Client }) => {
         <DialogHeader className="text-center font-bold">
           Resumen del Cliente
         </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Nombre
-            </h3>
-            <p className="text-lg font-semibold">{client.name}</p>
-            <Separator />
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Cedula / RIF
-            </h3>
-            <p className="text-lg font-semibold">{client.dni}</p>
-            <Separator />
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Número de Teléfono
-            </h3>
-            <p className="text-lg font-semibold">{client.phone}</p>
-            <Separator />
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Ubicación
-            </h3>
-            <p className="text-lg font-semibold">{client.address}</p>
-            <Separator />
-          </div>
-
-          <div className="bg-muted p-4 rounded-lg mt-6">
-            <div className="flex justify-between items-center">
-              <h3 className="font-medium">Saldo</h3>
-              <span className="font-bold text-xl ml-2">${client.balance}</span>
+        <Card className="border-none shadow-none">
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-12 w-12">
+                <AvatarFallback>
+                  {client.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <CardTitle className="text-xl">{client.name}</CardTitle>
+                <p className="text-sm text-muted-foreground">{client.dni}</p>
+              </div>
             </div>
-          </div>
-        </div>
-        <DialogFooter className="sm:justify-center">
-          <Button onClick={() => setOpenClient(false)}>Cerrar</Button>
+          </CardHeader>
+
+          <CardContent className="grid gap-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Teléfono
+                </h3>
+                <p className="font-medium">
+                  {client.phone || "No especificado"}
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Días Crédito
+                </h3>
+                <p className="font-medium">
+                  {client.pay_credit_days || "0"} días
+                </p>
+              </div>
+
+              <div className="space-y-1 col-span-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Dirección
+                </h3>
+                <p className="font-medium">
+                  {client.address || "No especificada"}
+                </p>
+              </div>
+            </div>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">Saldo Actual</span>
+                  <span
+                    className={`font-bold text-2xl ${
+                      client.balance >= 0 ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {client.balance >= 0 ? "+" : "-"} ${" "}
+                    {Math.abs(client.balance).toLocaleString()}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {client.balance < 0 && (
+              <Badge variant="destructive" className="w-fit">
+                Cliente con deuda
+              </Badge>
+            )}
+          </CardContent>
+        </Card>
+
+        <DialogFooter className="sm:justify-start">
+          <Button
+            onClick={() => setOpenClient(false)}
+            variant="outline"
+            className="w-full"
+          >
+            Cerrar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
