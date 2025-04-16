@@ -100,8 +100,7 @@ const InventarioPage = () => {
           </div>
         </CardContent>
         <CardFooter className='flex gap-2 justify-end'>
-          <Button>Aprobar</Button>
-          <Button onClick={() => setOpenDelete(true)} variant={"destructive"}><Trash2 /></Button>
+          <Button onClick={() => setOpenDelete(true)} variant={"destructive"}><Trash2 className={cn("'w-3 h-3'", data?.status === "APROBADO" ? "hidden" : "")} /></Button>
         </CardFooter>
       </Card>
       <Dialog open={openDelete} onOpenChange={setOpenDelete}>
