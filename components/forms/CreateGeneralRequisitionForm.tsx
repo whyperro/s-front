@@ -25,9 +25,10 @@ import { useGetSecondaryUnits } from "@/hooks/ajustes/globales/unidades/useGetSe
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
 const FormSchema = z.object({
-  justification: z.string().min(2, { message: "La justificación debe ser válida." }),
+  justification: z.string({ message: "La justificación debe ser válida." }).min(2, { message: "La justificación debe ser válida." }),
   company: z.string(),
   location_id: z.string(),
+  type: z.string({ message: "Debe seleccionar un tipo de requisición." }),
   created_by: z.string(),
   requested_by: z.string({ message: "Debe ingresar quien lo solicita." }),
   image: z.instanceof(File).optional(), // Nueva imagen general
@@ -91,7 +92,7 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
   const { mutate, data } = useGetBatchesByLocationId();
 
   const { selectedCompany, selectedStation } = useCompanyStore()
-  
+
   const { mutate: employeesMutation, data: employees, isPending: employeesLoading } = useGetDepartamentEmployees();
 
   const { data: secondaryUnits, isLoading: secondaryUnitLoading } = useGetSecondaryUnits()
@@ -221,75 +222,98 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-3">
-        <FormField
-          control={form.control}
-          name="requested_by"
-          render={({ field }) => (
-            <FormItem className="w-full flex flex-col space-y-3 mt-1.5">
-              <FormLabel>Solicitante</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
+        <div className="flex gap-2 items-center">
+          <FormField
+            control={form.control}
+            name="requested_by"
+            render={({ field }) => (
+              <FormItem className="w-full flex flex-col space-y-3 mt-1.5">
+                <FormLabel>Solicitante</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        disabled={employeesLoading}
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {
+                          employeesLoading && <Loader2 className="size-4 animate-spin mr-2" />
+                        }
+                        {field.value
+                          ? <p>{employees?.find(
+                            (employee) => `${employee.first_name} ${employee.last_name}` === field.value
+                          )?.first_name} - {employees?.find(
+                            (employee) => `${employee.first_name} ${employee.last_name}` === field.value
+                          )?.last_name}</p>
+                          : "Elige al solicitante..."
+                        }
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0">
+                    <Command>
+                      <CommandInput placeholder="Busque un empleado..." />
+                      <CommandList>
+                        <CommandEmpty className="text-sm p-2 text-center">No se ha encontrado ningún empleado.</CommandEmpty>
+                        <CommandGroup>
+                          {employees?.map((employee) => (
+                            <CommandItem
+                              value={`${employee.first_name} ${employee.last_name}`}
+                              key={employee.id}
+                              onSelect={() => {
+                                form.setValue("requested_by", `${employee.first_name} ${employee.last_name}`)
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  `${employee.first_name} ${employee.last_name}` === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {
+                                <p>{employee.first_name} {employee.last_name}</p>
+                              }
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Tipo de Req.</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <Button
-                      disabled={employeesLoading}
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {
-                        employeesLoading && <Loader2 className="size-4 animate-spin mr-2" />
-                      }
-                      {field.value
-                        ? <p>{employees?.find(
-                          (employee) => `${employee.first_name} ${employee.last_name}` === field.value
-                        )?.first_name} - {employees?.find(
-                          (employee) => `${employee.first_name} ${employee.last_name}` === field.value
-                        )?.last_name}</p>
-                        : "Elige al solicitante..."
-                      }
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione.." />
+                    </SelectTrigger>
                   </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="p-0">
-                  <Command>
-                    <CommandInput placeholder="Busque un empleado..." />
-                    <CommandList>
-                      <CommandEmpty className="text-sm p-2 text-center">No se ha encontrado ningún empleado.</CommandEmpty>
-                      <CommandGroup>
-                        {employees?.map((employee) => (
-                          <CommandItem
-                            value={`${employee.first_name} ${employee.last_name}`}
-                            key={employee.id}
-                            onSelect={() => {
-                              form.setValue("requested_by", `${employee.first_name} ${employee.last_name}`)
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                `${employee.first_name} ${employee.last_name}` === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                            {
-                              <p>{employee.first_name} {employee.last_name}</p>
-                            }
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                  <SelectContent>
+                    <SelectItem value="AERONAUTICO">Aeronautico</SelectItem>
+                    <SelectItem value="GENERAL">General</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="articles"

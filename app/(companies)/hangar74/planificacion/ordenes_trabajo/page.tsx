@@ -1,10 +1,10 @@
 'use client';
 
 import { ContentLayout } from '@/components/layout/ContentLayout';
+import LoadingPage from '@/components/misc/LoadingPage';
 import { useGetWorkOrders } from '@/hooks/planificacion/useGetWorkOrders';
 import { useCompanyStore } from '@/stores/CompanyStore';
 import { Loader2 } from 'lucide-react';
-import { useEffect } from 'react';
 import { columns } from './columns';
 import { DataTable } from './data-table';
 
@@ -12,14 +12,10 @@ const WorkOrdersPage = () => {
 
   const { selectedStation } = useCompanyStore();
 
-  const { mutate, data: work_orders, isPending } = useGetWorkOrders();
+  const { data: work_orders, isLoading, isError } = useGetWorkOrders(selectedStation ?? null);
 
-  useEffect(() => {
-    if (selectedStation) {
-      mutate(Number(selectedStation))
-    }
-  },
-    [selectedStation, mutate])
+
+  if (isLoading) return <LoadingPage />
 
   return (
     <ContentLayout title='Ordenes de Trabajo'>
@@ -29,13 +25,18 @@ const WorkOrdersPage = () => {
           Aquí puede observar todos las ordenes de trabajo realizadas. <br />Filtre y/o busque sí desea una orden en específico.
         </p>
         {
-          isPending && (
-            <div className='flex w-full h-full justify-center items-center'>
-              <Loader2 className='size-24 animate-spin mt-48' />
-            </div>
+          work_orders && (
+            <DataTable
+              columns={columns}
+              data={work_orders}
+            />
           )
         }
-        <DataTable columns={columns} data={[]} />
+        {
+          isError && (
+            <p className='text-center text-muted-foreground text-sm'>Ha ocurrido un error al cargar las ordens de trabajo...</p>
+          )
+        }
       </div>
     </ContentLayout>
   )

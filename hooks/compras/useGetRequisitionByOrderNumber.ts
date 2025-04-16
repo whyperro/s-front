@@ -30,7 +30,7 @@ const fetchRequisitionByOrderNumber = async (company: string | null, order_numbe
 
 export const useGetRequisitionByOrderNumber = (company: string | null, order_number: string) => {
   return useQuery<Requisition, Error>({
-    queryKey: ["batches"],
+    queryKey: ["requisition-order", company, order_number],
     queryFn: () => fetchRequisitionByOrderNumber(company, order_number),
     enabled: !!company && !!order_number,
   });

@@ -9,6 +9,7 @@ interface CreateRequisitionData {
   created_by: number | string,
   aircraft_id?: number,
   work_order_id?: number,
+  type: string,
   company: string,
   image?: File,
   articles: {
@@ -38,6 +39,8 @@ export const useCreateRequisition = () => {
         },
       onSuccess: () => {
           queryClient.invalidateQueries({queryKey: ['requisitions-orders']})
+          queryClient.invalidateQueries({queryKey: ['requisitions-order'], exact: false})
+
           toast.success("¡Creado!", {
               description: `La requisicion ha sido creada correctamente.`
           })

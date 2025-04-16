@@ -171,7 +171,7 @@ export function AircraftInfoForm({ onNext, onBack, initialData }: AircraftInfoFo
                       <CommandList>
                         <CommandEmpty className="text-sm p-2 text-center">No se ha encontrado ningún fabricante.</CommandEmpty>
                         <CommandGroup>
-                          {manufacturers?.map((manufacturer) => (
+                          {manufacturers?.filter((m) => m.type === 'AIRCRAFT').map((manufacturer) => (
                             <CommandItem
                               value={`${manufacturer.id}`}
                               key={manufacturer.id}

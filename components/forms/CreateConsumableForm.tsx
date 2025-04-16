@@ -106,8 +106,6 @@ interface EditingArticle extends Article {
   },
 }
 
-
-
 const CreateConsumableForm = ({ initialData, isEditing }: {
   initialData?: EditingArticle,
   isEditing?: boolean,
@@ -164,13 +162,13 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      part_number: initialData?.part_number || "",
-      alternative_part_number: initialData?.alternative_part_number || "",
-      batches_id: initialData?.batches.id?.toString() || "",
-      manufacturer_id: initialData?.manufacturer?.id.toString() || "",
-      condition_id: initialData?.condition?.id.toString() || "",
+      part_number: initialData?.part_number || undefined,
+      alternative_part_number: initialData?.alternative_part_number || undefined,
+      batches_id: initialData?.batches.id?.toString() || undefined,
+      manufacturer_id: initialData?.manufacturer?.id.toString() || undefined,
+      condition_id: initialData?.condition?.id.toString() || undefined,
       description: initialData?.description || "",
-      zone: initialData?.zone || "",
+      zone: initialData?.zone || undefined,
     }
   })
   form.setValue("article_type", "consumible");

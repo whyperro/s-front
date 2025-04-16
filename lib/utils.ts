@@ -35,3 +35,5 @@ export function formatDateRange(period?: Period) {
 
   return format(period.from, "LLL dd, y", {locale});
 }
+
+

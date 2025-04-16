@@ -39,6 +39,7 @@ export const useCreatePurchaseOrder = () => {
         },
       onSuccess: () => {
           queryClient.invalidateQueries({queryKey: ['purchase-orders']})
+          queryClient.invalidateQueries({queryKey: ['purchase-order'], exact: false})
           toast.success("¡Creado!", {
               description: `La orden de compra ha sido creada correctamente.`
           })
