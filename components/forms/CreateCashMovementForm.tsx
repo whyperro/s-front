@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetCash } from "@/hooks/administracion/useGetCash";
+import { useGetCash } from "@/hooks/administracion/cajas/useGetCash";
 import { useGetEmployeesByCompany } from "@/hooks/administracion/useGetEmployees";
 import { useGetAdministrationCompany } from "@/hooks/administracion/useGetAdministrationCompany";
 import { cn } from "@/lib/utils";
@@ -115,13 +115,12 @@ const formSchema = z.object({
   bank_account_id: z
     .union([
       z.string().min(1, { message: "Debe seleccionar una cuenta válida" }),
-      z.null()
+      z.null(),
     ])
-    .refine(
-      (val) => val !== undefined, 
-      { message: "Debe seleccionar una opción" }
-    )
-    .transform(val => val === "" ? null : val) // Transforma "" a null
+    .refine((val) => val !== undefined, {
+      message: "Debe seleccionar una opción",
+    })
+    .transform((val) => (val === "" ? null : val)), // Transforma "" a null
 });
 
 interface FormProps {
@@ -516,7 +515,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
               <Select
                 disabled={isAccLoading}
                 onValueChange={field.onChange}
-                defaultValue={field.value === null ? "" : field.value }
+                defaultValue={field.value === null ? "" : field.value}
               >
                 <FormControl>
                   <SelectTrigger>

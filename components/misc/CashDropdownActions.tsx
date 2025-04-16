@@ -6,7 +6,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Cash } from "@/types";
-import { EyeIcon, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
+import {
+  EyeIcon,
+  Loader2,
+  MoreHorizontal,
+  Trash2,
+  TrendingUp,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
@@ -36,6 +42,11 @@ const CashDropdownActions = ({ id, cash }: { id: string; cash: Cash }) => {
     setOpenCash(true);
   };
 
+  const handleViewStats = () => {
+    router.push(`/transmandu/administracion/gestion_cajas/cuentas/${id}`);
+    console.log("Redirigiendo a:", router);
+  };
+
   return (
     <>
       <DropdownMenu>
@@ -55,11 +66,10 @@ const CashDropdownActions = ({ id, cash }: { id: string; cash: Cash }) => {
           <DropdownMenuItem onClick={handleViewDetails}>
             <EyeIcon className="size-5" />
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              router.push(`/administracion/gestion_cajas/cuentas/${id}`);
-            }}
-          ></DropdownMenuItem>
+           {/*Redirige a la page para ver las estadisticas de una caja segun la cuenta*/}
+          <DropdownMenuItem onClick={handleViewStats}>
+            <TrendingUp className="size-5 text-green-500" />
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 

@@ -2,7 +2,7 @@
 
 import { ContentLayout } from "@/components/layout/ContentLayout";
 import LoadingPage from "@/components/misc/LoadingPage";
-import { useGetCash } from "@/hooks/administracion/useGetCash";
+import { useGetCash } from "@/hooks/administracion/cajas/useGetCash";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
@@ -16,9 +16,7 @@ const Cash = () => {
   return (
     <ContentLayout title="Caja">
       {" "}
-      <h1 className="text-5xl font-bold text-center mt-2">
-        Control de Cajas
-      </h1>
+      <h1 className="text-5xl font-bold text-center mt-2">Control de Cajas</h1>
       <p className="text-sm text-muted-foreground text-center italic mt-2">
         Aquí puede llevar el control de las cajas.
       </p>

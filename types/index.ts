@@ -134,6 +134,7 @@ export type CashMovement = {
   bank_account: BankAccount, 
   vendor: Vendor,
   client: Client,
+  cash_id: string;
 }
 
 export type Client = {
