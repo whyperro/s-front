@@ -110,7 +110,7 @@ const ObligatoryReportStats = () => {
 
   const {
     data: reportsByTypeData,
-    isLoading: isReportsByTypeData,
+    isLoading: isLoadingReportsByTypeData,
     isError: isErrorReportsByTypeData,
     refetch: refetchReportsByTypeData,
   } = useGetDangerIdentificationsCountedByType(
@@ -121,7 +121,7 @@ const ObligatoryReportStats = () => {
 
   const {
     data: reportsByAreaData,
-    isLoading: isReportsByAreaData,
+    isLoading: isLoadingReportsByAreaData,
     isError: isErrorReportsByAreaData,
     refetch: refetchReportsByAreaData,
   } = useGetReportsCountedByArea(
@@ -132,7 +132,7 @@ const ObligatoryReportStats = () => {
 
   const {
     data: reportsByRiskData,
-    isLoading: isReportsByRiskData,
+    isLoading: isLoadingReportsByRiskData,
     isError: isErrorReportsByRiskData,
     refetch: refetchReportsByRiskData,
   } = useGetRiskCountByDateRange(
@@ -143,7 +143,7 @@ const ObligatoryReportStats = () => {
 
   const {
     data: reportsByPostRiskData,
-    isLoading: isReportsByPostRiskData,
+    isLoading: isLoadingReportsByPostRiskData,
     isError: isErrorReportsByPostRiskData,
     refetch: refetchReportsByPostRiskData,
   } = useGetPostRiskCountByDateRange(
@@ -234,7 +234,7 @@ const ObligatoryReportStats = () => {
           </div>
 
           <div className="p-4 rounded-lg shadow border">
-            {isReportsByTypeData ? (
+            {isLoadingReportsByTypeData ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
@@ -253,7 +253,7 @@ const ObligatoryReportStats = () => {
           </div>
 
           <div className="p-4 rounded-lg shadow border">
-            {isReportsByAreaData ? (
+            {isLoadingReportsByAreaData ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
@@ -280,7 +280,7 @@ const ObligatoryReportStats = () => {
             className="flex flex-col justify-center items-center 
           p-4 rounded-lg shadow border"
           >
-            {isReportsByRiskData ? (
+            {isLoadingReportsByRiskData ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
@@ -307,7 +307,7 @@ const ObligatoryReportStats = () => {
 
           {/* Gráfico de Barras Dinámico (Indice de Riesgo Pre-Mitigacion) */}
           <div className="flex-col p-4 rounded-lg shadow border">
-            {isReportsByRiskData ? (
+            {isLoadingReportsByRiskData ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
@@ -326,7 +326,7 @@ const ObligatoryReportStats = () => {
           </div>
 
           <div className="flex flex-col justify-center items-center p-4 rounded-lg shadow border ">
-            {isReportsByPostRiskData ? (
+            {isLoadingReportsByPostRiskData ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
@@ -345,7 +345,7 @@ const ObligatoryReportStats = () => {
             )}
           </div>
           <div className="flex-col p-4 rounded-lg shadow border">
-            {isReportsByPostRiskData ? (
+            {isLoadingReportsByPostRiskData ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>

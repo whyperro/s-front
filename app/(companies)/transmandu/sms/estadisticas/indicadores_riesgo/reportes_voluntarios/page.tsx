@@ -140,7 +140,7 @@ const VoluntaryReportIndicators = () => {
       setResultArrayData([]);
     }
     console.log(resultArrayData, "resultArrayData");
-  }, [barChartData]); // Agregado barChartData como dependencia
+  }, [barChartData, refetchBarChart, resultArrayData]); // Agregado barChartData como dependencia
 
   return (
     <>

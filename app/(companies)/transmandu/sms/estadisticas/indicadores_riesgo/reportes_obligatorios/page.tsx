@@ -60,6 +60,7 @@ const ObligatoryReportIndicators = () => {
     params.to_first || format(new Date(), "yyyy-MM-dd")
   );
 
+  
   const {
     data: obligatoryAverageData,
     isLoading: isLoadingObligatoryAverageData,
@@ -86,12 +87,12 @@ const ObligatoryReportIndicators = () => {
     refetchBarChart();
     refetchObligatoryAverageData();
   }, [
-    params.from_first,
-    params.to_first,
-    params.from_second,
-    params.to_second,
     refetchBarChart,
     refetchObligatoryAverageData,
+    params.from_first,
+    params.from_second,
+    params.to_first,
+    params.to_second,
   ]);
 
   useEffect(() => {
@@ -112,7 +113,13 @@ const ObligatoryReportIndicators = () => {
       ];
       setResultArrayData(newData);
     }
-  }, [obligatoryAverageData]);
+  }, [
+    obligatoryAverageData,
+    params.from_first,
+    params.from_second,
+    params.to_first,
+    params.to_second,
+  ]);
 
   return (
     <>
