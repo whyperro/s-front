@@ -29,6 +29,7 @@ export default async function middleware(req: NextRequest) {
 // Configuración del matcher
 export const config = {
   matcher: [
+    '/ajustes/:path*',
     '/inicio/:path*',
     '/transmandu/:path*',
     '/hangar74/:path*',

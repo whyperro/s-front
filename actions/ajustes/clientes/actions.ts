@@ -7,6 +7,7 @@ interface CreateClientSchema {
   phone_number: string,
   email: string,
   address: string,
+  rif: string,
 }
 
 export const useCreateClient = () => {

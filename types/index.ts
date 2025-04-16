@@ -87,7 +87,10 @@ export type Location = {
 export type Warehouse = {
     id: string,
     name: string,
-    address: string,
+    location: {
+      address: string,
+      type: string,
+    },
     company: string,
     type: string,
 }
@@ -203,8 +206,10 @@ export type MaintenanceAircraft = {
 export type MaintenanceAircraftPart = {
   part_number: string,
   part_name: string,
+  condition_type: string,
   part_hours: number,
   part_cycles: number,
+  sub_parts: MaintenanceAircraftPart[],
   aircraft: MaintenanceAircraft,
 }
 
@@ -221,17 +226,24 @@ export type FlightControl = {
 
 export type MaintenanceService = {
   id: number
+  origin_manual: string,
   name: string,
   description: string,
   manufacturer: Manufacturer,
+  type: "AIRCRAFT" | "PART",
   tasks: ServiceTask[],
 }
 
 export type ServiceTask = {
   id: number,
   description: string,
-  batch: Batch,
   service: MaintenanceService,
+  task_items: {
+    id: number
+    article_part_number: string,
+    article_alt_part_number?: string,
+    article_serial: string,
+  }[]
 }
 
 export type Employee = {
@@ -245,13 +257,45 @@ export type Employee = {
   user?: User,
   location: Location,
 }
+
+export type WorkOrderTask = {
+  id: number,
+  description_task: string,
+  status: string,
+  technician_responsable?: string,
+  inspector_responsable?: string,
+  ata: string,
+  task_number: string,
+  origin_manual: string,
+  old_technician?: string[],
+  task_items: {
+    article_serial: string,
+    article_part_number: string,
+    article_alt_part_number: string,
+  }[],
+  non_routine?: {
+    id: number,
+    ata: string,
+    description: string,
+    status: string,
+    action?: string,
+    needs_task: boolean,
+    work_order_task: Omit<WorkOrderTask, "non_routine">
+    no_routine_task?: Omit<WorkOrderTask, "non_routine">[]
+  }
+}
+
 export interface WorkOrder extends Request {
   order_number: string
-  service: string,
+  client: MaintenanceClient,
   aircraft: MaintenanceAircraft,
-  status: boolean,
+  status: string,
+  date: string,
   description: string,
-  employee: Employee,
+  elaborated_by: string,
+  reviewed_by: string,
+  approved_by: string,
+  work_order_tasks: WorkOrderTask[]
 }
 
 export interface DispatchRequest extends Request {
@@ -312,6 +356,7 @@ export type ToolBox = {
 export type Manufacturer = {
   id: number,
   name: string,
+  type: "AIRCRAFT" | "PART",
   description: string,
 }
 
@@ -320,6 +365,7 @@ export type Requisition = {
   order_number: string,
   status: string,
   created_by: User,
+  type: string,
   requested_by: string,
   batch: {
     name: string,
