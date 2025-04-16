@@ -9,6 +9,7 @@ import { ChevronDown, ChevronRight, CircleEllipsis, EyeIcon, LayoutGrid, Plus, S
 import { useState } from "react"
 import TaskCard from "./TaskCard"
 import { TaskDetailsDialog } from "./TaskDetailsDialog"
+import { cn } from "@/lib/utils"
 
 interface NonRoutineTasksListProps {
   tasks: WorkOrderTask[]
@@ -85,10 +86,10 @@ export const NonRoutineTasksList = ({
                     <div className="flex items-center gap-3">
                       {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                       <div>
-                        <CardTitle className="text-lg">
+                        <CardTitle className="text-lg flex items-center mb-2">
                           NR: {taskOrigin}
-                          <Badge variant="outline" className="ml-2">
-                            {mainTask.status}
+                          <Badge className={cn("ml-2", mainTask.status === "ABIERTA" ? "" : "bg-red-500")}>
+                            {nonRoutine.status}
                           </Badge>
                         </CardTitle>
                         <CardDescription>
@@ -142,31 +143,53 @@ export const NonRoutineTasksList = ({
         </div>
       ) : (
         <div className="border rounded-lg overflow-hidden">
-          <Table>
+          <Table className="tasks-table">
             <TableHeader>
               <TableRow>
-                <TableHead>Descripción</TableHead>
-                <TableHead>ATA</TableHead>
-                <TableHead>Origen</TableHead>
-                <TableHead>Acción</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead>Tareas</TableHead>
+                {/* Nueva columna para el botón de expansión */}
+                <TableHead className="w-[50px]"></TableHead>
+                <TableHead className="min-w-[300px]">Descripción</TableHead>
+                <TableHead className="w-[100px]">ATA</TableHead>
+                <TableHead className="w-[120px]">Origen</TableHead>
+                <TableHead className="min-w-[200px]">Acción</TableHead>
+                <TableHead className="w-[100px]">Estado</TableHead>
+                <TableHead className="w-[120px]">Tareas</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {nonRoutineMainTasks.map(mainTask => {
                 const nonRoutine = mainTask.non_routine!
                 const subtasks = nonRoutine.no_routine_task || []
+                const isExpanded = expandedNonRoutines[mainTask.id]
                 const taskOrigin = mainTask.task_number || 'Directa'
 
                 return (
                   <div key={mainTask.id}>
+                    {/* Fila principal */}
                     <TableRow
-                      key={`main-${mainTask.id}`}
                       className="cursor-pointer hover:bg-muted/50"
                       onClick={() => handleTaskClick(mainTask)}
                     >
-                      <TableCell className="font-medium">{nonRoutine.description}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            toggleExpand(mainTask.id)
+                          }}
+                        >
+                          {isExpanded ? (
+                            <ChevronDown className="h-4 w-4" />
+                          ) : (
+                            <ChevronRight className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {nonRoutine.description}
+                      </TableCell>
                       <TableCell>{nonRoutine.ata}</TableCell>
                       <TableCell>{taskOrigin}</TableCell>
                       <TableCell className="max-w-[200px] truncate">
@@ -186,13 +209,18 @@ export const NonRoutineTasksList = ({
                       </TableCell>
                     </TableRow>
 
-                    {expandedNonRoutines[mainTask.id] && subtasks.map(subtask => (
+                    {/* Subtareas */}
+                    {isExpanded && subtasks.map(subtask => (
                       <TableRow
                         key={`sub-${subtask.id}`}
-                        className="cursor-pointer hover:bg-muted/25 bg-muted/10"
-                        onClick={() => handleTaskClick(subtask)}
+                        className="bg-muted/10 hover:bg-muted/25 cursor-pointer"
+                        onClick={() => handleTaskClick(subtask, mainTask)}
                       >
-                        <TableCell className="pl-10">{subtask.description_task}</TableCell>
+                        <TableCell></TableCell> {/* Celda vacía para alineación */}
+                        <TableCell className="pl-8 font-medium">
+                          <span className="text-muted-foreground mr-2">↳</span>
+                          {subtask.description_task}
+                        </TableCell>
                         <TableCell>{subtask.ata}</TableCell>
                         <TableCell>Subtarea</TableCell>
                         <TableCell>N/A</TableCell>

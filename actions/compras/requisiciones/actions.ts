@@ -39,6 +39,8 @@ export const useCreateRequisition = () => {
         },
       onSuccess: () => {
           queryClient.invalidateQueries({queryKey: ['requisitions-orders']})
+          queryClient.invalidateQueries({queryKey: ['requisitions-order'], exact: false})
+
           toast.success("¡Creado!", {
               description: `La requisicion ha sido creada correctamente.`
           })
