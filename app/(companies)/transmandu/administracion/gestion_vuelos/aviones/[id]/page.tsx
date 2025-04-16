@@ -400,19 +400,6 @@ export default function AircraftReportPage() {
                       </TableRow>
                     ))}
                   </TableBody>
-                  <TableCaption>
-                    <div className="flex justify-between items-center">
-                      <span className="text-center pl-5 pb-5">Total: {flightsData.length} vuelos</span>
-                      <span className="font-medium text-emerald-600 text-center pr-8 pb-5">
-                        Ganancias: {formatCurrency(
-                          flightsData.reduce(
-                            (sum, flight) => sum + (flight.total_amount || 0),
-                            0
-                          )
-                        )}
-                      </span>
-                    </div>
-                  </TableCaption>
                 </Table>
               </div>
             ) : (

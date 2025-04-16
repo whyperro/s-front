@@ -441,26 +441,6 @@ const OutputDashboard = () => {
                       </TableRow>
                     ))}
                   </TableBody>
-                  <TableCaption>
-                    <div className="flex justify-between items-center">
-                      <span className="text-center pl-5 pb-5">
-                        Total: {monthMovements.length} movimientos
-                      </span>
-                      <span className="font-medium text-red-600 text-center pr-8 pb-5">
-                        Suma: $
-                        {monthMovements
-                          .reduce(
-                            (sum, m) =>
-                              sum +
-                              (typeof m.amount === "string"
-                                ? Number.parseFloat(m.amount)
-                                : m.amount),
-                            0
-                          )
-                          .toLocaleString()}
-                      </span>
-                    </div>
-                  </TableCaption>
                 </Table>
               </div>
             ) : (
