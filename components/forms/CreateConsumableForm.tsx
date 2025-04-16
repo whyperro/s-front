@@ -163,6 +163,7 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
     resolver: zodResolver(formSchema),
     defaultValues: {
       part_number: initialData?.part_number || undefined,
+      alternative_part_number: initialData?.alternative_part_number || undefined,
       batches_id: initialData?.batches.id?.toString() || undefined,
       manufacturer_id: initialData?.manufacturer?.id.toString() || undefined,
       condition_id: initialData?.condition?.id.toString() || undefined,
