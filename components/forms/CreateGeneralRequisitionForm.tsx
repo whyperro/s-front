@@ -208,6 +208,7 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
   };
 
   const onSubmit = async (data: FormSchemaType) => {
+    console.log(data)
     if (isEditing && id) {
       await updateRequisition.mutateAsync({ data, id });
     } else if (!isEditing) {
@@ -368,6 +369,10 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
                             {/* Campo adicional si es consumible */}
                             {batch.category === "consumible" && (
                               <>
+                                <Input
+                                  placeholder="N/P Alterno"
+                                  // onChange={(e) => handleArticleChange(batch.batch, index, "alternative_part_number", e.target.value)}
+                                />
                                 <Select disabled={secondaryUnitLoading} onValueChange={(value) => handleArticleChange(batch.batch, index, "unit", value)}
                                 >
                                   <SelectTrigger>
