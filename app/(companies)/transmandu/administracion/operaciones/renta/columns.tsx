@@ -14,7 +14,7 @@ export const columns: ColumnDef<Renting>[] = [
   {
     accessorKey: "start_date",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Fecha inicio" />
+      <DataTableColumnHeader column={column} title="Fecha inicio" />
     ),
     meta: { title: "Fecha inicio" },
     cell: ({ row }) => (
@@ -26,7 +26,7 @@ export const columns: ColumnDef<Renting>[] = [
   {
     accessorKey: "end_date",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Fecha fin" />
+      <DataTableColumnHeader column={column} title="Fecha fin" />
     ),
     meta: { title: "Fecha fin" },
     cell: ({ row }) => {
@@ -41,7 +41,7 @@ export const columns: ColumnDef<Renting>[] = [
   {
     accessorKey: "deadline",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Fecha Límite" />
+      <DataTableColumnHeader column={column} title="Fecha Límite" />
     ),
     meta: { title: "Fecha Límite" },
     cell: ({ row }) => (

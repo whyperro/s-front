@@ -32,7 +32,7 @@ export function CreditRentingDialog({ id }: { id?: string }) {
             Resumen de Crédito
           </Button>
         </DialogTrigger>
-      </Dialog>
+      </Dialog> 
     </>
   );
 }

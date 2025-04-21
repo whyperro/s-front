@@ -15,7 +15,7 @@ export const columns: ColumnDef<CashMovement>[] = [
   {
     accessorKey: "date",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Fecha" />
+      <DataTableColumnHeader column={column} title="Fecha" />
     ),
     meta: { title: "Fecha" },
     cell: ({ row }) => {

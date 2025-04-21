@@ -13,7 +13,7 @@ export const columns: ColumnDef<Credit>[] = [
   {
     accessorKey: "opening_date",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Fecha Apertura" />
+      <DataTableColumnHeader column={column} title="Fecha Apertura" />
     ),
     meta: { title: "Fecha Apertura" },
     cell: ({ row }) => {
@@ -29,7 +29,7 @@ export const columns: ColumnDef<Credit>[] = [
   {
     accessorKey: "closing_date",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Fecha Cierre" />
+      <DataTableColumnHeader column={column} title="Fecha Cierre" />
     ),
     meta: { title: "Fecha Cierre" },
     cell: ({ row }) => {
@@ -44,7 +44,7 @@ export const columns: ColumnDef<Credit>[] = [
   {
     accessorKey: "deadline",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Fecha Limite" />
+      <DataTableColumnHeader column={column} title="Fecha Limite" />
     ),
     meta: { title: "Fecha Limite" },
     cell: ({ row }) => {

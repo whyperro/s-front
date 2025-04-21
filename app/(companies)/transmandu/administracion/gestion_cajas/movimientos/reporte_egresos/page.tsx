@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, ArrowLeft, DollarSign, BarChartIcon, Calendar, } from "lucide-react";
 import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import type { CashMovement } from "@/types";
@@ -80,7 +80,7 @@ const OutputDashboard = () => {
           m.name
         ].filter(
           (mov: CashMovement) =>
-            mov.type === "INCOME" && String(mov.client?.id) === selectedVendor
+            mov.type === "OUTPUT" && String(mov.vendor?.id) === selectedVendor
         );
 
         // Calcular el total de ingresos para este cliente en este mes
