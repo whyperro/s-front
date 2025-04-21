@@ -31,10 +31,8 @@ const fetchCashMovementByAccount = async (cashId: string, params: DateParams = {
 
 export const useGetCashMovementByAccount = (cashId: string, dateParams: DateParams = {}) => {
   return useQuery<AccountMovement[]>({
-    // Incluir los parámetros de fecha en la queryKey para que React Query actualice los datos cuando cambien
     queryKey: ["movements-by-accounts", cashId, dateParams.from, dateParams.to],
     queryFn: () => fetchCashMovementByAccount(cashId, dateParams),
     staleTime: 1000 * 60 * 5, // 5 minutos
-    enabled: !!cashId,
   })
 }

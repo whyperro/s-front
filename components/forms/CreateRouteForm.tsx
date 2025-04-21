@@ -28,38 +28,51 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
 const formSchema = z.object({
-  from: z.string({
-    message: "Debe seleccionar un origen.",
-  }).min(3, {
-    message: "El origen debe tener al menos 3 caracteres.",
-  }).max(30, {
-    message: "El origen tiene un máximo 30 caracteres.",
-  }),
-  to: z.string({
-    message: "Debe seleccionar un destino.",
-  }).min(3, {
-    message: "El destino debe tener al menos 3 caracteres.",
-  }).max(30, {
-    message: "El destino tiene un máximo 30 caracteres.",
-  }),
-  layovers: z.string()
-    .refine(value => {      
-      if (!value) return true; // Si no hay escalas (valor undefined o vacío), es válido
-          
-      const isOnlyNumbers = /^\d+$/.test(value.replace(/,/g, '').trim()); // Verifica que no sean solo números
-      return !isOnlyNumbers;
-    }, {
-      message: "Las escalas no pueden contener solo números.",
+  from: z
+    .string({
+      message: "Debe seleccionar un origen.",
     })
-    .refine(value => {
-      if (!value) return true;
-      
-      // Verifica que cada escala tenga al menos 3 caracteres
-      const layovers = value.split(',').map(l => l.trim());
-      return layovers.every(l => l.length >= 3);
-    }, {
-      message: "Cada escala debe tener al menos 3 caracteres.",
+    .min(3, {
+      message: "El origen debe tener al menos 3 caracteres.",
     })
+    .max(30, {
+      message: "El origen tiene un máximo 30 caracteres.",
+    }),
+  to: z
+    .string({
+      message: "Debe seleccionar un destino.",
+    })
+    .min(3, {
+      message: "El destino debe tener al menos 3 caracteres.",
+    })
+    .max(30, {
+      message: "El destino tiene un máximo 30 caracteres.",
+    }),
+  layovers: z
+    .string()
+    .refine(
+      (value) => {
+        if (!value) return true; // Si no hay escalas (valor undefined o vacío), es válido
+
+        const isOnlyNumbers = /^\d+$/.test(value.replace(/,/g, "").trim()); // Verifica que no sean solo números
+        return !isOnlyNumbers;
+      },
+      {
+        message: "Las escalas no pueden contener solo números.",
+      }
+    )
+    .refine(
+      (value) => {
+        if (!value) return true;
+
+        // Verifica que cada escala tenga al menos 3 caracteres
+        const layovers = value.split(",").map((l) => l.trim());
+        return layovers.every((l) => l.length >= 3);
+      },
+      {
+        message: "Cada escala debe tener al menos 3 caracteres.",
+      }
+    )
     .optional(),
 });
 
