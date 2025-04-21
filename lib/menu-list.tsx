@@ -242,11 +242,11 @@ export function getMenuList(
               ],
               submenus: [
                 {
-                  href: "/transmandu/administracion/gestion_cajas/cuentas",
+                  href: "/transmandu/administracion/gestion_cajas/cajas",
                   label: "Cajas",
                   active:
                     pathname ===
-                    "/transmandu/administracion/gestion_cajas/cuentas",
+                    "/transmandu/administracion/gestion_cajas/cajas",
                 },
                 {
                   href: "/transmandu/administracion/gestion_cajas/movimientos",
