@@ -43,7 +43,7 @@ const CashDropdownActions = ({ id, cash }: { id: string; cash: Cash }) => {
   };
 
   const handleViewStats = () => {
-    router.push(`/transmandu/administracion/gestion_cajas/cuentas/${id}`);
+    router.push(`/transmandu/administracion/gestion_cajas/cajas/${id}`);
     console.log("Redirigiendo a:", router);
   };
 
@@ -147,17 +147,6 @@ const CashDropdownActions = ({ id, cash }: { id: string; cash: Cash }) => {
               </div>
             </div>
 
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <h3 className="text-sm font-medium text-gray-500 mb-2">
-                Resumen Detallado
-              </h3>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Estado:</span>
-                  <span className="font-medium text-green-600">Activa</span>
-                </div>
-              </div>
-            </div>
           </div>
           <DialogFooter className="sm:justify-start">
             <Button

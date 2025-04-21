@@ -1,24 +1,12 @@
 "use client";
 
-import {
-  useCreateRoute,
-  useGetRoute,
-  useUpdateRoute,
-} from "@/actions/administracion/rutas/actions";
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { useCreateRoute, useGetRoute, useUpdateRoute } from "@/actions/administracion/rutas/actions";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { Route } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, MinusCircle, PlusCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -27,7 +15,7 @@ import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
-const formSchema = z.object({
+const getFormSchema = (hasLayovers: boolean) => z.object({
   from: z
     .string({
       message: "Debe seleccionar un origen.",
@@ -50,29 +38,33 @@ const formSchema = z.object({
     }),
   layovers: z
     .string()
-    .refine(
-      (value) => {
-        if (!value) return true; // Si no hay escalas (valor undefined o vacío), es válido
-
-        const isOnlyNumbers = /^\d+$/.test(value.replace(/,/g, "").trim()); // Verifica que no sean solo números
-        return !isOnlyNumbers;
-      },
-      {
-        message: "Las escalas no pueden contener solo números.",
+    .superRefine((value, ctx) => {
+      if (!hasLayovers) return true;
+      
+      if (!value || value.trim() === '') {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Debe ingresar al menos una escala cuando está marcado el checkbox.",
+        });
+        return false;
       }
-    )
-    .refine(
-      (value) => {
-        if (!value) return true;
 
-        // Verifica que cada escala tenga al menos 3 caracteres
-        const layovers = value.split(",").map((l) => l.trim());
-        return layovers.every((l) => l.length >= 3);
-      },
-      {
-        message: "Cada escala debe tener al menos 3 caracteres.",
+      const isOnlyNumbers = /^\d+$/.test(value.replace(/,/g, "").trim());
+      if (isOnlyNumbers) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Las escalas no pueden contener solo números.",
+        });
       }
-    )
+
+      const layovers = value.split(",").map((l) => l.trim());
+      if (!layovers.every((l) => l.length >= 3)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Cada escala debe tener al menos 3 caracteres.",
+        });
+      }
+    })
     .optional(),
 });
 
@@ -94,6 +86,8 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
   const { createRoute } = useCreateRoute();
   const { data } = useGetRoute(id ?? null);
 
+  const formSchema = useMemo(() => getFormSchema(checked), [checked]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -102,9 +96,7 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
       layovers: initialValues?.layovers ?? undefined,
     },
   });
-  const { control } = useForm();
 
-  // Estado para almacenar los campos de escala
   const [layoversFields, setScaleFields] = useState<layoversField[]>([
     {
       id: Date.now(),
@@ -118,6 +110,18 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
       form.setValue("from", data.from);
       form.setValue("to", data.to);
       form.setValue("layovers", data.layovers ?? undefined);
+      setChecked(!!data.layovers);
+      
+      // Si hay escalas al editar, inicializar los campos
+      if (data.layovers) {
+        const initialLayovers = data.layovers.split(",").map(l => l.trim());
+        setScaleFields(
+          initialLayovers.map((layover, index) => ({
+            id: Date.now() + index,
+            value: layover,
+          }))
+        );
+      }
     }
   }, [data, form]);
 
@@ -127,7 +131,6 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
 
   const onRemoveInput = (index: number) => {
     if (layoversFields.length > 1) {
-      // Prevent removing the last field
       setScaleFields((prevFields) => prevFields.filter((_, i) => i !== index));
     }
   };
@@ -142,27 +145,33 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
         .filter(Boolean);
       form.setValue("layovers", layoversValues.join(", "));
 
-      return updatedFields; // Return updated fields
+      return updatedFields;
     });
   };
 
+  useEffect(() => {
+    form.trigger('layovers');
+  }, [checked, form]);
+
   const onSubmitRoute = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     try {
       if (isEditing && initialValues) {
         await updateRoute.mutateAsync({
           id: initialValues.id.toString(),
           from: values.from,
           to: values.to,
-          layovers: values.layovers ?? undefined,
+          layovers: checked ? values.layovers : undefined,
         });
       } else {
-        await createRoute.mutateAsync(values);
+        await createRoute.mutateAsync({
+          ...values,
+          layovers: checked ? values.layovers : undefined,
+        });
       }
-      form.reset(); // Reset form after successful submission
+      form.reset();
       onClose();
     } catch (error) {
-      console.error(error); // Log the error for debugging
+      console.error(error);
       toast.error("Error al guardar el vuelo", {
         description: "Ocurrió un error, por favor intenta nuevamente.",
       });
@@ -179,6 +188,7 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
           <div className="flex flex-col gap-4 w-full justify-center">
             <div className="flex items-center space-x-2">
               <Checkbox
+                checked={checked}
                 onCheckedChange={() => setChecked(!checked)}
                 id="layovers"
               />
@@ -229,12 +239,12 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
                 <div className="flex gap-2 items-center p-2">
                   <MinusCircle
                     className="size-4 cursor-pointer hover:layovers-125 transition-all ease-in duration-100"
-                    onClick={() => onRemoveInput(layoversFields.length - 1)} // Get the last field's index
+                    onClick={() => onRemoveInput(layoversFields.length - 1)}
                   />
                   <Label>Escala(s)</Label>
                   <PlusCircle
                     className="size-4 cursor-pointer hover:layovers-125 transition-all ease-in duration-100"
-                    onClick={() => onAddInput()}
+                    onClick={onAddInput}
                   />
                 </div>
                 <div
@@ -243,24 +253,25 @@ const RouteForm = ({ id, onClose, isEditing = false }: FormProps) => {
                     layoversFields.length > 1 ? "grid-cols-2" : ""
                   )}
                 >
-                  {layoversFields.map((field) => (
+                  {layoversFields.map((field, index) => (
                     <FormField
                       key={field.id}
-                      control={control}
-                      name={`layovers-${field.id}`} // Nombre único para cada campo
-                      render={({ field: inputField }) => (
+                      control={form.control}
+                      name="layovers"
+                      render={() => (
                         <FormItem className="w-auto">
                           <FormControl>
                             <Input
                               placeholder="Ingrese la escala"
-                              {...inputField}
-                              onChange={(e) => {
-                                inputField.onChange(e); // Mantiene la funcionalidad de react-hook-form
-                                handleInputChange(field.id, e.target.value); // Maneja el cambio del input
-                              }}
+                              value={field.value}
+                              onChange={(e) => handleInputChange(field.id, e.target.value)}
                             />
                           </FormControl>
-                          <FormMessage />
+                          {form.formState.errors.layovers && index === 0 && (
+                            <FormMessage>
+                              {form.formState.errors.layovers.message}
+                            </FormMessage>
+                          )}
                         </FormItem>
                       )}
                     />
