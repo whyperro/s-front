@@ -71,12 +71,13 @@ const ObligatoryReportDropdownActions = ({
 
           <DropdownMenuContent
             align="center"
-            className="flex gap-2 justify-center"
+            className="flex-col gap-2 justify-center"
           >
             {/*Este es el primer icon ode edit */}
             {obligatoryReport.status !== "CERRADO" && (
               <DropdownMenuItem onClick={() => setOpenEdit(true)}>
                 <ClipboardPen className="size-5" />
+                <p className="pl-2"> Editar </p>
               </DropdownMenuItem>
             )}
 
@@ -84,6 +85,7 @@ const ObligatoryReportDropdownActions = ({
               <DialogTrigger asChild>
                 <DropdownMenuItem onClick={() => setOpenDelete(true)}>
                   <Trash2 className="size-5 text-red-500" />
+                  <p className="pl-2"> Eliminar </p>
                 </DropdownMenuItem>
               </DialogTrigger>
             )}
@@ -96,6 +98,7 @@ const ObligatoryReportDropdownActions = ({
               }}
             >
               <EyeIcon className="size-5" />
+              <p className="pl-2"> Ver </p>
             </DropdownMenuItem>
 
             {!obligatoryReport.danger_identification_id &&
@@ -104,12 +107,14 @@ const ObligatoryReportDropdownActions = ({
                   onClick={() => setOpenCreateDangerIdentification(true)}
                 >
                   <ClipboardPenLine className="size-5" />
+                  <p className="pl-2"> Crear Identificacion </p>
                 </DropdownMenuItem>
               )}
 
             {obligatoryReport && obligatoryReport.status === "CERRADO" && (
               <DropdownMenuItem onClick={() => setOpenPrint(true)}>
                 <PrinterCheck className="size-5" />
+                <p className="pl-2"> Descargar PDF</p>
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>

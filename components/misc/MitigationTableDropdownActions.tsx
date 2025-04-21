@@ -1,4 +1,7 @@
-import { useDeleteMitigationPlan } from "@/actions/sms/planes_de_mitigation/actions";
+import {
+  useCloseReport,
+  useDeleteMitigationPlan,
+} from "@/actions/sms/planes_de_mitigation/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +16,7 @@ import {
   EyeIcon,
   FilePenLine,
   Loader2,
+  LockOpen,
   MoreHorizontal,
   Pencil,
   Plus,
@@ -34,6 +38,7 @@ import {
 } from "../ui/dialog";
 import CreateMitigationMeasureForm from "../forms/CreateMitigationMeasureForm";
 import { useTheme } from "next-themes";
+import { getResult } from "@/lib/utils";
 
 const MitigationTableDropdownActions = ({
   mitigationTable,
@@ -47,16 +52,33 @@ const MitigationTableDropdownActions = ({
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [openCreatePlan, setOpenCreatePlan] = useState<boolean>(false);
   const [openCreateMeasure, setOpenCreateMeasure] = useState<boolean>(false);
+  const [closeReport, setCloseReport] = useState<boolean>(false);
   const [openEditPlan, setOpenEditPlan] = useState<boolean>(false);
   const [openEditAnalyses, setOpenEditAnalyses] = useState<boolean>(false);
   const [openCreateAnalysis, setOpenCreateAnalysis] = useState<boolean>(false);
+  const { closeReportByMitigationId } = useCloseReport();
+
   const { theme } = useTheme();
 
+  interface closeReportData {
+    mitigation_id: number | string;
+    result: string;
+  }
+
   const handleDelete = async (id: number | string) => {
-    console.log("plan id is : ", id);
     await deleteMitigationPlan.mutateAsync(id);
     setOpenDelete(false);
   };
+
+  const handleCloseReport = async (id: number | string, result: string) => {
+    const data: closeReportData = {
+      mitigation_id: id,
+      result: result,
+    };
+    await closeReportByMitigationId.mutateAsync(data);
+    setCloseReport(false);
+  };
+
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -70,16 +92,18 @@ const MitigationTableDropdownActions = ({
 
           <DropdownMenuContent
             align="center"
-            className="flex gap-2 justify-center"
+            className="flex flex-col gap-2 justify-center"
           >
             {!mitigationTable.mitigation_plan ? (
               <DropdownMenuItem onClick={() => setOpenCreatePlan(true)}>
                 <ClipboardList className="size-5" />
+                <p className="pl-2">Crear Plan</p>
               </DropdownMenuItem>
             ) : mitigationTable.mitigation_plan &&
               !mitigationTable.mitigation_plan.analysis ? (
               <DropdownMenuItem onClick={() => setOpenEditPlan(true)}>
                 <FilePenLine className="size-5" />
+                <p className="pl-2">Editar Plan</p>
               </DropdownMenuItem>
             ) : null}
 
@@ -87,6 +111,7 @@ const MitigationTableDropdownActions = ({
               <DialogTrigger asChild>
                 <DropdownMenuItem onClick={() => setOpenDelete(true)}>
                   <Trash2 className="size-5 text-red-500" />
+                  <p className="pl-2">Eliminar</p>
                 </DropdownMenuItem>
               </DialogTrigger>
             )}
@@ -96,11 +121,16 @@ const MitigationTableDropdownActions = ({
             mitigationTable.mitigation_plan.measures.length > 0 ? (
               <DropdownMenuItem onClick={() => setOpenCreateAnalysis(true)}>
                 <ClipboardPenLine className="size-5" />
+                <p className="pl-2">Crear analisis</p>
               </DropdownMenuItem>
             ) : mitigationTable.mitigation_plan?.analysis ? (
-              <DropdownMenuItem onClick={() => setOpenEditAnalyses(true)}>
-                <Pencil className="size-5" />
-              </DropdownMenuItem>
+              mitigationTable.voluntary_report?.status !== "CERRADO" &&
+              mitigationTable.obligatory_report?.status !== "CERRADO" && (
+                <DropdownMenuItem onClick={() => setOpenEditAnalyses(true)}>
+                  <Pencil className="size-5" />
+                  <p className="pl-2">Editar analisis</p>
+                </DropdownMenuItem>
+              )
             ) : null}
 
             {mitigationTable.mitigation_plan?.id &&
@@ -111,6 +141,7 @@ const MitigationTableDropdownActions = ({
                       theme === "light" ? "text-black" : "text-white"
                     }`}
                   />
+                  <p className="pl-2">Crear Medida</p>
                 </DropdownMenuItem>
               )}
 
@@ -121,6 +152,18 @@ const MitigationTableDropdownActions = ({
                 <ClipboardPenLine className="size-5" />
               </DropdownMenuItem>
             )}
+
+            {mitigationTable.mitigation_plan?.id &&
+              mitigationTable.mitigation_plan.analysis !== null &&
+              getResult(mitigationTable.mitigation_plan.analysis.result) ===
+                "ACEPTABLE" &&
+              mitigationTable.voluntary_report?.status !== "CERRADO" &&
+              mitigationTable.obligatory_report?.status !== "CERRADO" && (
+                <DropdownMenuItem onClick={() => setCloseReport(true)}>
+                  <LockOpen className="size-5" />
+                  <p className="pl-2">Cerrar Reporte</p>
+                </DropdownMenuItem>
+              )}
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -247,6 +290,49 @@ const MitigationTableDropdownActions = ({
                 id={mitigationTable.mitigation_plan.id} // Ahora es seguro usar .id directamente
               />
             )}
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={closeReport} onOpenChange={setCloseReport}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="text-center">
+                ¿Seguro que desea cerrar el reporte??
+              </DialogTitle>
+              <DialogDescription className="text-center p-2 mb-0 pb-0">
+                Esta acción es irreversible y estaría cerrando el reporte
+                seleccionado
+              </DialogDescription>
+            </DialogHeader>
+
+            <DialogFooter className="flex flex-col-reverse gap-2 md:gap-0">
+              <Button
+                className="bg-rose-400 hover:bg-white hover:text-black hover:border hover:border-black"
+                onClick={() => setCloseReport(false)}
+                type="submit"
+              >
+                Cancelar
+              </Button>
+
+              <Button
+                disabled={closeReportByMitigationId.isPending}
+                className="hover:bg-white hover:text-black hover:border hover:border-black transition-all"
+                onClick={() =>
+                  mitigationTable.mitigation_plan?.id
+                    ? handleCloseReport(
+                        mitigationTable.mitigation_plan.id,
+                        mitigationTable.mitigation_plan.analysis.result
+                      )
+                    : console.log("El id de mitigation_plan es undefined")
+                }
+              >
+                {closeReportByMitigationId.isPending ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <p>Confirmar</p>
+                )}
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </Dialog>

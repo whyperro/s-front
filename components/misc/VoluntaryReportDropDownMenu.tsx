@@ -74,11 +74,12 @@ const VoluntaryReportDropdownActions = ({
 
           <DropdownMenuContent
             align="center"
-            className="flex gap-2 justify-center"
+            className="flex-col gap-2 justify-center"
           >
             {voluntaryReport && voluntaryReport.status !== "CERRADO" && (
               <DropdownMenuItem onClick={() => setOpenEdit(true)}>
                 <ClipboardPen className="size-5" />
+                <p className="pl-2">Editar</p>
               </DropdownMenuItem>
             )}
 
@@ -86,6 +87,7 @@ const VoluntaryReportDropdownActions = ({
               <DialogTrigger asChild>
                 <DropdownMenuItem onClick={() => setOpenDelete(true)}>
                   <Trash2 className="size-5 text-red-500" />
+                  <p className="pl-2">Eliminar</p>
                 </DropdownMenuItem>
               </DialogTrigger>
             )}
@@ -98,6 +100,7 @@ const VoluntaryReportDropdownActions = ({
               }}
             >
               <EyeIcon className="size-5" />
+              <p className="pl-2">Ver</p>
             </DropdownMenuItem>
 
             {!voluntaryReport.danger_identification_id &&
@@ -106,12 +109,14 @@ const VoluntaryReportDropdownActions = ({
                   onClick={() => setOpenCreateDangerIdentification(true)}
                 >
                   <ClipboardPenLine className="size-5" />
+                  Crear Identificacion
                 </DropdownMenuItem>
               )}
 
             {voluntaryReport && voluntaryReport.status !== "ABIERTO" && (
               <DropdownMenuItem onClick={() => setOpenPDF(true)}>
                 <PrinterCheck className="size-5" />
+                <p className="pl-2">Descargar PDF</p>
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>
