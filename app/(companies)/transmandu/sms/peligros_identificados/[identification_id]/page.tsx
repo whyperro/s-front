@@ -6,7 +6,7 @@ import { ContentLayout } from "@/components/layout/ContentLayout";
 import LoadingPage from "@/components/misc/LoadingPage";
 import { Button } from "@/components/ui/button";
 import { useGetDangerIdentificationById } from "@/hooks/sms/useGetDangerIdentificationById";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -59,6 +59,7 @@ const ShowDangerIdentification = () => {
 
           {dangerIdentification && status === "ABIERTO" && (
             <div className="flex items-center py-4">
+             
               <DeleteDangerIdentificationDialog id={dangerIdentification.id} />
             </div>
           )}
@@ -68,7 +69,7 @@ const ShowDangerIdentification = () => {
           status === "ABIERTO" ? (
             <div className="flex items-center py-4">
               <CreateAnalysesDialog
-                buttonTitle="Crear"
+                buttonTitle="Crear Analisis"
                 name="identification"
                 id={dangerIdentification.id}
               />

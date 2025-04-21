@@ -13,16 +13,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 interface DeleteProps {
   id: number | string;
   onSuccess?: () => void;
-
 }
 
-export default function DeleteDangerIdentificationDialog({  id }: DeleteProps) {
+export default function DeleteDangerIdentificationDialog({ id }: DeleteProps) {
   const [open, setOpen] = useState(false);
   const { deleteDangerIdentification } = useDeleteDangerIdentification();
 

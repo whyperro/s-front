@@ -165,7 +165,7 @@ export const columns: ColumnDef<MitigationTable>[] = [
     ),
     meta: { title: "Consecuencia a Evaluar" },
     cell: ({ row }) => (
-      <div className="flex justify-center">
+      <div className="flex justify-center text-center">
         {row.original.consequence_to_evaluate ?? "N/A"}
       </div>
     ),
@@ -177,7 +177,7 @@ export const columns: ColumnDef<MitigationTable>[] = [
     ),
     meta: { title: "Descripcion" },
     cell: ({ row }) => (
-      <p className="font-medium text-left">
+      <p className="font-medium text-center">
         {row.original.mitigation_plan?.description ?? "N/A"}
       </p>
     ),
