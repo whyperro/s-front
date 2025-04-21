@@ -15,7 +15,8 @@ interface Requisition {
     id: number,
     name: string,
     batch_articles: {
-      article_part_number: string,
+      article_part_number?: string,
+      article_alt_part_number?: string,
       unit?: Convertion,
       quantity: number,
     }[]
