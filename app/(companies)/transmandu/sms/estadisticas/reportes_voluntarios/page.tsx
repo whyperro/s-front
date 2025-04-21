@@ -9,7 +9,7 @@ import { useGetPostRiskCountByDateRange } from "@/hooks/sms/useGetPostRiskByDate
 import { useGetRiskCountByDateRange } from "@/hooks/sms/useGetRiskByDateRange";
 import { useGetVoluntaryReportingStatsByYear } from "@/hooks/sms/useGetVoluntaryReportingStatisticsByYear";
 import { useGetVoluntaryReportsCountedByAirportLocation } from "@/hooks/sms/useGetVoluntaryReportsCountedByAirportLocation";
-import { Loader2 } from "lucide-react";
+import { Loader2, Check, ChevronsUpDown, X } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import DynamicBarChart from "../../../../../../components/charts/DynamicBarChart";
@@ -17,13 +17,22 @@ import { format, startOfMonth } from "date-fns";
 import { useGetIdentificationStatsBySourceName } from "@/hooks/sms/useGetIdentificationStatsBySoruceName";
 import { useGetIdentificationStatsBySourceType } from "@/hooks/sms/useGetIdentificationStatsBySoruceType";
 import { useGetReportsCountedByArea } from "@/hooks/sms/useGetReportsCountedByArea";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface Params {
   from?: string;
@@ -31,18 +40,20 @@ interface Params {
   [key: string]: string | undefined;
 }
 
-const labels = [
-  { label: "Identificados por localizacion", value: "location" },
-  { label: "Según su Tipo", value: "tipo" },
-  { label: "Por Índice de Riesgo Pre-Mitigación", value: "pre-riesgo" },
-  { label: "Por Índice de Riesgo Post-Mitigación", value: "post-riesgo" },
-  { label: "Identificados vs Gestionados", value: "bar-chart" },
-  { label: "Número de Reportes por Índice de Riesgo", value: "pre-riesgo-bar" },
-  { label: "Número de Reportes vs Área", value: "area-bar" },
+const graphicsOptions = [
+  { id: "Todos", label: "Todos los gráficos" },
+  { id: "location", label: "Identificados por localizacion" },
+  { id: "tipo", label: "Según su Tipo" },
+  { id: "pre-riesgo", label: "Por Índice de Riesgo Pre-Mitigación" },
+  { id: "post-riesgo", label: "Por Índice de Riesgo Post-Mitigación" },
+  { id: "bar-chart", label: "Identificados vs Gestionados" },
+  { id: "pre-riesgo-bar", label: "Número de Reportes por Índice de Riesgo" },
+  { id: "area-bar", label: "Número de Reportes vs Área" },
 ];
 
 const Statistics = () => {
-  const [selectedGraphic, setSelectedGraphic] = useState("Todos"); // Mostrar todos por defecto
+  const [selectedGraphics, setSelectedGraphics] = useState<string[]>(["Todos"]);
+  const [isOpen, setIsOpen] = useState(false);
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
@@ -136,32 +147,125 @@ const Statistics = () => {
     refetchDynamicSourceTypeChart();
   }, [params]);
 
-  const shouldShow = (value: string) =>
-    selectedGraphic === "Todos" || selectedGraphic === value;
+  const handleSelectChange = (id: string) => {
+    if (id === "Todos") {
+      setSelectedGraphics(["Todos"]);
+    } else {
+      setSelectedGraphics((prev) => {
+        const newSelection = prev.includes(id)
+          ? prev.filter((item) => item !== id)
+          : [...prev.filter((item) => item !== "Todos"), id];
+        
+        return newSelection.length === 0 ? ["Todos"] : newSelection;
+      });
+    }
+  };
+
+  const removeGraphic = (id: string) => {
+    setSelectedGraphics((prev) => {
+      const newSelection = prev.filter((item) => item !== id);
+      return newSelection.length === 0 ? ["Todos"] : newSelection;
+    });
+  };
+
+  const shouldShow = (id: string) =>
+    selectedGraphics.includes("Todos") || selectedGraphics.includes(id);
 
   return (
     <ContentLayout title="Gráficos Estadísticos de los Reportes">
-      <div className="flex flex-col items-center gap-4 mb-6">
-        <div className="flex flex-col">
-          <Label className="text-lg font-semibold">Seleccionar Fecha:</Label>
-          <DataFilter />
+      <div className="flex flex-col space-y-4 mb-6">
+        <div className="flex justify-center items-center">
+          <div className="flex flex-col w-full max-w-md">
+            <Label className="text-lg font-semibold mb-2">
+              Seleccionar Rango de Fechas:
+            </Label>
+            <DataFilter />
+          </div>
         </div>
-        <div className="w-full max-w-md">
-          <Label className="text-lg font-semibold">Seleccionar gráfico:</Label>
-          <Select onValueChange={setSelectedGraphic} value={selectedGraphic}>
-            <SelectTrigger>
-              <SelectValue placeholder="Mostrar todos los gráficos" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Todos">Todos</SelectItem>
-              {labels.map(({ label, value }) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+
+        <div className="flex flex-col space-y-2">
+          <Label className="text-lg font-semibold">
+            Seleccionar Gráficos a Mostrar:
+          </Label>
+          <div className="flex flex-col md:flex-row gap-2">
+            <Popover open={isOpen} onOpenChange={setIsOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={isOpen}
+                  className="w-full justify-between"
+                >
+                  {selectedGraphics.includes("Todos") ? (
+                    <span>Todos los gráficos</span>
+                  ) : selectedGraphics.length > 0 ? (
+                    <span>{selectedGraphics.length} gráficos seleccionados</span>
+                  ) : (
+                    "Seleccionar gráficos..."
+                  )}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[300px] p-0">
+                <Command>
+                  <CommandInput placeholder="Buscar gráficos..." />
+                  <CommandList>
+                    <CommandEmpty>No se encontraron gráficos</CommandEmpty>
+                    <CommandGroup>
+                      {graphicsOptions.map((option) => (
+                        <CommandItem
+                          key={option.id}
+                          value={option.id}
+                          onSelect={() => handleSelectChange(option.id)}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              selectedGraphics.includes(option.id)
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {option.label}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            <Button
+              variant="outline"
+              onClick={() => setSelectedGraphics(["Todos"])}
+              disabled={selectedGraphics.length === 1 && selectedGraphics.includes("Todos")}
+            >
+              Limpiar selección
+            </Button>
+          </div>
         </div>
+
+        {!selectedGraphics.includes("Todos") && selectedGraphics.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {selectedGraphics.map((graphicId) => {
+              const graphic = graphicsOptions.find((g) => g.id === graphicId);
+              return (
+                <Badge
+                  key={graphicId}
+                  variant="outline"
+                  className="px-3 py-1 text-sm flex items-center gap-2"
+                >
+                  {graphic?.label}
+                  <button
+                    onClick={() => removeGraphic(graphicId)}
+                    className="rounded-full p-1 hover:bg-gray-100"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
