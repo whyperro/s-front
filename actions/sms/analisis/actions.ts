@@ -3,7 +3,7 @@ import { Analysis } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-interface AnalysisData {
+interface AnalysesData {
   probability: string;
   severity: string;
   result: string;
@@ -15,7 +15,7 @@ export const useCreateAnalysis = () => {
   const queryClient = useQueryClient();
   const createMutation = useMutation({
     mutationKey: ["analysis"],
-    mutationFn: async (data: AnalysisData) => {
+    mutationFn: async (data: AnalysesData) => {
       await axiosInstance.post("/transmandu/sms/analysis", data, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -69,7 +69,6 @@ export const useDeleteAnalysis = () => {
 
 export const useUpdateAnalyses = () => {
   const queryClient = useQueryClient();
-
   const updateAnalysesMutation = useMutation({
     mutationKey: ["analysis"],
     mutationFn: async (data: Analysis) => {

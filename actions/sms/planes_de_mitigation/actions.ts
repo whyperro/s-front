@@ -18,10 +18,15 @@ interface MitigationPlanData {
 }
 
 interface UpdateMitigationPlanData {
-  id:number;
+  id: number;
   description: string;
   responsible: string;
   start_date: Date;
+}
+
+interface closeReportData {
+  mitigation_id: number | string;
+  result: string;
 }
 export const useCreateMitigationPlan = () => {
   const queryClient = useQueryClient();
@@ -79,31 +84,62 @@ export const useDeleteMitigationPlan = () => {
   };
 };
 
-
 export const useUpdateMitigationPlan = () => {
-
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const updateMitigationPlanMutation = useMutation({
-      mutationKey: ["mitigation-plans"],
-      mutationFn: async (data: UpdateMitigationPlanData) => {
-          await axiosInstance.put(`/transmandu/sms/mitigation-plans/${data.id}`, data)
-        },
-      onSuccess: () => {
-          queryClient.invalidateQueries({queryKey: ['analysis']})
-          toast.success("¡Actualizado!", {
-              description: `El plan de mitigacion ha sido actualizada correctamente.`
-          })
-        },
-      onError: (error) => {
-          toast.error('Oops!', {
-            description: 'No se pudo actualizar el plan de mitigacion...'
-          })
-          console.log(error)
-        },
-      }
-  )
+    mutationKey: ["mitigation-plans"],
+    mutationFn: async (data: UpdateMitigationPlanData) => {
+      await axiosInstance.patch(
+        `/transmandu/sms/mitigation-plans/${data.id}`,
+        data
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["analysis"] });
+      toast.success("¡Actualizado!", {
+        description: `El plan de mitigacion ha sido actualizada correctamente.`,
+      });
+    },
+    onError: (error) => {
+      toast.error("Oops!", {
+        description: "No se pudo actualizar el plan de mitigacion...",
+      });
+      console.log(error);
+    },
+  });
   return {
     updateMitigationPlan: updateMitigationPlanMutation,
-  }
-}
+  };
+};
+
+export const useCloseReport = () => {
+  const queryClient = useQueryClient();
+  const closeReportMutation = useMutation({
+    mutationKey: ["close-report"],
+    mutationFn: async (data: closeReportData) => {
+      await axiosInstance.patch(
+        `/transmandu/sms/close-report/mitigation-plan/${data.mitigation_id}`,
+        data
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mitigation-plans"] });
+      queryClient.invalidateQueries({ queryKey: ["voluntary-reports"] });
+      queryClient.invalidateQueries({ queryKey: ["obligatory-reports"] });
+      queryClient.invalidateQueries({ queryKey: ["analysis"] });
+      toast.success("Reporte Cerrado!", {
+        description: `Se ha cerrado el reporte correctamente.`,
+      });
+    },
+    onError: (error) => {
+      toast.error("Oops!", {
+        description: "No se pudo cerrar el reporte...",
+      });
+      console.log(error);
+    },
+  });
+  return {
+    closeReportByMitigationId: closeReportMutation,
+  };
+};
