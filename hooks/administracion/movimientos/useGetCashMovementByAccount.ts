@@ -23,7 +23,7 @@ const fetchCashMovementByAccount = async (cashId: string, params: DateParams = {
   if (params.to) queryParams.append("to", params.to)
 
   // Construir la URL con los parámetros
-  const url = `/transmandu/movements-by-accounts${cashId}`
+  const url = `/transmandu/movements-by-accounts/${cashId}`
 
   const { data } = await axiosInstance.get(url)
   return data
