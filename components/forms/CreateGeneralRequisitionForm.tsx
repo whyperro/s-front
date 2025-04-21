@@ -31,7 +31,10 @@ const FormSchema = z.object({
   type: z.string({ message: "Debe seleccionar un tipo de requisición." }),
   created_by: z.string(),
   requested_by: z.string({ message: "Debe ingresar quien lo solicita." }),
-  image: z.instanceof(File).optional(), // Nueva imagen general
+  image: z.instanceof(File)
+    .refine(file => file.size <= 5 * 1024 * 1024, "Max 5MB")
+    .refine(file => ['image/jpeg', 'image/png'].includes(file.type), "Solo JPEG/PNG")
+    .optional(),
   articles: z
     .array(
       z.object({
@@ -210,10 +213,9 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
   };
 
   const onSubmit = async (data: FormSchemaType) => {
-    console.log(data)
     if (isEditing && id) {
       await updateRequisition.mutateAsync({ data, id });
-    } else if (!isEditing) {
+    } else {
       await createRequisition.mutateAsync(data);
     }
     onClose();
@@ -472,24 +474,28 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
             </FormItem>
           )}
         />
-        < FormField
+        <FormField
           control={form.control}
           name="image"
-          render={({ field: { onChange, value, ...fieldProps } }) => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Imagen General</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  className="cursor-pointer"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0] ?? undefined;
-                    onChange(file);
-                  }}
-                  {...fieldProps}
-                />
-              </FormControl>
+              <div className="flex items-center gap-4">
+                {field.value && (
+                  <img
+                    src={URL.createObjectURL(field.value)}
+                    alt="Preview"
+                    className="h-16 w-16 rounded-md object-cover"
+                  />
+                )}
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="image/jpeg, image/png"
+                    onChange={(e) => field.onChange(e.target.files?.[0])}
+                  />
+                </FormControl>
+              </div>
               <FormMessage />
             </FormItem>
           )}
@@ -499,7 +505,12 @@ export function CreateGeneralRequisitionForm({ onClose, initialData, isEditing, 
           <p className="text-muted-foreground">SIGEAC</p>
           <Separator className="flex-1" />
         </div >
-        <Button disabled={createRequisition.isPending}>{isEditing ? "Editar Requisición" : "Generar Requisición"}</Button>
+        <Button disabled={createRequisition.isPending || updateRequisition.isPending}>
+          {isEditing ? "Editar Requisición" : "Generar Requisición"}
+          {(createRequisition.isPending || updateRequisition.isPending) && (
+            <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+          )}
+        </Button>
       </form >
     </Form >
   )

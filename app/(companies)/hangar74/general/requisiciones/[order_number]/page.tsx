@@ -59,6 +59,25 @@ const InventarioPage = () => {
           <Badge className={cn("text-lg", data?.status === 'aprobada' ? "bg-green-500" : "bg-yellow-600")}>{data?.status.toUpperCase()}</Badge>
         </CardHeader>
         <CardContent className='flex flex-col gap-8' >
+          {data?.image && (
+            <div className="flex flex-col items-center gap-2">
+              <div className="max-w-md overflow-hidden">
+                <img
+                  src={data.image.startsWith('data:image')
+                    ? data.image
+                    : `data:image/jpeg;base64,${data.image}`}
+                  alt="Imagen de la requisición"
+                  className="w-[250px] h-[250px]"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Imagen adjunta
+              </p>
+            </div>
+          )}
           <div className='flex w-full justify-center gap-24 text-xl'>
             <div className='flex flex-col gap-2 items-center'>
               <h1>Creado Por:</h1>
