@@ -36,6 +36,28 @@ export const generateSlug = (name: string) => {
 //   return format(period.from, "LLL dd, y", {locale});
 // }
 
+import { DateRange } from "react-day-picker";
+
+export const formatDateRangeUpdate = (range: DateRange) => {
+  if (!range?.from && !range?.to) {
+    return "Filtrado de fechas";
+  }
+  
+  if (range.from && !range.to) {
+    return `Desde ${format(range.from, "MMM dd, yyyy")}`;
+  }
+  
+  if (!range.from && range.to) {
+    return `Hasta ${format(range.to, "MMM dd, yyyy")}`;
+  }
+  
+  if (range.from && range.to) {
+    return `${format(range.from, "MMM dd, yyyy")} - ${format(range.to, "MMM dd, yyyy")}`;
+  }
+  
+  return "Filtrado de fechas";
+};
+
 export const formatDateRange = (
   period: { from?: Date | null; to?: Date | null },
   locale?: Locale

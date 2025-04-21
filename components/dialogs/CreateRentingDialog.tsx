@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { CreateRentingForm } from "../forms/CreateRentingForm";
-import DateFilter from "../forms/CreateFilterDates";
+import DateFilterUpdate from "../forms/CreateFilterDatesUpdate";
 
 export function RentingDialog() {
   const [open, setOpen] = useState(false);
@@ -40,7 +40,7 @@ export function RentingDialog() {
         <CreateRentingForm onClose={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
-    <DateFilter /> 
+    <DateFilterUpdate /> 
     </>
   );
 }

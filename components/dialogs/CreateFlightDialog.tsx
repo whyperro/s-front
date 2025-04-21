@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { FlightForm } from "../forms/CreateFlightForm";
-import DateFilter from "@/components/forms/CreateFilterDates";
+import DateFilterUpdate from "../forms/CreateFilterDatesUpdate";
 
 export function CreateFlightDialog() {
   const [openFlightDialog, setOpenFlightDialog] = useState(false);
@@ -40,7 +40,7 @@ export function CreateFlightDialog() {
           <FlightForm onClose={() => setOpenFlightDialog(false)} />
         </DialogContent>
       </Dialog>
-      <DateFilter /> 
+      <DateFilterUpdate /> 
     </>
   );
 }

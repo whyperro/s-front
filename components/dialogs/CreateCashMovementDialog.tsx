@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { CreateCashMovementForm } from "../forms/CreateCashMovementForm";
-import DateFilter from "@/components/forms/CreateFilterDates";
 import { useRouter } from "next/navigation";
+import DateFilterUpdate from "../forms/CreateFilterDatesUpdate";
 
 export function CashMovementDialog({ id }: { id?: string }) {
   const [openMovementDialog, setOpenMovementDialog] = useState(false);
@@ -88,7 +88,7 @@ export function CashMovementDialog({ id }: { id?: string }) {
         </DialogTrigger>
       </Dialog>  
       
-      <DateFilter />
+      <DateFilterUpdate />
     </>
   );
 }
