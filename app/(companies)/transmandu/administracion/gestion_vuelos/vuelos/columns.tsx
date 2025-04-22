@@ -25,22 +25,22 @@ export const columns: ColumnDef<Flight>[] = [
       </div>
     ),
   },
-//  {
-//    accessorKey: "date",
-//    header: ({ column }) => (
-//      <DataTableColumnHeader filter column={column} title="Fecha" />
-//    ),
-//    meta: { title: "Fecha" },
-//    cell: ({ row }) => {
-//      return (
-//        <p>
-//          {format(addDays(row.original.date, 1), "PPP", {
-//            locale: es,
-//          })}
-//        </p>
-//      );
-//    },
-//  },
+  {
+    accessorKey: "date",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Fecha" />
+    ),
+    meta: { title: "Fecha" },
+    cell: ({ row }) => {
+      return (
+        <p>
+          {format(addDays(row.original.date, 1), "PPP", {
+            locale: es,
+          })}
+        </p>
+      );
+    },
+  },
   {
     accessorKey: "client.name",
     header: ({ column }) => (

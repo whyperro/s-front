@@ -63,13 +63,21 @@ const formSchema = z
     date: z.date({
       required_error: "La fecha de vuelo es requerida",
     }),
+    flight_number: z
+      .string()
+      .min(1, {
+        message: "El número de vuelo es requerido.",
+      })
+      .max(10, {
+        message: "El número de vuelo tiene un máximo de 10 caracteres.",
+      }),
     details: z
       .string()
       .min(3, {
         message: "Los detalles deben tener al menos 3 caracteres.",
       })
       .max(100, {
-        message: "Los detalles tiene un máximo 100 caracteres.",
+        message: "Los detalles tiene un máximo de 100 caracteres.",
       }),
     fee: z
       .string()
@@ -159,15 +167,15 @@ export function FlightForm({ onClose }: FormProps) {
     if (form.watch("type") !== "CHART") {
       let newAmount = 0;
       const feeString = form.watch("fee") || "0";
-      const fee = parseFloat(feeString.replace(/,/g, '')); // Asegurar reemplazo de comas
-      
+      const fee = parseFloat(feeString.replace(/,/g, "")); // Asegurar reemplazo de comas
+
       // Asegurar que kg use punto como separador decimal
-      const kgValue = parseFloat(kg.replace(/,/g, '') || "0");
-      
+      const kgValue = parseFloat(kg.replace(/,/g, "") || "0");
+
       if (!isNaN(kgValue)) {
         newAmount = kgValue * fee;
       }
-      
+
       form.setValue("total_amount", newAmount.toString());
     }
   }, [kg, form.watch("fee"), form.watch("type")]);
@@ -198,9 +206,24 @@ export function FlightForm({ onClose }: FormProps) {
         <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
+            name="flight_number"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Número de Vuelo</FormLabel>
+                <FormControl>
+                  <Input placeholder="# Vuelo" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex gap-2 items-center justify-center">
+          <FormField
+            control={form.control}
             name="client_id"
             render={({ field }) => (
-              <FormItem className="w-full space-y-3">
+              <FormItem>
                 <FormLabel>Cliente</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -210,7 +233,7 @@ export function FlightForm({ onClose }: FormProps) {
                         variant="outline"
                         role="combobox"
                         className={cn(
-                          "justify-between",
+                          "w-full pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >
