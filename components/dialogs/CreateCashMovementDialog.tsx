@@ -35,6 +35,8 @@ export function CashMovementDialog({ id }: { id?: string }) {
 
   return (
     <>
+      <DateFilterUpdate />
+
       {/*Dialogo para registrar un movimiento de caja*/}
       <Dialog open={openMovementDialog} onOpenChange={setOpenMovementDialog}>
         <DialogTrigger asChild>
@@ -86,9 +88,7 @@ export function CashMovementDialog({ id }: { id?: string }) {
             Resumen de Egresos
           </Button>
         </DialogTrigger>
-      </Dialog>  
-      
-      <DateFilterUpdate />
+      </Dialog>
     </>
   );
 }

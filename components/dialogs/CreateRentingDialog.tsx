@@ -17,6 +17,8 @@ export function RentingDialog() {
   const [open, setOpen] = useState(false);
   return (
     <>
+    <DateFilterUpdate /> 
+
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
@@ -40,7 +42,7 @@ export function RentingDialog() {
         <CreateRentingForm onClose={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
-    <DateFilterUpdate /> 
+    
     </>
   );
 }

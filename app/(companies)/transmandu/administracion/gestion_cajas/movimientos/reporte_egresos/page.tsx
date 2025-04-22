@@ -297,7 +297,7 @@ const OutputDashboard = () => {
       </div>
 
       <div className="flex justify-end mb-4 gap-4">
-        {/* Selector de cliente */}
+        {/* Selector de proveedor */}
         <Select
           value={selectedVendor || "all"}
           onValueChange={handleVendorChange}

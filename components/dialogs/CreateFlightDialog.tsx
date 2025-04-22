@@ -17,6 +17,8 @@ export function CreateFlightDialog() {
   const [openFlightDialog, setOpenFlightDialog] = useState(false);
   return (
     <>
+      <DateFilterUpdate />
+
       <Dialog open={openFlightDialog} onOpenChange={setOpenFlightDialog}>
         <DialogTrigger asChild>
           <Button
@@ -40,7 +42,6 @@ export function CreateFlightDialog() {
           <FlightForm onClose={() => setOpenFlightDialog(false)} />
         </DialogContent>
       </Dialog>
-      <DateFilterUpdate /> 
     </>
   );
 }
