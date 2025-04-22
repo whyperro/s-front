@@ -76,14 +76,14 @@ const RentingDropdownActions = ({ rent }: { rent: Renting }) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/*Dialog para eliminar la renta*/}
+      {/*Dialog para eliminar el arrendamiento*/}
       <Dialog open={openDelete} onOpenChange={setOpenDelete}>
         <DialogContent onInteractOutside={(e) => {
             e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
           }}>
           <DialogHeader>
             <DialogTitle className="text-center">
-              ¿Seguro que desea eliminar la renta?
+              ¿Seguro que desea eliminar el arrendamiento?
             </DialogTitle>
             <DialogDescription className="text-center p-2 mb-0 pb-0">
               Esta acción es irreversible y estaría eliminando por completo el
@@ -113,7 +113,7 @@ const RentingDropdownActions = ({ rent }: { rent: Renting }) => {
         </DialogContent>
       </Dialog>
 
-      {/*Dialog para ver el resumen de la renta
+      {/*Dialog para ver el resumen del arrendamiento
       <Dialog open={openRenting} onOpenChange={setOpenRenting}>
         <DialogContent
           className="sm:max-w-md"

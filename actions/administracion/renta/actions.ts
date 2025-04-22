@@ -12,7 +12,7 @@ export const useCreateRenting = () => {
         onSuccess: () => {
           queryRenting.invalidateQueries({queryKey: ['renting']})
           toast("¡Creado!", {
-              description: `¡La renta se ha creado correctamente!`
+              description: `¡El arrendamiento se ha creado correctamente!`
           })
         },
         onError: (error) => {
@@ -40,12 +40,12 @@ export const useDeleteRenting = () => {
 
           queryRenting.invalidateQueries({queryKey: ['renting']})
           toast.success("¡Eliminado!", {
-              description: `¡La renta ha sido eliminado correctamente!`
+              description: `¡El arrendamiento se ha sido eliminado correctamente!`
           })
         },
       onError: (e) => {
           toast.error("Oops!", {
-            description: "¡Hubo un error al eliminar la renta!"
+            description: "¡Hubo un error al eliminar el arrendamiento!"
         })
         },
       }

@@ -99,7 +99,7 @@ export function getMenuList(
               submenus: [
                 {
                   href: "/transmandu/administracion/operaciones/renta",
-                  label: "Renta",
+                  label: "Arrendamiento",
                   active:
                     pathname ===
                     "/transmandu/administracion/operaciones/renta",
@@ -171,7 +171,7 @@ export function getMenuList(
               submenus: [
                 {
                   href: "/transmandu/administracion/creditos/credito_renta",
-                  label: "Crédito de Rentas",
+                  label: "Crédito Arrendamiento",
                   active:
                     pathname ===
                     "/transmandu/administracion/creditos/credito_renta",

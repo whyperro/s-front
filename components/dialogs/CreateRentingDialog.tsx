@@ -26,7 +26,7 @@ export function RentingDialog() {
           variant={"outline"}
           className="flex items-center justify-center gap-2 h-8 border-dashed"
         >
-          Registrar Renta
+          Registrar Arrendamiento
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -36,8 +36,8 @@ export function RentingDialog() {
         }}
       >
         <DialogHeader>
-          <DialogTitle>Crear una renta</DialogTitle>
-          <DialogDescription>Cree una nueva renta.</DialogDescription>
+          <DialogTitle>Crear un arrendamiento</DialogTitle>
+          <DialogDescription>Cree un nuevo arrendamiento.</DialogDescription>
         </DialogHeader>
         <CreateRentingForm onClose={() => setOpen(false)} />
       </DialogContent>
