@@ -1,34 +1,12 @@
 "use client";
 
 import { useGetCashMovementByAccount } from "@/hooks/administracion/movimientos/useGetCashMovementByAccount";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, } from "@/components/ui/card";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, ArrowLeft, Loader2, X } from "lucide-react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Tooltip, } from "recharts";
 import { formatCurrency } from "@/lib/utils";
 import DateFilter from "@/components/forms/CreateFilterDates";
 import { useState } from "react";
