@@ -13,6 +13,7 @@ import {
   MoreHorizontal,
   Plus,
   Trash2,
+  TrendingUp,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -72,6 +73,9 @@ const ClientDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleViewDetails}>
             <EyeIcon className="size-5" />
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleViewStats}>
+            <TrendingUp className="size-5 text-green-500" />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpenEdit(true)}>
             <EditIcon className="size-5 text-blue-500" />
