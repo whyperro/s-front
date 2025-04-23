@@ -4,7 +4,7 @@ import axiosInstance from "@/lib/axios"
 
 // Definir la estructura de datos que devuelve el endpoint
 export interface AccountMovement {
-  account_name: string
+  accountant_name: string
   INCOME: number
   OUTPUT: number
   movements: CashMovement[]

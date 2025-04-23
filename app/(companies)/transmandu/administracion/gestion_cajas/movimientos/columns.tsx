@@ -87,7 +87,7 @@ export const columns: ColumnDef<CashMovement>[] = [
     cell: ({ row }) => <CashResumeDialog cash={row.original.cash} />,
   },
   {
-    accessorKey: "account.name",
+    accessorKey: "accountant.name",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Cuenta" />
     ),

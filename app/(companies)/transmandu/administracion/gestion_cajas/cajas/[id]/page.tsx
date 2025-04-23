@@ -63,9 +63,9 @@ const MovementsByAccountPage = () => {
   const totals =
     accountsData.length > 0
       ? accountsData.reduce(
-          (acc, account) => {
-            acc.totalIncome += Number(account.INCOME || 0);
-            acc.totalOutcome += Number(account.OUTPUT || 0);
+          (acc, accountant) => {
+            acc.totalIncome += Number(accountant.INCOME || 0);
+            acc.totalOutcome += Number(accountant.OUTPUT || 0);
             return acc;
           },
           { totalIncome: 0, totalOutcome: 0 }
@@ -73,20 +73,20 @@ const MovementsByAccountPage = () => {
       : { totalIncome: 0, totalOutcome: 0 };
 
   // Prepare data for chart
-  const chartData = accountsData.map((account) => ({
-    name: account.account_name,
-    Ingresos: Number(account.INCOME || 0),
-    Egresos: Number(account.OUTPUT || 0),
+  const chartData = accountsData.map((accountant) => ({
+    name: accountant.accountant_name,
+    Ingresos: Number(accountant.INCOME || 0),
+    Egresos: Number(accountant.OUTPUT || 0),
   }));
 
-  // Get movements for selected account
+  // Get movements for selected accountant
   const selectedAccountData = selectedAccount
-    ? accountsData.find((account) => account.account_name === selectedAccount)
+    ? accountsData.find((accountant) => accountant.accountant_name === selectedAccount)
     : null;
 
   const selectedAccountMovements = selectedAccountData?.movements || [];
 
-  // Handle row click to select account
+  // Handle row click to select accountant
   const handleRowClick = (accountName: string) => {
     setSelectedAccount(accountName === selectedAccount ? null : accountName);
   };
@@ -182,20 +182,20 @@ const MovementsByAccountPage = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {accountsData.map((account) => {
-                    const income = Number(account.INCOME || 0);
-                    const outcome = Number(account.OUTPUT || 0);
+                  {accountsData.map((accountant) => {
+                    const income = Number(accountant.INCOME || 0);
+                    const outcome = Number(accountant.OUTPUT || 0);
                     const balance = income - outcome;
-                    const isSelected = account.account_name === selectedAccount;
+                    const isSelected = accountant.accountant_name === selectedAccount;
 
                     return (
                       <TableRow
-                        key={account.account_name}
+                        key={accountant.accountant_name}
                         className={`cursor-pointer hover:bg-muted/50 ${isSelected ? "bg-muted" : ""}`}
-                        onClick={() => handleRowClick(account.account_name)}
+                        onClick={() => handleRowClick(accountant.accountant_name)}
                       >
                         <TableCell className="font-medium text-center">
-                          {account.account_name}
+                          {accountant.accountant_name}
                         </TableCell>
                         <TableCell className="text-center text-green-700">
                           {formatCurrency(income)}
