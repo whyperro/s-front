@@ -30,7 +30,7 @@ interface EditAccountFormProps {
   onClose: () => void;
 }
 
-export function EditAccountForm({ id, onClose }: EditAccountFormProps) {
+export function EditAccountantForm({ id, onClose }: EditAccountFormProps) {
   const { data: accountDetails, isLoading } = useGetAccountById(id);
   const { updateAccount } = useUpdateAccount();
   const form = useForm<FormSchemaType>({

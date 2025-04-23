@@ -1,4 +1,4 @@
-export type Account = {
+export type Accountant = {
   id: number,
   name: string,
 }
@@ -130,7 +130,7 @@ export type CashMovement = {
   company: Company,
   date: Date,
   type: "INCOME" | "OUTPUT",
-  account: Account,
+  accountant: Accountant,
   category: string,
   sub_category: string,
   sub_category_details: string,

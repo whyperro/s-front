@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useState } from "react";
 import { CreateAccountForm } from "../forms/CreateAccountForm";
 
-export function CreateAccountDialog() {
+export function CreateAccountantDialog() {
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>

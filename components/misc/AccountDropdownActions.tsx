@@ -4,9 +4,9 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, } from "../ui/dialog";
 import { useDeleteAccount } from "@/actions/administracion/cuentas/actions";
-import { EditAccountForm } from "../forms/EditAccountForm";
+import { EditAccountantForm } from "../forms/EditAccountForm";
 
-const AccountDropdownActions = ({ id }: { id: string }) => {
+const AccountantDropdownActions = ({ id }: { id: string }) => {
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const { deleteAccount } = useDeleteAccount();
   const [openEdit, setOpenEdit] = useState<boolean>(false);
@@ -88,7 +88,7 @@ const AccountDropdownActions = ({ id }: { id: string }) => {
           <DialogHeader>
             <DialogTitle>Editar Cuenta</DialogTitle>
           </DialogHeader>
-          <EditAccountForm id={id} onClose={() => setOpenEdit(false)} />
+          <EditAccountantForm id={id} onClose={() => setOpenEdit(false)} />
         </DialogContent>
       </Dialog>
 
@@ -96,4 +96,4 @@ const AccountDropdownActions = ({ id }: { id: string }) => {
   );
 };
 
-export default AccountDropdownActions;
+export default AccountantDropdownActions;

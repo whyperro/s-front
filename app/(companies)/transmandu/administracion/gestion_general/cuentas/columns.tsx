@@ -2,10 +2,10 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/tables/DataTableHeader";
-import { Account } from "@/types";
-import AccountDropdownActions from "@/components/misc/AccountDropdownActions";
+import { Accountant } from "@/types";
+import AccountantDropdownActions from "@/components/misc/AccountDropdownActions";
 
-export const columns: ColumnDef<Account>[] = [
+export const columns: ColumnDef<Accountant>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -20,7 +20,7 @@ export const columns: ColumnDef<Account>[] = [
     id: "actions",
     cell: ({ row }) => {
       const id = row.original.id;
-      return <AccountDropdownActions id={row.original.id.toString()} />;
+      return <AccountantDropdownActions id={row.original.id.toString()} />;
     },
   },
 ];
