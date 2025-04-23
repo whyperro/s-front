@@ -425,7 +425,7 @@ const OutputDashboard = () => {
                           })}
                         </TableCell>
                         <TableCell>{movement.vendor?.name || "N/A"}</TableCell>
-                        <TableCell>{movement.account}</TableCell>
+                        <TableCell>{movement.account.name}</TableCell>
                         <TableCell>
                           <Badge variant="outline" className="bg-primary/5">
                             {movement.category}

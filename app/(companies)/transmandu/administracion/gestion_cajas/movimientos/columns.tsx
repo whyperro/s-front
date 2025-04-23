@@ -87,7 +87,7 @@ export const columns: ColumnDef<CashMovement>[] = [
     cell: ({ row }) => <CashResumeDialog cash={row.original.cash} />,
   },
   {
-    accessorKey: "account",
+    accessorKey: "account.name",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Cuenta" />
     ),
@@ -95,7 +95,7 @@ export const columns: ColumnDef<CashMovement>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.account}
+          {row.original.account.name}
         </span>
       </div>
     ),

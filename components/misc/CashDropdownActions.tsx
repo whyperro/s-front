@@ -1,4 +1,4 @@
-import { useDeleteCash } from "@/actions/administracion/cuentas/actions";
+import { useDeleteCash } from "@/actions/administracion/cajas/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,7 +66,7 @@ const CashDropdownActions = ({ id, cash }: { id: string; cash: Cash }) => {
           <DropdownMenuItem onClick={handleViewDetails}>
             <EyeIcon className="size-5" />
           </DropdownMenuItem>
-           {/*Redirige a la page para ver las estadisticas de una caja segun la cuenta*/}
+          {/*Redirige a la page para ver las estadisticas de una caja segun la cuenta*/}
           <DropdownMenuItem onClick={handleViewStats}>
             <TrendingUp className="size-5 text-green-500" />
           </DropdownMenuItem>
@@ -146,7 +146,6 @@ const CashDropdownActions = ({ id, cash }: { id: string; cash: Cash }) => {
                 </p>
               </div>
             </div>
-
           </div>
           <DialogFooter className="sm:justify-start">
             <Button

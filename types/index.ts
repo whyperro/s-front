@@ -1,3 +1,7 @@
+export type Account = {
+  id: number,
+  name: string,
+}
 
 export type AdministrationCompany = {
   id: number,
@@ -126,7 +130,7 @@ export type CashMovement = {
   company: Company,
   date: Date,
   type: "INCOME" | "OUTPUT",
-  account: string,
+  account: Account,
   category: string,
   sub_category: string,
   sub_category_details: string,

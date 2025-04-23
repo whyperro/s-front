@@ -9,7 +9,6 @@ import {
   Loader2,
   MoreHorizontal,
   Trash2,
-  TrendingUp,
 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";

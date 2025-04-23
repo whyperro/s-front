@@ -2,41 +2,39 @@ import axiosInstance from "@/lib/axios"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
-export const useCreateCash = () => {
-
-  const queryCash = useQueryClient()
-  const createMutation = useMutation({
-    mutationFn: async (data: any) => {
-      await axiosInstance.post('/transmandu/cash', data)
-    },
-    onSuccess: () => {
-      queryCash.invalidateQueries({queryKey: ['cashes']})
-          toast("¡Creado!", {
-            description: `¡La cuenta se ha creado correctamente!`
-          })
+export const useCreateAccount = () => {
+    const queryAccount = useQueryClient()
+    const createMutation = useMutation({
+        mutationFn: async (data: any) => {
+            await axiosInstance.post('/transmandu/accountants', data)
+          },
+        onSuccess: () => {
+            queryAccount.invalidateQueries({queryKey: ['account']})
+            toast("¡Creado!", {
+                description: `¡La cuenta se ha creado correctamente!`
+            })
           },
         onError: (error) => {
-          toast('Hey', {
-            description: `No se creo correctamente: ${error}`
-          })
-        },
+            toast('Hey', {
+              description: `No se creo correctamente: ${error}`
+            })
+          },
+        }
+    )
+    return {
+      createAccount: createMutation,
     }
-   )
-  return {
-    createCash: createMutation,
-  }
 }
-export const useDeleteCash = () => {
 
-  const queryCash = useQueryClient()
-
+export const useDeleteAccount = () => {
+  const queryAccount = useQueryClient()
   const deleteMutation = useMutation({
       mutationFn: async (id: number | string) => {
-          await axiosInstance.delete(`/transmandu/cash/${id}`)
+          await axiosInstance.delete(`/transmandu/accountants/${id}`)
         },
       onSuccess: () => {
 
-          queryCash.invalidateQueries({queryKey: ['cashes']})
+          queryAccount.invalidateQueries({queryKey: ['account']})
           toast.success("¡Eliminado!", {
               description: `¡La cuenta ha sido eliminado correctamente!`
           })
@@ -48,8 +46,31 @@ export const useDeleteCash = () => {
         },
       }
   )
-
   return {
-    deleteCash: deleteMutation,
+    deleteAccount: deleteMutation,
   }
 }
+
+export const useUpdateAccount = () => {
+  const queryAccount = useQueryClient();
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      await axiosInstance.put(`/transmandu/accountants/${id}`, data);
+    },
+    onSuccess: () => {
+      queryAccount.invalidateQueries({ queryKey: ['account'] });
+      toast("¡Actualizado!", {
+        description: "¡La cuenta se ha actualizado correctamente!",
+      });
+    },
+    onError: (error) => {
+      toast.error("Oops!", {
+        description: `Hubo un error al actualizar la cuenta: ${error}`,
+      });
+    },
+  });
+
+  return {
+    updateAccount: updateMutation,
+  };
+};

@@ -226,6 +226,13 @@ export function getMenuList(
                     pathname ===
                     "/transmandu/administracion/gestion_general/clientes",
                 },
+                {
+                  href: "/transmandu/administracion/gestion_general/cuentas",
+                  label: "Gestionar Cuentas",
+                  active:
+                    pathname ===
+                    "/transmandu/administracion/gestion_general/cuentas",
+                },
               ],
             },
             {

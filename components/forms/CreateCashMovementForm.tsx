@@ -3,27 +3,10 @@
 import { useCreateCashMovement } from "@/actions/administracion/movimientos/actions";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
 import { useGetCash } from "@/hooks/administracion/cajas/useGetCash";
 import { useGetEmployeesByCompany } from "@/hooks/administracion/useGetEmployees";
 import { useGetAdministrationCompany } from "@/hooks/administracion/useGetAdministrationCompany";
@@ -32,21 +15,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
 import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 import { Loader2 } from "lucide-react";
 import { useGetVendors } from "@/hooks/ajustes/globales/proveedores/useGetVendors";
 import { useGetClients } from "@/hooks/administracion/clientes/useGetClients";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../ui/command";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, } from "../ui/command";
+import { useGetAccount } from "@/hooks/administracion/useGetAccount";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   responsible_id: z.string({
@@ -55,13 +32,11 @@ const formSchema = z.object({
   cash_id: z.string({
     message: "Debe elegir una caja.",
   }),
-  vendor_id: z
-    .string({
+  vendor_id: z.string({
       message: "Debe elegir un beneficiario.",
     })
     .optional(),
-  client_id: z
-    .string({
+  client_id: z.string({
       message: "Debe elegir un cliente.",
     })
     .optional(),
@@ -69,32 +44,24 @@ const formSchema = z.object({
     required_error: "La fecha es requerida",
   }),
   type: z.enum(["INCOME", "OUTPUT"]),
-  account: z
-    .string()
-    .min(2, {
-      message: "La cuenta debe tener al menos 2 caracteres.",
-    })
-    .max(100, {
-      message: "La cuenta tiene un máximo 100 caracteres.",
-    }),
-  category: z
-    .string()
+  account: z.string({
+    message: "Debe elegir una cuenta.",
+  }),
+  category: z.string()
     .min(2, {
       message: "La categoría debe tener al menos 2 caracteres.",
     })
     .max(100, {
       message: "La categoría tiene un máximo 100 caracteres.",
     }),
-  sub_category: z
-    .string()
+  sub_category: z.string()
     .min(2, {
       message: "La sub categoría debe tener al menos 2 caracteres.",
     })
     .max(100, {
       message: "La sub categoría tiene un máximo 100 caracteres.",
     }),
-  sub_category_details: z
-    .string()
+  sub_category_details: z.string()
     .min(2, {
       message:
         "El detalle de la sub categoría debe tener al menos 2 caracteres.",
@@ -134,12 +101,12 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
     mutate,
     isPending: isEmployeesLoading,
   } = useGetEmployeesByCompany();
-  const { data: companies, isLoading: isCompaniesLoading } =
-    useGetAdministrationCompany();
   const { data: cashes, isLoading: isCashesLoading } = useGetCash();
-  const { data: accounts, isLoading: isAccLoading } = useGetBankAccounts();
+  const { data: bankaccounts, isLoading: isBankAccLoading } =
+    useGetBankAccounts();
   const { data: vendors, isLoading: isVendorLoading } = useGetVendors();
   const { data: clients, isLoading: isClientLoading } = useGetClients();
+  const { data: accounts, isLoading: isAccountLoading } = useGetAccount();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -353,9 +320,28 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Cuenta</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ingrese la cuenta" {...field} />
-                </FormControl>
+                <Select
+                  disabled={isAccountLoading}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione una cuenta" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {accounts &&
+                      accounts.map((account) => (
+                        <SelectItem
+                          key={account.id}
+                          value={account.id.toString()}
+                        >
+                          {account.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -513,7 +499,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             <FormItem className="w-full">
               <FormLabel>Cuenta de Banco</FormLabel>
               <Select
-                disabled={isAccLoading}
+                disabled={isBankAccLoading}
                 onValueChange={field.onChange}
                 defaultValue={field.value === null ? "" : field.value}
               >
@@ -521,7 +507,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                   <SelectTrigger>
                     <SelectValue
                       placeholder={
-                        isAccLoading ? (
+                        isBankAccLoading ? (
                           <Loader2 className="animate-spin" />
                         ) : (
                           "Seleccione una cuenta..."
@@ -535,8 +521,8 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                   <SelectItem value="null">Efectivo</SelectItem>
 
                   {/* Cuentas bancarias */}
-                  {accounts &&
-                    accounts.map((acc) => (
+                  {bankaccounts &&
+                    bankaccounts.map((acc) => (
                       <SelectItem value={acc.id.toString()} key={acc.id}>
                         {acc.name} - {acc.bank.name}
                       </SelectItem>

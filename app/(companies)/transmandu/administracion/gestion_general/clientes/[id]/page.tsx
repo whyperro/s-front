@@ -97,13 +97,11 @@ export default function ClientFlightReportPage() {
       const monthlyPayed = clientStats.statistics.monthly_payed[yearNum] || {};
       const monthlyAmount =
         clientStats.statistics.monthly_amount[yearNum] || {};
-      const flightsYearData = clientStats.flights[yearNum] || {};
       const processedData = months.map((month) => {
         // Busca los datos usando el nombre del mes en español
         const monthNameInSpanish = month.name;
         const monthPayed = monthlyPayed[monthNameInSpanish] || 0;
         const monthAmount = monthlyAmount[monthNameInSpanish] || 0;
-        const monthFlights = flightsYearData[monthNameInSpanish] || [];
 
         return {
           name: month.name,
