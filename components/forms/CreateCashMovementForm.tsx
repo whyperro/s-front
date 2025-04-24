@@ -114,9 +114,20 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
 
   useEffect(() => {
     mutate("transmandu");
-  }, [mutate]);
-
-  console.log(form.getValues());
+    // Observar cambios en la caja seleccionada
+    const subscription = form.watch((value, { name }) => {
+      if (name === "cash_id") {
+        // Encontrar la caja seleccionada
+        const selectedCash = cashes?.find(cash => cash.id.toString() === value.cash_id);
+        // Si es de tipo efectivo, resetear el campo de cuenta bancaria
+        if (selectedCash?.type === "EFECTIVO") {
+          form.setValue("bank_account_id", null);
+        }
+      }
+    });
+    
+    return () => subscription.unsubscribe();
+  }, [mutate, form, cashes]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     createCashMovement.mutate(values, {
@@ -491,44 +502,53 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="bank_account_id"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Cuenta de Banco</FormLabel>
-              <Select
-                disabled={isBankAccLoading}
-                onValueChange={field.onChange}
-                defaultValue={field.value === null ? "" : field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={
-                        isBankAccLoading ? (
-                          <Loader2 className="animate-spin" />
-                        ) : (
-                          "Seleccione una cuenta..."
-                        )
-                      }
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {/* Cuentas bancarias */}
-                  {bankaccounts &&
-                    bankaccounts.map((acc) => (
-                      <SelectItem value={acc.id.toString()} key={acc.id}>
-                        {acc.name} - {acc.bank.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/*Validacion para cuando la caja sea efectivo retorna nulo y cuando la caja sea tipo transferencia mostrara la cuenta de banco*/}
+        {(() => {
+          const selectedCashId = form.watch("cash_id");
+          const selectedCash = cashes?.find(cash => cash.id.toString() === selectedCashId);
+          if (selectedCash?.type === "EFECTIVO") {
+            return null;
+          }
+          return (
+            <FormField
+              control={form.control}
+              name="bank_account_id"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Cuenta de Banco</FormLabel>
+                  <Select
+                    disabled={isBankAccLoading}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value === null ? "" : field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={
+                            isBankAccLoading ? (
+                              <Loader2 className="animate-spin" />
+                            ) : (
+                              "Seleccione una cuenta..."
+                            )
+                          }
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {bankaccounts &&
+                        bankaccounts.map((acc) => (
+                          <SelectItem value={acc.id.toString()} key={acc.id}>
+                            {acc.name} - {acc.bank.name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          );
+        })()}
         <Button type="submit" disabled={createCashMovement.isPending}>
           {createCashMovement.isPending ? "Enviando..." : "Enviar"}
         </Button>
