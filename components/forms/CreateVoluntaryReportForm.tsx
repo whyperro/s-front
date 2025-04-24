@@ -40,7 +40,7 @@ import { VoluntaryReport } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "../ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -128,16 +128,18 @@ export function CreateVoluntaryReportForm({
   const [isAnonymous, setIsAnonymous] = useState(true);
   const router = useRouter();
 
-  if (initialData && isEditing) {
-    if (
-      initialData.reporter_email &&
-      initialData.reporter_name &&
-      initialData.reporter_last_name &&
-      initialData.reporter_phone
-    ) {
-      setIsAnonymous(false);
+  useEffect(() => {
+    if (initialData && isEditing) {
+      if (
+        initialData.reporter_email &&
+        initialData.reporter_name &&
+        initialData.reporter_last_name &&
+        initialData.reporter_phone
+      ) {
+        setIsAnonymous(false);
+      }
     }
-  }
+  }, [initialData, isEditing]); // Only run when these values change
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
@@ -357,14 +359,12 @@ export function CreateVoluntaryReportForm({
                   <SelectContent>
                     <SelectItem value="OPERACIONES">OPERACIONES</SelectItem>
                     <SelectItem value="MANTENIMIENTO">MANTENIMIENTO</SelectItem>
-                    <SelectItem value="ADMINISTRACION">
-                      ADMINISTRACION
-                    </SelectItem>
-                    <SelectItem value="RRH">RECURSOS HUMANOS</SelectItem>
+                    <SelectItem value="ADM_RRH">ADMINISTRACION Y RRHH</SelectItem>
                     <SelectItem value="CONTROL_CALIDAD">
                       CONTROL DE CALIDAD
                     </SelectItem>
                     <SelectItem value="IT">TECNOLOGIA E INFORMACION</SelectItem>
+                    <SelectItem value="AVSEC">AVSEC</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
