@@ -1,29 +1,11 @@
 import { useDeleteCash } from "@/actions/administracion/cajas/actions";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
 import { Cash } from "@/types";
-import {
-  EyeIcon,
-  Loader2,
-  MoreHorizontal,
-  Trash2,
-  TrendingUp,
-} from "lucide-react";
+import { EyeIcon, Loader2, MoreHorizontal, Trash2, TrendingUp, } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, } from "../ui/dialog";
 import { getCurrencySymbol } from "@/lib/utils";
 
 const CashDropdownActions = ({ id, cash }: { id: string; cash: Cash }) => {
@@ -123,8 +105,8 @@ const CashDropdownActions = ({ id, cash }: { id: string; cash: Cash }) => {
           <DialogHeader className="text-center font-bold">
             Resumen de la Caja
           </DialogHeader>
-          <div className="space-y-6 py-4">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+          <div className="space-y-4 py-4">
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div>
                 <p className="text-sm font-medium text-gray-500">Nombre</p>
                 <p className="text-lg font-semibold text-gray-800">
@@ -135,15 +117,25 @@ const CashDropdownActions = ({ id, cash }: { id: string; cash: Cash }) => {
                 <p className="text-sm font-medium text-primary">{cash.coin}</p>
               </div>
             </div>
+            <div className="p-4 bg-green-50 rounded-lg space-y-3">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">
+                    Transacción
+                  </p>
+                  <p className="text-xl font-bold text-green-800">
+                    {cash.type}
+                  </p>
+                </div>
 
-            <div className="grid gap-4">
-              <div className="bg-green-50 p-4 rounded-lg">
-                <p className="text-sm font-medium text-green-600">
-                  Saldo Total
-                </p>
-                <p className="text-xl font-bold text-green-800">
-                  {getCurrencySymbol(cash.coin)} {cash.total_amount}
-                </p>
+                <div className="text-right">
+                  <p className="text-sm font-medium text-green-600">
+                    Saldo Total
+                  </p>
+                  <p className="text-xl font-bold text-green-800">
+                    {getCurrencySymbol(cash.coin)} {cash.total_amount}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

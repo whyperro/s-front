@@ -50,6 +50,20 @@ export const columns: ColumnDef<Cash>[] = [
     ),
   },
   {
+    accessorKey: "type",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Transacción" />
+    ),
+    meta: { title: "Transacción" },
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <span className="text-muted-foreground italic">
+          {row.original.type}
+        </span>
+      </div>
+    ),
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       return (

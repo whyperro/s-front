@@ -2,25 +2,12 @@
 
 import { useCreateCash } from "@/actions/administracion/cajas/actions";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "../ui/select";
 
 const formSchema = z.object({
   name: z
@@ -46,6 +33,7 @@ const formSchema = z.object({
     }
   ),
   coin: z.enum(["BOLIVARES", "DOLARES", "EUROS"]),
+  type: z.enum(["EFECTIVO", "TRANSFERENCIA"]),
 });
 
 interface FormProps {
@@ -115,6 +103,26 @@ export function CreateCashForm({ onClose }: FormProps) {
                   <SelectItem value="BOLIVARES">Bolívares</SelectItem>
                   <SelectItem value="DOLARES">Dolares</SelectItem>
                   <SelectItem value="EUROS">Euros</SelectItem>
+                </SelectContent>
+              </Select>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Transacción</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Ingrese el tipo de transacción" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="EFECTIVO">Efectivo</SelectItem>
+                  <SelectItem value="TRANSFERENCIA">Transferencia</SelectItem>
                 </SelectContent>
               </Select>
             </FormItem>

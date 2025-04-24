@@ -121,6 +121,7 @@ export type Cash = {
   name: string,
   total_amount: string,
   coin: "BOLIVARES" | "DOLARES" | "EUROS",
+  type: "EFECTIVO" | "TRANSFERENCIA",
 }
 
 export type CashMovement = {
