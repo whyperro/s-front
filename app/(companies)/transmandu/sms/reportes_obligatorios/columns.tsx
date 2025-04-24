@@ -42,14 +42,16 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
     meta: { title: "Nro. de Reporte" },
     cell: ({ row }) => {
       return (
-        <div className="flex justify-center">RSO-{row.original.report_number}</div>
+        <div className="flex justify-center">
+          RSO-{row.original.report_number}
+        </div>
       );
     },
   },
   {
     accessorKey: "report_date",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Fecha del reporte" />
+      <DataTableColumnHeader filter column={column} title="Fecha del reporte" />
     ),
     cell: ({ row }) => {
       return (
@@ -60,9 +62,19 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
     },
   },
   {
+    accessorKey: "flight_time",
+    header: ({ column }) => (
+      <DataTableColumnHeader filter column={column} title="Hora del Vuelo" />
+    ),
+    cell: ({ row }) => {
+      const flight_time = timeFormat(row.original.flight_time);
+      return <p className="font-medium text-center">{flight_time} </p>;
+    },
+  },
+  {
     accessorKey: "incident_time",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Hora del suceso" />
+      <DataTableColumnHeader filter column={column} title="Hora del suceso" />
     ),
     cell: ({ row }) => {
       const timeString = row.original.incident_time.toString();
@@ -71,20 +83,11 @@ export const columns: ColumnDef<ObligatoryReport>[] = [
       return <p className="font-medium text-center">{incident_time} </p>;
     },
   },
-  {
-    accessorKey: "flight_time",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Hora del Vuelo" />
-    ),
-    cell: ({ row }) => {
-      const flight_time = timeFormat(row.original.flight_time);
-      return <p className="font-medium text-center">{flight_time} </p>;
-    },
-  },
+
   {
     accessorKey: "flight_number",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Numero de vuelo" />
+      <DataTableColumnHeader filter column={column} title="Numero de vuelo" />
     ),
     cell: ({ row }) => (
       <p className="flex justify-center text-muted-foreground italic">
