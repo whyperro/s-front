@@ -43,7 +43,7 @@ const formSchema = z.object({
     required_error: "La fecha es requerida",
   }),
   type: z.enum(["INCOME", "OUTPUT"]),
-  account: z.string({
+  accountant: z.string({
     message: "Debe elegir una cuenta.",
   }),
   category: z.string()
@@ -326,7 +326,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
         <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
-            name="account"
+            name="accountant"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Cuenta</FormLabel>
@@ -342,12 +342,12 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                   </FormControl>
                   <SelectContent>
                     {accounts &&
-                      accounts.map((account) => (
+                      accounts.map((accountant) => (
                         <SelectItem
-                          key={account.id}
-                          value={account.id.toString()}
+                          key={accountant.id}
+                          value={accountant.id.toString()}
                         >
-                          {account.name}
+                          {accountant.name}
                         </SelectItem>
                       ))}
                   </SelectContent>
