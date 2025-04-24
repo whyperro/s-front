@@ -49,13 +49,15 @@ const InformationSourceDropdownActions = ({
 
         <DropdownMenuContent
           align="center"
-          className="flex gap-2 justify-center"
+          className="flex-col gap-2 justify-center"
         >
           <DropdownMenuItem onClick={() => setOpenDelete(true)}>
             <Trash2 className="size-5 text-red-500" />
+            <p className="pl-2">Eliminar</p>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpenEdit(true)}>
             <ClipboardPen className="size-5" />
+            <p className="pl-2">Editar</p>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
