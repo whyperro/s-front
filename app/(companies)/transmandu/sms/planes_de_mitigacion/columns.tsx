@@ -31,7 +31,7 @@ const MeasuresCell = ({
       {measures ? (
         <Dialog>
           <DialogTrigger className="flex justify-center items-center rounded-full">
-            <Badge className={"bg-blue-600"}>MEDIDAS DE MITIGACION</Badge>
+            <Badge className={"bg-blue-600 "}>Medidas creadas</Badge>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -120,19 +120,19 @@ const RiskAnalysisCell = ({ analysis }: { analysis: any }) => {
             if (riskIndex === "TOLERABLE") {
               return (
                 <div className="flex justify-center">
-                  <Badge className={"bg-yellow-500"}>TOLERABLE</Badge>
+                  <Badge className={"bg-yellow-500"}>Tolerable</Badge>
                 </div>
               );
             } else if (riskIndex === "INTOLERABLE") {
               return (
                 <div className="flex justify-center">
-                  <Badge className={"bg-red-600"}>INTOLERABLE</Badge>
+                  <Badge className={"bg-red-600"}>Intolerable</Badge>
                 </div>
               );
             } else if (riskIndex === "ACEPTABLE") {
               return (
                 <div className="flex justify-center">
-                  <Badge className={"bg-green-600"}>ACEPTABLE</Badge>
+                  <Badge className={"bg-green-600"}>Aceptable</Badge>
                 </div>
               );
             }

@@ -12,7 +12,7 @@ const PilotsPage = () => {
     return <LoadingPage />;
   }
   return (
-    <ContentLayout title="Permisos">
+    <ContentLayout title="Pilotos">
       <div className="flex flex-col gap-y-2">
         {data && <DataTable columns={columns} data={data} />}
         {isError && (
