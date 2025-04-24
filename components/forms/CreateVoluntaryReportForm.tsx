@@ -359,7 +359,7 @@ export function CreateVoluntaryReportForm({
                   <SelectContent>
                     <SelectItem value="OPERACIONES">OPERACIONES</SelectItem>
                     <SelectItem value="MANTENIMIENTO">MANTENIMIENTO</SelectItem>
-                    <SelectItem value="ADM_RRH">ADMINISTRACION Y RRHH</SelectItem>
+                    <SelectItem value="ADMINISTRACION_RRH">ADMINISTRACION Y RRHH</SelectItem>
                     <SelectItem value="CONTROL_CALIDAD">
                       CONTROL DE CALIDAD
                     </SelectItem>
