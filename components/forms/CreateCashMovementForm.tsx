@@ -9,7 +9,6 @@ import { Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
 import { useGetCash } from "@/hooks/administracion/cajas/useGetCash";
 import { useGetEmployeesByCompany } from "@/hooks/administracion/useGetEmployees";
-import { useGetAdministrationCompany } from "@/hooks/administracion/useGetAdministrationCompany";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -517,9 +516,6 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {/* Opción de Efectivo */}
-                  <SelectItem value="null">Efectivo</SelectItem>
-
                   {/* Cuentas bancarias */}
                   {bankaccounts &&
                     bankaccounts.map((acc) => (
