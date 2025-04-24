@@ -51,11 +51,12 @@ const PilotDropdownActions = ({ pilot }: { pilot: Pilot }) => {
 
         <DropdownMenuContent
           align="center"
-          className="flex gap-2 justify-center"
+          className="flex-col gap-2 justify-center"
         >
           <DialogTrigger asChild>
             <DropdownMenuItem>
               <Trash2 className="size-5 text-red-500" />
+              <p className="pl-2">Eliminar</p>
             </DropdownMenuItem>
           </DialogTrigger>
 
@@ -65,9 +66,11 @@ const PilotDropdownActions = ({ pilot }: { pilot: Pilot }) => {
             }}
           >
             <EyeIcon className="size-5" />
+            <p className="pl-2">Ver</p>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpenEdit(true)}>
             <ClipboardPen className="size-5" />
+            <p className="pl-2">Editar</p>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

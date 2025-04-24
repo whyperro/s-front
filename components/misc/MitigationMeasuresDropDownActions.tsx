@@ -1,26 +1,21 @@
-import { useDeletePilot } from "@/actions/sms/piloto/actions";
+import { useDeleteMitigationMeasure } from "@/actions/sms/medida_de_mitigacion/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { MitigationMeasure } from "@/types";
 import {
-  InformationSource,
-  MitigationMeasure,
-  Pilot,
-  VoluntaryReport,
-} from "@/types";
-import {
-  EyeIcon,
+  ClipboardPenLine,
   Loader2,
   MoreHorizontal,
-  Trash2,
-  ClipboardPenLine,
-  ClipboardPen,
   Plus,
+  Trash2,
 } from "lucide-react";
 import { useState } from "react";
+import CreateFollowUpControlForm from "../forms/CreateFollowUpControlForm";
+import CreateMitigationMeasureForm from "../forms/CreateMitigationMeasureForm";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -31,17 +26,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { useRouter } from "next/navigation";
-import { useDeleteInformationSource } from "@/actions/sms/tipos_fuente/actions";
-import { useDeleteVoluntaryReport } from "@/actions/sms/reporte_voluntario/actions";
-import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
-import CreateDangerIdentificationDialog from "../dialogs/CreateDangerIdentificationDialog";
-import CreateVoluntaryReportDialog from "../dialogs/CreateVoluntaryReportDialog";
-import { CreateVoluntaryReportForm } from "../forms/CreateVoluntaryReportForm";
-import CreateFollowUpControlForm from "../forms/CreateFollowUpControlForm";
-import { useDeleteMitigationMeasure } from "@/actions/sms/medida_de_mitigacion/actions";
-import CreateMitigationMeasureDialog from "../dialogs/CreateMitigationMeasureDialog";
-import CreateMitigationMeasureForm from "../forms/CreateMitigationMeasureForm";
 
 const MitigationMeasureDropdownActions = ({
   mitigationMeasure,
@@ -78,18 +62,18 @@ const MitigationMeasureDropdownActions = ({
 
           <DropdownMenuContent
             align="center"
-            className="flex gap-2 justify-center"
+            className="flex-COL gap-2 justify-center"
           >
             {mitigationMeasure && (
-              <DropdownMenuItem
-                onClick={() => setOpenEdit(true)}
-              >
+              <DropdownMenuItem onClick={() => setOpenEdit(true)}>
                 <ClipboardPenLine className="size-5" />
+                <p className="pl-2"> Editar </p>
               </DropdownMenuItem>
             )}
             <DialogTrigger asChild>
               <DropdownMenuItem onClick={() => setOpenDelete(true)}>
                 <Trash2 className="size-5 text-red-500" />
+                <p className="pl-2"> Eliminar </p>
               </DropdownMenuItem>
             </DialogTrigger>
 
@@ -98,6 +82,7 @@ const MitigationMeasureDropdownActions = ({
                 onClick={() => setOpenCreateFollowUpControl(true)}
               >
                 <Plus className="size-5 text-black" />
+                <p className="pl-2">Crear Control</p>
               </DropdownMenuItem>
             </DialogTrigger>
           </DropdownMenuContent>

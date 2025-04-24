@@ -1,4 +1,4 @@
-import { useDeletePilot } from "@/actions/sms/piloto/actions";
+import { useDeleteFollowUpControl } from "@/actions/sms/controles_de_seguimiento/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,20 +6,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  FollowUpControl,
-  InformationSource,
-  Pilot,
-  VoluntaryReport,
+  FollowUpControl
 } from "@/types";
 import {
-  EyeIcon,
+  ClipboardPenLine,
   Loader2,
   MoreHorizontal,
-  Trash2,
-  ClipboardPenLine,
-  Edit,
+  Trash2
 } from "lucide-react";
 import { useState } from "react";
+import { EditFollowUpControlForm } from "../forms/EditFollowUpControlForm";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -30,14 +26,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { useRouter } from "next/navigation";
-import { useDeleteInformationSource } from "@/actions/sms/tipos_fuente/actions";
-import { useDeleteVoluntaryReport } from "@/actions/sms/reporte_voluntario/actions";
-import CreateDangerIdentificationForm from "../forms/CreateIdentificationForm";
-import CreateDangerIdentificationDialog from "../dialogs/CreateDangerIdentificationDialog";
-import { useDeleteFollowUpControl } from "@/actions/sms/controles_de_seguimiento/actions";
-import CreateFollowUpControlForm from "../forms/CreateFollowUpControlForm";
-import { EditFollowUpControlForm } from "../forms/EditFollowUpControlForm";
 
 const FollowUpControlDropdownActions = ({
   followUpControl,
@@ -70,17 +58,19 @@ const FollowUpControlDropdownActions = ({
 
           <DropdownMenuContent
             align="center"
-            className="flex gap-2 justify-center"
+            className="flex-col gap-2 justify-center"
           >
             <DialogTrigger asChild>
               <DropdownMenuItem onClick={() => setOpenDelete(true)}>
                 <Trash2 className="size-5 text-red-500" />
+                <p className="pl-2">Eliminar</p>
               </DropdownMenuItem>
             </DialogTrigger>
 
             {
               <DropdownMenuItem onClick={() => setOpenEdit(true)}>
                 <ClipboardPenLine className="size-5" />
+                <p className="pl-2">Editar</p>
               </DropdownMenuItem>
             }
           </DropdownMenuContent>
