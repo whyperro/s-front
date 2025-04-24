@@ -109,7 +109,7 @@ const VoluntaryReportDropdownActions = ({
                   onClick={() => setOpenCreateDangerIdentification(true)}
                 >
                   <ClipboardPenLine className="size-5" />
-                  Crear Identificacion
+                  <p className="pl-2">Crear Identificacion</p>
                 </DropdownMenuItem>
               )}
 
@@ -215,18 +215,19 @@ const VoluntaryReportDropdownActions = ({
           </DialogContent>
         </Dialog>
 
-        <Dialog open={openEdit} onOpenChange={setOpenEdit}>
-          <DialogContent className="flex flex-col max-w-2xl m-2">
-            <DialogHeader>
-              <DialogTitle className="text-center"></DialogTitle>
+          <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+            <DialogContent className="flex flex-col max-w-2xl m-2">
+              <DialogHeader>
+                <DialogTitle className="text-center"></DialogTitle>
+                <DialogDescription></DialogDescription>
+              </DialogHeader>
               <CreateVoluntaryReportForm
+                onClose={() => setOpenEdit(false)}
                 initialData={voluntaryReport}
                 isEditing={true}
-                onClose={() => setOpenEdit(false)}
               />
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+            </DialogContent>
+          </Dialog>
       </Dialog>
     </>
   );

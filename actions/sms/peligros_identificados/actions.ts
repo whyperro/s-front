@@ -90,12 +90,12 @@ export const useDeleteDangerIdentification = () => {
         queryKey: ["danger-identification-by-id"],
       });
       toast.success("¡Eliminado!", {
-        description: `¡La fuente de informacion ha sido eliminada correctamente!`,
+        description: `¡La identificacion de peligro ha sido eliminada correctamente!`,
       });
     },
     onError: (e) => {
       toast.error("Oops!", {
-        description: "¡Hubo un error al eliminar la fuente de informacion!",
+        description: "¡Hubo un error al eliminar la identificacion de peligro!",
       });
     },
   });
