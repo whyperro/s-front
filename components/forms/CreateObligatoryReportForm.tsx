@@ -15,8 +15,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
+import {
+  useCreateObligatoryReport,
+  useUpdateObligatoryReport,
+} from "@/actions/sms/reporte_obligatorio/actions";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -25,7 +29,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import { useGetPilots } from "@/hooks/sms/useGetPilots";
 import { cn } from "@/lib/utils";
+import { ObligatoryReport } from "@/types";
 import { format, isValid, parse } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, Check, ChevronsUpDown, ClockIcon } from "lucide-react";
@@ -44,14 +50,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useGetPilots } from "@/hooks/sms/useGetPilots";
-import {
-  useCreateObligatoryReport,
-  useUpdateObligatoryReport,
-} from "@/actions/sms/reporte_obligatorio/actions";
-import { ObligatoryReport } from "@/types";
-import { dataTagSymbol } from "@tanstack/react-query";
-import { description } from "../misc/TestChart";
 
 //Falta añadir validaciones
 
@@ -93,7 +91,9 @@ const FormSchema = z
     (data) => {
       const hasIncidents = data.incidents && data.incidents.length > 0;
       const hasOtherIncidents =
-        data.other_incidents && data.other_incidents.trim() !== "";
+        data.other_incidents !== null && data.other_incidents !== undefined
+          ? data.other_incidents.trim() !== ""
+          : false; // Si es null o undefined, se considera falso
 
       // Return true if either field is valid or both are valid
       return hasIncidents || hasOtherIncidents;
@@ -104,6 +104,7 @@ const FormSchema = z
       path: ["incidents", "other_incidents"], // Optional, to highlight both fields in error
     }
   );
+  
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
@@ -465,7 +466,7 @@ export function CreateObligatoryReportForm({
         <div className="flex gap-2 justify-center items-center">
           <FormField
             control={form.control}
-            name="incident_time"
+            name="flight_time"
             render={({ field }) => {
               const handleChange = (event: { target: { value: any } }) => {
                 const timeString = event.target.value;
@@ -477,7 +478,7 @@ export function CreateObligatoryReportForm({
 
               return (
                 <FormItem className="w-full">
-                  <FormLabel>Indicar hora del incidente</FormLabel>
+                  <FormLabel>Indicar hora de vuelo</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -513,7 +514,7 @@ export function CreateObligatoryReportForm({
           />
           <FormField
             control={form.control}
-            name="flight_time"
+            name="incident_time"
             render={({ field }) => {
               const handleChange = (event: { target: { value: any } }) => {
                 const timeString = event.target.value;
@@ -525,7 +526,7 @@ export function CreateObligatoryReportForm({
 
               return (
                 <FormItem className="w-full">
-                  <FormLabel>Indicar hora de vuelo</FormLabel>
+                  <FormLabel>Indicar hora del incidente</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
