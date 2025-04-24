@@ -8,8 +8,10 @@ import { es } from "date-fns/locale/es";
 import CashMovementDropdownActions from "@/components/misc/CashMovementDropdownActions";
 import BankAccountResumeDialog from "@/components/dialogs/BankAccountResumeDialog";
 import CashResumeDialog from "@/components/dialogs/CashResumeDialog";
-import { formatCurrencyJ, getCurrencySymbol } from "@/lib/utils";
+import { formatCurrencyJ } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import ClientResumeDialog from "@/components/dialogs/ClientResumeDialog";
+import VendorResumeDialog from "@/components/dialogs/VendorResumeDialog";
 
 export const columns: ColumnDef<CashMovement>[] = [
   {
@@ -57,12 +59,11 @@ export const columns: ColumnDef<CashMovement>[] = [
     ),
     meta: { title: "Cliente" },
     cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.client ? row.original.client.name : "N/A"}
-        </span>
-      </div>
-    ),
+      row.original.client ? 
+        <ClientResumeDialog client={row.original.client} /> :
+        <span>N/A</span>
+    ), 
+
   },
   {
     accessorKey: "vendor.name",
@@ -71,12 +72,10 @@ export const columns: ColumnDef<CashMovement>[] = [
     ),
     meta: { title: "Proveedor" },
     cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className="text-muted-foreground italic">
-          {row.original.vendor ? row.original.vendor.name : "N/A"}
-        </span>
-      </div>
-    ),
+      row.original.vendor ? 
+        <VendorResumeDialog vendor={row.original.vendor} /> :
+        <span>N/A</span>
+    ), 
   },
   {
     accessorKey: "cash.name",

@@ -137,7 +137,7 @@ export type CashMovement = {
   sub_category_details: string,
   amount: number,
   bank_account: BankAccount, 
-  vendor: Vendor,
+  vendor: AdministrationVendor,
   client: Client,
   cash_id: string;
 }
@@ -208,7 +208,7 @@ export type Credit ={
   id: number,
   renting: Renting,
   flight: Flight,
-  vendor: Vendor,
+  vendor: AdministrationVendor,
   client: Client,
   details: string,
   type: "PAGAR" | "COBRAR",

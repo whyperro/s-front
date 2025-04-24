@@ -8,6 +8,7 @@ import { es } from "date-fns/locale/es";
 import CreditDropdownActions from "@/components/misc/CreditDropdownActions";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
+import ClientResumeDialog from "@/components/dialogs/ClientResumeDialog";
 
 export const columns: ColumnDef<Credit>[] = [
   {
@@ -79,11 +80,7 @@ export const columns: ColumnDef<Credit>[] = [
       <DataTableColumnHeader filter column={column} title="Cliente" />
     ),
     meta: { title: "Cliente" },
-    cell: ({ row }) => (
-      <div className="flex justify-center font-bold">
-        {row.original.client ? row.original.client.name : "N/A"}
-      </div>
-    ),
+    cell: ({ row }) => <ClientResumeDialog client={row.original.client} />,
   },
   {
     accessorKey: "details",
