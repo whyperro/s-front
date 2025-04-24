@@ -104,7 +104,7 @@ const FormSchema = z
       path: ["incidents", "other_incidents"], // Optional, to highlight both fields in error
     }
   );
-  
+
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 interface FormProps {
@@ -133,7 +133,6 @@ export function CreateObligatoryReportForm({
       try {
         return JSON.parse(initialData.incidents);
       } catch (error) {
-        console.error("Error al parsear initialData.incidents:", error);
         return []; // Devuelve un array vacío en caso de error de parseo
       }
     }
@@ -217,7 +216,7 @@ export function CreateObligatoryReportForm({
         incidents: data.incidents,
         other_incidents: data.other_incidents,
       };
-      console.log("THIS IS VALUE FROM EDIT AND INITIAL DATA", value);
+
       await updateObligatoryReport.mutateAsync(value);
     } else {
       const value = {
@@ -240,7 +239,7 @@ export function CreateObligatoryReportForm({
         other_incidents: data.other_incidents,
         status: "ABIERTO",
       };
-      console.log("THIS IS VALUE FROM CREATE ", value);
+
       await createObligatoryReport.mutateAsync(value);
     }
     onClose();
@@ -647,77 +646,81 @@ export function CreateObligatoryReportForm({
           />
         </div>
 
-        <FormField
-          control={form.control}
-          name="incidents"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Incidentes:</FormLabel>
-              <FormControl>
-                <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={open}
-                      className="w-[300px] justify-between"
-                    >
-                      {selectedValues && selectedValues.length > 0 ? (
-                        <p>({selectedValues.length}) seleccionados</p>
-                      ) : (
-                        "Seleccionar opciones..."
-                      )}
-                      <ChevronsUpDown className="opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[300px] p-0">
-                    <Command>
-                      <CommandInput placeholder="Buscar opciones..." />
-                      <CommandList>
-                        <CommandEmpty>No se encontraron opciones.</CommandEmpty>
-                        <CommandGroup>
-                          {OPTIONS_LIST.map((option) => (
-                            <CommandItem
-                              key={option}
-                              value={option}
-                              onSelect={(currentValue) => {
-                                const isSelected =
-                                  selectedValues.includes(currentValue);
-                                const newValues = isSelected
-                                  ? selectedValues.filter(
-                                      (v) => v !== currentValue
-                                    )
-                                  : [...selectedValues, currentValue];
+        {!showOtherInput && (
+          <FormField
+            control={form.control}
+            name="incidents"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="m-2">Incidentes:</FormLabel>
+                <FormControl>
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="w-[300px] justify-between"
+                      >
+                        {selectedValues && selectedValues.length > 0 ? (
+                          <p>({selectedValues.length}) seleccionados</p>
+                        ) : (
+                          "Seleccionar opciones..."
+                        )}
+                        <ChevronsUpDown className="opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[300px] p-0">
+                      <Command>
+                        <CommandInput placeholder="Buscar opciones..." />
+                        <CommandList>
+                          <CommandEmpty>
+                            No se encontraron opciones.
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {OPTIONS_LIST.map((option) => (
+                              <CommandItem
+                                key={option}
+                                value={option}
+                                onSelect={(currentValue) => {
+                                  const isSelected =
+                                    selectedValues.includes(currentValue);
+                                  const newValues = isSelected
+                                    ? selectedValues.filter(
+                                        (v) => v !== currentValue
+                                      )
+                                    : [...selectedValues, currentValue];
 
-                                setSelectedValues(newValues);
-                                field.onChange(
-                                  newValues.length > 0 ? newValues : []
-                                ); // Actualizar el valor del campo de formulario
-                              }}
-                            >
-                              {option}
-                              {selectedValues && (
-                                <Check
-                                  className={cn(
-                                    "ml-auto",
-                                    selectedValues.includes(option)
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                              )}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
+                                  setSelectedValues(newValues);
+                                  field.onChange(
+                                    newValues.length > 0 ? newValues : []
+                                  ); // Actualizar el valor del campo de formulario
+                                }}
+                              >
+                                {option}
+                                {selectedValues && (
+                                  <Check
+                                    className={cn(
+                                      "ml-auto",
+                                      selectedValues.includes(option)
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                )}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}
