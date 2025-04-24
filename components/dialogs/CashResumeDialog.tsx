@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, } from "../ui/dialog";
 import { Cash } from "@/types";
 import { WalletIcon } from "lucide-react";
 import { getCurrencySymbol } from "@/lib/utils";
@@ -18,7 +10,12 @@ const CashResumeDialog = ({ cash }: { cash: Cash }) => {
   return (
     <Dialog open={openCash} onOpenChange={setOpenCash}>
       <DialogTrigger className="flex justify-center">{cash.name}</DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
+      >
         <DialogHeader>
           <div className="flex flex-col items-center space-y-2">
             <div className="bg-primary/10 p-3 rounded-full">
@@ -50,18 +47,6 @@ const CashResumeDialog = ({ cash }: { cash: Cash }) => {
               <p className="text-xl font-bold text-green-800">
                 {getCurrencySymbol(cash.coin)} {cash.total_amount}
               </p>
-            </div>
-          </div>
-
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">
-              Resumen Detallado
-            </h3>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Estado:</span>
-                <span className="font-medium text-green-600">Activa</span>
-              </div>
             </div>
           </div>
         </div>
