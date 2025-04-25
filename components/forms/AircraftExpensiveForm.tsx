@@ -19,7 +19,6 @@ import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 import { Loader2 } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, } from "../ui/command";
 import { useEffect } from "react";
-import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById";
 import { useCashMovementForAircraft } from "@/actions/administracion/aeronaves/actions";
 
 const formSchema = z.object({

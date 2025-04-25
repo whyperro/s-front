@@ -24,7 +24,7 @@ const fetchFlightsByAircraft = async (aircraftId: string): Promise<AircraftStati
   return data;
 };
 
-export const useGetFlightsByAircraft = (aircraftId: string) => {
+export const useGetAircraftStatistics = (aircraftId: string) => {
   return useQuery<AircraftStatistics>({
     queryKey: ["flights", aircraftId],
     queryFn: () => fetchFlightsByAircraft(aircraftId),

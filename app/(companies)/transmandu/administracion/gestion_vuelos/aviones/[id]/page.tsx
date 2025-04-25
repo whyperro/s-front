@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById";
-import { useGetFlightsByAircraft } from "@/hooks/administracion/vuelos/useGetFlightsByAircraft";
+import { useGetAircraftStatistics } from "@/hooks/administracion/vuelos/useGetAircraftStatistics";
 import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -41,7 +41,7 @@ export default function AircraftReportPage() {
   const id = params.id as string;
   const router = useRouter();
   const { data: aircraftDetails, isLoading, error } = useGetAircraftById(id);
-  const { data: aircraftStats, isLoading: isLoadingFlights } = useGetFlightsByAircraft(id);
+  const { data: aircraftStats, isLoading: isLoadingFlights } = useGetAircraftStatistics(id);
 
   // Obtener años disponibles de los datos estadísticos
   const availableYears = useMemo(() => {
@@ -108,7 +108,6 @@ export default function AircraftReportPage() {
   // Calcular estadísticas totales
   const totalEarnings = monthlyData.reduce((sum, month) => sum + month.ganancias, 0);
   const totalFlights = monthlyData.reduce((sum, month) => sum + month.vuelos, 0);
-  const averageEarningPerFlight = totalFlights > 0 ? (totalEarnings / totalFlights) : 0;
 
   // Encontrar el mes con más ganancias
   const bestMonth = monthlyData.length > 0 ? 
@@ -188,7 +187,7 @@ export default function AircraftReportPage() {
         </Button>
         <div>
           <h1 className="text-2xl font-bold text-center">
-            Reporte de Ganancias
+            Reporte Monetario
           </h1>
           <p className="text-muted-foreground text-center">
             {aircraftDetails?.acronym} - {aircraftDetails?.model}
@@ -197,7 +196,7 @@ export default function AircraftReportPage() {
       </div>
 
       {/* Tarjetas de resumen */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <SummaryCard
           title="Total Ganancias"
           value={formatCurrency(totalEarnings)}
@@ -210,13 +209,6 @@ export default function AircraftReportPage() {
           value={totalFlights.toString()}
           description="Número de vuelos realizados"
           icon={<Plane className="h-5 w-5 text-blue-500" />}
-        />
-
-        <SummaryCard
-          title="Promedio por Vuelo"
-          value={formatCurrency(averageEarningPerFlight)}
-          description="Ganancia media por vuelo"
-          icon={<TrendingUp className="h-5 w-5 text-indigo-500" />}
         />
 
         <SummaryCard
