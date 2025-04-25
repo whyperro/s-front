@@ -103,7 +103,7 @@ export function AircraftExpensiveForm({ id, onClose }: FormProps) {
   }, [mutate, form, cashes]);
 
   async function onSubmit(formData: z.infer<typeof formSchema>) {
-    createCashMovementForAircraft.mutate(id, {
+    createCashMovementForAircraft.mutate({ id, formData }, {  
       onSuccess: () => {
         onClose();
       },
