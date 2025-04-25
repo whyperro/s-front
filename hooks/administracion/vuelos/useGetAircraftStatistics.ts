@@ -1,26 +1,44 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
-import { Flight } from "@/types";
+import { CashMovement, Flight } from "@/types";
 
 // Definir la estructura de datos que devuelve el endpoint
 export interface AircraftStatistics {
-    statistics: {
-      total_annual: number
-      monthly: {
-        [yearNumber: string]: {
-          [month: string]: number
-        }
-      }
+  statistics: {
+    total_annual_income: {
+      [year: string]: number
     }
-    flights: {
+    total_annual_output: {
+      [year: string]: number
+    }
+    monthly_income: {
       [year: string]: {
-        [month: string]: Flight[]
+        [month: string]: number
       }
     }
+    monthly_output: {
+      [year: string]: {
+        [month: string]: number
+      }
+    }
+    total_flights: {
+      [year: string]: number
+    }
+  }
+  incomes: {
+    [year: string]: {
+      [month: string]: CashMovement[]
+    }
+  }
+  outputs: { 
+    [year: string]: {
+      [month: string]: CashMovement[]  
+    }
+  }
 }
 
 const fetchFlightsByAircraft = async (aircraftId: string): Promise<AircraftStatistics> => {
-  const { data } = await axiosInstance.get(`/transmandu/flights-by-aircraft/${aircraftId}`);
+  const { data } = await axiosInstance.get(`/transmandu/aircraft-statistics/${aircraftId}`);
   return data;
 };
 
