@@ -1,6 +1,6 @@
 "use client";
 
-import { useCreateCashMovement } from "@/actions/administracion/movimientos/actions";
+import { useCashMovementForAircraft } from "@/actions/administracion/movimientos/actions";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form";
@@ -69,7 +69,7 @@ interface FormProps {
 
 export function AircraftExpensiveForm({ id, onClose }: FormProps) {
   const { data: aircraftDetails, isLoading } = useGetAircraftById(id);
-  const { createCashMovement } = useCreateCashMovement();
+  const { createCashMovementForAircraft } = useCashMovementForAircraft();
   const {
     data: employees,
     mutate,
@@ -103,8 +103,8 @@ export function AircraftExpensiveForm({ id, onClose }: FormProps) {
     return () => subscription.unsubscribe();
   }, [mutate, form, cashes]);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    createCashMovement.mutate(values, {
+  async function onSubmit(id: z.infer<typeof formSchema>) {
+    createCashMovementForAircraft.mutate(id, {
       onSuccess: () => {
         onClose(); // Cierra el modal solo si la creación fue exitosa
       },
@@ -374,8 +374,8 @@ export function AircraftExpensiveForm({ id, onClose }: FormProps) {
             />
           </div>
         </div>
-        <Button type="submit" disabled={createCashMovement.isPending}>
-          {createCashMovement.isPending ? "Enviando..." : "Enviar"}
+        <Button type="submit" disabled={createCashMovementForAircraft.isPending}>
+          {createCashMovementForAircraft.isPending ? "Enviando..." : "Enviar"}
         </Button>
       </form>
     </Form>
