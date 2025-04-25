@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
 import { useGetCash } from "@/hooks/administracion/cajas/useGetCash";
 import { useGetEmployeesByCompany } from "@/hooks/administracion/useGetEmployees";
@@ -19,7 +19,6 @@ import { z } from "zod";
 import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 import { Loader2 } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, } from "../ui/command";
-import { useGetAccount } from "@/hooks/administracion/useGetAccount";
 import { useEffect } from "react";
 import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById";
 
@@ -27,16 +26,14 @@ const formSchema = z.object({
   responsible_id: z.string({
     message: "Debe elegir un responsable.",
   }),
-  accountant_id: z.string({
-    message: "Debe elegir una cuenta.",
-  }),
   cash_id: z.string({
     message: "Debe elegir una caja.",
   }),
   date: z.date({
     required_error: "La fecha es requerida",
   }),
-  sub_category_details: z.string()
+  sub_category_details: z
+    .string()
     .min(2, {
       message:
         "El detalle de la sub categoría debe tener al menos 2 caracteres.",
@@ -81,7 +78,6 @@ export function AircraftExpensiveForm({ id, onClose }: FormProps) {
   const { data: cashes, isLoading: isCashesLoading } = useGetCash();
   const { data: bankaccounts, isLoading: isBankAccLoading } =
     useGetBankAccounts();
-  const { data: accounts, isLoading: isAccountLoading } = useGetAccount();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -94,14 +90,16 @@ export function AircraftExpensiveForm({ id, onClose }: FormProps) {
     const subscription = form.watch((value, { name }) => {
       if (name === "cash_id") {
         // Encontrar la caja seleccionada
-        const selectedCash = cashes?.find(cash => cash.id.toString() === value.cash_id);
+        const selectedCash = cashes?.find(
+          (cash) => cash.id.toString() === value.cash_id
+        );
         // Si es de tipo efectivo, resetear el campo de cuenta bancaria
         if (selectedCash?.type === "EFECTIVO") {
           form.setValue("bank_account_id", null);
         }
       }
     });
-    
+
     return () => subscription.unsubscribe();
   }, [mutate, form, cashes]);
 
@@ -209,49 +207,66 @@ export function AircraftExpensiveForm({ id, onClose }: FormProps) {
         <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
-            name="accountant_id"
+            name="amount"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Cuenta</FormLabel>
-                <Select
-                  disabled={isAccountLoading}
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione una cuenta" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {accounts &&
-                      accounts.map((accountant_id) => (
-                        <SelectItem
-                          key={accountant_id.id}
-                          value={accountant_id.id.toString()}
-                        >
-                          {accountant_id.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                <FormLabel>Monto Final</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ingrese monto" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-          control={form.control}
-          name="amount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Monto Final</FormLabel>
-              <FormControl>
-                <Input placeholder="Ingrese el monto" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          {/*Validacion para cuando la caja sea efectivo retorna nulo y cuando la caja sea tipo transferencia mostrara la cuenta de banco*/}
+        {(() => {
+          const selectedCashId = form.watch("cash_id");
+          const selectedCash = cashes?.find(
+            (cash) => cash.id.toString() === selectedCashId
+          );
+          if (selectedCash?.type === "EFECTIVO") {
+            return null;
+          }
+          return (
+            <FormField
+              control={form.control}
+              name="bank_account_id"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Cuenta de Banco</FormLabel>
+                  <Select
+                    disabled={isBankAccLoading}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value === null ? "" : field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={
+                            isBankAccLoading ? (
+                              <Loader2 className="animate-spin" />
+                            ) : (
+                              "Seleccione una cuenta..."
+                            )
+                          }
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {bankaccounts &&
+                        bankaccounts.map((acc) => (
+                          <SelectItem value={acc.id.toString()} key={acc.id}>
+                            {acc.name} - {acc.bank.name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          );
+        })()}
         </div>
         <div className="flex gap-2 items-center justify-center">
           <FormField
@@ -359,53 +374,6 @@ export function AircraftExpensiveForm({ id, onClose }: FormProps) {
             />
           </div>
         </div>
-        {/*Validacion para cuando la caja sea efectivo retorna nulo y cuando la caja sea tipo transferencia mostrara la cuenta de banco*/}
-        {(() => {
-          const selectedCashId = form.watch("cash_id");
-          const selectedCash = cashes?.find(cash => cash.id.toString() === selectedCashId);
-          if (selectedCash?.type === "EFECTIVO") {
-            return null;
-          }
-          return (
-            <FormField
-              control={form.control}
-              name="bank_account_id"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Cuenta de Banco</FormLabel>
-                  <Select
-                    disabled={isBankAccLoading}
-                    onValueChange={field.onChange}
-                    defaultValue={field.value === null ? "" : field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          placeholder={
-                            isBankAccLoading ? (
-                              <Loader2 className="animate-spin" />
-                            ) : (
-                              "Seleccione una cuenta..."
-                            )
-                          }
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {bankaccounts &&
-                        bankaccounts.map((acc) => (
-                          <SelectItem value={acc.id.toString()} key={acc.id}>
-                            {acc.name} - {acc.bank.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          );
-        })()}
         <Button type="submit" disabled={createCashMovement.isPending}>
           {createCashMovement.isPending ? "Enviando..." : "Enviar"}
         </Button>

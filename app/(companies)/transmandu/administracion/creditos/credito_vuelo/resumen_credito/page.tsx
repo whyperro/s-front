@@ -281,6 +281,7 @@ const CreditStatisticsFlightPage = () => {
                     <TableHead>Deuda</TableHead>
                     <TableHead>Monto Pagado</TableHead>
                     <TableHead>Fecha Límite</TableHead>
+                    <TableHead>Detalle</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -316,6 +317,7 @@ const CreditStatisticsFlightPage = () => {
                       <TableCell>{formatCurrency(credit.debt)}</TableCell>
                       <TableCell>{formatCurrency(credit.payed_amount)}</TableCell>
                       <TableCell>{formatDate(credit.deadline)}</TableCell>
+                      <TableCell>{(credit.details)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
