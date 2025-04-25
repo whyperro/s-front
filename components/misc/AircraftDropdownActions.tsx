@@ -5,6 +5,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Banknote,
   EyeIcon,
   Loader2,
   MoreHorizontal,
@@ -30,6 +31,7 @@ import { es } from "date-fns/locale";
 import { EditIcon } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { EditAircraftForm } from "../forms/EditAircraftForm";
+import { AircraftExpensiveForm } from "../forms/AircraftExpensiveForm";
 
 interface AircraftDropdownActionsProps {
   id: string;
@@ -45,6 +47,7 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
   const { deleteAircraft } = useDeleteAircraft();
   const { data: aircraftDetails, isLoading } = useGetAircraftById(id);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [openForm, setOpenForm] = useState<boolean>(false);
 
   const handleViewStats = () => {
     router.push(`/transmandu/administracion/gestion_vuelos/aviones/${id}`);
@@ -81,6 +84,9 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleViewStats}>
             <TrendingUp className="size-5 text-green-500" />
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenForm(true)}>
+            <Banknote className="size-5 text-green-500" />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpenEdit(true)}>
             <EditIcon className="size-5 text-blue-500" />
@@ -298,6 +304,20 @@ export const AircraftDropdownActions = ({ id }: { id: string }) => {
               {aircraftDetails?.acronym || "esta aeronave"}
             </DialogDescription>
           </DialogHeader>
+        </DialogContent>
+      </Dialog>
+
+      {/*Formulario para cargar los gastos de una aeronave*/}
+      <Dialog open={openForm} onOpenChange={setOpenForm}>
+        <DialogContent
+          onInteractOutside={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle>Gastos de la Aeronave</DialogTitle>
+          </DialogHeader>
+        <AircraftExpensiveForm id={id} onClose={() => setOpenForm(false)} />
         </DialogContent>
       </Dialog>
 
