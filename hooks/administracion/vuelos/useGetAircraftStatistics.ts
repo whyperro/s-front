@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
-import { CashMovement, Flight } from "@/types";
+import { CashMovement } from "@/types";
 
 // Definir la estructura de datos que devuelve el endpoint
 export interface AircraftStatistics {

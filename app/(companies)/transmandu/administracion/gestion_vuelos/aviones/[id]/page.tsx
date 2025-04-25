@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useParams } from "next/navigation"
 import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById"
@@ -17,7 +17,6 @@ import { formatCurrency } from "@/lib/utils"
 import months, { getMonthByNumber } from "@/components/cards/ConfigMonths"
 import type { CashMovement } from "@/types"
 
-// Update the MonthlyData type to include expenses (gastos)
 type MonthlyData = {
   name: string
   shortName: string
@@ -27,8 +26,6 @@ type MonthlyData = {
   month: string
 }
 
-// Add a type for the movement details
-// Update the CustomTooltipProps to include gastos
 interface CustomTooltipProps {
   active?: boolean
   payload?: Array<{
@@ -45,47 +42,41 @@ export default function AircraftReportPage() {
   const router = useRouter()
   const { data: aircraftDetails, isLoading, error } = useGetAircraftById(id)
   const { data: aircraftStats, isLoading: isLoadingFlights } = useGetAircraftStatistics(id)
-
-  // Obtener años disponibles de los datos estadísticos
   const availableYears = useMemo(() => {
     if (!aircraftStats?.statistics?.monthly_income) {
       return [new Date().getFullYear().toString()]
     }
     return Object.keys(aircraftStats.statistics.monthly_output).sort((a, b) => Number.parseInt(b) - Number.parseInt(a))
   }, [aircraftStats])
-
-  // Estado con valor inicial seguro
   const [selectedYear, setSelectedYear] = useState<string>(() => {
     return availableYears[0] || new Date().getFullYear().toString()
   })
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null)
   const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([])
   const [flightsData, setFlightsData] = useState<any[]>([])
-
-  // Add state for selected movement type and movement details
   const [selectedMovementType, setSelectedMovementType] = useState<"income" | "output" | null>(null)
   const [movementDetails, setMovementDetails] = useState<CashMovement[]>([])
 
-  // Procesar datos estadísticos cuando cambia el año seleccionado o los datos
   useEffect(() => {
     if (aircraftStats) {
       const yearIncomeData = aircraftStats.statistics.monthly_income[selectedYear] || {}
       const yearOutputData = aircraftStats.statistics.monthly_output[selectedYear] || {}
-
       const processedData = months.map((month) => {
-        // Busca los datos usando el nombre del mes en español
         const monthNameInSpanish = month.name
         const monthIncome = yearIncomeData[monthNameInSpanish] || 0
         const monthOutput = yearOutputData[monthNameInSpanish] || 0
+        const flightsCount = 0 
 
         return {
           name: month.name,
           shortName: month.short,
           ingresos: monthIncome,
           gastos: monthOutput,
+          vuelos: flightsCount,
           month: month.number,
         }
       })
+      setMonthlyData(processedData)
       setSelectedMonth(null)
       setSelectedMovementType(null)
       setFlightsData([])
@@ -137,7 +128,6 @@ export default function AircraftReportPage() {
       ? monthlyData.reduce((prev, current) => (prev.ingresos > current.ingresos ? prev : current))
       : null
 
-  // Update the CustomTooltip component to include expenses
   const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       return (
@@ -160,7 +150,6 @@ export default function AircraftReportPage() {
     return null
   }
 
-  // Función para formatear fechas
   const formatDate = (dateInput: string | Date) => {
     const date = dateInput instanceof Date ? dateInput : new Date(dateInput)
     return date.toLocaleDateString("es-ES", {
@@ -189,9 +178,10 @@ export default function AircraftReportPage() {
     )
   }
 
+  console.log(monthlyData)
+
   return (
     <div className="container mx-auto py-8 px-4">
-      {/* Encabezado */}
       <div className="flex items-center mb-6">
         <Button variant="outline" size="sm" className="mr-4" onClick={() => router.back()}>
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -359,7 +349,7 @@ export default function AircraftReportPage() {
                         <TableHead>Detalle</TableHead>
                         <TableHead>Monto</TableHead>
                         <TableHead>Caja</TableHead>
-                        <TableHead>Proveedor</TableHead>
+                        <TableHead>Cliente</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -376,7 +366,7 @@ export default function AircraftReportPage() {
                             {formatCurrency(movement.amount)}
                           </TableCell>
                           <TableCell>{movement.cash?.name || movement.cash_id || "-"}</TableCell>
-                          <TableCell>{movement.vendor?.name || "-"}</TableCell>
+                          <TableCell>{movement.client?.name || "-"}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -387,15 +377,13 @@ export default function AircraftReportPage() {
                   No hay {selectedMovementType === "income" ? "ingresos" : "egresos"} registrados para este mes.
                 </div>
               )
-            ) : 
-            flightsData.length > 0 ? (
+            ) : flightsData.length > 0 ? (
               <div className="rounded-md border overflow-hidden">
                 <Table>
                   <TableHeader className="bg-muted/30">
                     <TableRow>
                       <TableHead>Fecha</TableHead>
                       <TableHead>Cliente</TableHead>
-                      <TableHead>Ruta</TableHead>
                       <TableHead>Total Pagado</TableHead>
                       <TableHead>Estado</TableHead>
                     </TableRow>
@@ -405,9 +393,6 @@ export default function AircraftReportPage() {
                       <TableRow key={flight.id} className="hover:bg-muted/30">
                         <TableCell className="font-medium">{formatDate(flight.date)}</TableCell>
                         <TableCell>{flight.client?.name || "-"}</TableCell>
-                        <TableCell>
-                          {flight.route?.from || "-"} - {flight.route?.to || "-"}
-                        </TableCell>
                         <TableCell className="font-medium text-emerald-600">
                           {formatCurrency(flight.total_amount)}
                         </TableCell>
