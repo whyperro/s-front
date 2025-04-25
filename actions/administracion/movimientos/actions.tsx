@@ -47,28 +47,3 @@ export const useDeleteCashMovement = () => {
     deleteCashMovement: deleteMutation,
   };
 };
-
-export const useCashMovementForAircraft = () => {
-  const queryCashMovement = useQueryClient();
-  const createMutation = useMutation({
-    mutationFn: async (id: number | string) => {
-      await axiosInstance.post(`/transmandu/cash-movement-aircraft/${id}/expense`);
-    },
-    onSuccess: () => {
-      queryCashMovement.invalidateQueries({
-        queryKey: ["cash-movements-aircraft-expense"],
-      });
-      toast("¡Creado!", {
-        description: `¡El movimiento del gasto se ha creado correctamente!`,
-      });
-    },
-    onError: (error) => {
-      toast("Hey", {
-        description: `No se creo correctamente: ${error}`,
-      });
-    },
-  });
-  return {
-    createCashMovementForAircraft: createMutation,
-  };
-};

@@ -1,6 +1,5 @@
 "use client";
 
-import { useCashMovementForAircraft } from "@/actions/administracion/movimientos/actions";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form";
@@ -21,6 +20,7 @@ import { Loader2 } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, } from "../ui/command";
 import { useEffect } from "react";
 import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById";
+import { useCashMovementForAircraft } from "@/actions/administracion/aeronaves/actions";
 
 const formSchema = z.object({
   responsible_id: z.string({
@@ -68,7 +68,6 @@ interface FormProps {
 }
 
 export function AircraftExpensiveForm({ id, onClose }: FormProps) {
-  const { data: aircraftDetails, isLoading } = useGetAircraftById(id);
   const { createCashMovementForAircraft } = useCashMovementForAircraft();
   const {
     data: employees,
@@ -103,10 +102,10 @@ export function AircraftExpensiveForm({ id, onClose }: FormProps) {
     return () => subscription.unsubscribe();
   }, [mutate, form, cashes]);
 
-  async function onSubmit(id: z.infer<typeof formSchema>) {
+  async function onSubmit(formData: z.infer<typeof formSchema>) {
     createCashMovementForAircraft.mutate(id, {
       onSuccess: () => {
-        onClose(); // Cierra el modal solo si la creación fue exitosa
+        onClose();
       },
     });
   }
