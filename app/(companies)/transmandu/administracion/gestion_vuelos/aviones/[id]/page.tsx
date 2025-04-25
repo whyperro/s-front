@@ -1,120 +1,143 @@
-"use client";
+"use client"
 
-import { useParams } from "next/navigation";
-import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById";
-import { useGetAircraftStatistics } from "@/hooks/administracion/vuelos/useGetAircraftStatistics";
-import { useState, useMemo, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, DollarSign, Calendar, Plane, TrendingUp } from "lucide-react";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { BarChart, Bar, Legend, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
-import { useRouter } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
-import { SummaryCard } from "@/components/cards/SummaryCard";
-import { formatCurrency } from "@/lib/utils";
-import months, { getMonthByNumber } from "@/components/cards/ConfigMonths";
+import { useParams } from "next/navigation"
+import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById"
+import { useGetAircraftStatistics } from "@/hooks/administracion/vuelos/useGetAircraftStatistics"
+import { useState, useMemo, useEffect } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
+import { Loader2, ArrowLeft, DollarSign, Calendar, Plane, ArrowDownCircle, ArrowUpCircle } from "lucide-react"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { BarChart, Bar, Legend, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts"
+import { useRouter } from "next/navigation"
+import { Badge } from "@/components/ui/badge"
+import { SummaryCard } from "@/components/cards/SummaryCard"
+import { formatCurrency } from "@/lib/utils"
+import months, { getMonthByNumber } from "@/components/cards/ConfigMonths"
+import type { CashMovement } from "@/types"
 
-// Tipo para los datos mensuales
+// Update the MonthlyData type to include expenses (gastos)
 type MonthlyData = {
-  name: string;
-  shortName: string;
-  ganancias: number;
-  vuelos: number;
-  month: string;
-};
+  name: string
+  shortName: string
+  ingresos: number
+  gastos: number
+  vuelos: number
+  month: string
+}
 
-// Tipo para el tooltip personalizado
+// Add a type for the movement details
+// Update the CustomTooltipProps to include gastos
 interface CustomTooltipProps {
-  active?: boolean;
+  active?: boolean
   payload?: Array<{
-    value: number;
-    dataKey: string;
-    payload: MonthlyData;
-  }>;
-  label?: string;
+    value: number
+    dataKey: string
+    payload: MonthlyData
+  }>
+  label?: string
 }
 
 export default function AircraftReportPage() {
-  const params = useParams();
-  const id = params.id as string;
-  const router = useRouter();
-  const { data: aircraftDetails, isLoading, error } = useGetAircraftById(id);
-  const { data: aircraftStats, isLoading: isLoadingFlights } = useGetAircraftStatistics(id);
+  const params = useParams()
+  const id = params.id as string
+  const router = useRouter()
+  const { data: aircraftDetails, isLoading, error } = useGetAircraftById(id)
+  const { data: aircraftStats, isLoading: isLoadingFlights } = useGetAircraftStatistics(id)
 
   // Obtener años disponibles de los datos estadísticos
   const availableYears = useMemo(() => {
-    if (!aircraftStats?.statistics?.monthly) {
-      return [new Date().getFullYear().toString()];
+    if (!aircraftStats?.statistics?.monthly_income) {
+      return [new Date().getFullYear().toString()]
     }
-    return Object.keys(aircraftStats.statistics.monthly).sort(
-      (a, b) => Number.parseInt(b) - Number.parseInt(a)
-    );
-  }, [aircraftStats]);
+    return Object.keys(aircraftStats.statistics.monthly_output).sort((a, b) => Number.parseInt(b) - Number.parseInt(a))
+  }, [aircraftStats])
 
   // Estado con valor inicial seguro
   const [selectedYear, setSelectedYear] = useState<string>(() => {
-    return availableYears[0] || new Date().getFullYear().toString();
-  });
-  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
-  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
-  const [flightsData, setFlightsData] = useState<any[]>([]);
+    return availableYears[0] || new Date().getFullYear().toString()
+  })
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(null)
+  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([])
+  const [flightsData, setFlightsData] = useState<any[]>([])
+
+  // Add state for selected movement type and movement details
+  const [selectedMovementType, setSelectedMovementType] = useState<"income" | "output" | null>(null)
+  const [movementDetails, setMovementDetails] = useState<CashMovement[]>([])
 
   // Procesar datos estadísticos cuando cambia el año seleccionado o los datos
   useEffect(() => {
     if (aircraftStats) {
-      const yearData = aircraftStats.statistics.monthly[selectedYear] || {};
-      const flightsYearData = aircraftStats.flights[selectedYear] || {};
-      
-      const processedData = months.map(month => {
+      const yearIncomeData = aircraftStats.statistics.monthly_income[selectedYear] || {}
+      const yearOutputData = aircraftStats.statistics.monthly_output[selectedYear] || {}
+
+      const processedData = months.map((month) => {
         // Busca los datos usando el nombre del mes en español
-        const monthNameInSpanish = month.name; 
-        const monthEarnings = yearData[monthNameInSpanish] || 0;
-        const monthFlights = flightsYearData[monthNameInSpanish] || [];
-        
+        const monthNameInSpanish = month.name
+        const monthIncome = yearIncomeData[monthNameInSpanish] || 0
+        const monthOutput = yearOutputData[monthNameInSpanish] || 0
+
         return {
           name: month.name,
           shortName: month.short,
-          ganancias: monthEarnings,
-          vuelos: monthFlights.length,
-          month: month.number
-        };
-      });
-      
-      setMonthlyData(processedData);
-      setSelectedMonth(null);
-      setFlightsData([]);
+          ingresos: monthIncome,
+          gastos: monthOutput,
+          month: month.number,
+        }
+      })
+      setSelectedMonth(null)
+      setSelectedMovementType(null)
+      setFlightsData([])
+      setMovementDetails([])
     }
-  }, [selectedYear, aircraftStats]);
-  
+  }, [selectedYear, aircraftStats])
 
-  // Manejar clic en una barra del gráfico
   const handleBarClick = (data: any) => {
     if (data?.activePayload?.[0]?.payload) {
-      const monthNumber = data.activePayload[0].payload.month;
-      setSelectedMonth(monthNumber);
-  
-      // Encuentra el nombre del mes en español
-      const monthObj = months.find(m => m.number === monthNumber);
-      const monthNameInSpanish = monthObj?.name || "";
-  
-      // Obtener vuelos usando el nombre en español
-      const monthFlights = aircraftStats?.flights[selectedYear]?.[monthNameInSpanish] || [];
-      setFlightsData(monthFlights);
+      const clickedBar = data.activePayload[0]
+      const monthNumber = clickedBar.payload.month
+      const dataKey = clickedBar.dataKey
+
+      setSelectedMonth(monthNumber)
+
+      const monthObj = months.find((m) => m.number === monthNumber)
+      const monthNameInSpanish = monthObj?.name || ""
+
+      if (dataKey === "ingresos") {
+        setSelectedMovementType("income")
+        const monthIncomes = aircraftStats?.incomes[selectedYear]?.[monthNameInSpanish] || []
+        setMovementDetails(monthIncomes as CashMovement[])
+      } else if (dataKey === "gastos") {
+        setSelectedMovementType("output")
+        const monthOutputs = aircraftStats?.outputs[selectedYear]?.[monthNameInSpanish] || []
+        setMovementDetails(monthOutputs as CashMovement[])
+        setFlightsData([])
+      } else {
+        setSelectedMovementType(null)
+        setMovementDetails([])
+      }
     }
-  };
+  }
 
-  // Calcular estadísticas totales
-  const totalEarnings = monthlyData.reduce((sum, month) => sum + month.ganancias, 0);
-  const totalFlights = monthlyData.reduce((sum, month) => sum + month.vuelos, 0);
+  const totalIncome = useMemo(() => {
+    return aircraftStats?.statistics?.total_annual_income?.[selectedYear] || 0
+  }, [aircraftStats, selectedYear])
 
-  // Encontrar el mes con más ganancias
-  const bestMonth = monthlyData.length > 0 ? 
-    monthlyData.reduce((prev, current) => prev.ganancias > current.ganancias ? prev : current) : 
-    null;
+  const totalExpense = useMemo(() => {
+    return aircraftStats?.statistics?.total_annual_output?.[selectedYear] || 0
+  }, [aircraftStats, selectedYear])
 
-  // Función personalizada para el tooltip
+  const totalFlights = useMemo(() => {
+    return aircraftStats?.statistics?.total_flights?.[selectedYear] || 0
+  }, [aircraftStats, selectedYear])
+
+  const bestMonth =
+    monthlyData.length > 0
+      ? monthlyData.reduce((prev, current) => (prev.ingresos > current.ingresos ? prev : current))
+      : null
+
+  // Update the CustomTooltip component to include expenses
   const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       return (
@@ -122,85 +145,85 @@ export default function AircraftReportPage() {
           <p className="font-semibold text-lg mb-1">{label}</p>
           {payload.map((entry, index) => (
             <div key={`tooltip-${index}`} className="mb-1">
-              {entry.dataKey === "ganancias" && (
-                <p className="text-emerald-600 font-medium text-base">
-                  Ganancias: {formatCurrency(entry.value)}
-                </p>
+              {entry.dataKey === "ingresos" && (
+                <p className="text-emerald-600 font-medium text-base">Ingresos: {formatCurrency(entry.value)}</p>
               )}
-              {entry.dataKey === "vuelos" && (
-                <p className="text-blue-600 font-medium">
-                  Vuelos: {entry.value}
-                </p>
+              {entry.dataKey === "gastos" && (
+                <p className="text-red-600 font-medium text-base">Gastos: {formatCurrency(entry.value)}</p>
               )}
             </div>
           ))}
+          <p className="text-blue-600 font-medium mt-1">Vuelos: {payload[0]?.payload?.vuelos || 0}</p>
         </div>
-      );
+      )
     }
-    return null;
-  };
+    return null
+  }
 
   // Función para formatear fechas
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+  const formatDate = (dateInput: string | Date) => {
+    const date = dateInput instanceof Date ? dateInput : new Date(dateInput)
     return date.toLocaleDateString("es-ES", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-    });
-  };
+    })
+  }
 
-  // Estados de carga y error
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
-    );
+    )
   }
 
   if (error || !aircraftDetails) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
-        <p className="text-red-500 mb-4">
-          Error al cargar los datos de la aeronave
-        </p>
+        <p className="text-red-500 mb-4">Error al cargar los datos de la aeronave</p>
         <Button variant="outline" onClick={() => router.back()}>
           Volver
         </Button>
       </div>
-    );
+    )
   }
 
   return (
     <div className="container mx-auto py-8 px-4">
       {/* Encabezado */}
       <div className="flex items-center mb-6">
-        <Button
-          variant="outline"
-          size="sm"
-          className="mr-4"
-          onClick={() => router.back()}
-        >
+        <Button variant="outline" size="sm" className="mr-4" onClick={() => router.back()}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Volver
         </Button>
         <div>
-          <h1 className="text-2xl font-bold text-center">
-            Reporte Monetario
-          </h1>
+          <h1 className="text-2xl font-bold text-center">Reporte Monetario</h1>
           <p className="text-muted-foreground text-center">
             {aircraftDetails?.acronym} - {aircraftDetails?.model}
           </p>
         </div>
       </div>
 
-      {/* Tarjetas de resumen */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
         <SummaryCard
-          title="Total Ganancias"
-          value={formatCurrency(totalEarnings)}
+          title="Total Ingresos"
+          value={formatCurrency(totalIncome)}
           description="Ingresos totales del año"
+          icon={<ArrowUpCircle className="h-5 w-5 text-emerald-500" />}
+        />
+
+        <SummaryCard
+          title="Total Egresos"
+          value={formatCurrency(totalExpense)}
+          description="Egresos totales del año"
+          icon={<ArrowDownCircle className="h-5 w-5 text-red-500" />}
+        />
+
+        <SummaryCard
+          title="Balance"
+          value={formatCurrency(totalIncome - totalExpense)}
+          description="Diferencia ingresos - egresos"
           icon={<DollarSign className="h-5 w-5 text-emerald-500" />}
         />
 
@@ -214,18 +237,13 @@ export default function AircraftReportPage() {
         <SummaryCard
           title="Mejor Mes"
           value={bestMonth?.name || "-"}
-          description={bestMonth ? formatCurrency(bestMonth.ganancias) : "$0"}
+          description={bestMonth ? formatCurrency(bestMonth.ingresos) : "$0"}
           icon={<Calendar className="h-5 w-5 text-purple-500" />}
         />
       </div>
 
-      {/* Selector de año */}
       <div className="flex justify-end mb-4">
-        <Select 
-          value={selectedYear} 
-          onValueChange={setSelectedYear}
-          disabled={availableYears.length <= 1}
-        >
+        <Select value={selectedYear} onValueChange={setSelectedYear} disabled={availableYears.length <= 1}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Seleccionar año" />
           </SelectTrigger>
@@ -239,14 +257,11 @@ export default function AircraftReportPage() {
         </Select>
       </div>
 
-      {/* Gráfico de barras mejorado */}
       <Card className="mb-6 overflow-hidden">
         <CardHeader className="bg-muted/30">
-          <CardTitle className="text-center">
-            Ganancias Mensuales {selectedYear}
-          </CardTitle>
+          <CardTitle className="text-center">Ingresos vs Egresos Mensuales {selectedYear}</CardTitle>
           <CardDescription className="text-center">
-            Haz clic en un mes para ver los detalles de los vuelos
+            Haz clic en una barra para ver los detalles de los movimientos
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-6">
@@ -259,11 +274,7 @@ export default function AircraftReportPage() {
                 barGap={0}
                 barCategoryGap={8}
               >
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke="#f0f0f0"
-                />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                 <XAxis
                   dataKey="shortName"
                   tickLine={false}
@@ -279,45 +290,22 @@ export default function AircraftReportPage() {
                   width={80}
                   domain={[0, "auto"]}
                 />
-                <YAxis
-                  yAxisId="right"
-                  orientation="right"
-                  tickFormatter={(value) => `${value}`}
-                  width={50}
-                  domain={[0, "auto"]}
-                />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
-                <Bar
-                  yAxisId="left"
-                  dataKey="ganancias"
-                  name="Ganancias"
-                  fill="#10b981"
-                  radius={[4, 4, 0, 0]}
-                >
+                <Bar yAxisId="left" dataKey="ingresos" name="Ingresos" fill="#10b981" radius={[4, 4, 0, 0]}>
                   {monthlyData.map((entry, index) => (
                     <Cell
-                      key={`cell-ganancias-${index}`}
-                      fill={
-                        entry.month === selectedMonth ? "#047857" : "#10b981"
-                      }
+                      key={`cell-ingresos-${index}`}
+                      fill={entry.month === selectedMonth && selectedMovementType === "income" ? "#047857" : "#10b981"}
                       className="cursor-pointer hover:opacity-80 transition-opacity"
                     />
                   ))}
                 </Bar>
-                <Bar
-                  yAxisId="right"
-                  dataKey="vuelos"
-                  name="Vuelos"
-                  fill="#3b82f6"
-                  radius={[4, 4, 0, 0]}
-                >
+                <Bar yAxisId="left" dataKey="gastos" name="Egresos" fill="#ef4444" radius={[4, 4, 0, 0]}>
                   {monthlyData.map((entry, index) => (
                     <Cell
-                      key={`cell-vuelos-${index}`}
-                      fill={
-                        entry.month === selectedMonth ? "#1d4ed8" : "#3b82f6"
-                      }
+                      key={`cell-gastos-${index}`}
+                      fill={entry.month === selectedMonth && selectedMovementType === "output" ? "#b91c1c" : "#ef4444"}
                       className="cursor-pointer hover:opacity-80 transition-opacity"
                     />
                   ))}
@@ -328,21 +316,30 @@ export default function AircraftReportPage() {
         </CardContent>
       </Card>
 
-      {/* Tabla de vuelos del mes seleccionado */}
       {selectedMonth !== null && (
         <Card>
           <CardHeader className="bg-muted/30">
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle>
-                  Vuelos de {getMonthByNumber(selectedMonth)?.name} {selectedYear}
+                  {selectedMovementType === "income"
+                    ? `Ingresos de ${getMonthByNumber(selectedMonth)?.name} ${selectedYear}`
+                    : selectedMovementType === "output"
+                      ? `Egresos de ${getMonthByNumber(selectedMonth)?.name} ${selectedYear}`
+                      : `Vuelos de ${getMonthByNumber(selectedMonth)?.name} ${selectedYear}`}
                 </CardTitle>
                 <CardDescription>
-                  Detalle de los vuelos realizados durante el mes
+                  {selectedMovementType === "income"
+                    ? "Detalle de los ingresos registrados durante el mes"
+                    : selectedMovementType === "output"
+                      ? "Detalle de los egresos registrados durante el mes"
+                      : "Detalle de los vuelos realizados durante el mes"}
                 </CardDescription>
               </div>
               <Badge variant="secondary" className="text-sm py-1.5 px-3">
-                {flightsData.length} vuelos
+                {selectedMovementType === "income" || selectedMovementType === "output"
+                  ? `${movementDetails.length} movimientos`
+                  : `${flightsData.length} vuelos`}
               </Badge>
             </div>
           </CardHeader>
@@ -351,7 +348,47 @@ export default function AircraftReportPage() {
               <div className="flex justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin" />
               </div>
-            ) : flightsData.length > 0 ? (
+            ) : selectedMovementType === "income" || selectedMovementType === "output" ? (
+              // Tabla para movimientos (ingresos o egresos)
+              movementDetails.length > 0 ? (
+                <div className="rounded-md border overflow-hidden">
+                  <Table>
+                    <TableHeader className="bg-muted/30">
+                      <TableRow>
+                        <TableHead>Fecha</TableHead>
+                        <TableHead>Detalle</TableHead>
+                        <TableHead>Monto</TableHead>
+                        <TableHead>Caja</TableHead>
+                        <TableHead>Proveedor</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {movementDetails.map((movement: CashMovement) => (
+                        <TableRow key={movement.id} className="hover:bg-muted/30">
+                          <TableCell className="font-medium">{formatDate(movement.date)}</TableCell>
+                          <TableCell>
+                            {movement.category} - {movement.sub_category}
+                            {movement.sub_category_details && ` (${movement.sub_category_details})`}
+                          </TableCell>
+                          <TableCell
+                            className={`font-medium ${selectedMovementType === "income" ? "text-emerald-600" : "text-red-600"}`}
+                          >
+                            {formatCurrency(movement.amount)}
+                          </TableCell>
+                          <TableCell>{movement.cash?.name || movement.cash_id || "-"}</TableCell>
+                          <TableCell>{movement.vendor?.name || "-"}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  No hay {selectedMovementType === "income" ? "ingresos" : "egresos"} registrados para este mes.
+                </div>
+              )
+            ) : 
+            flightsData.length > 0 ? (
               <div className="rounded-md border overflow-hidden">
                 <Table>
                   <TableHeader className="bg-muted/30">
@@ -366,13 +403,10 @@ export default function AircraftReportPage() {
                   <TableBody>
                     {flightsData.map((flight) => (
                       <TableRow key={flight.id} className="hover:bg-muted/30">
-                        <TableCell className="font-medium">
-                          {formatDate(flight.date)}
-                        </TableCell>
+                        <TableCell className="font-medium">{formatDate(flight.date)}</TableCell>
                         <TableCell>{flight.client?.name || "-"}</TableCell>
                         <TableCell>
-                          {flight.route?.from || "-"} -{" "}
-                          {flight.route?.to || "-"}
+                          {flight.route?.from || "-"} - {flight.route?.to || "-"}
                         </TableCell>
                         <TableCell className="font-medium text-emerald-600">
                           {formatCurrency(flight.total_amount)}
@@ -395,13 +429,11 @@ export default function AircraftReportPage() {
                 </Table>
               </div>
             ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                No hay vuelos registrados para este mes.
-              </div>
+              <div className="text-center py-8 text-muted-foreground">No hay vuelos registrados para este mes.</div>
             )}
           </CardContent>
         </Card>
       )}
     </div>
-  );
+  )
 }
