@@ -60,7 +60,6 @@ const ObligatoryReportIndicators = () => {
     params.to_first || format(new Date(), "yyyy-MM-dd")
   );
 
-  
   const {
     data: obligatoryAverageData,
     isLoading: isLoadingObligatoryAverageData,
@@ -135,7 +134,7 @@ const ObligatoryReportIndicators = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
           {/* Gráfico de Barras (Peligros Identificados) */}
-          <div className=" flex flex-col justify-center items-center p-4 rounded-lg shadow border">
+          <div className=" flex flex-col justify-center items-center p-4 rounded-lg shadow border ">
             {isLoadingObligatoryAverageData ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
@@ -148,6 +147,7 @@ const ObligatoryReportIndicators = () => {
                   height="100%"
                   width="100%"
                   data={resultArrayData}
+                  aspect={3}
                   title="Promedio de Reportes Obligatorios"
                   activeDecimal={true}
                 />
@@ -173,11 +173,12 @@ const ObligatoryReportIndicators = () => {
                   ¡Aumento de los Incidentes!
                 </strong>
               </span>
+
               <div className="mt-4 p-4 bg-red-50 rounded-md border border-gray-200 shadow-sm text-black text-left justify-center items-center w-full">
                 <p className="font-bold text-lg text-center">
                   ¡Aumento de un{" "}
-                  {obligatoryAverageData.newest_range.percentage_change}% de
-                  incidentes!
+                  {obligatoryAverageData.newest_range.percentage_change || 100}%
+                  de incidentes!
                 </p>
                 <p className="mb-2">
                   En numero de incidentes fue mayor durante las fechas:

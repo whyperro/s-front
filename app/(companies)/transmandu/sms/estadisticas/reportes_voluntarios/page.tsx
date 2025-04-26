@@ -49,6 +49,8 @@ const graphicsOptions = [
   { id: "bar-chart", label: "Identificados vs Gestionados" },
   { id: "pre-riesgo-bar", label: "Número de Reportes por Índice de Riesgo" },
   { id: "area-bar", label: "Número de Reportes vs Área" },
+  { id: "fuente-id", label: "Reportes vs Fuente de identificacion " },
+  { id: "metodo-id", label: "Reportes vs Metodo de identificacion" },
 ];
 
 const Statistics = () => {
@@ -107,19 +109,25 @@ const Statistics = () => {
     refetch: refetchAirportLocationData,
   } = useGetVoluntaryReportsCountedByAirportLocation(params.from!, params.to!);
 
-  const { refetch: refetchDynamicSourceNameChart } =
-    useGetIdentificationStatsBySourceName(
-      params.from!,
-      params.to!,
-      "voluntary"
-    );
+  const {
+    data: reportsBySourceName,
+    isLoading: isLoadingSourceName,
+    refetch: refetchDynamicSourceNameChart,
+  } = useGetIdentificationStatsBySourceName(
+    params.from!,
+    params.to!,
+    "voluntary"
+  );
 
-  const { refetch: refetchDynamicSourceTypeChart } =
-    useGetIdentificationStatsBySourceType(
-      params.from!,
-      params.to!,
-      "voluntary"
-    );
+  const {
+    data: reportsBySourceType,
+    isLoading: isLoadingSourceType,
+    refetch: refetchDynamicSourceTypeChart,
+  } = useGetIdentificationStatsBySourceType(
+    params.from!,
+    params.to!,
+    "voluntary"
+  );
 
   useEffect(() => {
     const defaultFrom = format(startOfMonth(new Date()), "yyyy-MM-dd");
@@ -145,7 +153,17 @@ const Statistics = () => {
     refetchAirportLocationData();
     refetchDynamicSourceNameChart();
     refetchDynamicSourceTypeChart();
-  }, [params]);
+  }, [
+    params,
+    refetchBarChart,
+    refetchPieChart,
+    refetchDynamicChart,
+    refetchRisk,
+    refetchPostRisk,
+    refetchAirportLocationData,
+    refetchDynamicSourceNameChart,
+    refetchDynamicSourceTypeChart,
+  ]);
 
   const handleSelectChange = (id: string) => {
     if (id === "Todos") {
@@ -155,7 +173,7 @@ const Statistics = () => {
         const newSelection = prev.includes(id)
           ? prev.filter((item) => item !== id)
           : [...prev.filter((item) => item !== "Todos"), id];
-        
+
         return newSelection.length === 0 ? ["Todos"] : newSelection;
       });
     }
@@ -199,7 +217,9 @@ const Statistics = () => {
                   {selectedGraphics.includes("Todos") ? (
                     <span>Todos los gráficos</span>
                   ) : selectedGraphics.length > 0 ? (
-                    <span>{selectedGraphics.length} gráficos seleccionados</span>
+                    <span>
+                      {selectedGraphics.length} gráficos seleccionados
+                    </span>
                   ) : (
                     "Seleccionar gráficos..."
                   )}
@@ -237,7 +257,10 @@ const Statistics = () => {
             <Button
               variant="outline"
               onClick={() => setSelectedGraphics(["Todos"])}
-              disabled={selectedGraphics.length === 1 && selectedGraphics.includes("Todos")}
+              disabled={
+                selectedGraphics.length === 1 &&
+                selectedGraphics.includes("Todos")
+              }
             >
               Limpiar selección
             </Button>
@@ -268,7 +291,7 @@ const Statistics = () => {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
+      <div className="grid  sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
         {shouldShow("bar-chart") && (
           <div className="p-4 rounded-lg shadow border">
             {isLoadingBarChart ? (
@@ -300,8 +323,8 @@ const Statistics = () => {
               </div>
             ) : dynamicData?.length ? (
               <DynamicBarChart
-                height="70%"
-                width="70%"
+                height="100%"
+                width="100%"
                 data={dynamicData}
                 title="Numero de Reportes vs Tipo de Peligros"
               />
@@ -321,8 +344,8 @@ const Statistics = () => {
               </div>
             ) : pieCharData?.length ? (
               <DynamicBarChart
-                height="70%"
-                width="70%"
+                height="100%"
+                width="100%"
                 data={pieCharData}
                 title="Numero de Reportes vs Areas"
               />
@@ -342,8 +365,8 @@ const Statistics = () => {
               </div>
             ) : reportsByLocationData?.length ? (
               <DynamicBarChart
-                height="70%"
-                width="70%"
+                height="100%"
+                width="100%"
                 data={reportsByLocationData}
                 title="Numero de Reportes vs Localizacion"
               />
@@ -411,6 +434,48 @@ const Statistics = () => {
                 width="50%"
                 data={postRiskData}
                 title="Indice de Riesgo Post-Mitigación"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+        )}
+
+        {shouldShow("pre-riesgo-bar") && (
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingSourceName ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : reportsBySourceType?.length ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={reportsBySourceType}
+                title="Reportes vs Tipo Fuente"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+        )}
+
+        {shouldShow("pre-riesgo-bar") && (
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingSourceType ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : reportsBySourceName?.length ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={reportsBySourceName}
+                title="Reportes vs Nombre de la Fuente"
               />
             ) : (
               <p className="text-lg text-muted-foreground">

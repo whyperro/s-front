@@ -1,26 +1,24 @@
 "use client";
 import BarChartComponent from "@/components/charts/BarChartComponent";
+import PieChartComponent from "@/components/charts/PieChartComponent";
 import { ContentLayout } from "@/components/layout/ContentLayout";
 import DataFilter from "@/components/misc/DataFilter";
 import { Label } from "@/components/ui/label";
 import { useGetDangerIdentificationsCountedByType } from "@/hooks/sms/useGetDangerIdentificationsCountedByType";
+import { useGetPostRiskCountByDateRange } from "@/hooks/sms/useGetPostRiskByDateRange";
+import { useGetRiskCountByDateRange } from "@/hooks/sms/useGetRiskByDateRange";
 import { useGetVoluntaryReportingStatsByYear } from "@/hooks/sms/useGetVoluntaryReportingStatisticsByYear";
-import { useGetReportsCountedByArea } from "@/hooks/sms/useGetReportsCountedByArea";
-import { format, startOfMonth } from "date-fns";
-import { Loader2 } from "lucide-react";
+import { useGetVoluntaryReportsCountedByAirportLocation } from "@/hooks/sms/useGetVoluntaryReportsCountedByAirportLocation";
+import { Loader2, Check, ChevronsUpDown, X } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useGetRiskCountByDateRange } from "@/hooks/sms/useGetRiskByDateRange";
-import PieChartComponent from "@/components/charts/PieChartComponent";
-import { useGetPostRiskCountByDateRange } from "@/hooks/sms/useGetPostRiskByDateRange";
+import DynamicBarChart from "../../../../../../components/charts/DynamicBarChart";
+import { format, startOfMonth } from "date-fns";
 import { useGetIdentificationStatsBySourceName } from "@/hooks/sms/useGetIdentificationStatsBySoruceName";
 import { useGetIdentificationStatsBySourceType } from "@/hooks/sms/useGetIdentificationStatsBySoruceType";
-import DynamicBarChart from "@/components/charts/DynamicBarChart";
-import { useGetTotalReportsStatsByYear } from "@/hooks/sms/useGetTotalReportsStatsByYear";
+import { useGetReportsCountedByArea } from "@/hooks/sms/useGetReportsCountedByArea";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { X } from "lucide-react";
-import { Check, ChevronsUpDown } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -36,53 +34,68 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-const ObligatoryReportStats = () => {
-  const [selectedGraphics, setSelectedGraphics] = useState<string[]>([]);
+interface Params {
+  from?: string;
+  to?: string;
+  [key: string]: string | undefined;
+}
+
+const graphicsOptions = [
+  { 
+    id: "Todos", 
+    label: "Todos los gráficos",
+    description: "Mostrar todos los gráficos disponibles"
+  },
+  { 
+    id: "location", 
+    label: "Identificados por localizacion",
+    description: "Número de reportes por ubicación en el aeropuerto"
+  },
+  { 
+    id: "tipo", 
+    label: "Según su Tipo",
+    description: "Número de reportes clasificados por tipo de peligro"
+  },
+  { 
+    id: "pre-riesgo", 
+    label: "Por Índice de Riesgo Pre-Mitigación",
+    description: "Distribución de reportes por nivel de riesgo antes de mitigación"
+  },
+  { 
+    id: "post-riesgo", 
+    label: "Por Índice de Riesgo Post-Mitigación",
+    description: "Distribución de reportes por nivel de riesgo después de mitigación"
+  },
+  { 
+    id: "bar-chart", 
+    label: "Identificados vs Gestionados",
+    description: "Comparación entre reportes identificados y gestionados"
+  },
+  { 
+    id: "pre-riesgo-bar", 
+    label: "Número de Reportes por Índice de Riesgo",
+    description: "Cantidad de reportes por nivel de riesgo pre-mitigación"
+  },
+  { 
+    id: "area-bar", 
+    label: "Número de Reportes vs Área",
+    description: "Distribución de reportes por área responsable"
+  },
+  { 
+    id: "fuente-id", 
+    label: "Reportes vs Fuente de identificación",
+    description: "Número de reportes por fuente de identificación"
+  },
+  { 
+    id: "metodo-id", 
+    label: "Reportes vs Método de identificación",
+    description: "Número de reportes por método de detección"
+  },
+];
+
+const Statistics = () => {
+  const [selectedGraphics, setSelectedGraphics] = useState<string[]>(["Todos"]);
   const [isOpen, setIsOpen] = useState(false);
-
-  const graphicsOptions = [
-    {
-      id: "identified-vs-managed",
-      label: "Identificados vs Gestionados",
-      description: "comparación entre el número de informes identificados y el número de informes gestionados",
-    },
-    {
-      id: "by-danger-type",
-      label: "Según su Tipo",
-      description: "número de informes clasificados por tipo específico",
-    },
-    {
-      id: "by-area",
-      label: "Identificados por Área",
-      description: "número de informes por cada área específica",
-    },
-    {
-      id: "pre-mitigation-risk",
-      label: "Por Índice de Riesgo Pre-Mitigación",
-      description: "número de informes clasificados por índice de riesgo antes de cualquier medida de mitigación",
-    },
-    {
-      id: "post-mitigation-risk",
-      label: "Por Índice de Riesgo Post-Mitigación",
-      description: "número de informes clasificados por índice de riesgo después de aplicar medidas de mitigación",
-    },
-    {
-      id: "by-source-type",
-      label: "Por Tipo de Fuente",
-      description: "número de informes clasificados por tipo de fuente",
-    },
-    {
-      id: "by-source-name",
-      label: "Por Nombre de Fuente",
-      description: "número de informes clasificados por nombre de fuente",
-    },
-  ];
-
-  interface Params {
-    from?: string;
-    to?: string;
-    [key: string]: string | undefined;
-  }
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
@@ -90,6 +103,55 @@ const ObligatoryReportStats = () => {
     from: format(startOfMonth(new Date()), "yyyy-MM-dd"),
     to: format(new Date(), "yyyy-MM-dd"),
   });
+
+  // Hooks de datos
+  const {
+    data: barChartData,
+    isLoading: isLoadingBarChart,
+    refetch: refetchBarChart,
+  } = useGetVoluntaryReportingStatsByYear(params.from!, params.to!, "voluntary");
+
+  const {
+    data: dynamicData,
+    isLoading: isLoadingDynamicData,
+    refetch: refetchDynamicChart,
+  } = useGetDangerIdentificationsCountedByType(params.from!, params.to!, "voluntary");
+
+  const {
+    data: pieCharData,
+    isLoading: isLoadingPieCharData,
+    refetch: refetchPieChart,
+  } = useGetReportsCountedByArea(params.from!, params.to!, "voluntary");
+
+  const {
+    data: riskData,
+    isLoading: isLoadingRisk,
+    refetch: refetchRisk,
+  } = useGetRiskCountByDateRange(params.from!, params.to!, "voluntary");
+
+  const {
+    data: postRiskData,
+    isLoading: isLoadingPostRisk,
+    refetch: refetchPostRisk,
+  } = useGetPostRiskCountByDateRange(params.from!, params.to!, "voluntary");
+
+  const {
+    data: reportsByLocationData,
+    isLoading: isLoadingReportsByLocationData,
+    refetch: refetchAirportLocationData,
+  } = useGetVoluntaryReportsCountedByAirportLocation(params.from!, params.to!);
+
+  const {
+    data: reportsBySourceName,
+    isLoading: isLoadingSourceName,
+    refetch: refetchDynamicSourceNameChart,
+  } = useGetIdentificationStatsBySourceName(params.from!, params.to!, "voluntary");
+
+  const {
+    data: reportsBySourceType,
+    isLoading: isLoadingSourceType,
+    refetch: refetchDynamicSourceTypeChart,
+  } = useGetIdentificationStatsBySourceType(params.from!, params.to!, "voluntary");
 
   useEffect(() => {
     const defaultFrom = format(startOfMonth(new Date()), "yyyy-MM-dd");
@@ -100,300 +162,92 @@ const ObligatoryReportStats = () => {
       newParams[key] = value;
     });
 
-    const finalParams: Params = {
+    setParams({
       from: newParams.from || defaultFrom,
       to: newParams.to || defaultTo,
-    };
-    setParams(finalParams);
+    });
   }, [searchParams, pathname]);
 
-  // Hook calls for data fetching
-  const {
-    data: barChartData,
-    isLoading: isLoadingBarChart,
-    isError: isErrorBarChart,
-    refetch: refetchBarChart,
-  } = useGetVoluntaryReportingStatsByYear(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "obligatory"
-  );
-
-  const {
-    data: reportsByTypeData,
-    isLoading: isLoadingReportsByTypeData,
-    isError: isErrorReportsByTypeData,
-    refetch: refetchReportsByTypeData,
-  } = useGetDangerIdentificationsCountedByType(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "obligatory"
-  );
-
-  const {
-    data: reportsByAreaData,
-    isLoading: isLoadingReportsByAreaData,
-    isError: isErrorReportsByAreaData,
-    refetch: refetchReportsByAreaData,
-  } = useGetReportsCountedByArea(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "obligatory"
-  );
-
-  const {
-    data: reportsByRiskData,
-    isLoading: isLoadingReportsByRiskData,
-    isError: isErrorReportsByRiskData,
-    refetch: refetchReportsByRiskData,
-  } = useGetRiskCountByDateRange(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "obligatory"
-  );
-
-  const {
-    data: reportsByPostRiskData,
-    isLoading: isLoadingReportsByPostRiskData,
-    isError: isErrorReportsByPostRiskData,
-    refetch: refetchReportsByPostRiskData,
-  } = useGetPostRiskCountByDateRange(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "obligatory"
-  );
-
-  const {
-    data: reportSourceNameData,
-    isLoading: isLoadingReportSourceNameData,
-    isError: isErrorReportSourceNameData,
-    refetch: refetchReportSourceNameChart,
-  } = useGetIdentificationStatsBySourceName(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "obligatory"
-  );
-
-  const {
-    data: reportSourceTypeData,
-    isLoading: isLoadingReportSourceTypeData,
-    isError: isErrorReportSourceTypeData,
-    refetch: refetchReportSourceTypeChart,
-  } = useGetIdentificationStatsBySourceType(
-    params.from || format(startOfMonth(new Date()), "yyyy-MM-dd"),
-    params.to || format(new Date(), "yyyy-MM-dd"),
-    "obligatory"
-  );
-
   useEffect(() => {
-    refetchBarChart();
-    refetchReportsByTypeData();
-    refetchReportsByAreaData();
-    refetchReportsByRiskData();
-    refetchReportsByPostRiskData();
-    refetchReportSourceNameChart();
-    refetchReportSourceTypeChart();
-  }, [
-    params.from,
-    params.to,
-    refetchBarChart,
-    refetchReportsByTypeData,
-    refetchReportsByAreaData,
-    refetchReportsByRiskData,
-    refetchReportsByPostRiskData,
-    refetchReportSourceNameChart,
-    refetchReportSourceTypeChart,
-  ]);
+    const refetchFunctions = [
+      refetchBarChart,
+      refetchPieChart,
+      refetchDynamicChart,
+      refetchRisk,
+      refetchPostRisk,
+      refetchAirportLocationData,
+      refetchDynamicSourceNameChart,
+      refetchDynamicSourceTypeChart,
+    ];
 
-  const handleSelectChange = (value: string) => {
-    if (!selectedGraphics.includes(value)) {
-      setSelectedGraphics([...selectedGraphics, value]);
+    refetchFunctions.forEach(refetch => refetch());
+  }, [params]);
+
+  const handleSelectChange = (id: string) => {
+    if (id === "Todos") {
+      setSelectedGraphics(["Todos"]);
+    } else {
+      setSelectedGraphics(prev => {
+        // Si ya está seleccionado, lo removemos
+        if (prev.includes(id)) {
+          const newSelection = prev.filter(item => item !== id);
+          return newSelection.length === 0 ? ["Todos"] : newSelection;
+        }
+        // Si no está seleccionado, lo agregamos y removemos "Todos" si está presente
+        const newSelection = [...prev.filter(item => item !== "Todos"), id];
+        return newSelection;
+      });
     }
   };
 
   const removeGraphic = (id: string) => {
-    setSelectedGraphics(selectedGraphics.filter(graphicId => graphicId !== id));
+    setSelectedGraphics(prev => {
+      const newSelection = prev.filter(item => item !== id);
+      return newSelection.length === 0 ? ["Todos"] : newSelection;
+    });
   };
+
+  const shouldShow = (id: string) => 
+    selectedGraphics.includes("Todos") || selectedGraphics.includes(id);
 
   const renderGraphic = (id: string) => {
     switch (id) {
-      case "identified-vs-managed":
+      case "bar-chart":
         return (
-          <div className="flex flex-col justify-center items-center p-4 rounded-lg shadow border">
+          <div className="p-4 rounded-lg shadow border">
             {isLoadingBarChart ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
             ) : barChartData ? (
-              params.from &&
-              params.to && (
-                <BarChartComponent
-                  from={params.from}
-                  to={params.to}
-                  height="100%"
-                  width="100%"
-                  data={barChartData}
-                  title="Peligros Identificados vs Gestionados"
-                />
-              )
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                Ha ocurrido un error al cargar los datos de Peligros
-                Identificados vs Gestionados...
-              </p>
-            )}
-          </div>
-        );
-      case "by-danger-type":
-        return (
-          <div className="p-4 rounded-lg shadow border">
-            {isLoadingReportsByTypeData ? (
-              <div className="flex justify-center items-center h-48">
-                <Loader2 className="size-24 animate-spin" />
-              </div>
-            ) : reportsByTypeData && reportsByTypeData.length > 0 ? (
-              <DynamicBarChart
-                height="70%"
-                width="70%"
-                data={reportsByTypeData}
-                title="Número de Reportes vs Tipo de Peligro"
+              <BarChartComponent
+                from={params.from!}
+                to={params.to!}
+                height="100%"
+                width="100%"
+                data={barChartData}
+                title="Peligros Identificados vs Gestionados"
               />
             ) : (
-              <p className="text-lg text-muted-foreground">
-                No hay datos para mostrar.
+              <p className="text-sm text-muted-foreground">
+                Ha ocurrido un error al cargar los datos.
               </p>
             )}
           </div>
         );
-      case "by-area":
+      case "tipo":
         return (
           <div className="p-4 rounded-lg shadow border">
-            {isLoadingReportsByAreaData ? (
+            {isLoadingDynamicData ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
-            ) : reportsByAreaData && reportsByAreaData.length > 0 ? (
-              <DynamicBarChart
-                height="70%"
-                width="70%"
-                data={reportsByAreaData}
-                title="Número de Reportes vs Área de Identificación"
-              />
-            ) : (
-              <p className="text-lg text-muted-foreground">
-                No hay datos para mostrar.
-              </p>
-            )}
-            {isErrorReportsByAreaData && (
-              <p className="text-sm text-muted-foreground">
-                Ha ocurrido un error al cargar los peligros identificados...
-              </p>
-            )}
-          </div>
-        );
-      case "pre-mitigation-risk":
-        return (
-          <>
-            <div className="flex flex-col justify-center items-center p-4 rounded-lg shadow border">
-              {isLoadingReportsByRiskData ? (
-                <div className="flex justify-center items-center h-48">
-                  <Loader2 className="size-24 animate-spin" />
-                </div>
-              ) : reportsByRiskData && reportsByRiskData.length > 0 ? (
-                <PieChartComponent
-                  radius={120}
-                  height="50%"
-                  width="50%"
-                  data={reportsByRiskData}
-                  title="Porcentaje de Índice de Riesgo Pre-Mitigación"
-                />
-              ) : (
-                <p className="text-lg text-muted-foreground">
-                  No hay datos para mostrar.
-                </p>
-              )}
-              {isErrorReportsByRiskData && (
-                <p className="text-sm text-muted-foreground">
-                  Ha ocurrido un error al cargar el número de reportes por índice
-                  de riesgo...
-                </p>
-              )}
-            </div>
-            <div className="flex-col p-4 rounded-lg shadow border">
-              {isLoadingReportsByRiskData ? (
-                <div className="flex justify-center items-center h-48">
-                  <Loader2 className="size-24 animate-spin" />
-                </div>
-              ) : reportsByRiskData && reportsByRiskData.length > 0 ? (
-                <DynamicBarChart
-                  height="100%"
-                  width="100%"
-                  data={reportsByRiskData}
-                  title="Número de Reportes por Cada Índice de Riesgo (Pre-Mitigación)"
-                />
-              ) : (
-                <p className="text-lg text-muted-foreground">
-                  No hay datos para mostrar.
-                </p>
-              )}
-            </div>
-          </>
-        );
-      case "post-mitigation-risk":
-        return (
-          <>
-            <div className="flex flex-col justify-center items-center p-4 rounded-lg shadow border">
-              {isLoadingReportsByPostRiskData ? (
-                <div className="flex justify-center items-center h-48">
-                  <Loader2 className="size-24 animate-spin" />
-                </div>
-              ) : reportsByPostRiskData && reportsByPostRiskData.length > 0 ? (
-                <PieChartComponent
-                  radius={120}
-                  height="100%"
-                  width="100%"
-                  data={reportsByPostRiskData}
-                  title="Porcentaje de Índice de Riesgo (Post-Mitigación)"
-                />
-              ) : (
-                <p className="text-lg text-muted-foreground">
-                  No hay datos para mostrar.
-                </p>
-              )}
-            </div>
-            <div className="flex-col p-4 rounded-lg shadow border">
-              {isLoadingReportsByPostRiskData ? (
-                <div className="flex justify-center items-center h-48">
-                  <Loader2 className="size-24 animate-spin" />
-                </div>
-              ) : reportsByPostRiskData && reportsByPostRiskData.length > 0 ? (
-                <DynamicBarChart
-                  height="100%"
-                  width="100%"
-                  data={reportsByPostRiskData}
-                  title="Número de Reportes por Cada Índice de Riesgo (Post-Mitigación)"
-                />
-              ) : (
-                <p className="text-lg text-muted-foreground">
-                  No hay datos para mostrar.
-                </p>
-              )}
-            </div>
-          </>
-        );
-      case "by-source-type":
-        return (
-          <div className="flex-col p-4 rounded-lg shadow border">
-            {isLoadingReportSourceTypeData ? (
-              <div className="flex justify-center items-center h-48">
-                <Loader2 className="size-24 animate-spin" />
-              </div>
-            ) : reportSourceTypeData && reportSourceTypeData.length > 0 ? (
+            ) : dynamicData?.length ? (
               <DynamicBarChart
                 height="100%"
                 width="100%"
-                data={reportSourceTypeData}
-                title="Número de Reportes vs Tipo de Fuente"
+                data={dynamicData}
+                title="Número de Reportes vs Tipo de Peligros"
               />
             ) : (
               <p className="text-lg text-muted-foreground">
@@ -402,19 +256,147 @@ const ObligatoryReportStats = () => {
             )}
           </div>
         );
-      case "by-source-name":
+      case "area-bar":
         return (
-          <div className="flex-col p-4 rounded-lg shadow border">
-            {isLoadingReportSourceNameData ? (
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingPieCharData ? (
               <div className="flex justify-center items-center h-48">
                 <Loader2 className="size-24 animate-spin" />
               </div>
-            ) : reportSourceNameData && reportSourceNameData.length > 0 ? (
+            ) : pieCharData?.length ? (
               <DynamicBarChart
                 height="100%"
                 width="100%"
-                data={reportSourceNameData}
-                title="Número de Reportes Voluntarios vs Nombre de la Fuente"
+                data={pieCharData}
+                title="Número de Reportes vs Áreas"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+        );
+      case "location":
+        return (
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingReportsByLocationData ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : reportsByLocationData?.length ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={reportsByLocationData}
+                title="Número de Reportes vs Localización"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+        );
+      case "pre-riesgo":
+        return (
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingRisk ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : riskData?.length ? (
+              <PieChartComponent
+                radius={120}
+                height="50%"
+                width="50%"
+                data={riskData}
+                title="Porcentaje de Índice de Riesgo Pre-Mitigación"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+        );
+      case "pre-riesgo-bar":
+        return (
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingRisk ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : riskData?.length ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={riskData}
+                title="Número de Reportes por Cada Índice de Riesgo"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+        );
+      case "post-riesgo":
+        return (
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingPostRisk ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : postRiskData?.length ? (
+              <PieChartComponent
+                radius={120}
+                height="50%"
+                width="50%"
+                data={postRiskData}
+                title="Índice de Riesgo Post-Mitigación"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+        );
+      case "fuente-id":
+        return (
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingSourceName ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : reportsBySourceName?.length ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={reportsBySourceName}
+                title="Reportes vs Fuente de Identificación"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+        );
+      case "metodo-id":
+        return (
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingSourceType ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : reportsBySourceType?.length ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={reportsBySourceType}
+                title="Reportes vs Método de Identificación"
               />
             ) : (
               <p className="text-lg text-muted-foreground">
@@ -429,7 +411,7 @@ const ObligatoryReportStats = () => {
   };
 
   return (
-    <ContentLayout title="Gráficos Estadísticos de los Reportes">
+    <ContentLayout title="Gráficos Estadísticos de los Reportes Voluntarios">
       <div className="flex flex-col space-y-4 mb-6">
         <div className="flex justify-center items-center">
           <div className="flex flex-col w-full max-w-md">
@@ -453,8 +435,12 @@ const ObligatoryReportStats = () => {
                   aria-expanded={isOpen}
                   className="w-full justify-between"
                 >
-                  {selectedGraphics.length > 0 ? (
-                    <span>{selectedGraphics.length} gráficos seleccionados</span>
+                  {selectedGraphics.includes("Todos") ? (
+                    <span>Todos los gráficos</span>
+                  ) : selectedGraphics.length > 0 ? (
+                    <span>
+                      {selectedGraphics.length} gráfico{selectedGraphics.length !== 1 ? 's' : ''} seleccionado{selectedGraphics.length !== 1 ? 's' : ''}
+                    </span>
                   ) : (
                     "Seleccionar gráficos..."
                   )}
@@ -471,15 +457,7 @@ const ObligatoryReportStats = () => {
                         <CommandItem
                           key={option.id}
                           value={option.id}
-                          onSelect={() => {
-                            if (!selectedGraphics.includes(option.id)) {
-                              setSelectedGraphics([...selectedGraphics, option.id]);
-                            } else {
-                              setSelectedGraphics(
-                                selectedGraphics.filter((id) => id !== option.id)
-                              );
-                            }
-                          }}
+                          onSelect={() => handleSelectChange(option.id)}
                         >
                           <Check
                             className={cn(
@@ -489,7 +467,12 @@ const ObligatoryReportStats = () => {
                                 : "opacity-0"
                             )}
                           />
-                          {option.label}
+                          <div className="flex flex-col">
+                            <span>{option.label}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {option.description}
+                            </span>
+                          </div>
                         </CommandItem>
                       ))}
                     </CommandGroup>
@@ -499,15 +482,18 @@ const ObligatoryReportStats = () => {
             </Popover>
             <Button
               variant="outline"
-              onClick={() => setSelectedGraphics([])}
-              disabled={selectedGraphics.length === 0}
+              onClick={() => setSelectedGraphics(["Todos"])}
+              disabled={
+                selectedGraphics.length === 1 &&
+                selectedGraphics.includes("Todos")
+              }
             >
               Limpiar selección
             </Button>
           </div>
         </div>
 
-        {selectedGraphics.length > 0 && (
+        {!selectedGraphics.includes("Todos") && selectedGraphics.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {selectedGraphics.map((graphicId) => {
               const graphic = graphicsOptions.find((g) => g.id === graphicId);
@@ -531,21 +517,34 @@ const ObligatoryReportStats = () => {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
-        {selectedGraphics.length === 0 ? (
+      <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
+        {selectedGraphics.includes("Todos") ? (
+          <>
+            {graphicsOptions
+              .filter(option => option.id !== "Todos")
+              .map(option => (
+                <div key={option.id}>
+                  {renderGraphic(option.id)}
+                </div>
+              ))
+            }
+          </>
+        ) : selectedGraphics.length > 0 ? (
+          selectedGraphics.map(graphicId => (
+            <div key={graphicId}>
+              {renderGraphic(graphicId)}
+            </div>
+          ))
+        ) : (
           <div className="col-span-full flex justify-center items-center p-8 border rounded-lg">
             <p className="text-muted-foreground">
               Seleccione al menos un gráfico para visualizar los datos
             </p>
           </div>
-        ) : (
-          selectedGraphics.map((graphicId) => (
-            <div key={graphicId}>{renderGraphic(graphicId)}</div>
-          ))
         )}
       </div>
     </ContentLayout>
   );
 };
 
-export default ObligatoryReportStats;
+export default Statistics;

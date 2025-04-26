@@ -130,7 +130,7 @@ const VoluntaryReportIndicators = () => {
         },
         {
           name: "Reportes Gestionados",
-          value: barChartData.closed_reports, // Corregido: usa closed_reports
+          value: barChartData.closed_reports,
         },
       ]);
       setResult(
@@ -139,8 +139,7 @@ const VoluntaryReportIndicators = () => {
     } else {
       setResultArrayData([]);
     }
-    console.log(resultArrayData, "resultArrayData");
-  }, [barChartData, refetchBarChart, resultArrayData]); // Agregado barChartData como dependencia
+  }, [barChartData, refetchBarChart]); // Removed resultArrayData and refetchBarChart
 
   return (
     <>
@@ -154,7 +153,7 @@ const VoluntaryReportIndicators = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
           {/* Gráfico de Barras (Peligros Identificados) */}
           <div className=" flex flex-col justify-center items-center p-4 rounded-lg shadow border">
             {isLoadingBarChart ? (
@@ -193,50 +192,11 @@ const VoluntaryReportIndicators = () => {
               <>
                 <PieChartComponent
                   radius={120}
-                  height="50%"
-                  width="50%"
+                  height="100%"
+                  width="100%"
                   data={resultArrayData}
                   title="Porcentaje de Peligros Identificados vs Gestionados"
                 />
-                <div className="flex justify-center items-center p-4 rounded-lg shadow-md">
-                  {result && result >= 90 ? (
-                    <div
-                      className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
-                      role="alert"
-                    >
-                      <strong className="font-bold">¡Meta Alcanzada! </strong>
-                      <span className="block sm:inline">
-                        Se ha alcanzado la meta de gestionar el 90% de reportes
-                        gestionados.
-                      </span>
-                      <span className="block sm:inblock">
-                        El ({result}%) de los reportes han sido gestionados
-                        entre las fechas siguientes:
-                        <div className="mt-2 p-2 bg-purple-50 rounded-md border border-gray-200 shadow-sm text-center text-black">
-                          {formatDate(params.from || "")} -{" "}
-                          {formatDate(params.to || "")}
-                        </div>
-                      </span>
-                    </div>
-                  ) : (
-                    <div
-                      className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                      role="alert"
-                    >
-                      <strong className="font-bold">Segun el gráfico: </strong>
-                      <span className="block sm:inline">
-                        Aun no se ha alcanzado la gestión del 90% de reportes
-                        identificados.
-                        <div className="mt-2 p-2 bg-purple-50 rounded-md border border-gray-200 shadow-sm text-center text-black">
-                          En rango de fechas del{" "}
-                          {dateFormat(params.from || "", "PPP")}
-                          {""} al {""}
-                          {dateFormat(params.to || "", "PPP")}
-                        </div>
-                      </span>
-                    </div>
-                  )}
-                </div>
               </>
             ) : (
               <p className="text-lg text-muted-foreground">
@@ -251,6 +211,48 @@ const VoluntaryReportIndicators = () => {
             )}
           </div>
         </div>
+        {resultArrayData && resultArrayData?.length > 0 && (
+          <div className="flex justify-center items-center p-4 rounded-lg shadow-md">
+            {result && result >= 90 ? (
+              <div
+                className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+                role="alert"
+              >
+                <strong className="font-bold">¡Meta Alcanzada! </strong>
+                <span className="block sm:inline">
+                  Se ha alcanzado la meta el 90% de reportes han sido
+                  gestionados.
+                </span>
+                <span className="block sm:inblock">
+                  El ({result}%) de los reportes han sido gestionados entre las
+                  fechas siguientes:
+                  <div className="mt-2 p-2 bg-purple-50 rounded-md border border-gray-200 shadow-sm text-center text-black">
+                    {formatDate(params.from || "")} -{" "}
+                    {formatDate(params.to || "")}
+                  </div>
+                </span>
+              </div>
+            ) : (
+              <div
+                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                role="alert"
+              >
+                <strong className="font-bold">Segun el gráfico: </strong>
+                <span className="block sm:inline">
+                  Aun no se ha alcanzado la gestión del 90% de reportes
+                  identificados.
+                  <div className="mt-2 p-2 bg-purple-50 rounded-md border border-gray-200 shadow-sm text-center text-black">
+                    En rango de fechas del{" "}
+                    {dateFormat(params.from || "", "PPP")}
+                    {""} al {""}
+                    {dateFormat(params.to || "", "PPP")}
+                  </div>
+                </span>
+              </div>
+            ) 
+            }
+          </div>
+        )}
       </ContentLayout>
     </>
   );
