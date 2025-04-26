@@ -106,8 +106,8 @@ const BarChartComponent = ({
     : [];
   return (
     <>
-      <h1 className="text-xl font-semibold">{title}</h1>
-      <ResponsiveContainer width={width} height={height} aspect={3}>
+      <h1 className="text-sm font-semibold">{title}</h1>
+      <ResponsiveContainer width={width} height={height} aspect={1}>
         {values ? (
           <BarChart
             width={300}
@@ -172,7 +172,6 @@ const BarChartComponent = ({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>ID</TableHead>
                   <TableHead>Numero de Reporte</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead>Ver mas</TableHead>
@@ -181,7 +180,6 @@ const BarChartComponent = ({
               <TableBody>
                 {barData.map((report) => (
                   <TableRow key={report.id}>
-                    <TableCell>{report.id}</TableCell>
                     <TableCell>RVP-{report.report_number}</TableCell>
                     <TableCell>{report.status}</TableCell>
                     <TableCell>

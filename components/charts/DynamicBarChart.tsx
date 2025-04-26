@@ -12,6 +12,7 @@ import {
   YAxis,
 } from "recharts";
 import { useState } from "react";
+import { COLORS } from "@/lib/utils";
 
 // Definición de la interfaz para las props del componente
 interface DynamicBarChartProps {
@@ -19,23 +20,12 @@ interface DynamicBarChartProps {
   title?: string;
   height: string;
   width: string;
+  aspect?: number;
   activeDecimal?: boolean;
 }
 
 // Array de colores para las barras
-const colors: string[] = [
-  "#89f4c7",
-  "#8ae3d0",
-  "#8bd2d9",
-  "#8cc1e3",
-  "#8dafec",
-  "#8e9ef5",
-  "#8f8dfe",
-  "#ca829d",
-  "#c6ff58",
-  "#328aa8",
-  "#9da832",
-];
+
 
 
 const DynamicBarChart = ({
@@ -43,7 +33,8 @@ const DynamicBarChart = ({
   title,
   height,
   width,
-  activeDecimal
+  activeDecimal,
+  aspect
 }: DynamicBarChartProps) => {
   const { theme } = useTheme();
   const [clickedBarName, setClickedBarName] = useState<string | null>(null);
@@ -56,11 +47,11 @@ const DynamicBarChart = ({
 
   return (
     <>
-      <h1 className="text-xl font-semibold">{title}</h1>
+      <h1 className="text-sm font-semibold">{title}</h1>
       {/* {clickedBarName && (
         <p className="mt-2">Barra seleccionada: {clickedBarName}</p>
       )} */}
-      <ResponsiveContainer aspect={4}>
+      <ResponsiveContainer aspect={aspect || 1}>
         <BarChart
           width={730}
           height={250}
@@ -87,7 +78,7 @@ const DynamicBarChart = ({
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                fill={colors[index % colors.length]}
+                fill={COLORS[index % COLORS.length]}
               />
             ))}
           </Bar>

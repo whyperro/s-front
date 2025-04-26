@@ -1,17 +1,12 @@
 "use client";
 
+import { COLORS } from "@/lib/utils";
 import { pieChartData, ReportsByArea } from "@/types";
 import { Tooltip } from "@radix-ui/react-tooltip";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
-const COLORS: string[] = [
-  "#2cff99",
-  "#39e5aa",
-  "#47cbbb",
-  "#54b2cc",
-];
 
 interface CustomizedLabelProps {
   cx: number;
@@ -79,8 +74,8 @@ const PieChartComponent = ({
   };
   return (
     <>
-      <h1 className="text-xl font-semibold">{title}</h1>
-      <ResponsiveContainer aspect={2}>
+      <h1 className="text-sm font-semibold">{title}</h1>
+      <ResponsiveContainer aspect={1}>
         <PieChart width={400} height={400}>
           {data ? (
             <Pie
