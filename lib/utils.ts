@@ -82,3 +82,18 @@ export function getResult(index: string) {
     return "ACEPTABLE";
   }
 }
+
+// COLORES PARA LOS GRAFICOS ESTADISTICOS DYNAMIC CHART & PIE CHART COMPONENT
+export const COLORS: string[] = [ // Agregamos 'export' aquí
+  "#7bcac4",
+  "#9e90dd",
+  "#ba61f0",
+  "#aa94eb",
+  "#b685f5",
+  "#92b1d8",
+  "#98aadd",
+  "#9ea2e1",
+  "#a49be6",
+  "#b685f5",
+  "#bc7dfa",
+];
