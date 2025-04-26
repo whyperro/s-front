@@ -13,7 +13,7 @@ import { BarChart, Bar, Legend, XAxis, YAxis, Tooltip, ResponsiveContainer, Cart
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { SummaryCard } from "@/components/cards/SummaryCard";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 import months, { getMonthByNumber } from "@/components/cards/ConfigMonths";
 import type { CashMovement } from "@/types";
 
@@ -162,20 +162,6 @@ export default function AircraftReportPage() {
       );
     }
     return null;
-  };
-
-  const formatDate = (dateInput: string | Date, daysToAdd: number = 0) => {
-    let date = dateInput instanceof Date ? dateInput : new Date(dateInput);
-    
-    if (daysToAdd !== 0) {
-      date = new Date(date.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
-    }
-  
-    return date.toLocaleDateString("es-ES", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
   };
 
   if (isLoading) {

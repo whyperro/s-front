@@ -7,11 +7,9 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, ArrowLeft, Loader2, X } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Tooltip, } from "recharts";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 import DateFilter from "@/components/forms/CreateFilterDates";
 import { useState } from "react";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const MovementsByAccountPage = () => {
@@ -79,20 +77,6 @@ const MovementsByAccountPage = () => {
     if (data && data.name) {
       setSelectedAccount(data.name === selectedAccount ? null : data.name);
     }
-  };
-
-  const formatDate = (dateInput: string | Date, daysToAdd: number = 0) => {
-    let date = dateInput instanceof Date ? dateInput : new Date(dateInput);
-    
-    if (daysToAdd !== 0) {
-      date = new Date(date.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
-    }
-  
-    return date.toLocaleDateString("es-ES", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
   };
 
   if (isLoading) {

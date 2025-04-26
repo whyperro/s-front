@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Loader2, Plane,  PlaneIcon, } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
-import { formatCurrency } from "@/lib/utils"
+import { formatCurrency, formatDate } from "@/lib/utils"
 import { useGetCreditStatisticsFlights } from "@/hooks/administracion/creditos/useGetCreditStatisticsFlights"
 
 const CreditStatisticsFlightPage = () => {
@@ -66,21 +66,6 @@ const CreditStatisticsFlightPage = () => {
     setActiveBar(dataKey)
     setShowCreditsTable(true)
   }
-
-  // Función para formatear fechas
-  const formatDate = (dateInput: string | Date, daysToAdd: number = 0) => {
-    let date = dateInput instanceof Date ? dateInput : new Date(dateInput);
-    
-    if (daysToAdd !== 0) {
-      date = new Date(date.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
-    }
-  
-    return date.toLocaleDateString("es-ES", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
 
   // Colores para las barras
   const barColors = {

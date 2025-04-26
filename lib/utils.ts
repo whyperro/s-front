@@ -96,7 +96,7 @@ export function getCurrencySymbol(coinType: string): string {
   return symbolMap[coinType.toUpperCase()] || "";
 }
 
-//funcion de joselynmirror :3 formateo de simbolo y de número  
+//funcion formateo de simbolo y de número  
 export function formatCurrencyJ(
   value: number | string, // Acepta ambos tipos
   coinType: string,
@@ -120,3 +120,18 @@ export function formatCurrencyJ(
 
   return `${formattedValue} ${symbol}`.trim();
 }
+
+// Función para formatear fechas, la forma correcta de implementar es: {formatDate(datexxx,1)}
+export const formatDate = (dateInput: string | Date, daysToAdd: number = 0) => {
+  let date = dateInput instanceof Date ? dateInput : new Date(dateInput);
+  
+  if (daysToAdd !== 0) {
+    date = new Date(date.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+  }
+
+  return date.toLocaleDateString("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
