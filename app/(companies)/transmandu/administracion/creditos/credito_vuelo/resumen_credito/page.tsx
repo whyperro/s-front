@@ -68,14 +68,19 @@ const CreditStatisticsFlightPage = () => {
   }
 
   // Función para formatear fechas
-  const formatDate = (dateString: Date) => {
-    const date = new Date(dateString)
+  const formatDate = (dateInput: string | Date, daysToAdd: number = 0) => {
+    let date = dateInput instanceof Date ? dateInput : new Date(dateInput);
+    
+    if (daysToAdd !== 0) {
+      date = new Date(date.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+    }
+  
     return date.toLocaleDateString("es-ES", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-    })
-  }
+    });
+  };
 
   // Colores para las barras
   const barColors = {
@@ -316,7 +321,7 @@ const CreditStatisticsFlightPage = () => {
                       </TableCell>
                       <TableCell>{formatCurrency(credit.debt)}</TableCell>
                       <TableCell>{formatCurrency(credit.payed_amount)}</TableCell>
-                      <TableCell>{formatDate(credit.deadline)}</TableCell>
+                      <TableCell>{formatDate(credit.deadline,1)}</TableCell>
                       <TableCell>{(credit.details)}</TableCell>
                     </TableRow>
                   ))}

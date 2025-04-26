@@ -81,6 +81,20 @@ const MovementsByAccountPage = () => {
     }
   };
 
+  const formatDate = (dateInput: string | Date, daysToAdd: number = 0) => {
+    let date = dateInput instanceof Date ? dateInput : new Date(dateInput);
+    
+    if (daysToAdd !== 0) {
+      date = new Date(date.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+    }
+  
+    return date.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -358,9 +372,7 @@ const MovementsByAccountPage = () => {
                           {selectedAccountMovements.map((movement) => (
                             <TableRow key={movement.id}>
                               <TableCell>
-                                {format(new Date(movement.date), "dd/MM/yyyy", {
-                                  locale: es,
-                                })}
+                                {formatDate(movement.date,1)}
                               </TableCell>
                               <TableCell>{movement.category}</TableCell>
                               <TableCell>{movement.sub_category}</TableCell>

@@ -175,8 +175,13 @@ export default function ClientFlightReportPage() {
   };
 
   // Función para formatear fechas
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+  const formatDate = (dateInput: string | Date, daysToAdd: number = 0) => {
+    let date = dateInput instanceof Date ? dateInput : new Date(dateInput);
+    
+    if (daysToAdd !== 0) {
+      date = new Date(date.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+    }
+  
     return date.toLocaleDateString("es-ES", {
       day: "2-digit",
       month: "2-digit",
@@ -413,7 +418,7 @@ export default function ClientFlightReportPage() {
                         <TableCell className="font-medium">
                           {flight.flight_number}
                         </TableCell>
-                        <TableCell>{formatDate(flight.date)}</TableCell>
+                        <TableCell>{formatDate(flight.date,1)}</TableCell>
                         <TableCell>{flight.aircraft?.acronym || "-"}</TableCell>
                         <TableCell>
                           <Badge

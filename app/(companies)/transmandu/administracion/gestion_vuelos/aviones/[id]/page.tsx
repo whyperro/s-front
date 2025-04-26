@@ -1,132 +1,147 @@
 "use client";
 
-import { useParams } from "next/navigation"
-import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById"
-import { useGetAircraftStatistics } from "@/hooks/administracion/vuelos/useGetAircraftStatistics"
-import { useState, useMemo, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import { Loader2, ArrowLeft, DollarSign, Calendar, Plane, ArrowDownCircle, ArrowUpCircle } from "lucide-react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { BarChart, Bar, Legend, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts"
-import { useRouter } from "next/navigation"
-import { Badge } from "@/components/ui/badge"
-import { SummaryCard } from "@/components/cards/SummaryCard"
-import { formatCurrency } from "@/lib/utils"
-import months, { getMonthByNumber } from "@/components/cards/ConfigMonths"
-import type { CashMovement } from "@/types"
+import { useParams } from "next/navigation";
+import { useGetAircraftById } from "@/hooks/administracion/useGetAircraftById";
+import { useGetAircraftStatistics } from "@/hooks/administracion/vuelos/useGetAircraftStatistics";
+import { useState, useMemo, useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Loader2, ArrowLeft, DollarSign, Calendar, Plane, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { BarChart, Bar, Legend, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
+import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
+import { SummaryCard } from "@/components/cards/SummaryCard";
+import { formatCurrency } from "@/lib/utils";
+import months, { getMonthByNumber } from "@/components/cards/ConfigMonths";
+import type { CashMovement } from "@/types";
 
 type MonthlyData = {
-  name: string
-  shortName: string
-  ingresos: number
-  gastos: number
-  vuelos: number
-  month: string
-}
+  name: string;
+  shortName: string;
+  ingresos: number;
+  egresos: number;
+  vuelos: number;
+  month: string;
+};
 
 interface CustomTooltipProps {
-  active?: boolean
+  active?: boolean;
   payload?: Array<{
-    value: number
-    dataKey: string
-    payload: MonthlyData
-  }>
-  label?: string
+    value: number;
+    dataKey: string;
+    payload: MonthlyData;
+  }>;
+  label?: string;
 }
 
 export default function AircraftReportPage() {
-  const params = useParams()
-  const id = params.id as string
-  const router = useRouter()
-  const { data: aircraftDetails, isLoading, error } = useGetAircraftById(id)
-  const { data: aircraftStats, isLoading: isLoadingFlights } = useGetAircraftStatistics(id)
+  const params = useParams();
+  const id = params.id as string;
+  const router = useRouter();
+  const { data: aircraftDetails, isLoading, error } = useGetAircraftById(id);
+  const { data: aircraftStats } = useGetAircraftStatistics(id);
+  
+  // Mejorado: Obtener años combinados de ingresos y egresos
   const availableYears = useMemo(() => {
-    if (!aircraftStats?.statistics?.monthly_income) {
-      return [new Date().getFullYear().toString()]
+    if (!aircraftStats?.statistics) {
+      return [new Date().getFullYear().toString()];
     }
-    return Object.keys(aircraftStats.statistics.monthly_output).sort((a, b) => Number.parseInt(b) - Number.parseInt(a))
-  }, [aircraftStats])
+
+    // Obtener años de ingresos
+    const incomeYears = aircraftStats.statistics.monthly_income 
+      ? Object.keys(aircraftStats.statistics.monthly_income) 
+      : [];
+    
+    // Obtener años de egresos
+    const outputYears = aircraftStats.statistics.monthly_output 
+      ? Object.keys(aircraftStats.statistics.monthly_output) 
+      : [];
+
+    // Combinar y eliminar duplicados
+    const allYears = Array.from(new Set(incomeYears.concat(outputYears)));
+    
+    // Ordenar de más reciente a más antiguo
+    return allYears.sort((a, b) => Number.parseInt(b) - Number.parseInt(a));
+  }, [aircraftStats]);
+
   const [selectedYear, setSelectedYear] = useState<string>(() => {
-    return availableYears[0] || new Date().getFullYear().toString()
-  })
-  const [selectedMonth, setSelectedMonth] = useState<string | null>(null)
-  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([])
-  const [flightsData, setFlightsData] = useState<any[]>([])
-  const [selectedMovementType, setSelectedMovementType] = useState<"income" | "output" | null>(null)
-  const [movementDetails, setMovementDetails] = useState<CashMovement[]>([])
+    return availableYears[0] || new Date().getFullYear().toString();
+  });
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
+  const [selectedMovementType, setSelectedMovementType] = useState<"income" | "output" | null>(null);
+  const [movementDetails, setMovementDetails] = useState<CashMovement[]>([]);
 
   useEffect(() => {
     if (aircraftStats) {
-      const yearIncomeData = aircraftStats.statistics.monthly_income[selectedYear] || {}
-      const yearOutputData = aircraftStats.statistics.monthly_output[selectedYear] || {}
+      const yearIncomeData = aircraftStats.statistics.monthly_income[selectedYear] || {};
+      const yearOutputData = aircraftStats.statistics.monthly_output[selectedYear] || {};
       const processedData = months.map((month) => {
-        const monthNameInSpanish = month.name
-        const monthIncome = yearIncomeData[monthNameInSpanish] || 0
-        const monthOutput = yearOutputData[monthNameInSpanish] || 0
-        const flightsCount = 0 
+        const monthNameInSpanish = month.name;
+        const monthIncome = yearIncomeData[monthNameInSpanish] || 0;
+        const monthOutput = yearOutputData[monthNameInSpanish] || 0;
+        const flightsCount = 0;
 
         return {
           name: month.name,
           shortName: month.short,
           ingresos: monthIncome,
-          gastos: monthOutput,
+          egresos: monthOutput,
           vuelos: flightsCount,
           month: month.number,
-        }
-      })
-      setMonthlyData(processedData)
-      setSelectedMonth(null)
-      setSelectedMovementType(null)
-      setFlightsData([])
-      setMovementDetails([])
+        };
+      });
+      setMonthlyData(processedData);
+      setSelectedMonth(null);
+      setSelectedMovementType(null);
+      setMovementDetails([]);
     }
-  }, [selectedYear, aircraftStats])
+  }, [selectedYear, aircraftStats]);
 
   const handleBarClick = (data: any) => {
     if (data?.activePayload?.[0]?.payload) {
-      const clickedBar = data.activePayload[0]
-      const monthNumber = clickedBar.payload.month
-      const dataKey = clickedBar.dataKey
+      const clickedBar = data.activePayload[0];
+      const monthNumber = clickedBar.payload.month;
+      const dataKey = clickedBar.dataKey;
 
-      setSelectedMonth(monthNumber)
+      setSelectedMonth(monthNumber);
 
-      const monthObj = months.find((m) => m.number === monthNumber)
-      const monthNameInSpanish = monthObj?.name || ""
+      const monthObj = months.find((m) => m.number === monthNumber);
+      const monthNameInSpanish = monthObj?.name || "";
 
       if (dataKey === "ingresos") {
-        setSelectedMovementType("income")
-        const monthIncomes = aircraftStats?.incomes[selectedYear]?.[monthNameInSpanish] || []
-        setMovementDetails(monthIncomes as CashMovement[])
-      } else if (dataKey === "gastos") {
-        setSelectedMovementType("output")
-        const monthOutputs = aircraftStats?.outputs[selectedYear]?.[monthNameInSpanish] || []
-        setMovementDetails(monthOutputs as CashMovement[])
-        setFlightsData([])
+        setSelectedMovementType("income");
+        const monthIncomes = aircraftStats?.incomes[selectedYear]?.[monthNameInSpanish] || [];
+        setMovementDetails(monthIncomes as CashMovement[]);
+      } else if (dataKey === "egresos") {
+        setSelectedMovementType("output");
+        const monthOutputs = aircraftStats?.outputs[selectedYear]?.[monthNameInSpanish] || [];
+        setMovementDetails(monthOutputs as CashMovement[]);
       } else {
-        setSelectedMovementType(null)
-        setMovementDetails([])
+        setSelectedMovementType(null);
+        setMovementDetails([]);
       }
     }
-  }
+  };
 
   const totalIncome = useMemo(() => {
-    return aircraftStats?.statistics?.total_annual_income?.[selectedYear] || 0
-  }, [aircraftStats, selectedYear])
+    return aircraftStats?.statistics?.total_annual_income?.[selectedYear] || 0;
+  }, [aircraftStats, selectedYear]);
 
   const totalExpense = useMemo(() => {
-    return aircraftStats?.statistics?.total_annual_output?.[selectedYear] || 0
-  }, [aircraftStats, selectedYear])
+    return aircraftStats?.statistics?.total_annual_output?.[selectedYear] || 0;
+  }, [aircraftStats, selectedYear]);
 
   const totalFlights = useMemo(() => {
-    return aircraftStats?.statistics?.total_flights?.[selectedYear] || 0
-  }, [aircraftStats, selectedYear])
+    return aircraftStats?.statistics?.total_flights?.[selectedYear] || 0;
+  }, [aircraftStats, selectedYear]);
 
   const bestMonth =
     monthlyData.length > 0
       ? monthlyData.reduce((prev, current) => (prev.ingresos > current.ingresos ? prev : current))
-      : null
+      : null;
 
   const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
@@ -138,33 +153,37 @@ export default function AircraftReportPage() {
               {entry.dataKey === "ingresos" && (
                 <p className="text-emerald-600 font-medium text-base">Ingresos: {formatCurrency(entry.value)}</p>
               )}
-              {entry.dataKey === "gastos" && (
-                <p className="text-red-600 font-medium text-base">Gastos: {formatCurrency(entry.value)}</p>
+              {entry.dataKey === "egresos" && (
+                <p className="text-red-600 font-medium text-base">Egresos: {formatCurrency(entry.value)}</p>
               )}
             </div>
           ))}
-          <p className="text-blue-600 font-medium mt-1">Vuelos: {payload[0]?.payload?.vuelos || 0}</p>
         </div>
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
-  const formatDate = (dateInput: string | Date) => {
-    const date = dateInput instanceof Date ? dateInput : new Date(dateInput)
+  const formatDate = (dateInput: string | Date, daysToAdd: number = 0) => {
+    let date = dateInput instanceof Date ? dateInput : new Date(dateInput);
+    
+    if (daysToAdd !== 0) {
+      date = new Date(date.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+    }
+  
     return date.toLocaleDateString("es-ES", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-    })
-  }
+    });
+  };
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
-    )
+    );
   }
 
   if (error || !aircraftDetails) {
@@ -175,10 +194,8 @@ export default function AircraftReportPage() {
           Volver
         </Button>
       </div>
-    )
+    );
   }
-
-  console.log(monthlyData)
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -291,10 +308,10 @@ export default function AircraftReportPage() {
                     />
                   ))}
                 </Bar>
-                <Bar yAxisId="left" dataKey="gastos" name="Egresos" fill="#ef4444" radius={[4, 4, 0, 0]}>
+                <Bar yAxisId="left" dataKey="egresos" name="Egresos" fill="#ef4444" radius={[4, 4, 0, 0]}>
                   {monthlyData.map((entry, index) => (
                     <Cell
-                      key={`cell-gastos-${index}`}
+                      key={`cell-egresos-${index}`}
                       fill={entry.month === selectedMonth && selectedMovementType === "output" ? "#b91c1c" : "#ef4444"}
                       className="cursor-pointer hover:opacity-80 transition-opacity"
                     />
@@ -306,7 +323,7 @@ export default function AircraftReportPage() {
         </CardContent>
       </Card>
 
-      {selectedMonth !== null && (
+      {selectedMonth !== null && selectedMovementType && (
         <Card>
           <CardHeader className="bg-muted/30">
             <div className="flex items-center justify-between">
@@ -314,99 +331,54 @@ export default function AircraftReportPage() {
                 <CardTitle>
                   {selectedMovementType === "income"
                     ? `Ingresos de ${getMonthByNumber(selectedMonth)?.name} ${selectedYear}`
-                    : selectedMovementType === "output"
-                      ? `Egresos de ${getMonthByNumber(selectedMonth)?.name} ${selectedYear}`
-                      : `Vuelos de ${getMonthByNumber(selectedMonth)?.name} ${selectedYear}`}
+                    : `Egresos de ${getMonthByNumber(selectedMonth)?.name} ${selectedYear}`}
                 </CardTitle>
                 <CardDescription>
                   {selectedMovementType === "income"
                     ? "Detalle de los ingresos registrados durante el mes"
-                    : selectedMovementType === "output"
-                      ? "Detalle de los egresos registrados durante el mes"
-                      : "Detalle de los vuelos realizados durante el mes"}
+                    : "Detalle de los egresos registrados durante el mes"}
                 </CardDescription>
               </div>
               <Badge variant="secondary" className="text-sm py-1.5 px-3">
-                {selectedMovementType === "income" || selectedMovementType === "output"
-                  ? `${movementDetails.length} movimientos`
-                  : `${flightsData.length} vuelos`}
+                {`${movementDetails.length} movimientos`}
               </Badge>
             </div>
           </CardHeader>
           <CardContent className="pt-6">
-            {isLoadingFlights ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin" />
-              </div>
-            ) : selectedMovementType === "income" || selectedMovementType === "output" ? (
-              // Tabla para movimientos (ingresos o egresos)
-              movementDetails.length > 0 ? (
-                <div className="rounded-md border overflow-hidden">
-                  <Table>
-                    <TableHeader className="bg-muted/30">
-                      <TableRow>
-                        <TableHead>Fecha</TableHead>
-                        <TableHead>Detalle</TableHead>
-                        <TableHead>Monto</TableHead>
-                        <TableHead>Caja</TableHead>
-                        <TableHead>Cliente</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {movementDetails.map((movement: CashMovement) => (
-                        <TableRow key={movement.id} className="hover:bg-muted/30">
-                          <TableCell className="font-medium">{formatDate(movement.date)}</TableCell>
-                          <TableCell>
-                            {movement.category} - {movement.sub_category}
-                            {movement.sub_category_details && ` (${movement.sub_category_details})`}
-                          </TableCell>
-                          <TableCell
-                            className={`font-medium ${selectedMovementType === "income" ? "text-emerald-600" : "text-red-600"}`}
-                          >
-                            {formatCurrency(movement.amount)}
-                          </TableCell>
-                          <TableCell>{movement.cash?.name || movement.cash_id || "-"}</TableCell>
-                          <TableCell>{movement.client?.name || "-"}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  No hay {selectedMovementType === "income" ? "ingresos" : "egresos"} registrados para este mes.
-                </div>
-              )
-            ) : flightsData.length > 0 ? (
+            {movementDetails.length > 0 ? (
               <div className="rounded-md border overflow-hidden">
                 <Table>
                   <TableHeader className="bg-muted/30">
                     <TableRow>
                       <TableHead>Fecha</TableHead>
-                      <TableHead>Cliente</TableHead>
-                      <TableHead>Total Pagado</TableHead>
-                      <TableHead>Estado</TableHead>
+                      <TableHead>Detalle</TableHead>
+                      <TableHead>Monto</TableHead>
+                      <TableHead>Caja</TableHead>
+                      {selectedMovementType === "income" ? (
+                        <TableHead>Cliente</TableHead>
+                      ) : (
+                        <TableHead>Proveedor</TableHead>
+                      )}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {flightsData.map((flight) => (
-                      <TableRow key={flight.id} className="hover:bg-muted/30">
-                        <TableCell className="font-medium">{formatDate(flight.date)}</TableCell>
-                        <TableCell>{flight.client?.name || "-"}</TableCell>
-                        <TableCell className="font-medium text-emerald-600">
-                          {formatCurrency(flight.total_amount)}
-                        </TableCell>
+                    {movementDetails.map((movement: CashMovement) => (
+                      <TableRow key={movement.id} className="hover:bg-muted/30">
+                        <TableCell className="font-medium">{formatDate(movement.date,1)}</TableCell>
                         <TableCell>
-                          <Badge
-                            variant="outline"
-                            className={
-                              flight.debt_status === "PAGADO"
-                                ? "bg-green-100 text-green-800 hover:bg-green-200"
-                                : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
-                            }
-                          >
-                            {flight.debt_status || "DESCONOCIDO"}
-                          </Badge>
+                          {movement.category} - {movement.sub_category}
+                          {movement.sub_category_details && ` (${movement.sub_category_details})`}
+                        </TableCell>
+                        <TableCell
+                          className={`font-medium ${selectedMovementType === "income" ? "text-emerald-600" : "text-red-600"}`}
+                        >
+                          {formatCurrency(movement.amount)}
+                        </TableCell>
+                        <TableCell>{movement.cash?.name || movement.cash_id || "-"}</TableCell>
+                        <TableCell>
+                          {selectedMovementType === "income" 
+                            ? movement.client?.name || "-"
+                            : movement.vendor?.name || "-"}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -414,11 +386,13 @@ export default function AircraftReportPage() {
                 </Table>
               </div>
             ) : (
-              <div className="text-center py-8 text-muted-foreground">No hay vuelos registrados para este mes.</div>
+              <div className="text-center py-8 text-muted-foreground">
+                No hay {selectedMovementType === "income" ? "ingresos" : "egresos"} registrados para este mes.
+              </div>
             )}
           </CardContent>
         </Card>
       )}
     </div>
-  )
+  );
 }
