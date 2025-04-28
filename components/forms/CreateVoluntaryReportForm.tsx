@@ -40,10 +40,10 @@ import { VoluntaryReport } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Label } from "../ui/label";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 const FormSchema = z.object({
   identification_date: z
@@ -127,6 +127,7 @@ export function CreateVoluntaryReportForm({
   const { updateVoluntaryReport } = useUpdateVoluntaryReport();
   const [isAnonymous, setIsAnonymous] = useState(true);
   const router = useRouter();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (initialData && isEditing) {
