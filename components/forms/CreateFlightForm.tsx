@@ -3,35 +3,11 @@
 import { useCreateFlight } from "@/actions/administracion/vuelos/actions";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../ui/command";
+import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, } from "../ui/command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -565,42 +541,88 @@ export function FlightForm({ onClose }: FormProps) {
           />
           {form.watch("pay_method") !== "EFECTIVO" && (
             <FormField
-              control={form.control}
-              name="bank_account_id"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Cuenta de Banco</FormLabel>
-                  <Select
-                    disabled={isAccLoading}
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+            control={form.control}
+            name="bank_account_id"
+            render={({ field }) => (
+              <FormItem className="w-full flex flex-col space-y-3">
+                <FormLabel>Cuenta de Banco</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          placeholder={
-                            isAccLoading ? (
-                              <Loader2 className="animate-spin" />
-                            ) : (
-                              "Seleccione el tipo..."
-                            )
-                          }
-                        />
-                      </SelectTrigger>
+                      <Button
+                        disabled={isAccLoading}
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {isAccLoading ? (
+                          <>
+                            <Loader2 className="size-4 animate-spin mr-2" />
+                            Cargando cuentas...
+                          </>
+                        ) : field.value ? (
+                          accounts?.find(
+                            (acc) => acc.id.toString() === field.value
+                          ) ? (
+                            `${accounts.find(
+                              (acc) => acc.id.toString() === field.value
+                            )?.name} - ${
+                              accounts.find(
+                                (acc) => acc.id.toString() === field.value
+                              )?.bank.name
+                            }`
+                          ) : (
+                            "Cuenta no encontrada"
+                          )
+                        ) : (
+                          "Seleccione una cuenta..."
+                        )}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
                     </FormControl>
-                    <SelectContent>
-                      {accounts &&
-                        accounts.map((acc) => (
-                          <SelectItem value={acc.id.toString()} key={acc.id}>
-                            {acc.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
+                    <Command>
+                      <CommandInput placeholder="Busque una cuenta bancaria..." />
+                      <CommandList>
+                        <CommandEmpty className="text-sm p-2 text-center">
+                          No se encontraron cuentas bancarias.
+                        </CommandEmpty>
+                        <CommandGroup>
+                          {accounts?.map((acc) => (
+                            <CommandItem
+                              value={`${acc.name} ${acc.bank.name}`}
+                              key={acc.id}
+                              onSelect={() => {
+                                form.setValue(
+                                  "bank_account_id",
+                                  acc.id.toString()
+                                );
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  acc.id.toString() === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {acc.name} - {acc.bank.name}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />           
           )}
         </div>
         <FormField
