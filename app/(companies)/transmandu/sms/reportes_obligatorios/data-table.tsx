@@ -24,7 +24,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "react-day-picker";
-import { CreateObligatoryDialog } from "@/components/dialogs/CreateObligatoryDialog";
+import CreateObligatoryDialog from "@/components/dialogs/CreateObligatoryDialog";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -69,7 +69,7 @@ export function DataTable<TData, TValue>({
       </div>
 
       <div className="flex items-center py-4">
-        <CreateObligatoryDialog />
+        <CreateObligatoryDialog  title="Nuevo Reporte"/>
         <DataTableViewOptions table={table} />
       </div>
 
