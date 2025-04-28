@@ -168,6 +168,7 @@ export default function CreateDangerIdentificationForm({
     "ADMINISTRACION",
     "CONTROL_CALIDAD",
     "IT",
+    "AVSEC",
     "OTROS",
   ];
   const DANGER_TYPES = ["ORGANIZACIONAL", "TECNICO", "HUMANO", "NATURAL"];

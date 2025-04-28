@@ -29,8 +29,9 @@ import { format } from "date-fns";
 
 import { useCreateMitigationPlan, useUpdateMitigationPlan } from "@/actions/sms/planes_de_mitigation/actions";
 import { MitigationPlan } from "@/types";
-import { Separator } from "@radix-ui/react-select";
 import { Textarea } from "../ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Separator } from "../ui/separator";
 
 const FormSchema = z.object({
   description: z.string()
@@ -117,19 +118,41 @@ export default function CreateMitigationPlanForm({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="responsible"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Area Responsable</FormLabel>
-              <FormControl>
-                <Input placeholder="" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
+
+
+        <div className="flex gap-2 items-center justify-center">
+ 
+          <FormField
+            control={form.control}
+            name="responsible"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Area de identificación</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar área" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="OPERACIONES">OPERACIONES</SelectItem>
+                    <SelectItem value="MANTENIMIENTO">MANTENIMIENTO</SelectItem>
+                    <SelectItem value="ADMINISTRACION_RRH">ADMINISTRACION Y RRHH</SelectItem>
+                    <SelectItem value="CONTROL_CALIDAD">
+                      CONTROL DE CALIDAD
+                    </SelectItem>
+                    <SelectItem value="IT">TECNOLOGIA E INFORMACION</SelectItem>
+                    <SelectItem value="AVSEC">AVSEC</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}
