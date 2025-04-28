@@ -111,7 +111,7 @@ const ObligatoryReportDropdownActions = ({
                 </DropdownMenuItem>
               )}
 
-            {obligatoryReport && obligatoryReport.status === "CERRADO" && (
+            {obligatoryReport &&  (
               <DropdownMenuItem onClick={() => setOpenPrint(true)}>
                 <PrinterCheck className="size-5" />
                 <p className="pl-2"> Descargar PDF</p>

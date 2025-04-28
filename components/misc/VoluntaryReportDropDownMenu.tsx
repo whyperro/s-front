@@ -113,7 +113,7 @@ const VoluntaryReportDropdownActions = ({
                 </DropdownMenuItem>
               )}
 
-            {voluntaryReport && voluntaryReport.status !== "ABIERTO" && (
+            {voluntaryReport && (
               <DropdownMenuItem onClick={() => setOpenPDF(true)}>
                 <PrinterCheck className="size-5" />
                 <p className="pl-2">Descargar PDF</p>
