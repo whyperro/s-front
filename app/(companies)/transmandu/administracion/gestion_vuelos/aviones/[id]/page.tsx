@@ -7,15 +7,14 @@ import { useState, useMemo, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import { Loader2, ArrowLeft, DollarSign, Calendar, Plane, ArrowDownCircle, ArrowUpCircle, Filter } from "lucide-react"
+import { Loader2, ArrowLeft, DollarSign, Calendar, Plane, ArrowDownCircle, ArrowUpCircle, Filter, X, } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { BarChart, Bar, Legend, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts"
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts"
 import { useRouter } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { SummaryCard } from "@/components/cards/SummaryCard"
 import { formatCurrency, formatDate } from "@/lib/utils"
 import months, { getMonthByNumber } from "@/components/cards/ConfigMonths"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { CashMovement } from "@/types"
 
 type MonthlyData = {
@@ -44,7 +43,7 @@ export default function AircraftReportPage() {
   const { data: aircraftDetails, isLoading, error } = useGetAircraftById(id)
   const { data: aircraftStats } = useGetAircraftStatistics(id)
 
-  // Mejorado: Obtener años combinados de ingresos y egresos
+  // Obtener años combinados de ingresos y egresos
   const availableYears = useMemo(() => {
     if (!aircraftStats?.statistics) {
       return [new Date().getFullYear().toString()]
@@ -72,9 +71,7 @@ export default function AircraftReportPage() {
   })
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null)
   const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([])
-  const [selectedMovementType, setSelectedMovementType] = useState<"income" | "output" | null>(null)
-  const [movementDetails, setMovementDetails] = useState<CashMovement[]>([])
-  const [activeTab, setActiveTab] = useState<"chart" | "income" | "output">("chart")
+  const [allMovements, setAllMovements] = useState<CashMovement[]>([])
   const [filterMonth, setFilterMonth] = useState<string | null>(null)
 
   useEffect(() => {
@@ -98,86 +95,74 @@ export default function AircraftReportPage() {
       })
       setMonthlyData(processedData)
       setSelectedMonth(null)
-      setSelectedMovementType(null)
-      setMovementDetails([])
+      setAllMovements([])
       setFilterMonth(null)
     }
   }, [selectedYear, aircraftStats])
 
-  const handleBarClick = (data: any, index: number) => {
+  const handleBarClick = (data: any) => {
     // Verificar que tenemos datos válidos
     if (data && data.activePayload && data.activePayload.length > 0) {
       const clickedBar = data.activePayload[0]
       const monthNumber = clickedBar.payload.month
-      const dataKey = clickedBar.dataKey
+
+      // Si ya está seleccionado, deseleccionar
+      if (selectedMonth === monthNumber) {
+        setSelectedMonth(null)
+        setAllMovements([])
+        return
+      }
 
       setSelectedMonth(monthNumber)
-
       const monthObj = months.find((m) => m.number === monthNumber)
       const monthNameInSpanish = monthObj?.name || ""
 
-      if (dataKey === "ingresos") {
-        setSelectedMovementType("income")
-        const monthIncomes = aircraftStats?.incomes[selectedYear]?.[monthNameInSpanish] || []
-        setMovementDetails(monthIncomes as CashMovement[])
-        setActiveTab("income")
-      } else if (dataKey === "egresos") {
-        setSelectedMovementType("output")
-        const monthOutputs = aircraftStats?.outputs[selectedYear]?.[monthNameInSpanish] || []
-        setMovementDetails(monthOutputs as CashMovement[])
-        setActiveTab("output")
-      } else {
-        setSelectedMovementType(null)
-        setMovementDetails([])
-      }
-    }
-  }
-
-  // Función para cargar los datos según el tipo y mes seleccionados
-  const loadMovementData = (type: "income" | "output", monthNumber: string) => {
-    const monthObj = months.find((m) => m.number === monthNumber)
-    const monthNameInSpanish = monthObj?.name || ""
-
-    if (type === "income") {
+      // Obtener tanto ingresos como egresos para el mes seleccionado
       const monthIncomes = aircraftStats?.incomes[selectedYear]?.[monthNameInSpanish] || []
-      setMovementDetails(monthIncomes as CashMovement[])
-      setSelectedMovementType("income")
-    } else {
       const monthOutputs = aircraftStats?.outputs[selectedYear]?.[monthNameInSpanish] || []
-      setMovementDetails(monthOutputs as CashMovement[])
-      setSelectedMovementType("output")
-    }
-    setSelectedMonth(monthNumber)
-  }
 
-  // Manejar cambio de pestaña
-  const handleTabChange = (value: string) => {
-    setActiveTab(value as "chart" | "income" | "output")
+      // Combinar ambos tipos de movimientos
+      const combinedMovements = [
+        ...monthIncomes.map((income: CashMovement) => ({ ...income, movementType: "income" })),
+        ...monthOutputs.map((output: CashMovement) => ({ ...output, movementType: "output" })),
+      ]
 
-    if (value === "income" || value === "output") {
-      if (selectedMonth) {
-        loadMovementData(value, selectedMonth)
-      } else if (filterMonth) {
-        loadMovementData(value, filterMonth)
-      } else if (monthlyData.length > 0) {
-        // Si no hay mes seleccionado, usar el primer mes con datos
-        const firstMonthWithData = monthlyData.find((month) =>
-          value === "income" ? month.ingresos > 0 : month.egresos > 0,
-        )
-        if (firstMonthWithData) {
-          loadMovementData(value, firstMonthWithData.month)
-          setFilterMonth(firstMonthWithData.month)
-        }
-      }
+      // Ordenar por fecha (más reciente primero)
+      combinedMovements.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+      setAllMovements(combinedMovements)
     }
   }
 
-  // Manejar cambio de mes en el filtro
+  // Función para cargar los datos según el mes seleccionado en el filtro
   const handleMonthFilterChange = (month: string) => {
     setFilterMonth(month)
-    if (activeTab === "income" || activeTab === "output") {
-      loadMovementData(activeTab, month)
-    }
+    setSelectedMonth(month)
+
+    const monthObj = months.find((m) => m.number === month)
+    const monthNameInSpanish = monthObj?.name || ""
+
+    // Obtener tanto ingresos como egresos para el mes seleccionado
+    const monthIncomes = aircraftStats?.incomes[selectedYear]?.[monthNameInSpanish] || []
+    const monthOutputs = aircraftStats?.outputs[selectedYear]?.[monthNameInSpanish] || []
+
+    // Combinar ambos tipos de movimientos
+    const combinedMovements = [
+      ...monthIncomes.map((income: CashMovement) => ({ ...income, movementType: "income" })),
+      ...monthOutputs.map((output: CashMovement) => ({ ...output, movementType: "output" })),
+    ]
+
+    // Ordenar por fecha (más reciente primero)
+    combinedMovements.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+    setAllMovements(combinedMovements)
+  }
+
+  // Limpiar selección
+  const handleClearSelection = () => {
+    setSelectedMonth(null)
+    setAllMovements([])
+    setFilterMonth(null)
   }
 
   const totalIncome = useMemo(() => {
@@ -304,223 +289,165 @@ export default function AircraftReportPage() {
         </Select>
       </div>
 
-      {/* Implementación con pestañas */}
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="mb-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="chart">Gráfico</TabsTrigger>
-          <TabsTrigger value="income">Ingresos</TabsTrigger>
-          <TabsTrigger value="output">Egresos</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="chart">
-          <Card className="overflow-hidden">
-            <CardHeader className="bg-muted/30">
-              <CardTitle className="text-center">Ingresos vs Egresos Mensuales {selectedYear}</CardTitle>
-              <CardDescription className="text-center">
-                Haz clic en una barra para ver los detalles de los movimientos
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <div className="h-[450px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={monthlyData}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-                    onClick={handleBarClick}
-                    barGap={0}
-                    barCategoryGap={8}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                    <XAxis
-                      dataKey="shortName"
-                      tickLine={false}
-                      axisLine={true}
-                      tick={{ fontSize: 12 }}
-                      height={60}
-                      padding={{ left: 10, right: 10 }}
+      {/* Gráfico de Ingresos vs Egresos */}
+      <Card className="overflow-hidden mb-6">
+        <CardHeader className="bg-muted/30">
+          <CardTitle className="text-center">Ingresos vs Egresos Mensuales {selectedYear}</CardTitle>
+          <CardDescription className="text-center">
+            Haz clic en una barra para ver los detalles de los movimientos
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="h-[450px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={monthlyData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                onClick={handleBarClick}
+                barGap={0}
+                barCategoryGap={8}
+              >
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis
+                  dataKey="shortName"
+                  tickLine={false}
+                  axisLine={true}
+                  tick={{ fontSize: 12 }}
+                  height={60}
+                  padding={{ left: 10, right: 10 }}
+                />
+                <YAxis
+                  yAxisId="left"
+                  orientation="left"
+                  tickFormatter={(value) => `$${value.toLocaleString()}`}
+                  width={80}
+                  domain={[0, "auto"]}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar yAxisId="left" dataKey="ingresos" name="Ingresos" fill="#10b981" radius={[4, 4, 0, 0]}>
+                  {monthlyData.map((entry, index) => (
+                    <Cell
+                      key={`cell-ingresos-${index}`}
+                      fill={entry.month === selectedMonth ? "#047857" : "#10b981"}
+                      className="cursor-pointer hover:opacity-80 transition-opacity"
                     />
-                    <YAxis
-                      yAxisId="left"
-                      orientation="left"
-                      tickFormatter={(value) => `$${value.toLocaleString()}`}
-                      width={80}
-                      domain={[0, "auto"]}
+                  ))}
+                </Bar>
+                <Bar yAxisId="left" dataKey="egresos" name="Egresos" fill="#ef4444" radius={[4, 4, 0, 0]}>
+                  {monthlyData.map((entry, index) => (
+                    <Cell
+                      key={`cell-egresos-${index}`}
+                      fill={entry.month === selectedMonth ? "#b91c1c" : "#ef4444"}
+                      className="cursor-pointer hover:opacity-80 transition-opacity"
                     />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend />
-                    <Bar yAxisId="left" dataKey="ingresos" name="Ingresos" fill="#10b981" radius={[4, 4, 0, 0]}>
-                      {monthlyData.map((entry, index) => (
-                        <Cell
-                          key={`cell-ingresos-${index}`}
-                          fill={
-                            entry.month === selectedMonth && selectedMovementType === "income" ? "#047857" : "#10b981"
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Tabla de movimientos combinados */}
+      {selectedMonth && (
+        <Card className="mb-6">
+          <CardHeader className="bg-muted/30">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <CardTitle>
+                  Movimientos {getMonthByNumber(selectedMonth)?.name} {selectedYear}
+                </CardTitle>
+                <CardDescription>Detalle de ingresos y egresos registrados durante el mes</CardDescription>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4 text-muted-foreground" />
+                <Select value={filterMonth || ""} onValueChange={handleMonthFilterChange}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Seleccionar mes" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {months.map((month) => (
+                      <SelectItem key={month.number} value={month.number}>
+                        {month.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button variant="ghost" size="sm" onClick={handleClearSelection}>
+                  <X className="h-4 w-4 mr-2" />
+                  Cerrar
+                </Button>
+              </div>
+            </div>
+
+            {allMovements.length > 0 && (
+              <Badge variant="secondary" className="text-sm py-1.5 px-3 self-end">
+                {`${allMovements.length} movimientos`}
+              </Badge>
+            )}
+          </CardHeader>
+          <CardContent className="pt-6">
+            {allMovements.length > 0 ? (
+              <div className="rounded-md border overflow-hidden">
+                <Table>
+                  <TableHeader className="bg-muted/30">
+                    <TableRow>
+                      <TableHead>Fecha</TableHead>
+                      <TableHead>Tipo</TableHead>
+                      <TableHead>Detalle</TableHead>
+                      <TableHead>Monto</TableHead>
+                      <TableHead>Caja</TableHead>
+                      <TableHead>Cliente/Proveedor</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {allMovements.map((movement: any) => (
+                      <TableRow key={movement.id} className="hover:bg-muted/30">
+                        <TableCell className="font-medium">{formatDate(movement.date, 1)}</TableCell>
+                        <TableCell>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              movement.movementType === "income"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {movement.movementType === "income" ? "Ingreso" : "Egreso"}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          {movement.category} - {movement.sub_category}
+                          {movement.sub_category_details && ` (${movement.sub_category_details})`}
+                        </TableCell>
+                        <TableCell
+                          className={
+                            movement.movementType === "income"
+                              ? "font-medium text-emerald-600"
+                              : "font-medium text-red-600"
                           }
-                          className="cursor-pointer hover:opacity-80 transition-opacity"
-                        />
-                      ))}
-                    </Bar>
-                    <Bar yAxisId="left" dataKey="egresos" name="Egresos" fill="#ef4444" radius={[4, 4, 0, 0]}>
-                      {monthlyData.map((entry, index) => (
-                        <Cell
-                          key={`cell-egresos-${index}`}
-                          fill={
-                            entry.month === selectedMonth && selectedMovementType === "output" ? "#b91c1c" : "#ef4444"
-                          }
-                          className="cursor-pointer hover:opacity-80 transition-opacity"
-                        />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="income">
-          <Card>
-            <CardHeader className="bg-muted/30">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <CardTitle>
-                    Ingresos {selectedMonth && getMonthByNumber(selectedMonth)?.name} {selectedYear}
-                  </CardTitle>
-                  <CardDescription>Detalle de los ingresos registrados durante el mes</CardDescription>
-                </div>
-
-                {/* Implementación con botones de filtro */}
-                <div className="flex items-center gap-2">
-                  <Filter className="h-4 w-4 text-muted-foreground" />
-                  <Select value={filterMonth || ""} onValueChange={handleMonthFilterChange}>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Seleccionar mes" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {months.map((month) => (
-                        <SelectItem key={month.number} value={month.number}>
-                          {month.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {movementDetails.length > 0 && (
-                <Badge variant="secondary" className="text-sm py-1.5 px-3 self-end">
-                  {`${movementDetails.length} movimientos`}
-                </Badge>
-              )}
-            </CardHeader>
-            <CardContent className="pt-6">
-              {movementDetails.length > 0 ? (
-                <div className="rounded-md border overflow-hidden">
-                  <Table>
-                    <TableHeader className="bg-muted/30">
-                      <TableRow>
-                        <TableHead>Fecha</TableHead>
-                        <TableHead>Detalle</TableHead>
-                        <TableHead>Monto</TableHead>
-                        <TableHead>Caja</TableHead>
-                        <TableHead>Cliente</TableHead>
+                        >
+                          {formatCurrency(movement.amount)}
+                        </TableCell>
+                        <TableCell>{movement.cash?.name || movement.cash_id || "-"}</TableCell>
+                        <TableCell>
+                          {movement.movementType === "income"
+                            ? movement.client?.name || "-"
+                            : movement.vendor?.name || "-"}
+                        </TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {movementDetails.map((movement: CashMovement) => (
-                        <TableRow key={movement.id} className="hover:bg-muted/30">
-                          <TableCell className="font-medium">{formatDate(movement.date, 1)}</TableCell>
-                          <TableCell>
-                            {movement.category} - {movement.sub_category}
-                            {movement.sub_category_details && ` (${movement.sub_category_details})`}
-                          </TableCell>
-                          <TableCell className="font-medium text-emerald-600">
-                            {formatCurrency(movement.amount)}
-                          </TableCell>
-                          <TableCell>{movement.cash?.name || movement.cash_id || "-"}</TableCell>
-                          <TableCell>{movement.client?.name || "-"}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">No hay ingresos registrados para este mes.</div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="output">
-          <Card>
-            <CardHeader className="bg-muted/30">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <CardTitle>
-                    Egresos {selectedMonth && getMonthByNumber(selectedMonth)?.name} {selectedYear}
-                  </CardTitle>
-                  <CardDescription>Detalle de los egresos registrados durante el mes</CardDescription>
-                </div>
-
-                {/* Implementación con botones de filtro */}
-                <div className="flex items-center gap-2">
-                  <Filter className="h-4 w-4 text-muted-foreground" />
-                  <Select value={filterMonth || ""} onValueChange={handleMonthFilterChange}>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Seleccionar mes" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {months.map((month) => (
-                        <SelectItem key={month.number} value={month.number}>
-                          {month.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
-
-              {movementDetails.length > 0 && (
-                <Badge variant="secondary" className="text-sm py-1.5 px-3 self-end">
-                  {`${movementDetails.length} movimientos`}
-                </Badge>
-              )}
-            </CardHeader>
-            <CardContent className="pt-6">
-              {movementDetails.length > 0 ? (
-                <div className="rounded-md border overflow-hidden">
-                  <Table>
-                    <TableHeader className="bg-muted/30">
-                      <TableRow>
-                        <TableHead>Fecha</TableHead>
-                        <TableHead>Detalle</TableHead>
-                        <TableHead>Monto</TableHead>
-                        <TableHead>Caja</TableHead>
-                        <TableHead>Proveedor</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {movementDetails.map((movement: CashMovement) => (
-                        <TableRow key={movement.id} className="hover:bg-muted/30">
-                          <TableCell className="font-medium">{formatDate(movement.date, 1)}</TableCell>
-                          <TableCell>
-                            {movement.category} - {movement.sub_category}
-                            {movement.sub_category_details && ` (${movement.sub_category_details})`}
-                          </TableCell>
-                          <TableCell className="font-medium text-red-600">{formatCurrency(movement.amount)}</TableCell>
-                          <TableCell>{movement.cash?.name || movement.cash_id || "-"}</TableCell>
-                          <TableCell>{movement.vendor?.name || "-"}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">No hay egresos registrados para este mes.</div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                No hay movimientos registrados para este mes.
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }
