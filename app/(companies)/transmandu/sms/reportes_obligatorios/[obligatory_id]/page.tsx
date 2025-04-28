@@ -1,10 +1,17 @@
 "use client";
+import CreateDangerIdentificationDialog from "@/components/dialogs/CreateDangerIdentificationDialog";
+import CreateObligatoryDialog from "@/components/dialogs/CreateObligatoryDialog";
+import DeleteVoluntaryReprotDialog from "@/components/dialogs/DeleteVoluntaryReportDialog";
+import PreviewObligatoryReportPdfDialog from "@/components/dialogs/PreviewObligatoryReportPdfDialog";
+import PreviewVoluntaryReportPdfDialog from "@/components/dialogs/PreviewVoluntaryReportPdfDialog";
 import { ContentLayout } from "@/components/layout/ContentLayout";
+import { Button } from "@/components/ui/button";
 import { useGetObligatoryReportById } from "@/hooks/sms/useGetObligatoryReportById";
 import { format, parse } from "date-fns";
 import { es } from "date-fns/locale";
 import { Loader2 } from "lucide-react";
 import { Content } from "next/font/google";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import React from "react";
 
@@ -26,6 +33,77 @@ const ShowObligatoryReport = () => {
 
   return (
     <ContentLayout title="Reportes Voluntarios">
+      <div className=" flex justify-evenly">
+        {/* Mostrar el boton para crear identificacion, si el reporte existe, si el status esta  bierto 
+        y si aun no tiene una idedntificacion de peligro */}
+
+        {obligatoryReport &&
+        obligatoryReport.status === "ABIERTO" &&
+        !obligatoryReport.danger_identification_id ? (
+          <div className="flex items-center py-4">
+            <CreateDangerIdentificationDialog
+              title="Crear Identificacion de Peligro"
+              id={obligatoryReport?.id}
+              reportType="ROS"
+            />
+          </div>
+        ) : (
+          obligatoryReport &&
+          obligatoryReport.status === "ABIERTO" &&
+          obligatoryReport.danger_identification_id !== null && (
+            <div className="flex items-center py-4">
+              <Button
+                variant="outline"
+                size="sm"
+                className=" hidden h-8 lg:flex"
+              >
+                <Link
+                  href={`/transmandu/sms/peligros_identificados/${obligatoryReport.danger_identification_id}`}
+                >
+                  Ver Identificacion de Peligro
+                </Link>
+              </Button>
+            </div>
+          )
+        )}
+        {/* Mostrar el boton para editar el reporte, si el reporte existe y si el status esta  abierto */}
+
+        {obligatoryReport && obligatoryReport.status === "ABIERTO" && (
+          <div className="flex items-center py-4">
+            <CreateObligatoryDialog
+              initialData={obligatoryReport}
+              isEditing={true}
+              title="Editar"
+            />
+          </div>
+        )}
+
+        {obligatoryReport && obligatoryReport.status === "ABIERTO" && (
+          <div className="flex items-center py-4">
+            <DeleteVoluntaryReprotDialog id={obligatoryReport.id} />
+          </div>
+        )}
+
+        {obligatoryReport && obligatoryReport.status === "CERRADO" ? (
+          <div className="flex items-center py-4">
+            <PreviewObligatoryReportPdfDialog
+              title="Descargar PDF"
+              obligatoryReport={obligatoryReport}
+            />
+          </div>
+        ) : (
+          obligatoryReport &&
+          obligatoryReport.status === "ABIERTO" && (
+            <div className="flex items-center py-4">
+              <PreviewObligatoryReportPdfDialog
+                title="Descargar PDF"
+                obligatoryReport={obligatoryReport}
+              />
+            </div>
+          )
+        )}
+      </div>
+
       <div className="flex flex-col justify-center items-center border border-gray-300 rounded-lg p-6 gap-y-4 shadow-md">
         <h1 className="text-2xl font-semibold mb-4 text-center text-gray-800 dark:text-white">
           Detalles del Reporte Obligatorio
@@ -54,11 +132,12 @@ const ShowObligatoryReport = () => {
 
             <div className="bg-gray-100 p-4 rounded-lg">
               <p className="text-lg text-gray-700">
-                <span className="font-semibold">Lugar Donde Ocurrio el Suceso: </span> 
+                <span className="font-semibold">
+                  Lugar Donde Ocurrio el Suceso:{" "}
+                </span>
                 {obligatoryReport.incident_location}
               </p>
             </div>
- 
 
             <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
               <p className="text-lg font-medium text-gray-700">
@@ -117,7 +196,6 @@ const ShowObligatoryReport = () => {
                 <span className="font-semibold">Matricula de Aereonave: </span>
                 {obligatoryReport.description}
               </p>
-
             </div>
 
             <div className="bg-gray-100 p-4 rounded-lg">
