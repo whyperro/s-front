@@ -12,8 +12,19 @@ import {
 } from "@/components/ui/dialog";
 import { CreateObligatoryReportForm } from "../forms/CreateObligatoryReportForm";
 import { useState } from "react";
+import { ObligatoryReport } from "@/types";
 
-export function CreateObligatoryDialog() {
+interface FormProps {
+  title: string;
+  initialData?: ObligatoryReport;
+  isEditing?: boolean;
+}
+
+export default function CreateObligatoryReportDialog({
+  title,
+  isEditing,
+  initialData,
+}: FormProps) {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -26,7 +37,7 @@ export function CreateObligatoryDialog() {
               size="sm"
               className=" hidden h-8 lg:flex"
             >
-              Nuevo reporte
+              {title}
             </Button>
           </DialogTrigger>
           <DialogContent className="flex flex-col max-w-2xl m-2 max-h-screen overflow-auto">
@@ -34,7 +45,16 @@ export function CreateObligatoryDialog() {
               <DialogTitle></DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
-            <CreateObligatoryReportForm onClose={() => setOpen(false)} />
+
+            {isEditing && initialData ? (
+              <CreateObligatoryReportForm
+                isEditing={true}
+                initialData={initialData}
+                onClose={() => setOpen(false)}
+              />
+            ) : (
+              <CreateObligatoryReportForm onClose={() => setOpen(false)} />
+            )}
           </DialogContent>
         </Dialog>
       </Card>
