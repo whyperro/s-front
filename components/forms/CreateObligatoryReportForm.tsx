@@ -85,23 +85,21 @@ const FormSchema = z
     flight_destiny: z.string().min(3),
     flight_alt_destiny: z.string().min(3),
     incidents: z.array(z.string()).optional(),
-    other_incidents: z.string().optional(),
+    other_incidents: z.preprocess(
+      (val) => (val === null || val === undefined ? "" : val),
+      z.string().optional()
+    ),
   })
   .refine(
     (data) => {
       const hasIncidents = data.incidents && data.incidents.length > 0;
-      const hasOtherIncidents =
-        data.other_incidents !== null && data.other_incidents !== undefined
-          ? data.other_incidents.trim() !== ""
-          : false; // Si es null o undefined, se considera falso
+      const hasOtherIncidents = data.other_incidents?.trim() !== "";
 
-      // Return true if either field is valid or both are valid
       return hasIncidents || hasOtherIncidents;
     },
     {
-      message:
-        "At least one of 'incidents' or 'other_incidents' must be provided.",
-      path: ["incidents", "other_incidents"], // Optional, to highlight both fields in error
+      message: "Debe proporcionar al menos un incidente o descripción",
+      path: ["incidents"],
     }
   );
 
@@ -177,7 +175,10 @@ export function CreateObligatoryReportForm({
       flight_destiny: initialData?.flight_destiny,
       flight_number: initialData?.flight_number,
       flight_origin: initialData?.flight_origin,
-      other_incidents: initialData?.other_incidents,
+      incidents: initialData?.incidents
+        ? JSON.parse(initialData.incidents)
+        : [],
+      other_incidents: initialData?.other_incidents ?? "",
       report_date: initialData?.report_date
         ? new Date(initialData?.report_date)
         : new Date(),
