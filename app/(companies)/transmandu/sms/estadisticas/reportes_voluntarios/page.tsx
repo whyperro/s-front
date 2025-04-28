@@ -45,7 +45,7 @@ const graphicsOptions = [
   { id: "location", label: "Identificados por localizacion" },
   { id: "tipo", label: "Según su Tipo" },
   { id: "pre-riesgo", label: "Por Índice de Riesgo Pre-Mitigación" },
-  { id: "post-riesgo", label: "Por Índice de Riesgo Post-Mitigación" },
+  { id: "post-riesgo-bar", label: "Por Índice de Riesgo Post-Mitigación" },
   { id: "bar-chart", label: "Identificados vs Gestionados" },
   { id: "pre-riesgo-bar", label: "Número de Reportes por Índice de Riesgo" },
   { id: "area-bar", label: "Número de Reportes vs Área" },
@@ -190,7 +190,7 @@ const Statistics = () => {
     selectedGraphics.includes("Todos") || selectedGraphics.includes(id);
 
   return (
-    <ContentLayout title="Gráficos Estadísticos de los Reportes">
+    <ContentLayout title="Gráficos Estadísticos de los Reportes (Voluntarios)">
       <div className="flex flex-col space-y-4 mb-6">
         <div className="flex justify-center items-center">
           <div className="flex flex-col w-full max-w-md">
@@ -291,7 +291,7 @@ const Statistics = () => {
         )}
       </div>
 
-      <div className="grid  sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
         {shouldShow("bar-chart") && (
           <div className="p-4 rounded-lg shadow border">
             {isLoadingBarChart ? (
@@ -434,6 +434,27 @@ const Statistics = () => {
                 width="50%"
                 data={postRiskData}
                 title="Indice de Riesgo Post-Mitigación"
+              />
+            ) : (
+              <p className="text-lg text-muted-foreground">
+                No hay datos para mostrar.
+              </p>
+            )}
+          </div>
+        )}
+
+        {shouldShow("post-riesgo-bar") && (
+          <div className="p-4 rounded-lg shadow border">
+            {isLoadingPostRisk ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="size-24 animate-spin" />
+              </div>
+            ) : postRiskData?.length ? (
+              <DynamicBarChart
+                height="100%"
+                width="100%"
+                data={postRiskData}
+                title="Numero de Reportes por Indice de Riesgo"
               />
             ) : (
               <p className="text-lg text-muted-foreground">
