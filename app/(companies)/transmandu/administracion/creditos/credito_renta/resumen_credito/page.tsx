@@ -16,7 +16,6 @@ const CreditStatisticsRentingPage = () => {
   const [showCreditsTable, setShowCreditsTable] = useState(false)
   const [activeBar, setActiveBar] = useState<string | null>(null)
 
-  // Handle loading state
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -25,7 +24,6 @@ const CreditStatisticsRentingPage = () => {
     )
   }
 
-  // Handle error state
   if (isError || !data) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
@@ -48,13 +46,11 @@ const CreditStatisticsRentingPage = () => {
     },
   ]
 
-  // Función para manejar el clic en la barra
   const handleBarClick = (dataKey: string) => {
     setActiveBar(dataKey)
     setShowCreditsTable(true)
   }
 
-  // Colores para las barras
   const barColors = {
     montoTotal: "#3b82f6", // Blue-500
     montoPagado: "#14b8a6", // Teal-500
@@ -77,7 +73,6 @@ const CreditStatisticsRentingPage = () => {
     }
   }
 
-  // Obtener el título de la tabla según la barra seleccionada
   const getTableTitle = () => {
     switch (activeBar) {
       case "montoTotal":
@@ -91,7 +86,6 @@ const CreditStatisticsRentingPage = () => {
     }
   }
 
-  // Obtener la descripción de la tabla según la barra seleccionada
   const getTableDescription = () => {
     switch (activeBar) {
       case "montoTotal":
@@ -114,7 +108,6 @@ const CreditStatisticsRentingPage = () => {
           Volver
         </Button>
       </div>
-
       <Card className="mb-8">
         <CardHeader>
           <div>
@@ -179,7 +172,7 @@ const CreditStatisticsRentingPage = () => {
                   left: 20,
                   bottom: 5,
                 }}
-                barSize={40} // Añadir esta línea para hacer las barras más delgadas
+                barSize={40} 
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
@@ -241,11 +234,6 @@ const CreditStatisticsRentingPage = () => {
               </BarChart>
             </ResponsiveContainer>
           </div>
-
-          {/* Instrucciones */}
-          <p className="text-center text-muted-foreground mt-4">
-            Haz clic en cualquier barra para ver el detalle de los créditos correspondientes
-          </p>
         </CardContent>
       </Card>
 
@@ -265,6 +253,7 @@ const CreditStatisticsRentingPage = () => {
                     <TableHead>Estado</TableHead>
                     <TableHead>Deuda</TableHead>
                     <TableHead>Monto Pagado</TableHead>
+                    <TableHead>Fecha Apertura</TableHead>
                     <TableHead>Fecha Límite</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -283,6 +272,7 @@ const CreditStatisticsRentingPage = () => {
                       </TableCell>
                       <TableCell>{formatCurrency(credit.debt)}</TableCell>
                       <TableCell>{formatCurrency(credit.payed_amount)}</TableCell>
+                      <TableCell>{formatDate(credit.opening_date,1)}</TableCell>
                       <TableCell>{formatDate(credit.deadline,1)}</TableCell>
                     </TableRow>
                   ))}

@@ -16,7 +16,6 @@ const CreditStatisticsFlightPage = () => {
   const [showCreditsTable, setShowCreditsTable] = useState(false)
   const [activeBar, setActiveBar] = useState<string | null>(null)
 
-  // Handle loading state
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -25,7 +24,6 @@ const CreditStatisticsFlightPage = () => {
     )
   }
 
-  // Handle error state
   if (isError || !data) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
@@ -38,10 +36,7 @@ const CreditStatisticsFlightPage = () => {
     )
   }
 
-  // Verificar la estructura de datos y procesarla adecuadamente
   const processedData = Array.isArray(data) ? data : [data]
-
-  // Agregar datos de todas las respuestas
   const aggregatedData = {
     credits: processedData.flatMap((item) => item.credits || []),
     pending_credits: processedData.flatMap((item) => item.pending_credits || []),
@@ -61,13 +56,11 @@ const CreditStatisticsFlightPage = () => {
     },
   ]
 
-  // Función para manejar el clic en la barra
   const handleBarClick = (dataKey: string) => {
     setActiveBar(dataKey)
     setShowCreditsTable(true)
   }
 
-  // Colores para las barras
   const barColors = {
     montoTotal: "#3b82f6", // Blue-500
     montoPagado: "#14b8a6", // Teal-500
@@ -90,7 +83,6 @@ const CreditStatisticsFlightPage = () => {
     }
   }
 
-  // Obtener el título de la tabla según la barra seleccionada
   const getTableTitle = () => {
     switch (activeBar) {
       case "montoTotal":
@@ -104,7 +96,6 @@ const CreditStatisticsFlightPage = () => {
     }
   }
 
-  // Obtener la descripción de la tabla según la barra seleccionada
   const getTableDescription = () => {
     switch (activeBar) {
       case "montoTotal":
@@ -127,7 +118,6 @@ const CreditStatisticsFlightPage = () => {
           Volver
         </Button>
       </div>
-
       <Card className="mb-8">
         <CardHeader>
           <div>
@@ -192,7 +182,7 @@ const CreditStatisticsFlightPage = () => {
                   left: 20,
                   bottom: 5,
                 }}
-                barSize={40} // Barras más delgadas
+                barSize={40} 
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
@@ -270,6 +260,7 @@ const CreditStatisticsFlightPage = () => {
                     <TableHead>Estado</TableHead>
                     <TableHead>Deuda</TableHead>
                     <TableHead>Monto Pagado</TableHead>
+                    <TableHead>Fecha Apertura</TableHead>
                     <TableHead>Fecha Límite</TableHead>
                     <TableHead>Detalle</TableHead>
                   </TableRow>
@@ -283,8 +274,8 @@ const CreditStatisticsFlightPage = () => {
                            <div className="flex items-center gap-2">
                            <div className="flex flex-col">
                              <span className="font-medium flex items-center gap-1">
-                               <PlaneIcon className="h-4 w-4 text-blue-500" /> {/* Icono en lugar del texto "Vuelo" */}
-                               {credit.flight.flight_number} {/* Número de vuelo directamente */}
+                               <PlaneIcon className="h-4 w-4 text-blue-500" /> 
+                               {credit.flight.flight_number} 
                              </span>
                              <span className="text-xs text-muted-foreground">
                                {credit.flight.type} - {new Date(credit.flight.date).toLocaleDateString()}
@@ -306,6 +297,7 @@ const CreditStatisticsFlightPage = () => {
                       </TableCell>
                       <TableCell>{formatCurrency(credit.debt)}</TableCell>
                       <TableCell>{formatCurrency(credit.payed_amount)}</TableCell>
+                      <TableCell>{formatDate(credit.opening_date,1)}</TableCell>
                       <TableCell>{formatDate(credit.deadline,1)}</TableCell>
                       <TableCell>{(credit.details)}</TableCell>
                     </TableRow>
