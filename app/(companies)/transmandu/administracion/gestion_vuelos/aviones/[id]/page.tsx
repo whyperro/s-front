@@ -101,12 +101,10 @@ export default function AircraftReportPage() {
   }, [selectedYear, aircraftStats])
 
   const handleBarClick = (data: any) => {
-    // Verificar que tenemos datos válidos
     if (data && data.activePayload && data.activePayload.length > 0) {
       const clickedBar = data.activePayload[0]
       const monthNumber = clickedBar.payload.month
 
-      // Si ya está seleccionado, deseleccionar
       if (selectedMonth === monthNumber) {
         setSelectedMonth(null)
         setAllMovements([])
@@ -116,46 +114,19 @@ export default function AircraftReportPage() {
       setSelectedMonth(monthNumber)
       const monthObj = months.find((m) => m.number === monthNumber)
       const monthNameInSpanish = monthObj?.name || ""
-
       // Obtener tanto ingresos como egresos para el mes seleccionado
       const monthIncomes = aircraftStats?.incomes[selectedYear]?.[monthNameInSpanish] || []
       const monthOutputs = aircraftStats?.outputs[selectedYear]?.[monthNameInSpanish] || []
-
       // Combinar ambos tipos de movimientos
       const combinedMovements = [
         ...monthIncomes.map((income: CashMovement) => ({ ...income, movementType: "income" })),
         ...monthOutputs.map((output: CashMovement) => ({ ...output, movementType: "output" })),
       ]
-
       // Ordenar por fecha (más reciente primero)
       combinedMovements.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
       setAllMovements(combinedMovements)
     }
-  }
-
-  // Función para cargar los datos según el mes seleccionado en el filtro
-  const handleMonthFilterChange = (month: string) => {
-    setFilterMonth(month)
-    setSelectedMonth(month)
-
-    const monthObj = months.find((m) => m.number === month)
-    const monthNameInSpanish = monthObj?.name || ""
-
-    // Obtener tanto ingresos como egresos para el mes seleccionado
-    const monthIncomes = aircraftStats?.incomes[selectedYear]?.[monthNameInSpanish] || []
-    const monthOutputs = aircraftStats?.outputs[selectedYear]?.[monthNameInSpanish] || []
-
-    // Combinar ambos tipos de movimientos
-    const combinedMovements = [
-      ...monthIncomes.map((income: CashMovement) => ({ ...income, movementType: "income" })),
-      ...monthOutputs.map((output: CashMovement) => ({ ...output, movementType: "output" })),
-    ]
-
-    // Ordenar por fecha (más reciente primero)
-    combinedMovements.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-
-    setAllMovements(combinedMovements)
   }
 
   // Limpiar selección
@@ -359,21 +330,7 @@ export default function AircraftReportPage() {
                 </CardTitle>
                 <CardDescription>Detalle de ingresos y egresos registrados durante el mes</CardDescription>
               </div>
-
               <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-muted-foreground" />
-                <Select value={filterMonth || ""} onValueChange={handleMonthFilterChange}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Seleccionar mes" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {months.map((month) => (
-                      <SelectItem key={month.number} value={month.number}>
-                        {month.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
                 <Button variant="ghost" size="sm" onClick={handleClearSelection}>
                   <X className="h-4 w-4 mr-2" />
                   Cerrar
