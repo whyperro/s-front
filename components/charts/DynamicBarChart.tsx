@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { useState } from "react";
 import { COLORS } from "@/lib/utils";
+import { TickItem } from "recharts/types/util/types";
 
 // Definición de la interfaz para las props del componente
 interface DynamicBarChartProps {
@@ -24,9 +25,41 @@ interface DynamicBarChartProps {
   activeDecimal?: boolean;
 }
 
+interface CustomizedAxisTickProps {
+  x: number;
+  y: number;
+  payload: TickItem;
+  theme: "light" | "dark";
+}
+
+const CustomizedAxisTick: React.FC<CustomizedAxisTickProps> = ({ x, y, payload, theme }) => {
+  if (!payload || !payload.value) {
+    return null;
+  }
+  const words = payload.value.toString().split(' ');
+  const verticalSpacing = 7; // Espacio entre líneas de la misma etiqueta
+  const spaceToChart = 5; // Espacio adicional hacia el gráfico
+
+  return (
+    <g transform={`translate(${x},${y + spaceToChart})`}> {/* Move the entire group down */}
+      {words.map((word: string, i: number) => (
+        <text
+          x={0}
+          y={i * verticalSpacing}
+          dy={verticalSpacing / 2} // Ajusta la posición vertical de cada línea
+          textAnchor="middle"
+          fill={theme === "light" ? "black" : "white"}
+          key={i}
+          fontSize={9}
+          className="text-wrap"
+        >
+          {word}
+        </text>
+      ))}
+    </g>
+  );
+};
 // Array de colores para las barras
-
-
 
 const DynamicBarChart = ({
   data,
@@ -34,7 +67,7 @@ const DynamicBarChart = ({
   height,
   width,
   activeDecimal,
-  aspect
+  aspect,
 }: DynamicBarChartProps) => {
   const { theme } = useTheme();
   const [clickedBarName, setClickedBarName] = useState<string | null>(null);
@@ -63,9 +96,20 @@ const DynamicBarChart = ({
           }}
         >
           <CartesianGrid strokeDasharray="4" />
+
           <XAxis
             dataKey="name"
             stroke={theme === "light" ? "black" : "white"}
+            height={20}
+            tick={(props) => (
+              <CustomizedAxisTick
+                x={props.x}
+                y={props.y}
+                payload={props.payload}
+                theme={'light'}
+              />
+            )}
+            interval={0} // Show all ticks
           />
           <YAxis
             domain={[0, "dataMax"]}
@@ -73,7 +117,7 @@ const DynamicBarChart = ({
             stroke={theme === "light" ? "black" : "white"}
           />
           <Tooltip />
-          <Legend  iconSize={0} />
+          <Legend iconSize={0} />
           <Bar dataKey="value" fill="#8884d8" barSize={200} name={title}>
             {data.map((entry, index) => (
               <Cell

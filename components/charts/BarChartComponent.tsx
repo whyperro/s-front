@@ -129,6 +129,7 @@ const BarChartComponent = ({
             <XAxis
               dataKey="name"
               stroke={theme === "light" ? "black" : "white"}
+              tick={{ fontSize: 12 }} 
             />
             <YAxis
               allowDecimals={false}
