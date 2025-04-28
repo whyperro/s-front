@@ -27,6 +27,7 @@ import { Textarea } from "../ui/textarea"
 import { AmountInput } from "../misc/AmountInput"
 import { useGetManufacturers } from "@/hooks/ajustes/globales/fabricantes/useGetManufacturers"
 import { useGetConditions } from "@/hooks/administracion/useGetConditions"
+import { useRouter } from "next/navigation"
 
 const formSchema = z.object({
   article_type: z.string(),
@@ -96,6 +97,8 @@ const CreateToolForm = ({ initialData, isEditing }: {
 
   const { selectedStation } = useCompanyStore();
 
+  const router = useRouter()
+
   const { mutate, data: batches, isPending: isBatchesLoading, isError } = useGetBatchesByLocationId();
 
   const { data: conditions, isLoading: isConditionsLoading, error: isConditionsError } = useGetConditions();
@@ -119,7 +122,7 @@ const CreateToolForm = ({ initialData, isEditing }: {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      serial: initialData?.tool?.serial || "",
+      serial: initialData?.serial || "",
       part_number: initialData?.part_number || "",
       alternative_part_number: initialData?.alternative_part_number || "",
       batches_id: initialData?.batches.id?.toString() || "",
@@ -137,7 +140,8 @@ const CreateToolForm = ({ initialData, isEditing }: {
     const formattedValues = {
       ...values,
       batches_id: Number(values.batches_id),
-      cost: values.cost && parseFloat(values.cost) || initialData?.cost,
+      cost: 0,
+      status: "Stored",
     }
     if (isEditing) {
       confirmIncoming.mutate({
@@ -148,6 +152,7 @@ const CreateToolForm = ({ initialData, isEditing }: {
         certificate_vendor: values.certificate_vendor || initialData?.certifcate_vendor,
         status: "Stored"
       })
+      router.push("/hangar74/almacen/ingreso/en_recepcion")
     } else {
       createArticle.mutate(formattedValues);
     }
@@ -215,7 +220,7 @@ const CreateToolForm = ({ initialData, isEditing }: {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Fabricante</FormLabel>
-                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange}>
+                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecccione..." />
@@ -301,7 +306,7 @@ const CreateToolForm = ({ initialData, isEditing }: {
                 </FormItem>
               )}
             />
-            {
+            {/* {
               !isEditing && (
                 <FormField
                   control={form.control}
@@ -319,8 +324,8 @@ const CreateToolForm = ({ initialData, isEditing }: {
                   )}
                 />
               )
-            }
-            {
+            } */}
+            {/* {
               isEditing && (
                 <FormField
                   control={form.control}
@@ -339,7 +344,23 @@ const CreateToolForm = ({ initialData, isEditing }: {
                   )}
                 />
               )
-            }
+            } */}
+            <FormField
+              control={form.control}
+              name="zone"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Zona de Ubicacion</FormLabel>
+                  <FormControl>
+                    <Input placeholder="EJ: Pasillo 4, etc..." {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Identificador único del articulo.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="is_special"

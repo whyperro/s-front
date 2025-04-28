@@ -38,7 +38,7 @@ export const columns: ColumnDef<PurchaseOrder>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "quote_number",
+    accessorKey: "order_number",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Nro. de Orden" />
     ),
@@ -51,7 +51,7 @@ export const columns: ColumnDef<PurchaseOrder>[] = [
     }
   },
   {
-    accessorKey: "requisition_order",
+    accessorKey: "requisition_order.quote_order.quote_number",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nro. de Cotizacion" />
     ),

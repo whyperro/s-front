@@ -72,7 +72,7 @@ export function DataTableColumnHeader<TData, TValue>({
       {
         filter && (
           <Input
-            placeholder={`Busqueda - ${title.toLowerCase()}...`}
+            placeholder={`Busq. - ${title.toLowerCase()}...`}
             value={(column?.getFilterValue() as string) ?? (column?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               column?.setFilterValue(event.target.value)

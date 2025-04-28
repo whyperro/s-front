@@ -24,6 +24,7 @@ const ArticleDropdownActions = ({ id, serial, part_number }: { id: string | numb
   const handleDelete = async (id: number | string) => {
     await deleteArticle.mutateAsync(id);
     setOpen(false);
+    router.refresh()
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>

@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils"
 import { useCompanyStore } from "@/stores/CompanyStore"
 import { Article, Batch, Convertion } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { addYears, format, subYears } from "date-fns"
+import { addYears, format, parse, parseISO, subYears } from "date-fns"
 import { es } from 'date-fns/locale'
 import { CalendarIcon, Check, ChevronsUpDown, FileUpIcon, Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -35,6 +35,7 @@ import { Checkbox } from "../ui/checkbox"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
 import { Label } from "../ui/label"
 import { Textarea } from "../ui/textarea"
+import { useRouter } from "next/navigation"
 
 
 const formSchema = z.object({
@@ -42,6 +43,9 @@ const formSchema = z.object({
   part_number: z.string().min(2, {
     message: "El serial debe contener al menos 2 carácteres.",
   }),
+  alternative_part_number: z.string().min(2, {
+    message: "El serial debe contener al menos 2 carácteres.",
+  }).optional(),
   description: z.string({
     message: "Debe ingresar la descripción del articulo."
   }).min(2, {
@@ -92,29 +96,22 @@ interface EditingArticle extends Article {
   consumable?: {
     article_id: number,
     is_managed: boolean,
-    convertions: {
-      id: number,
-      secondary_unit: string,
-      convertion_rate: number,
-      quantity_unit: number,
-      unit: {
-        label: string,
-        value: string,
-      },
-    }[],
+    convertions: Convertion[],
+    quantity: number,
     shell_time: {
       caducate_date: Date,
-      fabrication_date: Date,
+      fabrication_date: string,
       consumable_id: string,
     }
-  }
+  },
 }
-
 
 const CreateConsumableForm = ({ initialData, isEditing }: {
   initialData?: EditingArticle,
   isEditing?: boolean,
 }) => {
+
+  const router = useRouter()
 
   const [open, setOpen] = useState(false);
 
@@ -156,16 +153,22 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
     }
   }, [batches]);
 
+  useEffect(() => {
+    if (initialData && initialData.consumable) {
+      setSecondarySelected(initialData.consumable!.convertions[0])
+    }
+  }, [initialData])
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      part_number: initialData?.part_number || "",
-      batches_id: initialData?.batches.id?.toString() || "",
-      manufacturer_id: initialData?.manufacturer?.id.toString() || "",
-      condition_id: initialData?.condition?.id.toString() || "",
+      part_number: initialData?.part_number || undefined,
+      alternative_part_number: initialData?.alternative_part_number || undefined,
+      batches_id: initialData?.batches.id?.toString() || undefined,
+      manufacturer_id: initialData?.manufacturer?.id.toString() || undefined,
+      condition_id: initialData?.condition?.id.toString() || undefined,
       description: initialData?.description || "",
-      zone: initialData?.zone || "",
-      is_managed: initialData?.consumable?.is_managed || false,
+      zone: initialData?.zone || undefined,
     }
   })
   form.setValue("article_type", "consumible");
@@ -174,10 +177,11 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
     if (secondarySelected && secondaryQuantity) {
       const quantity = (secondarySelected.convertion_rate * secondarySelected.quantity_unit) * secondaryQuantity
       form.setValue("quantity", quantity)
+      console.log(quantity)
     }
   }, [form, secondarySelected, secondaryQuantity])
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const formattedValues = {
       ...values,
       caducate_date: caducateDate && format(caducateDate, "yyyy-MM-dd"),
@@ -186,17 +190,21 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
       convertion_id: secondarySelected?.id,
     }
     if (isEditing) {
-      confirmIncoming.mutate({
+      const formattedValues = {
         ...values,
         id: initialData?.id,
         certificate_8130: values.certificate_8130 || initialData?.certifcate_8130,
         certificate_fabricant: values.certificate_fabricant || initialData?.certifcate_fabricant,
         certificate_vendor: values.certificate_vendor || initialData?.certifcate_vendor,
         status: "Stored"
-      })
+      }
+
+      await confirmIncoming.mutateAsync(formattedValues)
+      router.push("/hangar74/almacen/ingreso/en_recepcion")
     } else {
       createArticle.mutate(formattedValues);
     }
+
   }
   return (
     <Form {...form}>
@@ -208,6 +216,22 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Nro. de Parte</FormLabel>
+                <FormControl>
+                  <Input placeholder="EJ: 234ABAC" {...field} />
+                </FormControl>
+                <FormDescription>
+                  Identificador único del articulo.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="alternative_part_number"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Nro. de Parte - Alt.</FormLabel>
                 <FormControl>
                   <Input placeholder="EJ: 234ABAC" {...field} />
                 </FormControl>
@@ -427,7 +451,7 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Fabricante</FormLabel>
-                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange}>
+                  <Select disabled={isManufacturerLoading} onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecccione..." />
@@ -448,7 +472,7 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
                 </FormItem>
               )}
             />
-            {
+            {/* {
               isEditing && (
                 <FormField
                   control={form.control}
@@ -467,7 +491,23 @@ const CreateConsumableForm = ({ initialData, isEditing }: {
                   )}
                 />
               )
-            }
+            } */}
+            <FormField
+              control={form.control}
+              name="zone"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Ubicación del Articulo</FormLabel>
+                  <FormControl>
+                    <Input placeholder="EJ: Pasillo 4, repisa 3..." {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Ubicación exacta del articulo.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="batches_id"

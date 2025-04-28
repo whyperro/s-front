@@ -10,7 +10,7 @@ interface TempCompany {
 }
 
 const fetchCompaniesWithWarehouses = async (): Promise<TempCompany> => {
-  const  {data}  = await axiosInstance.get('/companyWarehouse');
+  const  {data}  = await axiosInstance.get('/company-warehouse');
   return data;
 };
 

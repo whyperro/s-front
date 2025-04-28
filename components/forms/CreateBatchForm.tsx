@@ -22,6 +22,7 @@ import { useForm, useWatch } from "react-hook-form"
 import { z } from "zod"
 import { Checkbox } from "../ui/checkbox"
 import { Textarea } from "../ui/textarea"
+import { generateSlug } from "@/lib/utils"
 
 const FormSchema = z.object({
   name: z.string().min(3, {
@@ -75,7 +76,7 @@ export function CreateBatchForm({ onClose }: FormProps) {
     if (existingBatch) {
       setError("name", {
         type: "manual",
-        message: "El numero de parte ya está en existe."
+        message: "El numero de parte ya existe."
       });
     } else {
       clearErrors("name");
@@ -86,6 +87,7 @@ export function CreateBatchForm({ onClose }: FormProps) {
   const onSubmit = async (data: FormSchemaType) => {
     const formattedData = {
       ...data,
+      slug: generateSlug(data.name),
       min_quantity: Number(data.min_quantity),
       warehouse_id: Number(data.warehouse_id)
     }
@@ -198,27 +200,29 @@ export function CreateBatchForm({ onClose }: FormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Almacén</FormLabel>
-                  <Select disabled={isLoading} onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    disabled={isLoading}
+                    onValueChange={field.onChange}
+                    value={field.value} // Usa value en lugar de defaultValue
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder={isLoading ? <Loader2 className="size-4 animate-spin" /> : "Seleccione..."} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {
-                        isLoading && <Loader2 className="size-4 animate-spin" />
-                      }
-                      {
-                        warehouses && warehouses.map((warehouse) => (
-                          <SelectItem key={warehouse.id} value={warehouse.id}>{warehouse.name} - {warehouse.address}</SelectItem>
-                        ))
-                      }
-                      {
-                        warehouses && warehouses.length < 1 && <p className="text-xs p-2 text-muted-foreground">No se han encontrado almacenes...</p>
-                      }
-                      {
-                        error && <p className="text-xs p-2 text-muted-foreground">Ha ocurrido un error al cargar los almacenes...</p>
-                      }
+                      {isLoading && <Loader2 className="size-4 animate-spin" />}
+                      {warehouses && warehouses.map((warehouse) => (
+                        <SelectItem key={warehouse.id} value={warehouse.id.toString()}>
+                          {warehouse.name} - {warehouse.location.address}
+                        </SelectItem>
+                      ))}
+                      {warehouses && warehouses.length < 1 && (
+                        <p className="text-xs p-2 text-muted-foreground">No se han encontrado almacenes...</p>
+                      )}
+                      {error && (
+                        <p className="text-xs p-2 text-muted-foreground">Ha ocurrido un error al cargar los almacenes...</p>
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />

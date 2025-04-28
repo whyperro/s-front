@@ -21,9 +21,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import Link from "next/link"
-import { Aircraft } from "@/types"
+import { MaintenanceAircraft } from "@/types"
+import MaintenanceAircraftDropdownActions from "@/components/misc/MaintenanceAircraftDropdownActions"
 
-export const columns: ColumnDef<Aircraft>[] = [
+export const columns: ColumnDef<MaintenanceAircraft>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -47,50 +48,66 @@ export const columns: ColumnDef<Aircraft>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "serial",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="SERIAL" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <p className="font-bold flex justify-center hover:scale-105 hover:text-blue-600 transition-all ease-in cursor-pointer duration-150">{row.original.serial}</p>
-      )
-    }
-  },
-  {
-    accessorKey: "brand",
-    header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="FABRICANTE" />
-    ),
-    cell: ({ row }) => (
-      <p className="flex justify-center font-medium">{row.original.brand}</p>
-    )
-  },
-  {
     accessorKey: "acronym",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="ACRONYM" />
+      <DataTableColumnHeader filter column={column} title="Matricula" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center text-muted-foreground italic">{row.original.acronym}</p>
+      <Link href={`/hangar74/planificacion/aeronaves/${row.original.acronym}`} className="flex justify-center font-bold italic">{row.original.acronym}</Link>
     )
   },
   {
-    accessorKey: "aircraft_operator",
+    accessorKey: "manufacturer.name",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="OPERADOR" />
+      <DataTableColumnHeader filter column={column} title="Fabricante" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center font-bold">{row.original.aircraft_operator}</p>
+      <p className="flex justify-center font-medium">{row.original.manufacturer.name}</p>
     )
   },
   {
-    accessorKey: "owner",
+    accessorKey: "client.name",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="DUEÑO" />
+      <DataTableColumnHeader filter column={column} title="Cliente" />
     ),
     cell: ({ row }) => (
-      <p className="flex justify-center font-bold">{row.original.owner}</p>
+      <p className="flex justify-center text-muted-foreground italic">{row.original.client.name}</p>
+    )
+  },
+  {
+    accessorKey: "flight_hours",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Horas de Vuelo" />
+    ),
+    cell: ({ row }) => (
+      <p className="flex justify-center font-semibold">{row.original.flight_hours} hrs.</p>
+    )
+  },
+  {
+    accessorKey: "flight_cycles",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Ciclos de Vuelo" />
+    ),
+    cell: ({ row }) => (
+      <p className="flex justify-center font-semibold">{row.original.flight_cycles} cyc.</p>
+    )
+  },
+  {
+    accessorKey: "location",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Ubicación" />
+    ),
+    cell: ({ row }) => (
+      <p className="flex justify-center text-muted-foreground italic">{row.original.location.address}</p>
+    )
+  },
+  {
+    accessorKey: "comments",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Comentarios" />
+    ),
+    cell: ({ row }) => (
+      <p className="flex justify-center text-muted-foreground text-center">{row.original.comments}</p>
     )
   },
   {
@@ -98,39 +115,7 @@ export const columns: ColumnDef<Aircraft>[] = [
     cell: ({ row }) => {
       const item = row.original
       return (
-        <TooltipProvider>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Abrir menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" className="flex gap-2 justify-center">
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Trash2 className='size-5 text-red-500' />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Eliminar</p>
-                  </TooltipContent>
-                </Tooltip>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <SquarePen className="size-5" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    Editar
-                  </TooltipContent>
-                </Tooltip>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </TooltipProvider>
+        <MaintenanceAircraftDropdownActions id={item.id} />
       )
     },
   },

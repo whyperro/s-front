@@ -3,7 +3,9 @@ import { Article, Condition, Manufacturer } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 
 export interface IArticleByBatch {
-  id:number,
+  name: string,
+  articles: {
+    id: number,
   article_type: string,
   status: string,
   serial: string,
@@ -19,6 +21,7 @@ export interface IArticleByBatch {
   part_number: string,
   alternate_part_number: string,
   certificates?: string[],
+  unit_secondary: string,
   image: string,
   quantity: number,
   tool?: {
@@ -58,16 +61,17 @@ export interface IArticleByBatch {
       consumable_id: string,
     }
   }
+  }[]
 }
 
-const fetchArticlesByBatch = async (location_id: number, batch: string): Promise<IArticleByBatch[]> => {
-  const {data} = await axios.post(`/hangar74/batches/${batch}`, {location_id});
-  return data;
+const fetchArticlesByBatch = async (location_id: number, slug: string): Promise<IArticleByBatch> => {
+  const {data} = await axios.post(`/hangar74/batches/${slug}`, {location_id});
+  return data[0];
 };
 
-export const useGetArticlesByBatch = (location_id: number, batch: string) => {
-  return useMutation<IArticleByBatch[], Error, number>({
+export const useGetArticlesByBatch = (location_id: number, slug: string) => {
+  return useMutation<IArticleByBatch, Error, number>({
     mutationKey: ["articles"],
-    mutationFn: () => fetchArticlesByBatch(location_id, batch),
+    mutationFn: () => fetchArticlesByBatch(location_id, slug),
   });
 };

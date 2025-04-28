@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { useUpdateStatusDispatchRequest } from "@/actions/almacen/solicitudes/salida/action"
+import { useCreateRequisition } from "@/actions/compras/requisiciones/actions"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -29,6 +30,8 @@ import {
 import { useAuth } from "@/contexts/AuthContext"
 import { useGetWarehousesEmployees } from "@/hooks/almacen/useGetWarehousesEmployees"
 import { cn } from "@/lib/utils"
+import { useCompanyStore } from "@/stores/CompanyStore"
+import { DispatchRequest } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
@@ -39,8 +42,6 @@ import { z } from "zod"
 import { Calendar } from "../ui/calendar"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { useCompanyStore } from "@/stores/CompanyStore"
-import { toast } from "sonner"
 
 
 const formSchema = z.object({
@@ -52,7 +53,7 @@ const formSchema = z.object({
 })
 
 const PendingDispatchRequestDropdownActions
-  = ({ id }: { id: string | number }) => {
+  = ({ request }: { request: DispatchRequest }) => {
 
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -65,9 +66,11 @@ const PendingDispatchRequestDropdownActions
 
     const [open, setOpen] = useState<boolean>(false)
 
-    const { selectedStation } = useCompanyStore()
+    const { selectedStation, selectedCompany } = useCompanyStore()
 
     const { updateDispatchStatus } = useUpdateStatusDispatchRequest()
+
+    const { createRequisition } = useCreateRequisition()
 
     const { user } = useAuth();
 
@@ -78,16 +81,40 @@ const PendingDispatchRequestDropdownActions
         employeeMutate(Number(selectedStation))
       }
     }, [selectedStation])
-
     const handleAprove = async (data: z.infer<typeof formSchema>) => {
+      const newQty = request.batch.article_count - Number(request.batch.articles[0].quantity);
+      const qtyToBuy = Math.max(request.batch.min_quantity - newQty + 1, 0);
       const formattedData = {
         ...data,
-        id: Number(id),
+        id: Number(request.id),
         status: "aprobado",
         approved_by: `${user?.first_name} ${user?.last_name}`
       }
-      // console.log(formattedData)
       await updateDispatchStatus.mutateAsync(formattedData);
+      if (request.batch.category !== 'herramienta' && (newQty < request.batch.min_quantity)) {
+        const reqData = {
+          justification: `Restock por solicitud de salida de ${request.batch.name} - ${request.batch.articles[0].part_number}`,
+          requested_by: `${user?.first_name} ${user?.last_name}`,
+          created_by: user!.id,
+          type: "AERONAUTICO",
+          company: selectedCompany!.split(" ").join("").toLowerCase(),
+          location_id: selectedStation!,
+          articles: [
+            {
+              batch: request.batch.id,
+              batch_name: request.batch.name,
+              batch_articles: [
+                {
+                  quantity: qtyToBuy,
+                  part_number: request.batch.articles[0].part_number,
+                  unit: request.batch.articles[0].unit[0].id,
+                }
+              ]
+            }
+          ]
+        }
+        createRequisition.mutateAsync(reqData)
+      }
       setOpen(false)
     }
     return (

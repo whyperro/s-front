@@ -48,7 +48,7 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem className="hover:cursor-pointer" asChild>
-            <Link href="/dashboard" className="flex items-center">
+            <Link href="/ajustes/cuenta" className="flex items-center">
               {
                 loading && <p className="text-sm text-muted-foreground">Cargando...</p>
               }

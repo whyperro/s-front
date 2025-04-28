@@ -52,7 +52,7 @@ const ToolBoxToolsDialog = ({ tools, name }: DialogProps) => {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <p className="text-muted-foreground italic cursor-pointer hover:text-black">{tool.article.description} - {tool.serial}</p>
+                        <p className="text-muted-foreground italic cursor-pointer hover:text-black">PN: {tool.article.part_number} - {tool.article.serial}</p>
                       </TooltipTrigger>
                       <TooltipContent>
                         {

@@ -20,12 +20,32 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { DispatchRequest } from "@/types"
+import { DispatchRequest, WorkOrder, Convertion } from "@/types"
 import DispatchArticlesDialog from "@/components/dialogs/DispatchArticlesDialog"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 
-export const columns: ColumnDef<DispatchRequest>[] = [
+interface IDispatch {
+  id: number,
+  requested_by: string,
+  created_by: string,
+  justification: string,
+  destination_place: string,
+  submission_date: string,
+  work_order?: WorkOrder,
+  articles:
+  {
+    id: number,
+    part_number: string,
+    serial: string,
+    description: string,
+    unit?: Convertion[],
+    quantity: string,
+  }[],
+}
+
+
+export const columns: ColumnDef<IDispatch>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -60,7 +80,7 @@ export const columns: ColumnDef<DispatchRequest>[] = [
   {
     accessorKey: "created_by",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Empleado Responsable" />
+      <DataTableColumnHeader column={column} title="Empleado Responsable" />
     ),
     cell: ({ row }) => {
       return (
@@ -71,7 +91,7 @@ export const columns: ColumnDef<DispatchRequest>[] = [
   {
     accessorKey: "justification",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Justificación" />
+      <DataTableColumnHeader column={column} title="Justificación" />
     ),
     cell: ({ row }) => {
       return (
@@ -82,7 +102,7 @@ export const columns: ColumnDef<DispatchRequest>[] = [
   {
     accessorKey: "date",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Fecha" />
+      <DataTableColumnHeader column={column} title="Fecha" />
     ),
     cell: ({ row }) => (
       <p className="flex justify-center text-muted-foreground italic">{format(row.original.submission_date, "PPP", {
@@ -93,7 +113,7 @@ export const columns: ColumnDef<DispatchRequest>[] = [
   {
     accessorKey: "articles",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Articulos" />
+      <DataTableColumnHeader column={column} title="Articulos" />
     ),
     cell: ({ row }) => (
       <div className="flex justify-center">
@@ -104,8 +124,6 @@ export const columns: ColumnDef<DispatchRequest>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const item = row.original
-
       return (
         <TooltipProvider>
           <DropdownMenu>

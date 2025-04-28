@@ -32,11 +32,12 @@ const useEcho = (): Echo | null => {
                     }
                 },
                 wsHost: process.env.NEXT_PUBLIC_REVERB_HOST as string,
-                wsPort: 8080,
-                wssPort: 8080,
+                wsPort: 8443, //8080
+                wssPort: 8443, //8080
                 forceTLS:
                 (process.env.NEXT_PUBLIC_REVERB_SCHEME ?? 'https') === 'https',
-            enabledTransports: ['ws', 'wss'],
+                enabledTransports: ['ws', 'wss'],
+                disableStats: true,
             })
             setEchoInstance(echo)
         }

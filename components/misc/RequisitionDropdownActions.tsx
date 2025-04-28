@@ -31,6 +31,7 @@ function transformApiData(apiData: any) {
       batch_name: batch.name,
       batch_articles: batch.batch_articles.map((article: any) => ({
         part_number: article.article_part_number,
+        unit: article.unit,
         quantity: parseFloat(article.quantity),
         image: article.image || null,
       })),
@@ -113,7 +114,7 @@ const RequisitionsDropdownActions = ({ req }: { req: Requisition }) => {
               </>
             )
           }
-          <DropdownMenuItem disabled={!(userRoles.includes("JEFE_ALMACEN") || userRoles.includes("ADMIN_INGENIERIA")) || (user!.roles!.map(role => role.name).includes("SUPERUSER"))} onClick={() => setOpenDelete(true)} className="cursor-pointer">
+          <DropdownMenuItem onClick={() => setOpenDelete(true)} className="cursor-pointer">
             <Trash2 className="size-5 text-red-500" />
           </DropdownMenuItem>
         </DropdownMenuContent>

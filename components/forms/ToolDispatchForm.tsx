@@ -75,9 +75,6 @@ export function ToolDispatchForm({ onClose }: FormProps) {
 
   const { mutate, data: batches, isPending: isBatchesLoading, isError: batchesError } = useGetBatchesWithInWarehouseArticles();
 
-  const { data: employees, isLoading: employeesLoading, isError: employeesError } = useGetWorkOrderEmployees();
-
-
   useEffect(() => {
     if (selectedStation) {
       mutate(Number(selectedStation))
@@ -110,7 +107,7 @@ export function ToolDispatchForm({ onClose }: FormProps) {
       ...data,
       created_by: user?.first_name + " " + user?.last_name,
       submission_date: format(data.submission_date, "yyyy-MM-dd"),
-      category: "consumible",
+      category: "herramienta",
       user_id: user!.id
     }
     await createDispatchRequest.mutateAsync(formattedData);

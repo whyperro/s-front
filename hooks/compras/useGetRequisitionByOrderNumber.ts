@@ -1,14 +1,14 @@
 import axios from '@/lib/axios';
-import { User } from '@/types';
+import { Convertion, User } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 
 interface Requisition {
   id: number,
   status: string,
   created_by: User,
-  approved_by: string,
   requested_by: string,
   received_by: string,
+  image?: string,
   justification: string,
   arrival_date: Date,
   submitted_date: Date,
@@ -16,8 +16,10 @@ interface Requisition {
     id: number,
     name: string,
     batch_articles: {
-      article_part_number: string,
-      quantity: number
+      article_part_number?: string,
+      article_alt_part_number?: string,
+      unit?: Convertion,
+      quantity: number,
     }[]
   }[]
 }[]
@@ -30,7 +32,7 @@ const fetchRequisitionByOrderNumber = async (company: string | null, order_numbe
 
 export const useGetRequisitionByOrderNumber = (company: string | null, order_number: string) => {
   return useQuery<Requisition, Error>({
-    queryKey: ["batches"],
+    queryKey: ["requisition-order", company, order_number],
     queryFn: () => fetchRequisitionByOrderNumber(company, order_number),
     enabled: !!company && !!order_number,
   });

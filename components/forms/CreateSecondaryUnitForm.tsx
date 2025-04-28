@@ -101,7 +101,7 @@ export default function CreateSecondaryUnitForm({ onClose }: FormProps) {
                 <Input placeholder="EJ: Kilogramo, Litro, Mililitro" {...field} />
               </FormControl>
               <FormDescription>
-                Este será el nombre de su unidad.
+                ¿Cuantas unidades trae su unidad secundaria?
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -131,7 +131,7 @@ export default function CreateSecondaryUnitForm({ onClose }: FormProps) {
                   </PopoverTrigger>
                   <PopoverContent className="w-[200px] p-0">
                     <Command>
-                      <CommandInput placeholder="Search framework..." />
+                      <CommandInput placeholder="Buscar unidad primaria..." />
                       <CommandList>
                         <CommandEmpty>No existen unidades primarias.</CommandEmpty>
                         <CommandGroup>
@@ -160,7 +160,7 @@ export default function CreateSecondaryUnitForm({ onClose }: FormProps) {
                 </Popover>
               </FormControl>
               <FormDescription>
-                Este será el valor por cada unidad.
+                Este será el valor referencial a la unidad primaria.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -176,7 +176,7 @@ export default function CreateSecondaryUnitForm({ onClose }: FormProps) {
                 <Input placeholder="EJ: 1, 0.5, etc..." {...field} />
               </FormControl>
               <FormDescription>
-                Este será el valor por cada unidad.
+                Este será el valor por cada unidad de su unidad secundaria.
               </FormDescription>
               <FormMessage />
             </FormItem>

@@ -7,6 +7,7 @@ interface CreateQuoteData {
     articles: {
       part_number: string,
       quantity: number,
+      unit: string,
       unit_price: string,
     }[],
     sub_total: number,
@@ -29,6 +30,7 @@ export const useCreateQuote = () => {
         },
       onSuccess: () => {
           queryClient.invalidateQueries({queryKey: ['quotes']})
+          queryClient.invalidateQueries({queryKey: ['quote'], exact: false})
           toast.success("¡Creado!", {
               description: `La cotizacion ha sido creada correctamente.`
           })

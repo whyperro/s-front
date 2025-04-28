@@ -10,6 +10,7 @@ import Image from "next/image"
 import { Badge } from "../ui/badge"
 import { Button } from "../ui/button"
 import { User } from "@/types"
+import { EditUserDialog } from "../dialogs/EditUserDialog"
 
 const UserInfoCard = ({ user }: {
   user: User
@@ -32,9 +33,7 @@ const UserInfoCard = ({ user }: {
         </div>
       </CardHeader>
       <CardFooter className="flex justify-center items-center gap-4">
-        <Button className="hover:scale-110 transition-all ease-in duration-100"><UserPen className="size-5" /></Button>
-
-        <Button variant={'destructive'} className="hover:scale-110 transition-all ease-in duration-100"><Trash2 className="size-4 " /></Button>
+        <EditUserDialog user={user} />
       </CardFooter>
     </Card>
 
