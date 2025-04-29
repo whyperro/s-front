@@ -14,6 +14,7 @@ interface VoluntaryReportData {
   last_name?: string;
   phone?: string;
   email?: string;
+  image?:File| string,
 }
 interface UpdateVoluntaryReportData {
   id: number;
@@ -30,6 +31,7 @@ interface UpdateVoluntaryReportData {
   reporter_last_name?: string;
   reporter_phone?: string;
   reporter_email?: string;
+  image?:File| string,
 }
 
 export const useCreateVoluntaryReport = () => {
