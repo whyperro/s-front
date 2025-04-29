@@ -134,7 +134,6 @@ export type CashMovement = {
   accountant: Accountant,
   category: string,
   sub_category: string,
-  sub_category_details: string,
   amount: number,
   bank_account: BankAccount, 
   vendor: AdministrationVendor,

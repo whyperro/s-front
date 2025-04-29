@@ -127,24 +127,6 @@ export const columns: ColumnDef<CashMovement>[] = [
       </div>
     ),
   },
-  //  {
-  //    accessorKey: "sub_category_details",
-  //    header: ({ column }) => (
-  //      <DataTableColumnHeader
-  //        filter
-  //        column={column}
-  //        title="Detalles de Sub Categorías"
-  //      />
-  //    ),
-  //    meta: { title: "Detalles de Sub Categorías" },
-  //    cell: ({ row }) => (
-  //      <div className="flex justify-center">
-  //        <span className="text-muted-foreground italic">
-  //          {row.original.sub_category_details}
-  //        </span>
-  //      </div>
-  //    ),
-  //  },
   {
     accessorKey: "amount",
     header: ({ column }) => (

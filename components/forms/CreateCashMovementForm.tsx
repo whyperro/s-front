@@ -59,19 +59,10 @@ const formSchema = z.object({
   sub_category: z
     .string()
     .min(2, {
-      message: "La sub categoría debe tener al menos 2 caracteres.",
+      message: "El detalle debe tener al menos 2 caracteres.",
     })
     .max(100, {
-      message: "La sub categoría tiene un máximo 100 caracteres.",
-    }),
-  sub_category_details: z
-    .string()
-    .min(2, {
-      message:
-        "El detalle de la sub categoría debe tener al menos 2 caracteres.",
-    })
-    .max(100, {
-      message: "El detalle de la sub categoría tiene un máximo 100 caracteres.",
+      message: "El detalle tiene un máximo 100 caracteres.",
     }),
   amount: z.string().refine(
     (val) => {
