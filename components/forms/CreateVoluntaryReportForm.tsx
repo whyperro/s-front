@@ -53,11 +53,9 @@ const FormSchema = z.object({
     .date()
     .refine((val) => !isNaN(val.getTime()), { message: "Invalid Date" }),
 
-  report_number: z
-    .string()
-    .refine((val) => !isNaN(Number(val)), {
-      message: "El valor debe ser un número",
-    }),
+  report_number: z.string().refine((val) => !isNaN(Number(val)), {
+    message: "El valor debe ser un número",
+  }),
   danger_location: z.string(),
   danger_area: z.string(),
   airport_location: z.string(),
@@ -105,6 +103,14 @@ const FormSchema = z.object({
       message: "El correo electrónico debe tener al menos 10 caracteres",
     })
     .email({ message: "Formato de correo electrónico inválido" })
+    .optional(),
+  image: z
+    .instanceof(File)
+    .refine((file) => file.size <= 5 * 1024 * 1024, "Max 5MB")
+    .refine(
+      (file) => ["image/jpeg", "image/png"].includes(file.type),
+      "Solo JPEG/PNG"
+    )
     .optional(),
   // Otros campos del esquema...
 });
@@ -360,7 +366,9 @@ export function CreateVoluntaryReportForm({
                   <SelectContent>
                     <SelectItem value="OPERACIONES">OPERACIONES</SelectItem>
                     <SelectItem value="MANTENIMIENTO">MANTENIMIENTO</SelectItem>
-                    <SelectItem value="ADMINISTRACION_RRH">ADMINISTRACION Y RRHH</SelectItem>
+                    <SelectItem value="ADMINISTRACION_RRH">
+                      ADMINISTRACION Y RRHH
+                    </SelectItem>
                     <SelectItem value="CONTROL_CALIDAD">
                       CONTROL DE CALIDAD
                     </SelectItem>
@@ -508,6 +516,33 @@ export function CreateVoluntaryReportForm({
             />
           </div>
         )}
+
+        <FormField
+          control={form.control}
+          name="image"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Imagen General</FormLabel>
+              <div className="flex items-center gap-4">
+                {field.value && (
+                  <img
+                    src={URL.createObjectURL(field.value)}
+                    alt="Preview"
+                    className="h-16 w-16 rounded-md object-cover"
+                  />
+                )}
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="image/jpeg, image/png"
+                    onChange={(e) => field.onChange(e.target.files?.[0])}
+                  />
+                </FormControl>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <div className="flex justify-between items-center gap-x-4">
           <Separator className="flex-1" />
