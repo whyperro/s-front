@@ -1,46 +1,23 @@
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  EditIcon,
-  EyeIcon,
-  Loader2,
-  MoreHorizontal,
-  Trash2,
-} from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
+import { EditIcon, Loader2, MoreHorizontal, Trash2, } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
-import { useDeleteRenting } from "@/actions/administracion/renta/actions";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, } from "../ui/dialog";
+import { useDeleteRenting } from "@/actions/administracion/arrendamiento/actions";
 import { DefineEndDateForm } from "../forms/DefineEndDateForm";
 import { Renting } from "@/types";
 
 const RentingDropdownActions = ({ rent }: { rent: Renting }) => {
   const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [openRenting, setOpenRenting] = useState<boolean>(false);
   const [openDefine, setOpenDefine] = useState<boolean>(false);
   const router = useRouter();
   const { deleteRenting } = useDeleteRenting();
 
   const handleDelete = (id: number | string) => {
     deleteRenting.mutate(id, {
-      onSuccess: () => setOpenDelete(false), // Cierra el modal solo si la eliminación fue exitosa
+      onSuccess: () => setOpenDelete(false), 
     });
-  };
-
-  const handleViewDetails = () => {
-    setOpenRenting(true);
   };
 
   return (
@@ -78,9 +55,11 @@ const RentingDropdownActions = ({ rent }: { rent: Renting }) => {
 
       {/*Dialog para eliminar el arrendamiento*/}
       <Dialog open={openDelete} onOpenChange={setOpenDelete}>
-        <DialogContent onInteractOutside={(e) => {
+        <DialogContent
+          onInteractOutside={(e) => {
             e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
-          }}>
+          }}
+        >
           <DialogHeader>
             <DialogTitle className="text-center">
               ¿Seguro que desea eliminar el arrendamiento?
@@ -112,153 +91,6 @@ const RentingDropdownActions = ({ rent }: { rent: Renting }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/*Dialog para ver el resumen del arrendamiento
-      <Dialog open={openRenting} onOpenChange={setOpenRenting}>
-        <DialogContent
-          className="sm:max-w-md"
-          onInteractOutside={(e) => {
-            e.preventDefault(); // Evita que el diálogo se cierre al hacer clic fuera
-          }}
-        >
-          <DialogHeader className="text-center font-bold">
-            Resumen de la Renta
-          </DialogHeader>
-          {isLoading ? (
-            <div className="flex justify-center py-4">
-              <Loader2 className="h-6 w-6 animate-spin" />
-            </div>
-          ) : rentingDetails ? (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Descripción
-                </h3>
-                <p className="text-lg font-semibold">
-                  {rentingDetails.description}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Estado
-                </h3>
-                <p className="text-lg font-semibold">{rentingDetails.status}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Tipo
-                </h3>
-                <p className="text-lg font-semibold">{rentingDetails.type}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Precio
-                </h3>
-                <p className="text-lg font-semibold">{rentingDetails.price}</p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Precio Pagado
-                </h3>
-                <p className="text-lg font-semibold">
-                  {rentingDetails.payed_amount}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Fecha de Inicio
-                </h3>
-                <p className="text-lg font-semibold">
-                  {format(rentingDetails.start_date, "PPP", { locale: es })}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Fecha Fin
-                </h3>
-                <p className="text-lg font-semibold">
-                  {format(rentingDetails.end_date, "PPP", { locale: es })}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Fecha Limite
-                </h3>
-                <p className="text-lg font-semibold">
-                  {format(rentingDetails.deadline, "PPP", { locale: es })}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Aeronave
-                </h3>
-                <p className="text-lg font-semibold">
-                  {rentingDetails.aircraft
-                    ? rentingDetails.aircraft.acronym
-                    : "N/A"}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Cliente
-                </h3>
-                <p className="text-lg font-semibold">
-                  {rentingDetails.client.name}
-                </p>
-                <Separator />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Articulo
-                </h3>
-                <p className="text-lg font-semibold">
-                  {rentingDetails.article ? rentingDetails.article.name : "N/A"}
-                  -
-                  {rentingDetails.article
-                    ? rentingDetails.article.serial
-                    : "N/A"}
-                </p>
-                <Separator />
-              </div>
-            </div>
-          ) : (
-            <p className="text-center text-muted-foreground">
-              No se pudo cargar la información de la renta.
-            </p>
-          )}
-
-          <DialogFooter className="sm:justify-center">
-            {/*    <Button
-              variant="outline"
-              onClick={() =>
-                router.push(`/administracion/renting/${id}`)
-              }
-            >
-              Ver detalles completos
-            </Button> 
-            <Button onClick={() => setOpenRenting(false)}>Cerrar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog> */}
 
       {/*Dialog para editar la fecha final end_date*/}
       <Dialog open={openDefine} onOpenChange={setOpenDefine}>

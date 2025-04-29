@@ -98,11 +98,11 @@ export function getMenuList(
                 ],
                 submenus: [
                   {
-                    href: "/transmandu/administracion/creditos/credito_renta",
+                    href: "/transmandu/administracion/creditos/credito_arrendamiento",
                     label: "Arrendamiento",
                     active:
                       pathname ===
-                      "/transmandu/administracion/creditos/credito_renta",
+                      "/transmandu/administracion/creditos/credito_arrendamiento",
                   },
                   //  {
                   //    href: "/transmandu/administracion/creditos/credito_venta",
@@ -206,11 +206,11 @@ export function getMenuList(
                 ],
                 submenus: [
                   {
-                    href: "/transmandu/administracion/operaciones/renta",
+                    href: "/transmandu/administracion/operaciones/arrendamiento",
                     label: "Arrendamiento",
                     active:
                       pathname ===
-                      "/transmandu/administracion/operaciones/renta",
+                      "/transmandu/administracion/operaciones/arrendamiento",
                   },
                   //  {
                   //    href: "/transmandu/administracion/operaciones/ventas",

@@ -1,10 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogTrigger, } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -15,7 +12,7 @@ export function CreditRentingDialog({ id }: { id?: string }) {
 
   const handleViewStats = () => {
     router.push(
-      "/transmandu/administracion/creditos/credito_renta/resumen_credito"
+      "/transmandu/administracion/creditos/credito_arrendamiento/resumen_credito"
     );
   };
 

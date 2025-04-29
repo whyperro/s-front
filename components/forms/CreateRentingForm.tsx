@@ -18,7 +18,7 @@ import { useGetClients } from "@/hooks/administracion/clientes/useGetClients";
 import { useGetAdministrationArticle } from "@/hooks/administracion/useGetAdministrationArticle";
 import { Calendar } from "../ui/calendar";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateRenting } from "@/actions/administracion/renta/actions";
+import { useCreateRenting } from "@/actions/administracion/arrendamiento/actions";
 import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
 
 const formSchema = z
@@ -461,88 +461,90 @@ export function CreateRentingForm({ onClose }: FormProps) {
           />
           {form.watch("pay_method") !== "EFECTIVO" && (
             <FormField
-            control={form.control}
-            name="bank_account_id"
-            render={({ field }) => (
-              <FormItem className="w-full flex flex-col space-y-3">
-                <FormLabel>Cuenta de Banco</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        disabled={isAccLoading}
-                        variant="outline"
-                        role="combobox"
-                        className={cn(
-                          "justify-between",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {isAccLoading ? (
-                          <>
-                            <Loader2 className="size-4 animate-spin mr-2" />
-                            Cargando cuentas...
-                          </>
-                        ) : field.value ? (
-                          accounts?.find(
-                            (acc) => acc.id.toString() === field.value
-                          ) ? (
-                            `${accounts.find(
+              control={form.control}
+              name="bank_account_id"
+              render={({ field }) => (
+                <FormItem className="w-full flex flex-col space-y-3">
+                  <FormLabel>Cuenta de Banco</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          disabled={isAccLoading}
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {isAccLoading ? (
+                            <>
+                              <Loader2 className="size-4 animate-spin mr-2" />
+                              Cargando cuentas...
+                            </>
+                          ) : field.value ? (
+                            accounts?.find(
                               (acc) => acc.id.toString() === field.value
-                            )?.name} - ${
-                              accounts.find(
-                                (acc) => acc.id.toString() === field.value
-                              )?.bank.name
-                            }`
+                            ) ? (
+                              `${
+                                accounts.find(
+                                  (acc) => acc.id.toString() === field.value
+                                )?.name
+                              } - ${
+                                accounts.find(
+                                  (acc) => acc.id.toString() === field.value
+                                )?.bank.name
+                              }`
+                            ) : (
+                              "Cuenta no encontrada"
+                            )
                           ) : (
-                            "Cuenta no encontrada"
-                          )
-                        ) : (
-                          "Seleccione una cuenta..."
-                        )}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
-                    <Command>
-                      <CommandInput placeholder="Busque una cuenta bancaria..." />
-                      <CommandList>
-                        <CommandEmpty className="text-sm p-2 text-center">
-                          No se encontraron cuentas bancarias.
-                        </CommandEmpty>
-                        <CommandGroup>
-                          {accounts?.map((acc) => (
-                            <CommandItem
-                              value={`${acc.name} ${acc.bank.name}`}
-                              key={acc.id}
-                              onSelect={() => {
-                                form.setValue(
-                                  "bank_account_id",
-                                  acc.id.toString()
-                                );
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  acc.id.toString() === field.value
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                              {acc.name} - {acc.bank.name}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />           
+                            "Seleccione una cuenta..."
+                          )}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
+                      <Command>
+                        <CommandInput placeholder="Busque una cuenta bancaria..." />
+                        <CommandList>
+                          <CommandEmpty className="text-sm p-2 text-center">
+                            No se encontraron cuentas bancarias.
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {accounts?.map((acc) => (
+                              <CommandItem
+                                value={`${acc.name} ${acc.bank.name}`}
+                                key={acc.id}
+                                onSelect={() => {
+                                  form.setValue(
+                                    "bank_account_id",
+                                    acc.id.toString()
+                                  );
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    acc.id.toString() === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {acc.name} - {acc.bank.name}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
         </div>
         <div className="flex gap-2 items-center justify-center">
@@ -629,7 +631,7 @@ export function CreateRentingForm({ onClose }: FormProps) {
             </FormItem>
           )}
         />
-    {/*   <FormField
+        {/*   <FormField
           control={form.control}
           name="reference_pick"
           render={({ field }) => (
@@ -641,7 +643,7 @@ export function CreateRentingForm({ onClose }: FormProps) {
               <FormMessage />
             </FormItem>
           )}
-        />  */} 
+        />  */}
         <Button type="submit" disabled={createRenting.isPending}>
           {createRenting.isPending ? "Enviando..." : "Enviar"}
         </Button>

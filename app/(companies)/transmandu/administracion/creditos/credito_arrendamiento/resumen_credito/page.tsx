@@ -35,7 +35,6 @@ const CreditStatisticsRentingPage = () => {
       </div>
     )
   }
-
   // Preparar datos para el gráfico - solo montos
   const chartData = [
     {
@@ -57,7 +56,6 @@ const CreditStatisticsRentingPage = () => {
     montoDeuda: "#6366f1", // Indigo-500
   }
 
-  // Obtener los créditos filtrados según la barra seleccionada
   const getFilteredCredits = () => {
     if (!activeBar) return data.credits
 
@@ -101,8 +99,7 @@ const CreditStatisticsRentingPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Encabezado */}
-      <div className="flex items-center mb-6">
+      <div className="flex items-center mb-6"> 
         <Button variant="outline" size="sm" className="mr-4" onClick={() => router.back()}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Volver
@@ -111,9 +108,9 @@ const CreditStatisticsRentingPage = () => {
       <Card className="mb-8">
         <CardHeader>
           <div>
-            <CardTitle className="text-center">ESTADÍSTICAS DE CRÉDITO DE LAS RENTAS</CardTitle>
+            <CardTitle className="text-center">ESTADÍSTICAS DE CRÉDITO DE LOS ARRENDAMIENTOS</CardTitle>
             <CardDescription className="text-center">
-              Resumen estadístico sobre los créditos de las rentas
+              Resumen estadístico sobre los créditos de los arrendamientos
             </CardDescription>
           </div>
         </CardHeader>

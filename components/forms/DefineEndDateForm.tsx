@@ -24,7 +24,7 @@ import { z } from "zod";
 import { Separator } from "../ui/separator";
 import { Calendar } from "../ui/calendar";
 import { useGetRentingById } from "@/hooks/administracion/useGetRentingById";
-import { useDefineEndDateRenting } from "@/actions/administracion/renta/actions";
+import { useDefineEndDateRenting } from "@/actions/administracion/arrendamiento/actions";
 
 const formSchema = z.object({
   end_date: z
