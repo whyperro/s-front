@@ -15,7 +15,9 @@ const MovementTypeBadge = ({ type }: MovementTypeBadgeProps) => {
   return (
     <Badge
       className={`text-sm py-1 px-3 ${
-        isIncome ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"
+        isIncome
+          ? "bg-green-600 hover:bg-green-700"
+          : "bg-red-600 hover:bg-red-700"
       }`}
     >
       {type}
@@ -52,31 +54,26 @@ const CashMovementResume = ({ movement }: { movement: CashMovement }) => {
           </div>
 
           <div className="space-y-1">
-            <h3 className="text-sm font-medium text-muted-foreground">Cuenta</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Cuenta
+            </h3>
             <p className="font-medium">{movement.accountant.name}</p>
           </div>
 
           <div className="space-y-1">
-            <h3 className="text-sm font-medium text-muted-foreground">Categoría</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Categoría
+            </h3>
             <p className="font-medium">{movement.category}</p>
           </div>
 
           <div className="space-y-1">
             <h3 className="text-sm font-medium text-muted-foreground">
-              Sub Categoría
+              Detalles
             </h3>
             <p className="font-medium">{movement.sub_category}</p>
           </div>
         </div>
-
-        {movement.sub_category_details && (
-          <div className="space-y-1">
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Detalles
-            </h3>
-            <p className="font-medium">{movement.sub_category_details}</p>
-          </div>
-        )}
 
         <div className="flex items-center gap-3 pt-2">
           <Avatar className="h-8 w-8">
@@ -92,10 +89,10 @@ const CashMovementResume = ({ movement }: { movement: CashMovement }) => {
 
         <div className="space-y-1">
           <h3 className="text-sm font-medium text-muted-foreground">
-            Cuenta de Banco
+            {movement.bank_account ? "Cuenta de Banco" : ""}
           </h3>
           <p className="font-medium">
-            {movement.bank_account ? movement.bank_account.name : 'Efectivo'}
+            {movement.bank_account ? movement.bank_account.name : "Efectivo"}
           </p>
         </div>
 
@@ -103,9 +100,11 @@ const CashMovementResume = ({ movement }: { movement: CashMovement }) => {
           <CardContent className="p-4">
             <div className="flex justify-between items-center">
               <span className="font-medium">Monto Total</span>
-              <span className={`font-bold text-2xl ${
-                movement.type === "INCOME" ? "text-green-600" : "text-red-600"
-              }`}>
+              <span
+                className={`font-bold text-2xl ${
+                  movement.type === "INCOME" ? "text-green-600" : "text-red-600"
+                }`}
+              >
                 $ {movement.amount.toLocaleString()}
               </span>
             </div>

@@ -198,7 +198,7 @@ export function getMenuList(
                 active: pathname.includes(
                   "/transmandu/administracion/operaciones"
                 ),
-                icon: BookUser,
+                icon: PackageOpen,
                 roles: [
                   "ANALISTA_PLANIFICACION",
                   "JEFE_PLANIFICACION",

@@ -108,9 +108,9 @@ const CreditStatisticsRentingPage = () => {
       <Card className="mb-8">
         <CardHeader>
           <div>
-            <CardTitle className="text-center">ESTADÍSTICAS DE CRÉDITO DE LOS ARRENDAMIENTOS</CardTitle>
+            <CardTitle className="text-center">CONTROL DE PAGO DE LOS ARRENDAMIENTOS</CardTitle>
             <CardDescription className="text-center">
-              Resumen estadístico sobre los créditos de los arrendamientos
+              Resumen estadístico sobre las cuentas por cobrar de los arrendamientos
             </CardDescription>
           </div>
         </CardHeader>

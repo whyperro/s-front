@@ -121,9 +121,9 @@ const CreditStatisticsFlightPage = () => {
       <Card className="mb-8">
         <CardHeader>
           <div>
-            <CardTitle className="text-center">ESTADÍSTICAS DE CRÉDITO DE LOS VUELOS</CardTitle>
+            <CardTitle className="text-center">CONTROL DE PAGO DE LOS VUELOS</CardTitle>
             <CardDescription className="text-center">
-              Resumen estadístico sobre los créditos de los vuelos
+              Resumen estadístico sobre las cuentas por cobrar de los vuelos
             </CardDescription>
           </div>
         </CardHeader>

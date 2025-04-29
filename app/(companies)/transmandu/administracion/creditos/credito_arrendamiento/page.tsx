@@ -17,10 +17,10 @@ const CreditPage = () => {
     <ContentLayout title="Crédito">
       {" "}
       <h1 className="text-5xl font-bold text-center mt-2">
-        Control de Crédito de un Arrendamiento
+        Control de Pagos de un Arrendamiento
       </h1>
       <p className="text-sm text-muted-foreground text-center italic mt-2">
-        Aquí puede llevar el control de los créditos de los arrendamientos que han sido registrados.
+        Aquí puede llevar el control de las cuentas por cobrar con respecto a los arrendamientos registrados.
       </p>
       {data && <DataTable columns={columns} data={data} />}
       {isError && (

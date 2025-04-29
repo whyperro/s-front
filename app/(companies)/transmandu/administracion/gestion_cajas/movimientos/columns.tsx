@@ -116,9 +116,9 @@ export const columns: ColumnDef<CashMovement>[] = [
   {
     accessorKey: "sub_category",
     header: ({ column }) => (
-      <DataTableColumnHeader filter column={column} title="Sub Categoría" />
+      <DataTableColumnHeader filter column={column} title="Detalles" />
     ),
-    meta: { title: "Sub Categoría" },
+    meta: { title: "Detalles" },
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">

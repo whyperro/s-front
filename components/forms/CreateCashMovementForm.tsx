@@ -498,20 +498,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             name="sub_category"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Subcategoría</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ingrese la subcategoría" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="sub_category_details"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Detalles</FormLabel>
+                <FormLabel>Detalle</FormLabel>
                 <FormControl>
                   <Input placeholder="Ingrese los detalles" {...field} />
                 </FormControl>
