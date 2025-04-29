@@ -6,6 +6,7 @@ import PreviewVoluntaryReportPdfDialog from "@/components/dialogs/PreviewVolunta
 import { ContentLayout } from "@/components/layout/ContentLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CardContent } from "@/components/ui/card";
 import { useGetVoluntaryReportById } from "@/hooks/sms/useGetVoluntaryReportById";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -205,6 +206,32 @@ const ShowVoluntaryReport = () => {
             )}
           </div>
         )}
+
+        <CardContent className="flex flex-col gap-8">
+          {voluntaryReport?.image && (
+            <div className="flex flex-col items-center gap-2">
+              <div className="max-w-md overflow-hidden">
+                <img
+                  src={
+                    voluntaryReport.image.startsWith("data:image")
+                      ? voluntaryReport.image
+                      : `data:image/jpeg;base64,${voluntaryReport?.image}`
+                  }
+                  alt="Imagen asociada al reporte"
+                  className="w-[500px] h-[500px]"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                    console.log("error");
+                    console.log(voluntaryReport);
+                  }}
+                />
+              </div>
+
+              <p className="text-sm text-muted-foreground">Imagen adjunta</p>
+            </div>
+          )}
+        </CardContent>
+
         {isError && (
           <p className="text-sm text-red-500 mt-4">
             Ha ocurrido un error al cargar el reporte voluntario...
