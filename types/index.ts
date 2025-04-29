@@ -366,6 +366,7 @@ export type Requisition = {
   status: string,
   created_by: User,
   type: string,
+  image?: string,
   requested_by: string,
   batch: {
     name: string,

@@ -59,6 +59,25 @@ const InventarioPage = () => {
           <Badge className={cn("text-lg", data?.status === 'aprobada' ? "bg-green-500" : "bg-yellow-600")}>{data?.status.toUpperCase()}</Badge>
         </CardHeader>
         <CardContent className='flex flex-col gap-8' >
+          {data?.image && (
+            <div className="flex flex-col items-center gap-2">
+              <div className="max-w-md overflow-hidden">
+                <img
+                  src={data.image.startsWith('data:image')
+                    ? data.image
+                    : `data:image/jpeg;base64,${data.image}`}
+                  alt="Imagen de la requisición"
+                  className="w-[250px] h-[250px]"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Imagen adjunta
+              </p>
+            </div>
+          )}
           <div className='flex w-full justify-center gap-24 text-xl'>
             <div className='flex flex-col gap-2 items-center'>
               <h1>Creado Por:</h1>
@@ -80,8 +99,8 @@ const InventarioPage = () => {
                       batch.batch_articles.map((article) => (
                         <>
                           <div key={article.article_part_number} className='space-y-2'>
-                            <p className='font-medium'>Nro. Parte: <span className='font-bold italic'>{article.article_part_number}</span></p>
-                            {/* <p className='font-medium'>Nro. Parte Alt: <span className='font-bold italic'>{article.article_part_number}</span></p> */}
+                            <p className='font-medium'>Nro. Parte: <span className='font-bold italic'>{article.article_part_number ?? "N/A"}</span></p>
+                            <p className='font-medium'>Nro. Parte Alt: <span className='font-bold italic'>{article.article_alt_part_number ?? "N/A"}</span></p>
                             {
                               article.unit && (
                                 <p className='font-medium'>Unidad: <span className='font-bold italic'>{article.unit.unit.label} - {article.unit.unit.value}</span></p>

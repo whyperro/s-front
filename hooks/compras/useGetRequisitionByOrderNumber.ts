@@ -8,6 +8,7 @@ interface Requisition {
   created_by: User,
   requested_by: string,
   received_by: string,
+  image?: string,
   justification: string,
   arrival_date: Date,
   submitted_date: Date,
@@ -15,7 +16,8 @@ interface Requisition {
     id: number,
     name: string,
     batch_articles: {
-      article_part_number: string,
+      article_part_number?: string,
+      article_alt_part_number?: string,
       unit?: Convertion,
       quantity: number,
     }[]

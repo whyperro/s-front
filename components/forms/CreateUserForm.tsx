@@ -49,7 +49,7 @@ const FormSchema = z.object({
   password: z.string().min(2, {
     message: "La contraseña debe tener al menos 5 caracteres.",
   }),
-  email: z.string().email({
+  email: z.string({
     message: "Debe ingresar un correo electrónico válido."
   }),
   roles: z.array(z.string(), {
