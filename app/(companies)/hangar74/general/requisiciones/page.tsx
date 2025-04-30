@@ -26,10 +26,8 @@ const InventarioPage = () => {
       setFilteredRequisitions([]);
       return;
     }
-
-    const fullAccessRoles = ['SUPERUSER', 'ANALISTA_COMPRAS'];
+    const fullAccessRoles = ['SUPERUSER', 'ANALISTA_COMPRAS', "JEFE_COMPRAS"];
     const hasFullAccess = user?.roles?.some(role => fullAccessRoles.includes(role.name)) ?? false;
-
     if (hasFullAccess) {
       setFilteredRequisitions(requisitions);
     } else {

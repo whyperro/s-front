@@ -122,7 +122,7 @@ export function CreateQuoteForm({ initialData, onClose, req }: { initialData?: a
       vendor_id: Number(data.vendor_id),
       articles: data.articles.map((article: any) => ({
         ...article,
-        amount: Number(article.unit_price) * Number(article.quantity), // Calcula el total
+        amount: Number(article.unit_price) * Number(article.quantity),
       })),
     }
     await createQuote.mutateAsync(formattedData)

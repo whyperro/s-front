@@ -1,5 +1,10 @@
 "use client"
-
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { ContentLayout } from '@/components/layout/ContentLayout';
 import LoadingPage from '@/components/misc/LoadingPage';
 import { useGetWorkOrderByOrderNumber } from '@/hooks/planificacion/useGetWorkOrderByOrderNumber';
@@ -9,7 +14,7 @@ import WorkOrderTasksDetails from './_components/WorkOrderTasksDetails';
 
 const WorkOrderPage = () => {
   const { order_number } = useParams<{ order_number: string }>();
-  const { data: work_order, isLoading: isWorkOrderLoading } = useGetWorkOrderByOrderNumber(order_number);
+  const { data: work_order, isLoading: isWorkOrderLoading, isError: isWorkOrderError } = useGetWorkOrderByOrderNumber(order_number);
 
   if (isWorkOrderLoading || (work_order && work_order.order_number !== order_number)) {
     return <LoadingPage />;
@@ -22,7 +27,17 @@ const WorkOrderPage = () => {
         {
           work_order && (
             <>
-              <WorkOrderAircraftDetailsCards work_order={work_order} />
+              <Accordion type="single" collapsible className="w-full" defaultValue="aircraft-details">
+                <AccordionItem value="aircraft-details">
+                  <AccordionTrigger className="hover:no-underline">
+                    <h2 className="text-xl font-semibold">Ver detalles de WO</h2>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <WorkOrderAircraftDetailsCards work_order={work_order} />
+                    {isWorkOrderError && <p className='text-muted-foreground italic'>Ha ocurrido un error al cargar la orden de trabajo...</p>}
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
               <WorkOrderTasksDetails work_order={work_order} />
             </>
           )

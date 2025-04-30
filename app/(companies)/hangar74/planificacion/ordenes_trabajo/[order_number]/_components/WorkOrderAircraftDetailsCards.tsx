@@ -1,4 +1,5 @@
-import { WorkOrder } from '@/types'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -7,15 +8,46 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { format } from 'date-fns'
-import { CalendarFold, Clock3, Eye, FileCheck2, MapPin, PencilLine, RefreshCw, User } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { es } from 'date-fns/locale'
+import { toast } from '@/components/ui/use-toast'
+import axiosInstance from '@/lib/axios'
 import { cn } from '@/lib/utils'
+import { WorkOrder } from '@/types'
+import axios from 'axios'
+import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
+import { CalendarFold, Clock3, Eye, FileCheck2, MapPin, PencilLine, Printer, RefreshCw, User } from 'lucide-react'
+import Link from 'next/link'
 
 const WorkOrderAircraftDetailsCards = ({ work_order }: { work_order: WorkOrder }) => {
+
+  const handlePrint = async () => {
+    try {
+      const response = await axiosInstance.get(`/hangar74/work-order-pdf/${work_order.order_number}`, {
+        responseType: 'blob', // Importante para manejar archivos binarios
+      });
+
+      // Crear URL del blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `WO-${work_order.order_number}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+
+      // Limpieza
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo descargar el PDF. Por favor intente nuevamente.",
+      });
+      console.error('Error al descargar el PDF:', error);
+    }
+  };
+
   return (
     <div className='flex gap-4 justify-center w-full'>
       {/* Detalles de Orden de Trabajo */}
@@ -61,8 +93,9 @@ const WorkOrderAircraftDetailsCards = ({ work_order }: { work_order: WorkOrder }
             )
           }
         </CardContent>
-        <CardFooter className="flex justify-center">
+        <CardFooter className="flex flex-col justify-between space-y-10">
           <Badge className={cn("scale-125 cursor-pointer hover:scale-150 transition-all ease-in", work_order.status === "ABIERTO" ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600")}>{work_order?.status}</Badge>
+          <Button onClick={handlePrint}><Printer /></Button>
         </CardFooter>
       </Card>
       {/* Detalles de Aeronave*/}

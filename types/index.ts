@@ -282,7 +282,7 @@ export type WorkOrderTask = {
     needs_task: boolean,
     work_order_task: Omit<WorkOrderTask, "non_routine">
     no_routine_task?: Omit<WorkOrderTask, "non_routine">[]
-  }
+  },
 }
 
 export interface WorkOrder extends Request {
@@ -295,7 +295,24 @@ export interface WorkOrder extends Request {
   elaborated_by: string,
   reviewed_by: string,
   approved_by: string,
+  preliminary_inspection?: PrelimInspection,
   work_order_tasks: WorkOrderTask[]
+}
+
+export type PrelimInspection = {
+  id: number | string,
+  work_order: WorkOrder,
+  status: string,
+  authorizing: string,
+  observation: string,
+  pre_inspection_items: PrelimInspectionItem[],
+}
+
+export type PrelimInspectionItem = {
+  id: number | string,
+  ata: string,
+  description: string,
+  location: string,
 }
 
 export interface DispatchRequest extends Request {

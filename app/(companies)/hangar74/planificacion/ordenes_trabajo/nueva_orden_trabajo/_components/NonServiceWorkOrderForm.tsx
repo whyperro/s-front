@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useGetMaintenanceAircrafts } from '@/hooks/planificacion/useGetMaintenanceAircrafts';
 import { cn } from '@/lib/utils';
@@ -27,6 +28,9 @@ const manualWorkOrderSchema = z.object({
   approved_by: z.string().min(1, 'Aprobado por es obligatorio'),
   reviewed_by: z.string().min(1, 'Revisado por es obligatorio'),
   location_id: z.string().min(1, 'La ubicación es obligatoria'),
+  authorizing: z.string({
+    message: "Debe elegir al autorizante."
+  }),
   aircraft_id: z.string(),
   date: z.date(),
   work_order_task: z.array(z.object({
@@ -224,6 +228,30 @@ const NonServiceWorkOrderForm = () => {
                     </Popover>
                     <FormDescription className="text-xs">
                       Aeronave que recibirá el servicio.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="authorizing"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Quién autoriza..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="PROPIETARIO">Propietario</SelectItem>
+                        <SelectItem value="EXPLOTADOR">Explotador</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                       
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

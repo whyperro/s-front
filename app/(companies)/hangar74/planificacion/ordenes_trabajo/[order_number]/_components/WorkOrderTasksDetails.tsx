@@ -17,6 +17,7 @@ import { z } from "zod"
 import { NonRoutineTasksList } from "./NoRoutineTasksList"
 import { RoutineTasksList } from "./RoutineTasksList"
 import { TaskDetailsDialog } from "./TaskDetailsDialog"
+import PrelimInspecTable from "./PrelimInspecTable"
 // Esquema del formulario para asignar técnicos/inspectores
 const assignmentFormSchema = z.object({
   task_id: z.number(),
@@ -104,9 +105,13 @@ const WorkOrderTasksDetails = ({ work_order }: { work_order: WorkOrder }) => {
       </div>
       <Tabs defaultValue="rut">
         <TabsList>
+          <TabsTrigger value="insp">Insp. Preliminar</TabsTrigger>
           <TabsTrigger value="rut">Rutinarias</TabsTrigger>
           <TabsTrigger value="norut">No Rutinarias</TabsTrigger>
         </TabsList>
+        <TabsContent value="insp" className="space-y-4">
+          <PrelimInspecTable work_order={work_order} />
+        </TabsContent>
         <TabsContent value="rut" className="space-y-4">
           <RoutineTasksList
             tasks={work_order.work_order_tasks}
