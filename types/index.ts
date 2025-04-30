@@ -141,6 +141,12 @@ export type CashMovement = {
   cash_id: string;
 }
 
+export type Category = {
+  id: number,
+  name: string,
+  accountant: Accountant,
+}
+
 export type Client = {
   id: number,
   name: string,

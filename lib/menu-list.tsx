@@ -134,6 +134,13 @@ export function getMenuList(
                 ],
                 submenus: [
                   {
+                    href: "/transmandu/administracion/gestion_cajas/categorias",
+                    label: "Categorías",
+                    active:
+                      pathname ===
+                      "/transmandu/administracion/gestion_cajas/categorias",
+                  },
+                  {
                     href: "/transmandu/administracion/gestion_cajas/cajas",
                     label: "Cajas",
                     active:

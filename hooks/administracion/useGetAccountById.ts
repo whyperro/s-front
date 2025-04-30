@@ -1,16 +1,16 @@
 "use client"
 
-import type { Account } from "@/types"
+import type { Accountant } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import axiosInstance from "@/lib/axios"
 
-const fetchAccountById = async (id: string): Promise<Account> => {
+const fetchAccountById = async (id: string): Promise<Accountant> => {
   const { data } = await axiosInstance.get(`/transmandu/accountants/${id}`)
   return data
 }
 
 export const useGetAccountById = (id: string) => {
-  return useQuery<Account>({
+  return useQuery<Accountant>({
     queryKey: ["account", id],
     queryFn: () => fetchAccountById(id),
     staleTime: 1000 * 60 * 5, // 5 minutos
