@@ -23,6 +23,7 @@ import { useGetClients } from "@/hooks/administracion/clientes/useGetClients";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, } from "../ui/command";
 import { useGetAccount } from "@/hooks/administracion/useGetAccount";
 import { useEffect } from "react";
+import { useGetCategory } from "@/hooks/administracion/useGetCategory";
 
 const formSchema = z.object({
   responsible_id: z.string({
@@ -97,6 +98,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
   const { data: vendors, isLoading: isVendorLoading } = useGetVendors();
   const { data: clients, isLoading: isClientLoading } = useGetClients();
   const { data: accounts, isLoading: isAccountLoading } = useGetAccount();
+  const { data: categories, isLoading: isCategoryLoading } = useGetCategory();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -468,11 +470,67 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             control={form.control}
             name="category_id"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="w-full flex flex-col space-y-3">
                 <FormLabel>Categoría</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ingrese la categoría" {...field} />
-                </FormControl>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        disabled={isCategoryLoading}
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {isCategoryLoading && (
+                          <Loader2 className="size-4 animate-spin mr-2" />
+                        )}
+                        {field.value
+                          ? categories?.find(
+                              (category) => category.id.toString() === field.value
+                            )?.name
+                          : "Seleccione una cuenta"}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
+                    <Command>
+                      <CommandInput placeholder="Busque una cuenta..." />
+                      <CommandList>
+                        <CommandEmpty className="text-sm p-2 text-center">
+                          No se ha encontrado ninguna categoría.
+                        </CommandEmpty>
+                        <CommandGroup>
+                          {categories?.map((category) => (
+                            <CommandItem
+                              value={category.name}
+                              key={category.id}
+                              onSelect={() => {
+                                form.setValue(
+                                  "category_id",
+                                  category.id.toString()
+                                );
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  category.id.toString() === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {category.name}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
                 <FormMessage />
               </FormItem>
             )}
