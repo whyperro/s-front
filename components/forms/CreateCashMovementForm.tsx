@@ -3,27 +3,26 @@
 import { useCreateCashMovement } from "@/actions/administracion/movimientos/actions";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGetCash } from "@/hooks/administracion/cajas/useGetCash";
 import { useGetEmployeesByCompany } from "@/hooks/administracion/useGetEmployees";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
-import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
+import { CalendarIcon, Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useGetBankAccounts } from "@/hooks/ajustes/cuentas/useGetBankAccounts";
-import { Loader2 } from "lucide-react";
 import { useGetVendors } from "@/hooks/ajustes/globales/proveedores/useGetVendors";
 import { useGetClients } from "@/hooks/administracion/clientes/useGetClients";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, } from "../ui/command";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
 import { useGetAccount } from "@/hooks/administracion/useGetAccount";
 import { useEffect } from "react";
-import { useGetCategory } from "@/hooks/administracion/useGetCategory";
+import { useGetCategorysByAccountant } from "@/hooks/administracion/useGetCategorysByAcountant";
 
 const formSchema = z.object({
   responsible_id: z.string({
@@ -62,7 +61,6 @@ const formSchema = z.object({
     }),
   amount: z.string().refine(
     (val) => {
-      // Convertir el valor a número y verificar que sea positivo
       const number = parseFloat(val);
       return !isNaN(number) && number > 0;
     },
@@ -78,7 +76,7 @@ const formSchema = z.object({
     .refine((val) => val !== undefined, {
       message: "Debe seleccionar una opción",
     })
-    .transform((val) => (val === "" ? null : val)), // Transforma "" a null
+    .transform((val) => (val === "" ? null : val)),
 });
 
 interface FormProps {
@@ -86,35 +84,31 @@ interface FormProps {
 }
 
 export function CreateCashMovementForm({ onClose }: FormProps) {
-  const { createCashMovement } = useCreateCashMovement();
-  const {
-    data: employees,
-    mutate,
-    isPending: isEmployeesLoading,
-  } = useGetEmployeesByCompany();
-  const { data: cashes, isLoading: isCashesLoading } = useGetCash();
-  const { data: bankaccounts, isLoading: isBankAccLoading } =
-    useGetBankAccounts();
-  const { data: vendors, isLoading: isVendorLoading } = useGetVendors();
-  const { data: clients, isLoading: isClientLoading } = useGetClients();
-  const { data: accounts, isLoading: isAccountLoading } = useGetAccount();
-  const { data: categories, isLoading: isCategoryLoading } = useGetCategory();
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
 
+  // Obtener accountant_id para usar en el hook de categorías
+  const accountantId = form.watch("accountant_id");
+
+  const { createCashMovement } = useCreateCashMovement();
+  const { data: employees, mutate, isPending: isEmployeesLoading } = useGetEmployeesByCompany();
+  const { data: cashes, isLoading: isCashesLoading } = useGetCash();
+  const { data: bankaccounts, isLoading: isBankAccLoading } = useGetBankAccounts();
+  const { data: vendors, isLoading: isVendorLoading } = useGetVendors();
+  const { data: clients, isLoading: isClientLoading } = useGetClients();
+  const { data: accounts, isLoading: isAccountLoading } = useGetAccount();
+  const { data: categories, isLoading: isCategoryLoading } = useGetCategorysByAccountant(accountantId || "");
+
   useEffect(() => {
     mutate("transmandu");
-    // Observar cambios en la caja seleccionada
+    
     const subscription = form.watch((value, { name }) => {
       if (name === "cash_id") {
-        // Encontrar la caja seleccionada
         const selectedCash = cashes?.find(
           (cash) => cash.id.toString() === value.cash_id
         );
-        // Si es de tipo efectivo, resetear el campo de cuenta bancaria
         if (selectedCash?.type === "EFECTIVO") {
           form.setValue("bank_account_id", null);
         }
@@ -127,31 +121,28 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     createCashMovement.mutate(values, {
       onSuccess: () => {
-        onClose(); // Cierra el modal solo si la creación fue exitosa
+        onClose();
       },
     });
   }
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col space-y-3"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-3">
         <div className="flex gap-2 items-center justify-center">
-          <FormField
+        <FormField
             control={form.control}
             name="date"
             render={({ field }) => (
-              <FormItem className="flex flex-col mt-2.5">
+              <FormItem className="w-[200px]">
                 <FormLabel>Fecha</FormLabel>
                 <Popover>
-                  <PopoverTrigger asChild>
+                  <PopoverTrigger asChild className="w-full">
                     <FormControl>
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
+                          "w-full pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -169,11 +160,8 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value ? new Date(field.value) : undefined}
+                      selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1999-07-21")
-                      }
                       initialFocus
                       fromYear={1980} // Año mínimo que se mostrará
                       toYear={new Date().getFullYear()} // Año máximo (actual)
@@ -199,7 +187,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             control={form.control}
             name="cash_id"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="w-[200px]">
                 <FormLabel>Caja</FormLabel>
                 <Select
                   disabled={isCashesLoading}
@@ -207,17 +195,16 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Seleccione la caja" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {cashes &&
-                      cashes.map((cash) => (
-                        <SelectItem key={cash.id} value={cash.id.toString()}>
-                          {cash.name}
-                        </SelectItem>
-                      ))}
+                    {cashes?.map((cash) => (
+                      <SelectItem key={cash.id} value={cash.id.toString()}>
+                        {cash.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -230,12 +217,9 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             control={form.control}
             name="type"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="w-[200px]">
                 <FormLabel>Tipo de Transacción</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Ingreso/Egreso" />
@@ -251,149 +235,139 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
           />
           {form.watch("type") === "OUTPUT" && (
             <FormField
-            control={form.control}
-            name="vendor_id"
-            render={({ field }) => (
-              <FormItem className="w-full flex flex-col space-y-3">
-                <FormLabel>Beneficiario</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        disabled={isVendorLoading}
-                        variant="outline"
-                        role="combobox"
-                        className={cn(
-                          "justify-between",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {isVendorLoading && (
-                          <Loader2 className="size-4 animate-spin mr-2" />
-                        )}
-                        {field.value ? (
-                          vendors?.find(
-                            (vendor) => vendor.id.toString() === field.value
-                          )?.name
-                        ) : (
-                          "Seleccione un beneficiario"
-                        )}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
-                    <Command>
-                      <CommandInput placeholder="Busque un beneficiario..." />
-                      <CommandList>
-                        <CommandEmpty className="text-sm p-2 text-center">
-                          No se ha encontrado ningún beneficiario.
-                        </CommandEmpty>
-                        <CommandGroup>
-                          {vendors?.map((vendor) => (
-                            <CommandItem
-                              value={vendor.name}
-                              key={vendor.id}
-                              onSelect={() => {
-                                form.setValue(
-                                  "vendor_id",
-                                  vendor.id.toString()
-                                );
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  vendor.id.toString() === field.value
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                              {vendor.name}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              control={form.control}
+              name="vendor_id"
+              render={({ field }) => (
+                <FormItem className="w-[200px]">
+                  <FormLabel>Beneficiario</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild className="w-full">
+                      <FormControl>
+                        <Button
+                          disabled={isVendorLoading}
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {isVendorLoading && (
+                            <Loader2 className="size-4 animate-spin mr-2" />
+                          )}
+                          {field.value
+                            ? vendors?.find(
+                                (vendor) => vendor.id.toString() === field.value
+                              )?.name
+                            : "Seleccione un beneficiario"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
+                      <Command>
+                        <CommandInput placeholder="Busque un beneficiario..." />
+                        <CommandList>
+                          <CommandEmpty className="text-sm p-2 text-center">
+                            No se ha encontrado ningún beneficiario.
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {vendors?.map((vendor) => (
+                              <CommandItem
+                                value={vendor.name}
+                                key={vendor.id}
+                                onSelect={() => {
+                                  form.setValue("vendor_id", vendor.id.toString());
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    vendor.id.toString() === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {vendor.name}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
           {form.watch("type") === "INCOME" && (
             <FormField
-            control={form.control}
-            name="client_id"
-            render={({ field }) => (
-              <FormItem className="w-full flex flex-col space-y-3">
-                <FormLabel>Cliente</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        disabled={isClientLoading}
-                        variant="outline"
-                        role="combobox"
-                        className={cn(
-                          "justify-between",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {isClientLoading && (
-                          <Loader2 className="size-4 animate-spin mr-2" />
-                        )}
-                        {field.value ? (
-                          clients?.find(
-                            (client) => client.id.toString() === field.value
-                          )?.name
-                        ) : (
-                          "Seleccione un cliente"
-                        )}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
-                    <Command>
-                      <CommandInput placeholder="Busque un cliente..." />
-                      <CommandList>
-                        <CommandEmpty className="text-sm p-2 text-center">
-                          No se ha encontrado ningún cliente.
-                        </CommandEmpty>
-                        <CommandGroup>
-                          {clients?.map((client) => (
-                            <CommandItem
-                              value={client.name}
-                              key={client.id}
-                              onSelect={() => {
-                                form.setValue(
-                                  "client_id",
-                                  client.id.toString()
-                                );
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  client.id.toString() === field.value
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                              {client.name}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              control={form.control}
+              name="client_id"
+              render={({ field }) => (
+                <FormItem className="w-[200px]">
+                  <FormLabel>Cliente</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild className="w-full">
+                      <FormControl>
+                        <Button
+                          disabled={isClientLoading}
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {isClientLoading && (
+                            <Loader2 className="size-4 animate-spin mr-2" />
+                          )}
+                          {field.value
+                            ? clients?.find(
+                                (client) => client.id.toString() === field.value
+                              )?.name
+                            : "Seleccione un cliente"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
+                      <Command>
+                        <CommandInput placeholder="Busque un cliente..." />
+                        <CommandList>
+                          <CommandEmpty className="text-sm p-2 text-center">
+                            No se ha encontrado ningún cliente.
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {clients?.map((client) => (
+                              <CommandItem
+                                value={client.name}
+                                key={client.id}
+                                onSelect={() => {
+                                  form.setValue("client_id", client.id.toString());
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    client.id.toString() === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {client.name}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
         </div>
         <div className="flex gap-2 items-center justify-center">
@@ -440,10 +414,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                               value={account.name}
                               key={account.id}
                               onSelect={() => {
-                                form.setValue(
-                                  "accountant_id",
-                                  account.id.toString()
-                                );
+                                form.setValue("accountant_id", account.id.toString());
                               }}
                             >
                               <Check
@@ -476,7 +447,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
-                        disabled={isCategoryLoading}
+                        disabled={isCategoryLoading || !accountantId}
                         variant="outline"
                         role="combobox"
                         className={cn(
@@ -484,24 +455,29 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                           !field.value && "text-muted-foreground"
                         )}
                       >
-                        {isCategoryLoading && (
+                        {isCategoryLoading ? (
                           <Loader2 className="size-4 animate-spin mr-2" />
+                        ) : !accountantId ? (
+                          "Seleccione una cuenta primero"
+                        ) : field.value ? (
+                          categories?.find(
+                            (category) => category.id.toString() === field.value
+                          )?.name
+                        ) : (
+                          "Seleccione una categoría"
                         )}
-                        {field.value
-                          ? categories?.find(
-                              (category) => category.id.toString() === field.value
-                            )?.name
-                          : "Seleccione una cuenta"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
                     <Command>
-                      <CommandInput placeholder="Busque una cuenta..." />
+                      <CommandInput placeholder="Busque una categoría..." />
                       <CommandList>
                         <CommandEmpty className="text-sm p-2 text-center">
-                          No se ha encontrado ninguna categoría.
+                          {!accountantId
+                            ? "Seleccione una cuenta primero"
+                            : "No se ha encontrado ninguna categoría"}
                         </CommandEmpty>
                         <CommandGroup>
                           {categories?.map((category) => (
@@ -509,10 +485,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                               value={category.name}
                               key={category.id}
                               onSelect={() => {
-                                form.setValue(
-                                  "category_id",
-                                  category.id.toString()
-                                );
+                                form.setValue("category_id", category.id.toString());
                               }}
                             >
                               <Check
@@ -551,7 +524,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             )}
           />
         </div>
-        <div className="flex gap-4 items-center ">
+        <div className="flex gap-4 items-center">
           <div className="flex-1 min-w-[200px]">
             <FormField
               control={form.control}
@@ -618,17 +591,12 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
                                 <Check
                                   className={cn(
                                     "mr-2 h-4 w-4",
-                                    `${employee.first_name} ${employee.last_name}` ===
-                                      field.value
+                                    employee.id.toString() === field.value
                                       ? "opacity-100"
                                       : "opacity-0"
                                   )}
                                 />
-                                {
-                                  <p>
-                                    {employee.first_name} {employee.last_name}
-                                  </p>
-                                }
+                                {employee.first_name} {employee.last_name}
                               </CommandItem>
                             ))}
                           </CommandGroup>
@@ -655,103 +623,111 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
             </FormItem>
           )}
         />
-        {/*Validacion para cuando la caja sea efectivo retorna nulo y cuando la caja sea tipo transferencia mostrara la cuenta de banco*/}
         {(() => {
           const selectedCashId = form.watch("cash_id");
           const selectedCash = cashes?.find(
             (cash) => cash.id.toString() === selectedCashId
           );
+          
           if (selectedCash?.type === "EFECTIVO") {
             return null;
           }
+          
           return (
             <FormField
-            control={form.control}
-            name="bank_account_id"
-            render={({ field }) => (
-              <FormItem className="w-full flex flex-col space-y-3">
-                <FormLabel>Cuenta de Banco</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        disabled={isBankAccLoading}
-                        variant="outline"
-                        role="combobox"
-                        className={cn(
-                          "justify-between",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {isBankAccLoading ? (
-                          <>
-                            <Loader2 className="size-4 animate-spin mr-2" />
-                            Cargando cuentas...
-                          </>
-                        ) : field.value ? (
-                          bankaccounts?.find(
-                            (acc) => acc.id.toString() === field.value
-                          ) ? (
-                            `${bankaccounts.find(
+              control={form.control}
+              name="bank_account_id"
+              render={({ field }) => (
+                <FormItem className="w-full flex flex-col space-y-3">
+                  <FormLabel>Cuenta de Banco</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          disabled={isBankAccLoading}
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {isBankAccLoading ? (
+                            <>
+                              <Loader2 className="size-4 animate-spin mr-2" />
+                              Cargando cuentas...
+                            </>
+                          ) : field.value ? (
+                            bankaccounts?.find(
                               (acc) => acc.id.toString() === field.value
-                            )?.name} - ${
-                              bankaccounts.find(
+                            ) ? (
+                              `${bankaccounts.find(
                                 (acc) => acc.id.toString() === field.value
-                              )?.bank.name
-                            }`
+                              )?.name} - ${
+                                bankaccounts.find(
+                                  (acc) => acc.id.toString() === field.value
+                                )?.bank.name
+                              }`
+                            ) : (
+                              "Cuenta no encontrada"
+                            )
                           ) : (
-                            "Cuenta no encontrada"
-                          )
-                        ) : (
-                          "Seleccione una cuenta..."
-                        )}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
-                    <Command>
-                      <CommandInput placeholder="Busque una cuenta bancaria..." />
-                      <CommandList>
-                        <CommandEmpty className="text-sm p-2 text-center">
-                          No se encontraron cuentas bancarias.
-                        </CommandEmpty>
-                        <CommandGroup>
-                          {bankaccounts?.map((acc) => (
-                            <CommandItem
-                              value={`${acc.name} ${acc.bank.name}`}
-                              key={acc.id}
-                              onSelect={() => {
-                                form.setValue(
-                                  "bank_account_id",
-                                  acc.id.toString()
-                                );
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  acc.id.toString() === field.value
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                              {acc.name} - {acc.bank.name}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />           
+                            "Seleccione una cuenta..."
+                          )}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
+                      <Command>
+                        <CommandInput placeholder="Busque una cuenta bancaria..." />
+                        <CommandList>
+                          <CommandEmpty className="text-sm p-2 text-center">
+                            No se encontraron cuentas bancarias.
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {bankaccounts?.map((acc) => (
+                              <CommandItem
+                                value={`${acc.name} ${acc.bank.name}`}
+                                key={acc.id}
+                                onSelect={() => {
+                                  form.setValue(
+                                    "bank_account_id",
+                                    acc.id.toString()
+                                  );
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    acc.id.toString() === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {acc.name} - {acc.bank.name}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />           
           );
         })()}
         <Button type="submit" disabled={createCashMovement.isPending}>
-          {createCashMovement.isPending ? "Enviando..." : "Enviar"}
+          {createCashMovement.isPending ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Enviando...
+            </>
+          ) : (
+            "Enviar"
+          )}
         </Button>
       </form>
     </Form>

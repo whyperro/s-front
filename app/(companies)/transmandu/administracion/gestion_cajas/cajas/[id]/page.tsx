@@ -32,9 +32,8 @@ const MovementsByAccountPage = () => {
     }
   );
 
-  // Trabajar directamente con los datos recibidos (ya están filtrados por el backend)
   const accountsData = data || [];
-
+  
   // Calculate totals
   const totals =
     accountsData.length > 0
@@ -48,7 +47,6 @@ const MovementsByAccountPage = () => {
         )
       : { totalIncome: 0, totalOutcome: 0 };
 
-  // Prepare data for chart
   const chartData = accountsData.map((accountant) => ({
     name: accountant.accountant_name,
     Ingresos: Number(accountant.INCOME || 0),
@@ -103,7 +101,6 @@ const MovementsByAccountPage = () => {
         <h1 className="text-xl font-semibold">Movimientos de Caja</h1>
       </div>
 
-      {/* Alerta de error */}
       {isError && (
         <Alert variant="destructive" className="mb-4">
           <AlertCircle className="h-4 w-4" />
@@ -116,7 +113,6 @@ const MovementsByAccountPage = () => {
         </Alert>
       )}
 
-      {/* Alerta de datos vacíos */}
       {!isLoading && !isError && accountsData.length === 0 && (
         <Alert className="mb-4">
           <AlertCircle className="h-4 w-4" />
@@ -346,7 +342,7 @@ const MovementsByAccountPage = () => {
                           <TableRow>
                             <TableHead>Fecha</TableHead>
                             <TableHead>Categoría</TableHead>
-                            <TableHead>Subcategoría</TableHead>
+                            <TableHead>Detalle</TableHead>
                             <TableHead>Tipo</TableHead>
                             <TableHead>Monto</TableHead>
                             <TableHead>Cuenta Bancaria</TableHead>
@@ -358,8 +354,8 @@ const MovementsByAccountPage = () => {
                               <TableCell>
                                 {formatDate(movement.date,1)}
                               </TableCell>
-                              <TableCell>{movement.category}</TableCell>
-                              <TableCell>{movement.sub_category}</TableCell>
+                              <TableCell>{movement.category.name}</TableCell>
+                              <TableCell>{movement.details}</TableCell>
                               <TableCell>
                                 <span
                                   className={`px-2 py-1 rounded-full text-xs font-medium ${
