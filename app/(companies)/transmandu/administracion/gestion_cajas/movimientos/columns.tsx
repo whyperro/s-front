@@ -100,7 +100,7 @@ export const columns: ColumnDef<CashMovement>[] = [
     ),
   },
   {
-    accessorKey: "category",
+    accessorKey: "category_id",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Categoría" />
     ),
@@ -108,13 +108,13 @@ export const columns: ColumnDef<CashMovement>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.category}
+          {row.original.category.name}
         </span>
       </div>
     ),
   },
   {
-    accessorKey: "sub_category",
+    accessorKey: "details",
     header: ({ column }) => (
       <DataTableColumnHeader filter column={column} title="Detalles" />
     ),
@@ -122,7 +122,7 @@ export const columns: ColumnDef<CashMovement>[] = [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <span className="text-muted-foreground italic">
-          {row.original.sub_category}
+          {row.original.details}
         </span>
       </div>
     ),

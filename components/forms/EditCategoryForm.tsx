@@ -25,10 +25,10 @@ const formSchema = z.object({
     )
     .min(2, {
       message: "El nombre debe tener al menos 2 caracteres y maximo 40.",
-    }),
+    }).optional(),
   accountant_id: z.string({
     message: "Debe elegir una cuenta.",
-  }),
+  }).optional(),
 });
 
 type FormSchemaType = z.infer<typeof formSchema>;
@@ -72,10 +72,10 @@ export function EditCategoryForm({ id, onClose }: EditCategoryFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Nombre</FormLabel>
+                <FormLabel>Nombre de la Categoría</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Ingrese el nuevo nombre de la categoría"
+                    placeholder="Ingrese el nuevo nombre"
                     {...field}
                   />
                 </FormControl>
@@ -83,8 +83,6 @@ export function EditCategoryForm({ id, onClose }: EditCategoryFormProps) {
               </FormItem>
             )}
           />
-        </div>
-        <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
             name="accountant_id"

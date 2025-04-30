@@ -48,15 +48,10 @@ const formSchema = z.object({
   accountant_id: z.string({
     message: "Debe elegir una cuenta.",
   }),
-  category: z
-    .string()
-    .min(2, {
-      message: "La categoría debe tener al menos 2 caracteres.",
-    })
-    .max(100, {
-      message: "La categoría tiene un máximo 100 caracteres.",
-    }),
-  sub_category: z
+  category_id: z.string({
+    message: "Debe elegir una categoría.",
+  }),
+  details: z
     .string()
     .min(2, {
       message: "El detalle debe tener al menos 2 caracteres.",
@@ -471,7 +466,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
           />
           <FormField
             control={form.control}
-            name="category"
+            name="category_id"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Categoría</FormLabel>
@@ -486,7 +481,7 @@ export function CreateCashMovementForm({ onClose }: FormProps) {
         <div className="flex gap-2 items-center justify-center">
           <FormField
             control={form.control}
-            name="sub_category"
+            name="details"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Detalle</FormLabel>

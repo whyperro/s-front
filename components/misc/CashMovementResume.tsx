@@ -64,14 +64,14 @@ const CashMovementResume = ({ movement }: { movement: CashMovement }) => {
             <h3 className="text-sm font-medium text-muted-foreground">
               Categoría
             </h3>
-            <p className="font-medium">{movement.category}</p>
+            <p className="font-medium">{movement.category.name}</p>
           </div>
 
           <div className="space-y-1">
             <h3 className="text-sm font-medium text-muted-foreground">
               Detalles
             </h3>
-            <p className="font-medium">{movement.sub_category}</p>
+            <p className="font-medium">{movement.details}</p>
           </div>
         </div>
 

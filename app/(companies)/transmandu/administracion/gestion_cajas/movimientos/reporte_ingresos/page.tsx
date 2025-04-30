@@ -431,7 +431,7 @@ const IncomeDashboard = () => {
                         <TableCell>{movement.accountant.name}</TableCell>
                         <TableCell>
                           <Badge variant="outline" className="bg-primary/5">
-                            {movement.category}
+                            {movement.category.name}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right font-medium text-emerald-600">
