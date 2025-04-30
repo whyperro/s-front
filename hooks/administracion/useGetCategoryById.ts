@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query"
 import axiosInstance from "@/lib/axios"
 
 const fetchCategoryById = async (id: string): Promise<Category> => {
-  const { data } = await axiosInstance.get(`/transmandu/category/${id}`)
+  const { data } = await axiosInstance.get(`/transmandu/accountants-categorys/${id}`)
   return data
 }
 

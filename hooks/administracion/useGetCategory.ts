@@ -3,7 +3,7 @@ import { Category } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 
 const fetchCategory = async (): Promise<Category[]> => {
-  const {data} = await axios.get(`/transmandu/category`);
+  const {data} = await axios.get(`/transmandu/accountants-categorys`);
   return data;
 };
 
