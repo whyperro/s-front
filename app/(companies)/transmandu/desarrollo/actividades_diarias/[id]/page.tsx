@@ -14,7 +14,7 @@ import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale";
 import { columns } from "./columns";
 import { non_user_columns } from "./noncolumns";
-import { DataTable } from "./data-table";
+import { DataTable } from "@/components/tables/DataTable";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import ActivitiesReportPdf from "@/components/pdf/ActivityReport";

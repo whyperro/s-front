@@ -4,7 +4,6 @@ import { ContentLayout } from "@/components/layout/ContentLayout";
 
 import { Loader2 } from "lucide-react";
 import { columns } from "./columns";
-import { DataTable } from "./data-table";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,6 +17,7 @@ import LoadingPage from "@/components/misc/LoadingPage";
 import { useEffect, useState } from "react";
 import { ActivityReport } from "@/types";
 import { useAuth } from "@/contexts/AuthContext";
+import { DataTable } from "@/components/tables/DataTable";
 
 const DailyActivitiesPage = () => {
   const { data: activity_report, isLoading } = useGetRegisterWithActivities();
